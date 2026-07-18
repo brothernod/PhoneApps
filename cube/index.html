@@ -17,7 +17,7 @@
     --muted:#8493b8;
     --accent:#ffd23f;
     --accent-2:#36d39a;
-    --cell: min(19vw, 78px);
+    --cell: min(18vw, 74px);
 
     /* sticker colors */
     --U:#f7f7f7; --D:#ffd500; --F:#00a651; --B:#0051ba; --R:#d50000; --L:#ff5800;
@@ -129,11 +129,16 @@
   /* cube stage */
   .stage{
     flex:1; display:flex; align-items:center; justify-content:center;
-    min-height: calc(var(--cell) * 4.2);
+    /* the rotated cube projects ~4.4 cells tall — reserve enough that its
+       bottom corner clears the hint text below */
+    min-height: calc(var(--cell) * 4.7);
     perspective: 1100px; -webkit-perspective: 1100px;
     margin:2px 0;
   }
-  .scene{ width:calc(var(--cell)*3); height:calc(var(--cell)*3); transform-style:preserve-3d; -webkit-transform-style:preserve-3d; }
+  .hint{ position:relative; z-index:2; }
+  /* margin-bottom biases the scene upward inside the centered stage: the
+     rotateX(-25deg) view projects more of the cube below center than above */
+  .scene{ width:calc(var(--cell)*3); height:calc(var(--cell)*3); margin-bottom:36px; transform-style:preserve-3d; -webkit-transform-style:preserve-3d; }
   .cube{
     position:relative; width:100%; height:100%;
     transform-style:preserve-3d; -webkit-transform-style:preserve-3d;
@@ -186,8 +191,6 @@
     background:transparent; color:var(--muted);
   }
   .chip.sel{ background:var(--panel-2); color:var(--ink); border-color:#3a4a72; }
-  .legend{ display:flex; flex-wrap:wrap; justify-content:center; gap:6px 12px; margin-top:14px; color:var(--muted); font-size:11px; }
-  .legend b{ color:#c4d0ec; font-family:ui-monospace,"SF Mono",Menlo,monospace; }
   footer{ text-align:center; color:#5d6a8c; font-size:11px; margin-top:14px; line-height:1.5; }
 </style>
 </head>
@@ -243,15 +246,9 @@
     <button class="chip" id="flowchip" title="No pause between moves">Flow</button>
   </div>
 
-  <div class="legend">
-    <span><b>U</b> Up</span><span><b>D</b> Down</span><span><b>L</b> Left</span>
-    <span><b>R</b> Right</span><span><b>F</b> Front</span><span><b>B</b> Back</span>
-    <span><b>′</b> counter-cw</span><span><b>2</b> half-turn</span>
-  </div>
-
   <footer>
     Official WCA random-state scrambles · pool of <span id="poolcount"></span> baked in.<br>
-    Add to Home Screen for a full-screen app. · build v6
+    Add to Home Screen for a full-screen app. · build v7
   </footer>
 </div>
 
