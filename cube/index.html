@@ -235,6 +235,7 @@
     <button class="chip" data-spd="slow">Slow</button>
     <button class="chip sel" data-spd="normal">Normal</button>
     <button class="chip" data-spd="fast">Fast</button>
+    <button class="chip" id="flowchip" title="No pause between moves">Flow</button>
   </div>
 
   <button class="newbtn" id="newbtn">🎲 New Scramble</button>
@@ -247,7 +248,7 @@
 
   <footer>
     Official WCA random-state scrambles · pool of <span id="poolcount"></span> baked in.<br>
-    Add to Home Screen for a full-screen app. · build v3
+    Add to Home Screen for a full-screen app. · build v4
   </footer>
 </div>
 
@@ -367,28 +368,10 @@
 
   /* ---------- animation ---------- */
   var animating=false;
-  var durations={slow:1500, normal:450, fast:240};
-  var playDelay={slow:750, normal:220, fast:70};
+  var durations={slow:1500, normal:600, fast:240};
+  var playDelay={slow:750, normal:150, fast:70};
   var speed='normal';
-
-  /* cubic-bezier(x1,y1,x2,y2) evaluator (same curve the CSS transition used) */
-  function bezierEase(x1,y1,x2,y2){
-    var cx=3*x1, bx=3*(x2-x1)-cx, ax=1-cx-bx;
-    var cy=3*y1, by=3*(y2-y1)-cy, ay=1-cy-by;
-    function sampleX(t){ return ((ax*t+bx)*t+cx)*t; }
-    function sampleY(t){ return ((ay*t+by)*t+cy)*t; }
-    function slopeX(t){ return (3*ax*t+2*bx)*t+cx; }
-    return function(x){
-      if(x<=0) return 0;
-      if(x>=1) return 1;
-      var t=x, i, e, s;
-      for(i=0;i<6;i++){ e=sampleX(t)-x; if(Math.abs(e)<1e-5) return sampleY(t); s=slopeX(t); if(Math.abs(s)<1e-6) break; t-=e/s; }
-      var lo=0, hi=1; t=x;
-      while(hi-lo>1e-5){ t=(lo+hi)/2; if(sampleX(t)<x) lo=t; else hi=t; }
-      return sampleY(t);
-    };
-  }
-  var turnEase = bezierEase(.34,1.0,.4,1);
+  var flowMode=false; // no pause between moves while playing
 
   function turn(face, mult, forward){
     // mult: 1 (quarter), 2 (half). forward true = apply move, false = undo.
@@ -404,13 +387,12 @@
       var rotFn = (def.axis==='X'?'rotateX(':def.axis==='Y'?'rotateY(':'rotateZ(');
 
       // move layer cubies into pivot (no visual jump: pivot at 0deg, same origin)
-      pivot.style.webkitTransition=pivot.style.transition='none';
       pivot.style.webkitTransform=pivot.style.transform=rotFn+'0deg)';
       layer.forEach(function(c){ pivot.appendChild(c.el); });
 
       var dur = durations[speed] * (mult===2?1.8:1);
 
-      var done=false;
+      var done=false, anim=null;
       function finish(){
         if(done) return; done=true;
         // bake rotation into each cubie's state
@@ -418,26 +400,25 @@
           c.pos = mVec(matrix, c.pos).map(Math.round);
           c.orient = mMul(matrix, c.orient);
         });
-        pivot.style.webkitTransform=pivot.style.transform='none';
         layer.forEach(function(c){ cubeEl.appendChild(c.el); applyTransform(c); });
+        if(anim) anim.cancel();
+        pivot.style.webkitTransform=pivot.style.transform='none';
         animating=false;
         resolve();
       }
 
-      // rAF-driven: we set an explicit angle every frame, so the browser never
-      // interpolates between transforms. (CSS-transitioning to a 180° endpoint
-      // is direction-ambiguous and some iOS WebKit builds spin it backwards.)
-      var start=null;
-      function frame(ts){
-        if(done) return;
-        if(start===null) start=ts;
-        var p=(ts-start)/dur;
-        if(p>=1){ finish(); return; }
-        pivot.style.webkitTransform=pivot.style.transform=rotFn+(deg*turnEase(p))+'deg)';
-        requestAnimationFrame(frame);
-      }
-      requestAnimationFrame(frame);
-      setTimeout(finish, dur+600); // safety: bake state even if rAF stalls (hidden tab)
+      // Web Animations API: runs on the compositor (stays smooth while Safari
+      // scrolls, unlike rAF). The explicit midpoint keyframe keeps every
+      // segment under 180°, so the rotation direction is never ambiguous —
+      // some iOS WebKit builds spin plain 0→180° transitions backwards.
+      anim = pivot.animate(
+        [ {transform: rotFn+'0deg)'},
+          {transform: rotFn+(deg/2)+'deg)'},
+          {transform: rotFn+deg+'deg)'} ],
+        { duration: dur, easing: 'cubic-bezier(.34,1.0,.4,1)', fill: 'forwards' }
+      );
+      anim.onfinish = finish;
+      setTimeout(finish, dur+600); // safety: bake state even if onfinish is deferred
     });
   }
 
@@ -563,7 +544,7 @@
     if(idx>=scramble.length){ stopPlay(); return; }
     next().then(function(){
       if(!playing) return;
-      playTimer=setTimeout(loop, playDelay[speed]);
+      playTimer=setTimeout(loop, flowMode ? 0 : playDelay[speed]);
     });
   }
 
@@ -651,11 +632,17 @@
   btnRestart.addEventListener('click', resetSolved);
   btnPlay.addEventListener('click', function(){ playing?stopPlay():startPlay(); });
 
-  document.querySelectorAll('.chip').forEach(function(ch){
+  document.querySelectorAll('.chip[data-spd]').forEach(function(ch){
     ch.addEventListener('click', function(){
-      document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('sel');});
+      document.querySelectorAll('.chip[data-spd]').forEach(function(c){c.classList.remove('sel');});
       ch.classList.add('sel'); speed=ch.getAttribute('data-spd');
     });
+  });
+
+  var flowChip=document.getElementById('flowchip');
+  flowChip.addEventListener('click', function(){
+    flowMode=!flowMode;
+    flowChip.classList.toggle('sel', flowMode);
   });
 
   window.addEventListener('resize', function(){
