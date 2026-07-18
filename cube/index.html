@@ -248,7 +248,7 @@
 
   <footer>
     Official WCA random-state scrambles · pool of <span id="poolcount"></span> baked in.<br>
-    Add to Home Screen for a full-screen app. · build v7
+    Add to Home Screen for a full-screen app. · build v8
   </footer>
 </div>
 
@@ -390,10 +390,10 @@
       pivot.style.webkitTransform=pivot.style.transform=rotFn+'0deg)';
       layer.forEach(function(c){ pivot.appendChild(c.el); });
 
-      // Flow playback: linear easing at exactly constant angular velocity
-      // (2x duration for 2x angle) so consecutive moves read as one steady
-      // stream. Otherwise: eased, halves slightly quicker than 2x.
-      var steady = flowMode && playing;
+      // Flow playback + seeks: linear easing at exactly constant angular
+      // velocity (2x duration for 2x angle) so consecutive moves read as one
+      // steady stream. Otherwise: eased, halves slightly quicker than 2x.
+      var steady = (flowMode && playing) || seeking;
       var dur = durations[speed] * (mult===2 ? (steady?2:1.8) : 1);
       var easing = steady ? 'linear' : 'cubic-bezier(.34,1.0,.4,1)';
 
@@ -509,12 +509,37 @@
     else hintEl.textContent = 'Next: '+scramble[idx].replace("'", '′')+' · tap a move to jump';
   }
 
+  /* Animated seek: tapping a move fast-forwards/rewinds through the
+     intermediate moves at fast+flow pacing instead of teleporting.
+     Tapping another move mid-seek just retargets; if playback was
+     running, it resumes when the seek lands. */
+  var seeking=false, seekTarget=0, resumeAfterSeek=false;
+
   function jumpTo(target){
-    if(animating) return;
+    target=Math.max(0, Math.min(target, scramble.length));
+    if(seeking){ seekTarget=target; return; } // retarget the running seek
+    if(target===idx && !animating) return;
+    seekTarget=target;
+    resumeAfterSeek=playing;
     stopPlay();
-    liveIdx=null;
-    buildCube();            // reset to solved (fresh DOM at current cell size)
-    fastForwardTo(target);  // silently apply moves 0..target-1, sets idx + re-renders
+    seeking=true;
+    var savedSpeed=speed;
+    speed='fast';
+
+    function finishSeek(){
+      seeking=false; speed=savedSpeed;
+      if(resumeAfterSeek && idx<scramble.length) startPlay();
+      else renderMoves();
+    }
+    function step(){
+      if(idx===seekTarget){ finishSeek(); return; }
+      if(animating){ setTimeout(step, 30); return; } // let in-flight turn land
+      (idx<seekTarget ? next() : prev()).then(function(moved){
+        if(!moved){ finishSeek(); return; }
+        step();
+      });
+    }
+    step();
   }
 
   function applyToken(tok, undo){
