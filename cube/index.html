@@ -79,6 +79,16 @@
     transform: translateY(-2px) scale(1.06);
     box-shadow:0 6px 16px rgba(255,210,63,.35);
   }
+  /* seek destination: green pulse until the animation lands on it */
+  .mv.target{
+    color:var(--accent-2); border-color:var(--accent-2);
+    background:#0c2018; opacity:1;
+    animation:targetPulse .7s ease-in-out infinite alternate;
+  }
+  @keyframes targetPulse{
+    from{ box-shadow:0 0 0 0 rgba(54,211,154,.0); }
+    to{ box-shadow:0 0 10px 2px rgba(54,211,154,.45); }
+  }
 
   .pool{ display:none; } /* redundant with the Scramble # button; reclaims a text row */
   .pool b{ color:var(--accent-2); font-variant-numeric:tabular-nums; }
@@ -248,7 +258,7 @@
 
   <footer>
     Official WCA random-state scrambles · pool of <span id="poolcount"></span> baked in.<br>
-    Add to Home Screen for a full-screen app. · build v8
+    Add to Home Screen for a full-screen app. · build v9
   </footer>
 </div>
 
@@ -494,9 +504,12 @@
     // main thread stays quiet during flow playback.
     var nodes=movesEl.children;
     nodes[0].classList.toggle('active', hi<0);
+    nodes[0].classList.toggle('target', seeking && seekTarget===0);
     for(var i=0;i<scramble.length;i++){
       nodes[i+1].classList.toggle('active', i===hi);
       nodes[i+1].classList.toggle('done', i<hi);
+      // tile i corresponds to target i+1 moves applied
+      nodes[i+1].classList.toggle('target', seeking && seekTarget===i+1);
     }
 
     progressEl.textContent = idx+' / '+scramble.length;
@@ -510,26 +523,26 @@
   }
 
   /* Animated seek: tapping a move fast-forwards/rewinds through the
-     intermediate moves at fast+flow pacing instead of teleporting.
-     Tapping another move mid-seek just retargets; if playback was
-     running, it resumes when the seek lands. */
-  var seeking=false, seekTarget=0, resumeAfterSeek=false;
+     intermediate moves at fast+flow pacing instead of teleporting, then
+     stops on the tapped move (even if playback was running). The
+     destination tile is highlighted until the seek lands on it.
+     Tapping another move mid-seek just retargets. */
+  var seeking=false, seekTarget=0;
 
   function jumpTo(target){
     target=Math.max(0, Math.min(target, scramble.length));
-    if(seeking){ seekTarget=target; return; } // retarget the running seek
+    if(seeking){ seekTarget=target; renderMoves(); return; } // retarget the running seek
     if(target===idx && !animating) return;
     seekTarget=target;
-    resumeAfterSeek=playing;
     stopPlay();
     seeking=true;
+    renderMoves(); // show the destination highlight immediately
     var savedSpeed=speed;
     speed='fast';
 
     function finishSeek(){
       seeking=false; speed=savedSpeed;
-      if(resumeAfterSeek && idx<scramble.length) startPlay();
-      else renderMoves();
+      renderMoves(); // clears the target highlight, stops on this spot
     }
     function step(){
       if(idx===seekTarget){ finishSeek(); return; }
