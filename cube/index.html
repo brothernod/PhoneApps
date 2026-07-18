@@ -383,16 +383,19 @@
 
       var layer = cubies.filter(function(c){ return c.pos[def.coord]===def.val; });
 
-      // move layer cubies into pivot (no visual jump: pivot has no transform, same origin)
+      // Start from an explicit 0deg of the SAME rotate function (not 'none'):
+      // transitioning from 'none' makes WebKit matrix-interpolate, and a 180°
+      // endpoint is directionally ambiguous — half turns animated backwards.
+      // Matching function lists force numeric angle interpolation (0 → deg).
+      var rotFn = (def.axis==='X'?'rotateX(':def.axis==='Y'?'rotateY(':'rotateZ(');
       pivot.style.webkitTransition=pivot.style.transition='none';
-      pivot.style.webkitTransform=pivot.style.transform='none';
+      pivot.style.webkitTransform=pivot.style.transform=rotFn+'0deg)';
       layer.forEach(function(c){ pivot.appendChild(c.el); });
       void pivot.offsetWidth; // reflow
 
       var dur = durations[speed] * (mult===2?1.8:1);
       pivot.style.webkitTransition=pivot.style.transition='transform '+dur+'ms cubic-bezier(.34,1.0,.4,1)';
-      var rot = (def.axis==='X'?'rotateX(':def.axis==='Y'?'rotateY(':'rotateZ(')+deg+'deg)';
-      pivot.style.webkitTransform=pivot.style.transform=rot;
+      pivot.style.webkitTransform=pivot.style.transform=rotFn+deg+'deg)';
 
       var done=false;
       function finish(){
