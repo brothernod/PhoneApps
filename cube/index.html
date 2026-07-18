@@ -247,7 +247,7 @@
 
   <footer>
     Official WCA random-state scrambles · pool of <span id="poolcount"></span> baked in.<br>
-    Add to Home Screen for a full-screen app.
+    Add to Home Screen for a full-screen app. · build v3
   </footer>
 </div>
 
@@ -371,6 +371,25 @@
   var playDelay={slow:750, normal:220, fast:70};
   var speed='normal';
 
+  /* cubic-bezier(x1,y1,x2,y2) evaluator (same curve the CSS transition used) */
+  function bezierEase(x1,y1,x2,y2){
+    var cx=3*x1, bx=3*(x2-x1)-cx, ax=1-cx-bx;
+    var cy=3*y1, by=3*(y2-y1)-cy, ay=1-cy-by;
+    function sampleX(t){ return ((ax*t+bx)*t+cx)*t; }
+    function sampleY(t){ return ((ay*t+by)*t+cy)*t; }
+    function slopeX(t){ return (3*ax*t+2*bx)*t+cx; }
+    return function(x){
+      if(x<=0) return 0;
+      if(x>=1) return 1;
+      var t=x, i, e, s;
+      for(i=0;i<6;i++){ e=sampleX(t)-x; if(Math.abs(e)<1e-5) return sampleY(t); s=slopeX(t); if(Math.abs(s)<1e-6) break; t-=e/s; }
+      var lo=0, hi=1; t=x;
+      while(hi-lo>1e-5){ t=(lo+hi)/2; if(sampleX(t)<x) lo=t; else hi=t; }
+      return sampleY(t);
+    };
+  }
+  var turnEase = bezierEase(.34,1.0,.4,1);
+
   function turn(face, mult, forward){
     // mult: 1 (quarter), 2 (half). forward true = apply move, false = undo.
     return new Promise(function(resolve){
@@ -382,35 +401,43 @@
       var matrix = rotM(def.axis, deg);        // state matrix (same source)
 
       var layer = cubies.filter(function(c){ return c.pos[def.coord]===def.val; });
+      var rotFn = (def.axis==='X'?'rotateX(':def.axis==='Y'?'rotateY(':'rotateZ(');
 
-      // move layer cubies into pivot (no visual jump: pivot has no transform, same origin)
+      // move layer cubies into pivot (no visual jump: pivot at 0deg, same origin)
       pivot.style.webkitTransition=pivot.style.transition='none';
-      pivot.style.webkitTransform=pivot.style.transform='none';
+      pivot.style.webkitTransform=pivot.style.transform=rotFn+'0deg)';
       layer.forEach(function(c){ pivot.appendChild(c.el); });
-      void pivot.offsetWidth; // reflow
 
       var dur = durations[speed] * (mult===2?1.8:1);
-      pivot.style.webkitTransition=pivot.style.transition='transform '+dur+'ms cubic-bezier(.34,1.0,.4,1)';
-      var rot = (def.axis==='X'?'rotateX(':def.axis==='Y'?'rotateY(':'rotateZ(')+deg+'deg)';
-      pivot.style.webkitTransform=pivot.style.transform=rot;
 
       var done=false;
       function finish(){
         if(done) return; done=true;
-        pivot.removeEventListener('transitionend',finish);
         // bake rotation into each cubie's state
         layer.forEach(function(c){
           c.pos = mVec(matrix, c.pos).map(Math.round);
           c.orient = mMul(matrix, c.orient);
         });
-        pivot.style.transition='none';
-        pivot.style.transform='none';
+        pivot.style.webkitTransform=pivot.style.transform='none';
         layer.forEach(function(c){ cubeEl.appendChild(c.el); applyTransform(c); });
         animating=false;
         resolve();
       }
-      pivot.addEventListener('transitionend',finish);
-      setTimeout(finish, dur+120); // safety fallback
+
+      // rAF-driven: we set an explicit angle every frame, so the browser never
+      // interpolates between transforms. (CSS-transitioning to a 180° endpoint
+      // is direction-ambiguous and some iOS WebKit builds spin it backwards.)
+      var start=null;
+      function frame(ts){
+        if(done) return;
+        if(start===null) start=ts;
+        var p=(ts-start)/dur;
+        if(p>=1){ finish(); return; }
+        pivot.style.webkitTransform=pivot.style.transform=rotFn+(deg*turnEase(p))+'deg)';
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+      setTimeout(finish, dur+600); // safety: bake state even if rAF stalls (hidden tab)
     });
   }
 
