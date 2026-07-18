@@ -248,7 +248,7 @@
 
   <footer>
     Official WCA random-state scrambles · pool of <span id="poolcount"></span> baked in.<br>
-    Add to Home Screen for a full-screen app. · build v4
+    Add to Home Screen for a full-screen app. · build v5
   </footer>
 </div>
 
@@ -390,7 +390,12 @@
       pivot.style.webkitTransform=pivot.style.transform=rotFn+'0deg)';
       layer.forEach(function(c){ pivot.appendChild(c.el); });
 
-      var dur = durations[speed] * (mult===2?1.8:1);
+      // Flow playback: linear easing at exactly constant angular velocity
+      // (2x duration for 2x angle) so consecutive moves read as one steady
+      // stream. Otherwise: eased, halves slightly quicker than 2x.
+      var steady = flowMode && playing;
+      var dur = durations[speed] * (mult===2 ? (steady?2:1.8) : 1);
+      var easing = steady ? 'linear' : 'cubic-bezier(.34,1.0,.4,1)';
 
       var done=false, anim=null;
       function finish(){
@@ -415,7 +420,7 @@
         [ {transform: rotFn+'0deg)'},
           {transform: rotFn+(deg/2)+'deg)'},
           {transform: rotFn+deg+'deg)'} ],
-        { duration: dur, easing: 'cubic-bezier(.34,1.0,.4,1)', fill: 'forwards' }
+        { duration: dur, easing: easing, fill: 'forwards' }
       );
       anim.onfinish = finish;
       setTimeout(finish, dur+600); // safety: bake state even if onfinish is deferred
@@ -462,27 +467,37 @@
   var btnRestart=document.getElementById('restart');
   var btnNew=document.getElementById('newbtn');
 
+  var renderedScramble=null; // which scramble array the move DOM was built for
+
   function renderMoves(){
-    movesEl.innerHTML='';
     // The move to highlight = the one currently animating, else the last one applied.
     var hi = (liveIdx!==null) ? liveIdx : (idx-1);
 
-    // "Start" marker = the solved state, before any move
-    var start=document.createElement('div');
-    start.className='mv start';
-    start.textContent='⌂ Start';
-    if(hi < 0) start.classList.add('active');
-    start.addEventListener('click', function(){ jumpTo(0); });
-    movesEl.appendChild(start);
+    if(renderedScramble!==scramble){
+      // Full rebuild (new scramble)
+      movesEl.innerHTML='';
+      var start=document.createElement('div');
+      start.className='mv start';
+      start.textContent='⌂ Start';
+      start.addEventListener('click', function(){ jumpTo(0); });
+      movesEl.appendChild(start);
+      scramble.forEach(function(tok,i){
+        var d=document.createElement('div'); d.className='mv';
+        d.textContent = tok.replace("'", '′');
+        d.addEventListener('click', function(){ jumpTo(i+1); });
+        movesEl.appendChild(d);
+      });
+      renderedScramble=scramble;
+    }
 
-    scramble.forEach(function(tok,i){
-      var d=document.createElement('div'); d.className='mv';
-      d.textContent = tok.replace("'", '′');
-      if(i===hi) d.classList.add('active');         // currently animating / current state
-      else if(i<hi) d.classList.add('done');        // already applied
-      d.addEventListener('click', function(){ jumpTo(i+1); });
-      movesEl.appendChild(d);
-    });
+    // Incremental highlight update — no DOM rebuild between moves, so the
+    // main thread stays quiet during flow playback.
+    var nodes=movesEl.children;
+    nodes[0].classList.toggle('active', hi<0);
+    for(var i=0;i<scramble.length;i++){
+      nodes[i+1].classList.toggle('active', i===hi);
+      nodes[i+1].classList.toggle('done', i<hi);
+    }
 
     progressEl.textContent = idx+' / '+scramble.length;
     btnPrev.disabled = (idx<=0 && liveIdx===null);
@@ -542,11 +557,25 @@
   function loop(){
     if(!playing) return;
     if(idx>=scramble.length){ stopPlay(); return; }
+    // Hold while the page is scrolling: Safari defers the main-thread →
+    // compositor commit each turn needs to start, so moves that begin
+    // mid-scroll visibly snap. Let the scroll settle, then continue.
+    if(scrollHold){ playTimer=setTimeout(loop, 120); return; }
     next().then(function(){
       if(!playing) return;
       playTimer=setTimeout(loop, flowMode ? 0 : playDelay[speed]);
     });
   }
+
+  /* ---------- scroll hold (Safari page scroll disrupts turn starts) ---------- */
+  var scrollHold=false, scrollHoldTimer=null;
+  function bumpScrollHold(){
+    scrollHold=true;
+    if(scrollHoldTimer) clearTimeout(scrollHoldTimer);
+    scrollHoldTimer=setTimeout(function(){ scrollHold=false; }, 250);
+  }
+  window.addEventListener('scroll', bumpScrollHold, {passive:true});
+  window.addEventListener('touchmove', bumpScrollHold, {passive:true});
 
   function resetSolved(){
     stopPlay();
