@@ -17,7 +17,7 @@
     --muted:#8493b8;
     --accent:#ffd23f;
     --accent-2:#36d39a;
-    --cell: min(20vw, 84px);
+    --cell: min(19vw, 78px);
 
     /* sticker colors */
     --U:#f7f7f7; --D:#ffd500; --F:#00a651; --B:#0051ba; --R:#d50000; --L:#ff5800;
@@ -33,34 +33,36 @@
     color:var(--ink);
     font-family: ui-rounded, -apple-system, "SF Pro Rounded", "Helvetica Neue", system-ui, sans-serif;
     min-height:100dvh;
+    overscroll-behavior-y:none;
     display:flex; flex-direction:column;
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
     user-select:none; -webkit-user-select:none;
   }
-  .wrap{ width:100%; max-width:560px; margin:0 auto; flex:1; display:flex; flex-direction:column; padding:16px 18px 22px; }
+  .wrap{ width:100%; max-width:560px; margin:0 auto; flex:1; display:flex; flex-direction:column; padding:10px 16px 16px; }
 
-  header{ text-align:center; margin-bottom:6px; }
-  .kicker{ font-size:11px; letter-spacing:.32em; text-transform:uppercase; color:var(--accent); font-weight:700; }
-  h1{ margin:2px 0 0; font-size:26px; letter-spacing:-.01em; font-weight:800; }
-  .sub{ color:var(--muted); font-size:13px; margin-top:3px; }
+  /* compact top bar: title left, New Scramble right — everything above the fold */
+  header.topline{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:2px; }
+  .titleblock{ text-align:left; }
+  .kicker{ font-size:13px; letter-spacing:.22em; text-transform:uppercase; color:var(--accent); font-weight:800; }
+  .sub{ color:var(--muted); font-size:11px; margin-top:1px; }
 
   /* notation strip */
   .notation{
-    margin:16px 0 6px;
+    margin:8px 0 4px;
     background:linear-gradient(180deg,var(--panel-2),var(--panel));
-    border:1px solid var(--line); border-radius:16px;
-    padding:14px 12px 12px;
+    border:1px solid var(--line); border-radius:14px;
+    padding:10px 10px 10px;
     box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 10px 30px rgba(0,0,0,.35);
   }
-  .notation .label{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding:0 2px; }
+  .notation .label{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; padding:0 2px; }
   .notation .label span{ font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--muted); font-weight:700; }
   .progress{ color:var(--accent-2); font-variant-numeric:tabular-nums; }
-  .moves{ display:flex; flex-wrap:wrap; gap:7px; justify-content:center; }
+  .moves{ display:flex; flex-wrap:wrap; gap:6px; justify-content:center; }
   .mv{
     font-family: ui-monospace, "SF Mono", Menlo, monospace;
-    font-size:17px; font-weight:600;
-    min-width:38px; text-align:center;
-    padding:8px 9px; border-radius:10px;
+    font-size:15px; font-weight:600;
+    min-width:34px; text-align:center;
+    padding:6px 7px; border-radius:9px;
     background:#0e1526; border:1px solid var(--line); color:#c4d0ec;
     transition: all .18s ease; cursor:pointer; -webkit-user-select:none;
   }
@@ -78,7 +80,7 @@
     box-shadow:0 6px 16px rgba(255,210,63,.35);
   }
 
-  .pool{ text-align:center; margin-top:11px; font-size:11px; letter-spacing:.04em; color:var(--muted); }
+  .pool{ display:none; } /* redundant with the Scramble # button; reclaims a text row */
   .pool b{ color:var(--accent-2); font-variant-numeric:tabular-nums; }
 
   .scnum{
@@ -127,9 +129,9 @@
   /* cube stage */
   .stage{
     flex:1; display:flex; align-items:center; justify-content:center;
-    min-height: calc(var(--cell) * 4.6);
+    min-height: calc(var(--cell) * 4.2);
     perspective: 1100px; -webkit-perspective: 1100px;
-    margin:6px 0;
+    margin:2px 0;
   }
   .scene{ width:calc(var(--cell)*3); height:calc(var(--cell)*3); transform-style:preserve-3d; -webkit-transform-style:preserve-3d; }
   .cube{
@@ -154,9 +156,9 @@
   .hint{ text-align:center; color:var(--muted); font-size:12px; min-height:16px; margin-top:2px; }
 
   /* controls */
-  .controls{ display:flex; gap:10px; align-items:center; justify-content:center; margin-top:10px; }
+  .controls{ display:flex; gap:10px; align-items:center; justify-content:center; margin-top:6px; }
   .ctl{
-    flex:1; height:54px; border-radius:14px; border:1px solid var(--line);
+    flex:1; height:50px; border-radius:14px; border:1px solid var(--line);
     background:var(--panel-2); color:var(--ink); font-size:22px; font-weight:700;
     display:flex; align-items:center; justify-content:center; gap:8px;
     transition: transform .08s ease, background .15s ease, opacity .15s;
@@ -167,16 +169,17 @@
   .ctl.play.is-playing{ background:linear-gradient(180deg,#2a3656,#222d49); }
 
   .newbtn{
-    margin-top:14px; width:100%; height:62px; border:none; border-radius:18px;
+    height:42px; border:none; border-radius:12px; padding:0 16px;
     background:linear-gradient(180deg,#ffe16b,var(--accent));
-    color:#1a1405; font-size:19px; font-weight:900; letter-spacing:.01em;
-    box-shadow:0 12px 28px rgba(255,210,63,.32), inset 0 1px 0 rgba(255,255,255,.5);
+    color:#1a1405; font-size:14px; font-weight:900; letter-spacing:.01em;
+    box-shadow:0 6px 16px rgba(255,210,63,.28), inset 0 1px 0 rgba(255,255,255,.5);
     transition: transform .08s ease, filter .15s ease;
-    display:flex; align-items:center; justify-content:center; gap:10px;
+    display:flex; align-items:center; justify-content:center; gap:7px;
+    white-space:nowrap; flex-shrink:0;
   }
   .newbtn:active{ transform:scale(.97); filter:brightness(1.03); }
 
-  .speedrow{ display:flex; justify-content:center; gap:8px; margin-top:12px; }
+  .speedrow{ display:flex; justify-content:center; gap:8px; margin-top:10px; }
   .chip{
     font-size:12px; font-weight:700; letter-spacing:.04em;
     padding:7px 14px; border-radius:999px; border:1px solid var(--line);
@@ -190,10 +193,12 @@
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <div class="kicker">WCA Notation</div>
-    <h1>Scramble Lab</h1>
-    <div class="sub">Generate a scramble &amp; follow it move by move</div>
+  <header class="topline">
+    <div class="titleblock">
+      <div class="kicker">Scramble Lab</div>
+      <div class="sub">WCA notation</div>
+    </div>
+    <button class="newbtn" id="newbtn">🎲 New Scramble</button>
   </header>
 
   <section class="notation">
@@ -238,8 +243,6 @@
     <button class="chip" id="flowchip" title="No pause between moves">Flow</button>
   </div>
 
-  <button class="newbtn" id="newbtn">🎲 New Scramble</button>
-
   <div class="legend">
     <span><b>U</b> Up</span><span><b>D</b> Down</span><span><b>L</b> Left</span>
     <span><b>R</b> Right</span><span><b>F</b> Front</span><span><b>B</b> Back</span>
@@ -248,7 +251,7 @@
 
   <footer>
     Official WCA random-state scrambles · pool of <span id="poolcount"></span> baked in.<br>
-    Add to Home Screen for a full-screen app. · build v5
+    Add to Home Screen for a full-screen app. · build v6
   </footer>
 </div>
 
