@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Quentin &amp; Holden — Dice</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Dice">
+<meta name="theme-color" content="#EFE3CE">
+<style>
+  :root{
+    --table:      #EFE3CE;
+    --table-deep: #E0CDAC;
+    --ink:        #4A3B28;
+
+    /* Quentin */
+    --blue-tray:  #CFE7F8;
+    --blue-light: #9BDDFF;
+    --blue-mid:   #2E86F0;
+    --blue-deep:  #1746A8;
+    --blue-edge:  #10306E;
+
+    /* Holden */
+    --green-tray: #D3EDCB;
+    --green-light:#B4F0A4;
+    --green-mid:  #3FBF63;
+    --green-deep: #16803C;
+    --green-edge: #0B5427;
+
+    --die: min(16vw, 27vh);
+    --round: 900 1em/1 ui-rounded, "SF Pro Rounded", "Nunito", system-ui, -apple-system, sans-serif;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0}
+
+  html,body{height:100%; overflow:hidden;}
+  body{
+    background: radial-gradient(130% 100% at 50% 0%, #F7EEDF 0%, var(--table) 55%, var(--table-deep) 100%);
+    color:var(--ink);
+    font-family: ui-rounded, "SF Pro Rounded", "Nunito", system-ui, -apple-system, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select:none; user-select:none;
+    touch-action: manipulation;
+    overscroll-behavior:none;
+  }
+  /* woven felt grain */
+  body::before{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity:.10; mix-blend-mode:multiply;
+  }
+
+  #table{
+    position:relative; z-index:1;
+    height:100vh; height:100dvh;
+    display:flex; flex-direction:column;
+    gap: clamp(10px, 1.6vh, 22px);
+    padding: clamp(10px, 1.8vh, 24px) clamp(12px, 2vw, 30px);
+  }
+
+  /* ---------- a player's dice tray ---------- */
+  .tray{
+    flex:1;
+    display:flex; align-items:center;
+    gap: clamp(10px, 2vw, 28px);
+    padding: clamp(8px,1.4vh,18px) clamp(14px,2vw,30px);
+    border-radius: 34px;
+    background: var(--tray);
+    box-shadow:
+      inset 0 6px 14px rgba(74,59,40,.16),
+      inset 0 -3px 0 rgba(255,255,255,.55),
+      0 2px 0 rgba(255,255,255,.5);
+  }
+  .tray.blue { --tray:var(--blue-tray);  --light:var(--blue-light);  --mid:var(--blue-mid);  --deep:var(--blue-deep);  --edge:var(--blue-edge); }
+  .tray.green{ --tray:var(--green-tray); --light:var(--green-light); --mid:var(--green-mid); --deep:var(--green-deep); --edge:var(--green-edge); }
+
+  .nameplate{
+    flex: 0 0 auto;
+    width: clamp(110px, 12vw, 175px);
+    padding: clamp(10px,1.6vh,18px) 10px;
+    border-radius: 22px;
+    background: linear-gradient(160deg, var(--mid), var(--deep));
+    box-shadow: 0 4px 0 var(--edge), 0 8px 16px rgba(74,59,40,.22);
+    text-align:center;
+  }
+  .nameplate span{
+    display:block; color:#fff;
+    font: var(--round);
+    font-size: clamp(20px, 2.4vw, 34px);
+    letter-spacing:.01em;
+    text-shadow: 0 2px 0 rgba(0,0,0,.18);
+  }
+
+  .dice{
+    flex:1;
+    display:flex; align-items:center; justify-content:space-around;
+  }
+
+  .slot{ display:flex; flex-direction:column; align-items:center; gap:6px; }
+
+  /* ---------- the die ---------- */
+  .die{
+    position:relative;
+    width:var(--die); height:var(--die);
+    background:none; border:0; padding:0;
+    cursor:pointer;
+    display:grid; place-items:center;
+  }
+  /* shadow it casts down into the tray */
+  .die .drop{
+    position:absolute; left:50%; bottom:2%;
+    width:74%; height:12%;
+    transform: translateX(-50%);
+    background: radial-gradient(closest-side, rgba(74,59,40,.34), rgba(74,59,40,0));
+    z-index:0;
+  }
+  .lift{ position:relative; z-index:1; width:100%; height:100%; display:grid; place-items:center; }
+
+  .die svg{ width:100%; height:100%; overflow:visible; filter: drop-shadow(0 3px 3px rgba(16,48,110,.18)); }
+  .body{ stroke:var(--edge); stroke-width:3.5; stroke-linejoin:round; }
+  .facet{ fill:rgba(255,255,255,.20); stroke:rgba(255,255,255,.5); stroke-width:2; stroke-linejoin:round; }
+
+  .num{
+    position:absolute; inset:0;
+    display:grid; place-items:center;
+    color:#fff; font: var(--round);
+    font-size: calc(var(--die) * .40);
+    text-shadow: 0 3px 0 rgba(0,0,0,.22);
+    font-variant-numeric: tabular-nums;
+  }
+  .d8  .num{ font-size: calc(var(--die) * .36); }
+  .d10 .num{ font-size: calc(var(--die) * .32); }
+  .d12 .num{ font-size: calc(var(--die) * .30); transform: translateY(3%); }
+
+  .tag{
+    font-weight:800; font-size: clamp(11px, 1.15vw, 16px);
+    letter-spacing:.08em; text-transform:uppercase;
+    color: var(--deep); opacity:.55;
+  }
+
+  /* ---------- motion ---------- */
+  .die:active svg{ filter: brightness(1.1) drop-shadow(0 3px 3px rgba(16,48,110,.18)); }
+
+  .die.rolling .lift{ animation: tumble .85s cubic-bezier(.3,.05,.25,1) both; }
+  .die.rolling .drop{ animation: shrink .85s cubic-bezier(.3,.05,.25,1) both; }
+  .die.landed  .lift{ animation: land .5s cubic-bezier(.2,1.6,.4,1) both; }
+
+  @keyframes tumble{
+    0%   { transform: translateY(0)      rotate(0deg)   scale(1); }
+    18%  { transform: translateY(-14%)   rotate(-40deg) scale(1.10); }
+    45%  { transform: translateY(-22%)   rotate(230deg) scale(1.12); }
+    75%  { transform: translateY(-9%)    rotate(500deg) scale(1.05); }
+    100% { transform: translateY(0)      rotate(720deg) scale(1); }
+  }
+  @keyframes shrink{
+    0%,100%{ transform:translateX(-50%) scale(1);   opacity:.9; }
+    45%    { transform:translateX(-50%) scale(.55); opacity:.35; }
+  }
+  @keyframes land{
+    0%  { transform: scale(1.16); }
+    45% { transform: scale(.93); }
+    75% { transform: scale(1.04); }
+    100%{ transform: scale(1); }
+  }
+
+  /* landing sparkle */
+  .spark{
+    position:absolute; left:50%; top:50%;
+    width:9%; height:9%; border-radius:50%;
+    background: var(--light);
+    box-shadow: 0 0 0 2px rgba(255,255,255,.7);
+    opacity:0; pointer-events:none; z-index:2;
+  }
+  .die.landed .spark{ animation: spark .55s ease-out both; }
+  @keyframes spark{
+    0%  { opacity:0; transform: translate(-50%,-50%) rotate(var(--a)) translateX(10%)  scale(.3); }
+    25% { opacity:1; }
+    100%{ opacity:0; transform: translate(-50%,-50%) rotate(var(--a)) translateX(105%) scale(.9); }
+  }
+
+  /* a slow, quiet invitation to tap */
+  @keyframes breathe{
+    0%,92%,100%{ transform: rotate(0deg); }
+    95%        { transform: rotate(-3.5deg); }
+    98%        { transform: rotate(3deg); }
+  }
+  .die:not(.rolling):not(.landed) .lift{ animation: breathe 7s ease-in-out infinite var(--d); }
+
+  .die:focus-visible{ outline:4px solid var(--edge); outline-offset:6px; border-radius:20px; }
+
+  @media (prefers-reduced-motion: reduce){
+    .die.rolling .lift{ animation: none; }
+    .die:not(.rolling):not(.landed) .lift{ animation:none; }
+    .die.landed .lift{ animation: land .3s ease both; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="gblue" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0"   stop-color="#9BDDFF"/>
+    <stop offset=".45" stop-color="#2E86F0"/>
+    <stop offset="1"   stop-color="#1746A8"/>
+  </linearGradient>
+  <linearGradient id="ggreen" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0"   stop-color="#B4F0A4"/>
+    <stop offset=".45" stop-color="#3FBF63"/>
+    <stop offset="1"   stop-color="#16803C"/>
+  </linearGradient>
+</defs></svg>
+
+<main id="table"></main>
+
+<script>
+/* ---- config: everything the app needs lives here ---- */
+const PLAYERS = [
+  { name: "Quentin", color: "blue",  dice: [6, 8, 10, 12] },
+  { name: "Holden",  color: "green", dice: [6, 8, 10, 12] }
+];
+
+/* ---- shapes ---- */
+const SHAPES = {
+  6:  `<rect class="body" x="9" y="9" width="82" height="82" rx="17" fill="GRAD"/>
+       <rect class="facet" x="22" y="22" width="56" height="56" rx="10"/>`,
+  8:  `<polygon class="body" points="50,4 96,50 50,96 4,50" fill="GRAD"/>
+       <polygon class="facet" points="50,19 81,50 50,81 19,50"/>`,
+  10: `<polygon class="body" points="50,3 95,36 78,94 22,94 5,36" fill="GRAD"/>
+       <polygon class="facet" points="50,18 78,43 50,82 22,43"/>`,
+  12: `<polygon class="body" points="50,4 93.7,35.8 77,87.2 23,87.2 6.3,35.8" fill="GRAD"/>
+       <polygon class="facet" points="50,80 22.4,60 32.9,27.6 67.1,27.6 77.6,60"/>`
+};
+
+/* ---- build ---- */
+const table = document.getElementById("table");
+
+PLAYERS.forEach((player, row) => {
+  const tray = document.createElement("section");
+  tray.className = "tray " + player.color;
+  tray.innerHTML = `<div class="nameplate"><span>${player.name}</span></div>
+                    <div class="dice"></div>`;
+  const strip = tray.querySelector(".dice");
+
+  player.dice.forEach((sides, i) => {
+    const slot = document.createElement("div");
+    slot.className = "slot";
+
+    const die = document.createElement("button");
+    die.className = "die d" + sides;
+    die.dataset.sides = sides;
+    die.setAttribute("aria-label", `${player.name}'s ${sides}-sided die`);
+    die.style.setProperty("--d", (row * 4 + i) * 0.9 + "s");
+
+    const grad = player.color === "blue" ? "url(#gblue)" : "url(#ggreen)";
+    die.innerHTML =
+      `<div class="drop"></div>
+       <div class="lift">
+         <svg viewBox="0 0 100 100">${SHAPES[sides].replaceAll("GRAD", grad)}</svg>
+         <div class="num">${sides}</div>
+       </div>` +
+      [0, 45, 90, 135, 180, 225, 270, 315]
+        .map(a => `<i class="spark" style="--a:${a}deg"></i>`).join("");
+
+    slot.appendChild(die);
+    const tag = document.createElement("div");
+    tag.className = "tag";
+    tag.textContent = "d" + sides;
+    slot.appendChild(tag);
+
+    strip.appendChild(slot);
+  });
+
+  table.appendChild(tray);
+});
+
+/* ---- rolling ---- */
+const SPIN = 850;
+
+function roll(die) {
+  const sides = +die.dataset.sides;
+  const num = die.querySelector(".num");
+
+  clearInterval(die._tick);
+  clearTimeout(die._stop);
+  clearTimeout(die._clear);
+  die.classList.remove("rolling", "landed");
+  void die.offsetWidth;              // restart the animation cleanly
+  die.classList.add("rolling");
+
+  die._tick = setInterval(() => {
+    num.textContent = 1 + Math.floor(Math.random() * sides);
+  }, 65);
+
+  die._stop = setTimeout(() => {
+    clearInterval(die._tick);
+    num.textContent = 1 + Math.floor(Math.random() * sides);
+    die.classList.remove("rolling");
+    void die.offsetWidth;
+    die.classList.add("landed");
+    die._clear = setTimeout(() => die.classList.remove("landed"), 650);
+  }, SPIN);
+}
+
+table.addEventListener("pointerdown", e => {
+  const die = e.target.closest(".die");
+  if (die) roll(die);
+});
+table.addEventListener("keydown", e => {
+  if (e.key === "Enter" || e.key === " ") {
+    const die = e.target.closest(".die");
+    if (die) { e.preventDefault(); roll(die); }
+  }
+});
+document.addEventListener("gesturestart", e => e.preventDefault());
+</script>
+</body>
+</html>
