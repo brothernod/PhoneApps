@@ -119,6 +119,15 @@
   .die svg{ width:100%; height:100%; overflow:visible; filter: drop-shadow(0 3px 3px rgba(16,48,110,.18)); }
   .body{ stroke:var(--edge); stroke-width:3.5; stroke-linejoin:round; }
   .facet{ fill:rgba(255,255,255,.20); stroke:rgba(255,255,255,.5); stroke-width:2; stroke-linejoin:round; }
+  .seam{ fill:none; stroke:rgba(255,255,255,.38); stroke-width:2; stroke-linecap:round; }
+
+  /* red wash for a 1 or a 2 */
+  .tint{
+    stroke:#9E2A1B; stroke-width:3.5; stroke-linejoin:round;
+    opacity:0; transition: opacity .4s ease;
+  }
+  .die.low .tint{ opacity:1; }
+  .die.low svg{ filter: drop-shadow(0 3px 8px rgba(158,42,27,.45)); }
 
   .num{
     position:absolute; inset:0;
@@ -129,8 +138,8 @@
     font-variant-numeric: tabular-nums;
   }
   .d8  .num{ font-size: calc(var(--die) * .36); }
-  .d10 .num{ font-size: calc(var(--die) * .32); }
-  .d12 .num{ font-size: calc(var(--die) * .30); transform: translateY(3%); }
+  .d10 .num{ font-size: calc(var(--die) * .30); transform: translateY(-4%); }
+  .d12 .num{ font-size: calc(var(--die) * .30); transform: translateY(4%); }
 
   .tag{
     font-weight:800; font-size: clamp(11px, 1.15vw, 16px);
@@ -208,6 +217,11 @@
     <stop offset=".45" stop-color="#3FBF63"/>
     <stop offset="1"   stop-color="#16803C"/>
   </linearGradient>
+  <linearGradient id="gred" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0"   stop-color="#FFC0B2"/>
+    <stop offset=".45" stop-color="#F2604B"/>
+    <stop offset="1"   stop-color="#C0392B"/>
+  </linearGradient>
 </defs></svg>
 
 <main id="table"></main>
@@ -219,16 +233,31 @@ const PLAYERS = [
   { name: "Holden",  color: "green", dice: [6, 8, 10, 12] }
 ];
 
-/* ---- shapes ---- */
+/* ---- shapes: outline is drawn twice (normal fill + red tint), then the face on top ---- */
 const SHAPES = {
-  6:  `<rect class="body" x="9" y="9" width="82" height="82" rx="17" fill="GRAD"/>
-       <rect class="facet" x="22" y="22" width="56" height="56" rx="10"/>`,
-  8:  `<polygon class="body" points="50,4 96,50 50,96 4,50" fill="GRAD"/>
-       <polygon class="facet" points="50,19 81,50 50,81 19,50"/>`,
-  10: `<polygon class="body" points="50,3 95,36 78,94 22,94 5,36" fill="GRAD"/>
-       <polygon class="facet" points="50,18 78,43 50,82 22,43"/>`,
-  12: `<polygon class="body" points="50,4 93.7,35.8 77,87.2 23,87.2 6.3,35.8" fill="GRAD"/>
-       <polygon class="facet" points="50,80 22.4,60 32.9,27.6 67.1,27.6 77.6,60"/>`
+  6: {
+    tag: "rect",
+    attrs: `x="9" y="9" width="82" height="82" rx="17"`,
+    face: `<rect class="facet" x="22" y="22" width="56" height="56" rx="10"/>`
+  },
+  8: {
+    tag: "polygon",
+    attrs: `points="50,4 96,50 50,96 4,50"`,
+    face: `<polygon class="facet" points="50,19 81,50 50,81 19,50"/>
+           <path class="seam" d="M50,19 L50,4 M81,50 L96,50 M19,50 L4,50 M50,81 L50,96"/>`
+  },
+  10: {
+    tag: "polygon",
+    attrs: `points="50,3 90,30 80,70 50,97 20,70 10,30"`,
+    face: `<polygon class="facet" points="50,16 74,41 50,79 26,41"/>
+           <path class="seam" d="M50,16 L50,3 M74,41 L90,30 M26,41 L10,30 M50,79 L50,97 M74,41 L80,70 M26,41 L20,70"/>`
+  },
+  12: {
+    tag: "polygon",
+    attrs: `points="50,3 77.6,12 94.7,35.5 94.7,64.5 77.6,88 50,97 22.4,88 5.3,64.5 5.3,35.5 22.4,12"`,
+    face: `<polygon class="facet" points="50,20 78.5,40.7 67.6,74.3 32.4,74.3 21.5,40.7"/>
+           <path class="seam" d="M50,20 L50,3 M78.5,40.7 L94.7,35.5 M67.6,74.3 L77.6,88 M32.4,74.3 L22.4,88 M21.5,40.7 L5.3,35.5"/>`
+  }
 };
 
 /* ---- build ---- */
@@ -252,10 +281,15 @@ PLAYERS.forEach((player, row) => {
     die.style.setProperty("--d", (row * 4 + i) * 0.9 + "s");
 
     const grad = player.color === "blue" ? "url(#gblue)" : "url(#ggreen)";
+    const s = SHAPES[sides];
     die.innerHTML =
       `<div class="drop"></div>
        <div class="lift">
-         <svg viewBox="0 0 100 100">${SHAPES[sides].replaceAll("GRAD", grad)}</svg>
+         <svg viewBox="0 0 100 100">
+           <${s.tag} ${s.attrs} class="body" fill="${grad}"/>
+           <${s.tag} ${s.attrs} class="tint" fill="url(#gred)"/>
+           ${s.face}
+         </svg>
          <div class="num">${sides}</div>
        </div>` +
       [0, 45, 90, 135, 180, 225, 270, 315]
@@ -275,6 +309,7 @@ PLAYERS.forEach((player, row) => {
 
 /* ---- rolling ---- */
 const SPIN = 850;
+const LOW = 2;   // 1 or 2 turns the die red
 
 function roll(die) {
   const sides = +die.dataset.sides;
@@ -283,7 +318,8 @@ function roll(die) {
   clearInterval(die._tick);
   clearTimeout(die._stop);
   clearTimeout(die._clear);
-  die.classList.remove("rolling", "landed");
+  clearTimeout(die._low);
+  die.classList.remove("rolling", "landed", "low");
   void die.offsetWidth;              // restart the animation cleanly
   die.classList.add("rolling");
 
@@ -293,11 +329,17 @@ function roll(die) {
 
   die._stop = setTimeout(() => {
     clearInterval(die._tick);
-    num.textContent = 1 + Math.floor(Math.random() * sides);
+    const value = 1 + Math.floor(Math.random() * sides);
+    num.textContent = value;
     die.classList.remove("rolling");
     void die.offsetWidth;
     die.classList.add("landed");
     die._clear = setTimeout(() => die.classList.remove("landed"), 650);
+
+    if (value <= LOW) {
+      die.classList.add("low");
+      die._low = setTimeout(() => die.classList.remove("low"), 5000);
+    }
   }, SPIN);
 }
 
