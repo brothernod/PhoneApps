@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" data-game="el-morro">
+<head>
+<meta charset="utf-8">
+<title>The Dragon of El Morro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="El Morro">
+<meta name="theme-color" content="#0b0b14">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0b14;
+    --screen: #0a0a1a;
+    --ink: #e6e6ee;
+    --hl: #ffd75a;
+    --good: #7be08a;
+    --hint: #ffa86a;
+    --dim: #8a8aa8;
+    --cap: #d8d0bc;
+    --cap-edge: #8f8672;
+    --cap-ink: #2a2620;
+    --bezel: #cfc6b0;
+    --bezel-dark: #a69d87;
+    --font: "VT323", "Courier New", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--bg); overflow: hidden; }
+  body {
+    color: var(--ink);
+    font: 23px/1.2 var(--font);
+    -webkit-user-select: none; user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    overscroll-behavior: none;
+  }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+  /* The monitor. On a phone it fills the screen; on iPad it sits in a bezel. */
+  #monitor {
+    position: fixed; inset: 0;
+    display: flex; justify-content: center; align-items: stretch;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
+  }
+  #screen {
+    position: relative;
+    width: 100%; max-width: 640px; height: 100%;
+    display: flex; flex-direction: column;
+    background: var(--screen);
+    overflow: hidden;
+  }
+  @media (min-width: 700px) and (min-height: 700px) {
+    #monitor { align-items: center; padding: 24px; }
+    #screen {
+      height: min(100%, 980px);
+      border-radius: 18px;
+      border: 22px solid var(--bezel);
+      box-shadow: inset 0 0 40px #000, 0 0 0 2px var(--bezel-dark), 0 24px 60px #000a;
+    }
+    body { font-size: 27px; }
+  }
+  @media (orientation: landscape) and (max-height: 600px) {
+    #screen {
+      max-width: none; display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-rows: auto minmax(0, 1fr) auto;
+    }
+    #pic { grid-column: 1; grid-row: 1 / 4; align-self: center; }
+    #status { grid-column: 2; grid-row: 1; }
+    #text { grid-column: 2; grid-row: 2; }
+    #controls { grid-column: 2; grid-row: 3; max-height: 65vh; }
+    #controls .key { min-height: 42px; }
+  }
+  body.scanlines #screen::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 20;
+    background: repeating-linear-gradient(to bottom, #0000 0 2px, #0003 2px 3px);
+    box-shadow: inset 0 0 60px #0008;
+  }
+
+  #pic {
+    display: block; width: 100%; aspect-ratio: 320 / 200; flex: none;
+    image-rendering: pixelated; image-rendering: crisp-edges;
+    background: #000;
+  }
+  #pic.off { display: none; }
+
+  #status {
+    flex: none; display: flex; justify-content: space-between; gap: 8px;
+    padding: 2px 10px; background: #1b1b3a; color: var(--hl);
+    font-size: 0.85em; letter-spacing: 0.5px;
+  }
+  #corner { position: absolute; left: 0; top: 0; width: 70px; height: 70px; z-index: 15; }
+  #mute { color: var(--dim); }
+
+  #text {
+    flex: 1 1 auto; min-height: 60px; overflow-y: auto;
+    padding: 8px 14px 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+  #text p { margin: 0 0 0.45em; }
+  #text p.puzzle { color: #fff; }
+  #text p.good { color: var(--good); }
+  #text p.hint { color: var(--hint); }
+  #text p.dim, .dim { color: var(--dim); }
+  #text p.echo { color: var(--dim); }
+  .hl { color: var(--hl); }
+  .cursor { color: var(--ink); }
+  .blink { animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  #controls {
+    flex: none; padding: 6px 10px calc(10px + env(safe-area-inset-bottom));
+    border-top: 2px solid #22224a;
+    max-height: 62%; overflow-y: auto;
+  }
+  #controls:empty { display: none; }
+  .prompt { color: var(--hl); margin: 2px 2px 6px; }
+
+  .key {
+    display: flex; align-items: center; gap: 10px; width: 100%;
+    min-height: 50px; margin: 0 0 7px; padding: 6px 12px;
+    background: var(--cap); color: var(--cap-ink); text-align: left;
+    border-radius: 6px;
+    box-shadow: inset 0 -5px 0 var(--cap-edge), inset 0 2px 0 #fff8;
+    line-height: 1.05;
+  }
+  .key:active { transform: translateY(3px); box-shadow: inset 0 -2px 0 var(--cap-edge); }
+  .key .num {
+    flex: none; width: 1.5em; height: 1.5em; display: grid; place-items: center;
+    background: var(--cap-ink); color: var(--cap); border-radius: 4px;
+  }
+  .key.wide { justify-content: center; }
+  .key.door { background: var(--door); min-height: 64px; color: #111; text-shadow: 0 1px 0 #fff8; }
+  .key.door .lbl { flex: 1; }
+  .key.ok { background: #8fd38f; box-shadow: inset 0 -5px 0 #4f9a4f; }
+  .key.del { background: #e6b28a; box-shadow: inset 0 -5px 0 #a8744e; }
+  .key.danger { background: #e88a8a; box-shadow: inset 0 -5px 0 #a04848; }
+
+  .numpad .display, .letters .display {
+    font-size: 1.6em; text-align: center; letter-spacing: 6px;
+    background: #000; color: var(--good); border: 2px solid #33335a; border-radius: 4px;
+    margin-bottom: 8px; padding: 2px;
+  }
+  .numpad .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+  .letters .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+  .numpad .grid .key, .letters .grid .key { justify-content: center; margin: 0; text-align: center; }
+  .numpad .grid .key { min-height: 52px; font-size: 1.3em; }
+  .letters .grid .key { min-height: 46px; padding: 4px 0; }
+  .letters .grid .key.ok, .letters .grid .key.del { grid-column: span 1; font-size: 0.8em; }
+
+  /* Overlays: boot, title, disk swaps, pages */
+  #overlay { display: none; position: absolute; inset: 0; z-index: 10; background: #000; }
+  #overlay.show { display: flex; flex-direction: column; }
+  #overlay.boot pre { padding: 16px; white-space: pre-wrap; color: #c8c8c8; font: inherit; font-size: 0.9em; }
+  #overlay.boot pre.err { color: #ff8a8a; }
+  #overlay.title { align-items: center; justify-content: flex-start; background: #0a0a1a; }
+  .studio { margin: auto; text-align: center; white-space: pre-line; color: var(--hl); font-size: 1.3em; letter-spacing: 2px; }
+  .titlepic { width: min(100%, calc(55vh * 1.6)); aspect-ratio: 320 / 200; image-rendering: pixelated; flex: none; }
+  .titletext {
+    margin: 14px 16px 6px; text-align: center; font-size: 2.1em; line-height: 1;
+    color: var(--hl); text-shadow: 3px 3px 0 #a02a24, 6px 6px 0 #2a1a4a; letter-spacing: 1px;
+  }
+  .tap { margin-top: 18px; color: var(--ink); }
+  .menu { width: 100%; padding: 14px 14px calc(14px + env(safe-area-inset-bottom)); margin-top: auto; }
+  #overlay.disk { align-items: center; justify-content: center; background: #00007a; }
+  .diskbox { text-align: center; line-height: 1.6; padding: 20px; border: 3px double #fff; margin: 20px; }
+  .drive { width: 120px; height: 34px; margin: 0 auto 16px; background: #bbb; border-radius: 3px; position: relative; box-shadow: inset 0 -4px #888; }
+  .drive::before { content: ""; position: absolute; left: 14px; top: 14px; width: 70px; height: 5px; background: #333; }
+  .drive::after { content: ""; position: absolute; right: 12px; top: 12px; width: 9px; height: 9px; border-radius: 50%; background: #3f3; animation: blink 0.3s steps(1) infinite; }
+  #overlay.page { background: var(--screen); }
+  .pagebox { display: flex; flex-direction: column; height: 100%; padding: 14px 14px calc(14px + env(safe-area-inset-bottom)); }
+  .pagebox h2 { color: var(--hl); font-weight: normal; font-size: 1.3em; margin-bottom: 8px; }
+  .pagebody { flex: 1; overflow-y: auto; margin-bottom: 10px; }
+  .pagebody p { margin-bottom: 8px; }
+  .pagebody .card { border: 2px solid #33335a; padding: 8px 10px; margin-bottom: 10px; border-radius: 4px; }
+  .pagebody .card h3 { font-weight: normal; color: var(--good); }
+  .pagebody .card.locked h3 { color: var(--dim); }
+  .pagebody table { width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 0.9em; }
+  .pagebody th, .pagebody td { text-align: left; padding: 3px 4px; border-bottom: 1px solid #33335a; }
+  .pagebody th { color: var(--hl); font-weight: normal; }
+
+  #saving { position: absolute; right: 8px; top: 6px; z-index: 12; font-size: 0.7em; color: #f55; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+  #saving.on { opacity: 1; }
+  noscript { padding: 20px; display: block; }
+</style>
+</head>
+<body class="scanlines">
+<div id="monitor">
+  <div id="screen">
+    <canvas id="pic" width="320" height="200" class="off"></canvas>
+    <div id="status"><span id="st-quest"></span><span id="st-time"></span><span id="st-clues"></span><button id="mute">♪ ON</button></div>
+    <div id="text"></div>
+    <div id="controls"></div>
+    <div id="overlay" class="show boot"></div>
+    <div id="corner" aria-hidden="true"></div>
+    <div id="saving">● SAVING TO DISK...</div>
+  </div>
+</div>
+<noscript>This game needs JavaScript.</noscript>
+<script src="vendor/ink-full.js"></script>
+<script src="vendor/js-yaml.min.js"></script>
+<script type="module" src="engine/main.js"></script>
+</body>
+</html>

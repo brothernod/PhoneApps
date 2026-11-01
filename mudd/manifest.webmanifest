@@ -1,0 +1,11 @@
+{
+  "name": "The Dragon of El Morro",
+  "short_name": "El Morro",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0b0b14",
+  "theme_color": "#0b0b14",
+  "icons": [{ "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }]
+}

@@ -1,0 +1,134 @@
+# Content banks for THE DRAGON OF EL MORRO.
+# Edit freely. No code needed. Names in {braces} are filled in by the game:
+#   {hero} {sibling} {pet}, plus any letters defined under "vars".
+
+title: THE DRAGON OF EL MORRO
+studio: HOLDEN A GAME STUDIO
+
+# ---------------------------------------------------------------------------
+# DRAGON HOARD: story word problems (Common Core 3.OA.D.8, two-step problems)
+# vars:   each letter is a [min, max] range of whole numbers
+# where:  a rule the numbers must follow (optional)
+# answer: the math that gives the answer
+# level:  1 is easiest; the game moves up after 2 right in a row
+dragon_hoard:
+  - level: 1
+    vars: { a: [2, 4], b: [2, 5], c: [1, 4] }
+    where: "a * b > c"
+    text: "Don Tito had {a} trays with {b} piragua cups on each tray. {pet} knocked {c} cups over. How many cups are left?"
+    hint: "First find how many cups there were: {a} groups of {b}. Then take away the {c} that fell."
+    explain: "{a} x {b} = {a*b} cups. Take away {c}: {a*b} - {c} = {answer}."
+    answer: "a * b - c"
+
+  - level: 1
+    vars: { a: [3, 9], b: [2, 9], c: [2, 6] }
+    text: "Don Tito made {a} cherry piraguas and {b} lime ones. Then {sibling} ate {c}... of the napkins. Oops! How many piraguas are there in all?"
+    hint: "The napkins don't count! Just add the cherry and the lime."
+    explain: "{a} + {b} = {answer}. The napkins were a trick!"
+    answer: "a + b"
+
+  - level: 2
+    vars: { a: [3, 6], b: [4, 9], c: [3, 12] }
+    where: "a * b > c"
+    text: "Don Tito had {a} rows of syrup bottles with {b} bottles in each row. {pet} bumped the cart and {c} bottles rolled away. How many bottles are still on the cart?"
+    hint: "Rows times bottles in each row gives the total. Then subtract the ones that rolled away."
+    explain: "{a} x {b} = {a*b}. Then {a*b} - {c} = {answer}."
+    answer: "a * b - c"
+
+  - level: 2
+    vars: { a: [2, 5], b: [2, 4] }
+    text: "Each piragua costs {a} dollars. You buy one for {hero}, one for {sibling}, and {b} more for Doña Luz's friends. How many dollars is that?"
+    hint: "Count the piraguas first: 2 plus {b}. Then each one costs {a} dollars."
+    explain: "2 + {b} = {b+2} piraguas. {b+2} x {a} = {answer} dollars."
+    answer: "(2 + b) * a"
+
+  - level: 3
+    vars: { a: [4, 8], b: [6, 9], c: [2, 5] }
+    text: "Don Tito filled {a} trays with {b} cups each. When nobody was looking, {pet} licked {c} cups, so those go in the trash. How many clean cups are left?"
+    hint: "Find all the cups: {a} x {b}. Then take away the {c} licked ones."
+    explain: "{a} x {b} = {a*b}. {a*b} - {c} = {answer}."
+    answer: "a * b - c"
+
+  - level: 3
+    vars: { a: [3, 6], b: [3, 8] }
+    where: "a * b <= 48"
+    text: "Don Tito has {a*b} cups. He puts them into {a} equal stacks. How many cups are in each stack?"
+    hint: "Share {a*b} cups into {a} equal groups. What times {a} makes {a*b}?"
+    explain: "{a*b} ÷ {a} = {answer}, because {a} x {answer} = {a*b}."
+    answer: "b"
+
+# ---------------------------------------------------------------------------
+# MAGIC WORDS: Spanish words (grade 1)
+# say: a sound-it-out hint, since the game has no speech
+spanish:
+  colors:
+    - { es: ROJO,       en: RED,    hex: "#d23a32", say: ROH-hoh,       hint: "Think of a fire truck." }
+    - { es: AZUL,       en: BLUE,   hex: "#2f6fd1", say: ah-SOOL,       hint: "Like the sky and the sea." }
+    - { es: AMARILLO,   en: YELLOW, hex: "#f2c531", say: ah-mah-REE-yoh, hint: "The color of the sun." }
+    - { es: VERDE,      en: GREEN,  hex: "#3f9e4a", say: BEHR-deh,      hint: "Like the leaves of a tree." }
+    - { es: ROSADO,     en: PINK,   hex: "#f08cb4", say: roh-SAH-doh,   hint: "Like a flamingo." }
+    - { es: BLANCO,     en: WHITE,  hex: "#f4f1e8", say: BLAHN-koh,     hint: "Like {pet}'s front paws." }
+    - { es: ANARANJADO, en: ORANGE, hex: "#ec8a2c", say: ah-nah-rahn-HAH-doh, hint: "Like an orange, the fruit!" }
+
+# ---------------------------------------------------------------------------
+# FACT OR FIB: two real facts and one fib. Every fact needs a source.
+facts:
+  iguana:
+    - text: "Green iguanas aren't from Puerto Rico. They came as pets in the 1970s."
+      source: "IUCN Iguana Specialist Group"
+    - text: "People in Puerto Rico call the iguana gallina de palo: chicken of the trees."
+      source: "Global Voices"
+  island:
+    - text: "Baby coquí frogs skip the tadpole stage. They hatch as tiny froglets."
+      source: "eLife"
+    - text: "Bats are Puerto Rico's only native land mammals. There are 13 kinds."
+      source: "U.S. Forest Service"
+    - text: "Puerto Rican anole lizards do push-ups to get attention."
+      source: "UC Davis"
+    - text: "In 1975, only 13 Puerto Rican parrots were left in the wild."
+      source: "U.S. Forest Service"
+
+fibs:
+  iguana:
+    - text: "Iguanas breathe fire to toast their lunch."
+      hint: "Real lizards can't make fire. Only dragons in stories can!"
+    - text: "Iguana eggs are as big as a soccer ball."
+      hint: "An iguana is about as long as your arm. Could its egg be THAT big?"
+    - text: "Iguanas grow up as tadpoles that swim in puddles."
+      hint: "Tadpoles grow into frogs, not lizards."
+
+# ---------------------------------------------------------------------------
+# TUNES: note lists. Each note is NAME+OCTAVE, then :length in eighth notes.
+# Use "-" for a rest. Example: "C5:1 E5:1 G5:2 -:1"
+tunes:
+  title:
+    tempo: 150
+    notes: "E4:1 A4:1 C5:1 E5:2 D5:1 C5:1 B4:2 G4:1 B4:1 D5:2 C5:1 B4:1 A4:4 -:1 E4:1 A4:1 C5:1 E5:2 G5:1 F5:1 E5:2 D5:1 C5:1 B4:1 G4:1 A4:6"
+  ending:
+    tempo: 140
+    notes: "C5:1 E5:1 G5:1 C6:3 B5:1 G5:1 E5:1 G5:4 A5:1 F5:1 D5:1 F5:2 E5:1 C5:6"
+  right:
+    tempo: 320
+    notes: "C5:1 E5:1 G5:1 C6:3"
+  miss:
+    tempo: 240
+    notes: "E4:1 C4:3"
+  find:
+    tempo: 300
+    notes: "G5:1 C6:1 E6:2"
+  hatch:
+    tempo: 260
+    notes: "C5:1 D5:1 E5:1 G5:1 C6:1 E6:1 G6:3"
+  disk:
+    tempo: 400
+    notes: "A2:1 -:1 A2:1 B2:1 -:1 A2:1 A2:1 -:2 C3:4"
+
+# ---------------------------------------------------------------------------
+# FIELD GUIDE: dragons that can be discovered in this slice
+dragons:
+  iguana:
+    name: IGUANA DRAGON
+    based_on: green iguana
+    fact: "Green iguanas came to Puerto Rico as pets in the 1970s. People there call them gallina de palo, chicken of the trees."
+    source: "IUCN Iguana Specialist Group; Global Voices"
+    color_es: VERDE
