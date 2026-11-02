@@ -5,7 +5,7 @@
 import { Screen } from './screen.js';
 import { Sound } from './sound.js';
 import { PUZZLES, parsePuzzleTag } from './puzzles.js';
-import { makeRng, clock, niceName, store } from './util.js';
+import { makeRng, clock, store } from './util.js';
 
 const GAME = document.documentElement.dataset.game || 'el-morro';
 const BASE = `games/${GAME}/`;
@@ -27,7 +27,6 @@ let banks = {};
 /** Everything that carries across runs. Names stay on this device only. */
 function defaultProfile() {
   return {
-    names: null,
     guide: [],
     skills: {},
     log: [],
@@ -74,6 +73,12 @@ function compileStory() {
   }
 }
 
+/** The heroes of this game, from cast: in banks.yaml. */
+function cast() {
+  const c = banks.cast || {};
+  return { hero: c.hero || 'Holden', sibling: c.sibling || 'Quentin', pet: c.pet || 'Cheddar' };
+}
+
 // ---------------------------------------------------------------------------
 // Difficulty: up after two right in a row, down after two misses.
 
@@ -101,11 +106,12 @@ function recordResult(res) {
  */
 async function playQuest(run) {
   const story = compileStory();
-  const names = profile.names;
+  const names = cast();
+  if (run.ink) story.state.LoadJson(run.ink);
+  // Set after loading, so an older save can't bring back different names.
   story.variablesState.hero = names.hero;
   story.variablesState.sibling = names.sibling;
   story.variablesState.pet = names.pet;
-  if (run.ink) story.state.LoadJson(run.ink);
 
   let puzzleN = run.puzzleN || 0;
   /** @type {{type: string, args: Record<string,string>} | null} */
@@ -134,7 +140,7 @@ async function playQuest(run) {
       const tags = (story.currentTags || []).map((t) => String(t).trim());
       const tag = (key) => tags.filter((t) => t === key || t.startsWith(key + ':')).map((t) => t.slice(key.length + 1).trim());
 
-      if (tag('clear').length) screen.clearText();
+      if (tag('clear').length) { await screen.waitIfUnread(); screen.clearText(); }
       for (const p of tag('pic')) screen.showPic(p);
       for (const t of tag('tune')) sound.play(t, { music: true });
       if (line) await screen.type(line);
@@ -143,7 +149,7 @@ async function playQuest(run) {
         if (!profile.guide.includes(g)) profile.guide.push(g);
         saveProfile();
       }
-      for (const d of tag('disk')) { sound.play('disk'); await screen.disk(Number(d) || 2); }
+      for (const d of tag('disk')) { await screen.waitIfUnread(); sound.play('disk'); await screen.disk(Number(d) || 2); }
       for (const p of tag('puzzle')) pendingPuzzle = parsePuzzleTag(p);
       status();
     }
@@ -193,19 +199,26 @@ async function playQuest(run) {
 // ---------------------------------------------------------------------------
 // Screens outside the story
 
-async function naming() {
+/** A warm hello before each new quest. */
+async function greet() {
+  const { hero, sibling, pet } = cast();
   screen.hideOverlay();
   screen.showPic('museum');
   screen.clearText();
   screen.setStatus({});
-  await screen.type('Before we begin, the museum needs your names for its visitor book.');
-  const hero = await screen.letters('WHAT IS YOUR NAME, HERO?');
-  await screen.type(`Welcome, ${niceName(hero)}!`);
-  const sibling = await screen.letters('WHO IS YOUR SIDEKICK?');
-  const pet = await screen.letters("WHAT IS YOUR DOG'S NAME?");
-  profile.names = { hero: niceName(hero), sibling: niceName(sibling), pet: niceName(pet) };
-  saveProfile();
-  await screen.type(`${profile.names.hero}, ${profile.names.sibling}, and ${profile.names.pet}. Perfect.`);
+  const found = profile.guide.length;
+  if (!profile.runs) {
+    await screen.type(`¡Hola, ${hero}! Welcome to the Museo de Leyendas.`);
+    await screen.type(`${sibling} is right beside you, and ${pet} is wagging so hard his whole back end wiggles.`);
+    await screen.type(`Doña Luz waves from the front desk. "My two favorite explorers, and the best corgi in San Juan! I'm so glad you came today."`);
+  } else {
+    await screen.type(`¡Hola otra vez, ${hero}! Welcome back to the Museo de Leyendas.`);
+    await screen.type(`${sibling} races ahead, and ${pet} is already sniffing the floor for clues.`);
+    await screen.type(found
+      ? `Doña Luz beams. "My explorers are back! Your Dragon Field Guide has ${found} ${found === 1 ? 'dragon' : 'dragons'} in it now. ¡Qué bueno!"`
+      : `Doña Luz beams. "My explorers are back! I knew you would come."`);
+  }
+  await screen.waitTap("LET'S GO!");
 }
 
 function fieldGuide() {
@@ -221,7 +234,7 @@ function fieldGuide() {
       if (got) {
         card.appendChild(el('p', '', `Based on the ${d.based_on}. Color: ${d.color_es}.`));
         card.appendChild(el('p', '', d.fact));
-        card.appendChild(el('p', 'dim', `Source: ${d.source}. Discovered by ${profile.names ? profile.names.hero : 'you'}.`));
+        card.appendChild(el('p', 'dim', `Source: ${d.source}. Discovered by ${cast().hero}.`));
       } else card.appendChild(el('p', 'dim', 'Not discovered yet.'));
       body.appendChild(card);
     }
@@ -257,10 +270,6 @@ function grownUp() {
     };
     toggle('SOUND', () => !profile.settings.muted, (v) => { profile.settings.muted = !v; applySettings(); });
     toggle('SCANLINES', () => profile.settings.scanlines, (v) => { profile.settings.scanlines = v; applySettings(); });
-
-    const names = el('button', 'key wide', 'CHANGE NAMES (next quest)');
-    names.addEventListener('click', () => { profile.names = null; saveProfile(); names.textContent = 'NAMES CLEARED'; });
-    body.appendChild(names);
 
     const wipe = el('button', 'key wide danger', 'ERASE ALL PROGRESS');
     let armed = false;
@@ -325,10 +334,10 @@ async function main() {
     const pick = items[await screen.titleMenu(items)];
     if (pick === 'DRAGON FIELD GUIDE') { await fieldGuide(); continue; }
     try {
-      if (pick === 'CONTINUE QUEST' && saved && profile.names) {
+      if (pick === 'CONTINUE QUEST' && saved) {
         await playQuest(saved);
       } else {
-        if (!profile.names) await naming();
+        await greet();
         const seed = 1000 + Math.floor(Math.random() * 9000);
         await playQuest({ seed });
       }

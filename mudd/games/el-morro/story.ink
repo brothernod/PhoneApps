@@ -10,12 +10,12 @@
 //   # puzzle: <type> key=value
 //                        run a puzzle; it must be followed by [@pass] and [@fail] choices
 //
-// The names come from the naming screen and are never written in this file.
+// The names come from cast: in banks.yaml (Holden, Quentin, and Cheddar).
 // minutes is the time of day: 540 is 9:00 AM, 1125 is sunset (6:45 PM).
 
-VAR hero = "HERO"
-VAR sibling = "SIDEKICK"
-VAR pet = "PUP"
+VAR hero = "Holden"
+VAR sibling = "Quentin"
+VAR pet = "Cheddar"
 VAR minutes = 540
 VAR sunset = 1125
 VAR clues = 0

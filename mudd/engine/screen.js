@@ -31,6 +31,7 @@ export class Screen {
     this.overlay = $('#overlay');
     this.status = $('#status');
     this.skip = false;
+    this.unread = false; // text typed since the player last tapped a button
     this.speed = 22; // ms per character
     this.currentPic = '';
     this.text.addEventListener('pointerdown', () => { this.skip = true; });
@@ -80,6 +81,7 @@ export class Screen {
     }
     p.innerHTML = highlight(line);
     this.scroll();
+    if (cls !== 'echo') this.unread = true;
     await sleep(this.skip ? 60 : 180);
   }
 
@@ -115,7 +117,7 @@ export class Screen {
           b.style.setProperty('--door', color);
         }
         b.append(el('span', 'num', String(i + 1)), el('span', 'lbl', label));
-        b.addEventListener('click', () => { this.clearControls(); resolve(i); }, { once: true });
+        b.addEventListener('click', () => { this.unread = false; this.clearControls(); resolve(i); }, { once: true });
         this.controls.appendChild(b);
       });
     });
@@ -137,7 +139,7 @@ export class Screen {
         const b = el('button', 'key' + (k === 'OK' ? ' ok' : k === 'DEL' ? ' del' : ''), k);
         b.addEventListener('click', () => {
           if (k === 'DEL') val = val.slice(0, -1);
-          else if (k === 'OK') { if (!val) return; this.clearControls(); resolve(Number(val)); return; }
+          else if (k === 'OK') { if (!val) return; this.unread = false; this.clearControls(); resolve(Number(val)); return; }
           else if (val.length < 4) val = (val === '0' ? '' : val) + k;
           show();
         });
@@ -163,7 +165,7 @@ export class Screen {
         const b = el('button', 'key' + (k === 'OK' ? ' ok' : k === 'DEL' ? ' del' : ''), k);
         b.addEventListener('click', () => {
           if (k === 'DEL') val = val.slice(0, -1);
-          else if (k === 'OK') { if (!val) return; this.clearControls(); resolve(val); return; }
+          else if (k === 'OK') { if (!val) return; this.unread = false; this.clearControls(); resolve(val); return; }
           else if (val.length < max) val += k;
           show();
         });
@@ -173,15 +175,24 @@ export class Screen {
     });
   }
 
-  /** Tap anywhere to go on. */
-  waitTap(label = 'TAP TO CONTINUE') {
+  /** One big button; waits as long as the player needs. */
+  waitTap(label = 'CONTINUE', prompt = '') {
     return new Promise((resolve) => {
       this.clearControls();
       this.controls.className = 'choices';
+      if (prompt) this.controls.appendChild(this.prompt(prompt));
       const b = el('button', 'key wide', label);
-      b.addEventListener('click', () => { this.clearControls(); resolve(undefined); }, { once: true });
+      b.addEventListener('click', () => { this.unread = false; this.clearControls(); resolve(undefined); }, { once: true });
       this.controls.appendChild(b);
     });
+  }
+
+  /**
+   * Before the text is wiped (a new scene, a disk swap), let a young reader
+   * finish. Skipped when they have already tapped since the last line.
+   */
+  async waitIfUnread(label = 'CONTINUE') {
+    if (this.unread) await this.waitTap(label, "WHEN YOU'RE READY...");
   }
 
   // -------------------------------------------------------------------------

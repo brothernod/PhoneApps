@@ -5,6 +5,12 @@
 title: THE DRAGON OF EL MORRO
 studio: HOLDEN A GAME STUDIO
 
+# The heroes. Every scene uses these names.
+cast:
+  hero: Holden
+  sibling: Quentin
+  pet: Cheddar
+
 # ---------------------------------------------------------------------------
 # DRAGON HOARD: story word problems (Common Core 3.OA.D.8, two-step problems)
 # vars:   each letter is a [min, max] range of whole numbers

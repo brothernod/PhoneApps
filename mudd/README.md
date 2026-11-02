@@ -10,12 +10,13 @@ keeps its saves.
 
 ## What's in the slice
 
-- Boot screen, title, and a naming screen (names stay on the device, never in the repo)
+- Boot screen, title, and a warm hello for Holden, Quentin, and Cheddar (the cast is set in `banks.yaml`)
 - Museum opening → disk swap → Old San Juan streets → plaza → the hatchling → home
 - Puzzles: **Dragon Hoard** (word problems, number pad), **Magic Words**
   (Spanish colors), **Fact or Fib** (sourced animal facts)
 - A miss gives a hint and a second try; a second miss explains the answer
 - Sunset clock, clues, a Dragon Field Guide, FM-synth music, autosave and Continue
+- Before a scene change or disk swap, a CONTINUE button waits so a young reader can finish the text
 - Difficulty that steps up after 2 right in a row and down after 2 misses
 - Grown-up screen: **hold the top-left corner for 3 seconds**
 
