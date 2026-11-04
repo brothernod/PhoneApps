@@ -97,6 +97,14 @@
   AREAS.forEach((a) => a.stmts.forEach((s) => { STMT_AREA[s] = a.id; }));
 
   const memberClash = (o, t) => o.items.some((j) => clash(j.t, t)) || (o.groups || []).some((g) => g.m.some((x) => clash(x, t)));
+  // Related models (one contains or overlaps the other) are never decoys for each other.
+  const KIN = new Set();
+  const addKin = (a, b) => { KIN.add(a + '|' + b); KIN.add(b + '|' + a); };
+  (C.kin || []).forEach((g) => {
+    if (g.hub) g.with.forEach((x) => addKin(g.hub, x));
+    if (g.all) g.all.forEach((a) => g.all.forEach((b) => { if (a !== b) addKin(a, b); }));
+  });
+  const isKin = (a, b) => KIN.has(a + '|' + b);
   const UNIQUE = {};
   MODELS.forEach((m) => { UNIQUE[m.id] = m.items.filter((i) => !MODELS.some((o) => o.id !== m.id && memberClash(o, i.t))); });
 
@@ -118,6 +126,7 @@
 
   /* ================= spaced repetition ================= */
   const INTERVAL = [0, 1, 3, 7, 14, 30]; // days until a card comes back, by box
+  const RECENT_MS = 10 * 60 * 1000; // cards tried this recently don't lead a new sprint
   const box = (key) => (S.cards[key] ? S.cards[key].b : 0);
   const isDue = (c) => { const st = S.cards[c.key]; return !!st && st.due <= todayIdx(); };
   const mastery = (cards) => (cards.length ? cards.reduce((n, c) => n + box(c.key), 0) / (cards.length * 5) : 0);
@@ -153,16 +162,22 @@
       if (!st) fr.push(c); else if (st.due <= t) due.push(c); else later.push(c);
     });
     const st = (c) => S.cards[c.key];
-    due.sort((a, b) => st(a).b - st(b).b || st(a).last - st(b).last);
+    // Anything attempted in the last few minutes waits a few cards, so a card you just
+    // missed (or quit on) doesn't open the very next sprint.
+    const now = Date.now();
+    const held = due.filter((c) => now - st(c).last < RECENT_MS).sort((a, b) => st(a).last - st(b).last);
+    const dueNow = due.filter((c) => now - st(c).last >= RECENT_MS);
+    dueNow.sort((a, b) => st(a).b - st(b).b || st(a).last - st(b).last);
     later.sort((a, b) => st(a).b - st(b).b || st(a).due - st(b).due);
     const fresh1 = orderFresh(fr);
     const q = [];
-    while (q.length < size && (due.length || fresh1.length || later.length)) {
-      if (due.length && (q.length % 3 !== 2 || !fresh1.length)) q.push(due.shift());
+    while (q.length < size && (dueNow.length || fresh1.length || later.length)) {
+      if (dueNow.length && (q.length % 3 !== 2 || !fresh1.length)) q.push(dueNow.shift());
       else if (fresh1.length) q.push(fresh1.shift());
       else q.push(later.shift());
     }
-    return q;
+    held.forEach((c, i) => q.splice(Math.min(q.length, 3 + i * 3), 0, c));
+    return q.slice(0, size);
   }
 
   /* ================= levels, badges, streaks ================= */
@@ -399,8 +414,10 @@
     if (card.type === 'which') {
       const it = pickOne(UNIQUE[m.id]);
       // Also skip models whose name, note, or descriptions overlap the item (e.g. "GDPR" vs. "GDPR principles").
-      const near = (o, t) => clash(o.name, t) || clash(o.short, t) || clash(o.note || '', t) || o.items.some((j) => norm(j.t).slice(0, 4) === norm(t).slice(0, 4) || norm(j.d).includes(norm(t)));
-      const pool = MODELS.filter((o) => o.id !== m.id && !memberClash(o, it.t) && !near(o, it.t));
+      const near = (o, t) => clash(o.name, t) || clash(o.short, t) || clash(o.note || '', t)
+        || norm(o.name).includes(norm(t)) || norm(o.note || '').includes(norm(t))
+        || o.items.some((j) => norm(j.t).slice(0, 4) === norm(t).slice(0, 4) || norm(j.d).includes(norm(t)));
+      const pool = MODELS.filter((o) => o.id !== m.id && !isKin(o.id, m.id) && !memberClash(o, it.t) && !near(o, it.t));
       const others = shuffle(pool.filter((o) => o.area === m.area)).concat(shuffle(pool.filter((o) => o.area !== m.area))).slice(0, 3);
       return Object.assign(base, {
         kind: 'single', ctx: 'Which model?', prompt: `“${it.t}”`, hint: 'This belongs to which model?',
@@ -514,9 +531,44 @@
         <span class="xp num hl" data-live="xp">+${r.xp} XP</span>
       </div>`;
     const body = r.view === 'preview' ? previewHTML(MBY[r.previewModel]) : questionHTML(CUR);
-    paint(head + body);
+    paint(head + body + ACTBAR);
+    runBar();
     const h = document.getElementById('qhead');
     if (h) h.focus({ preventScroll: true });
+  }
+
+  // The bar pinned to the bottom of the screen always holds the next step,
+  // so it can't end up below the fold on a long question.
+  const ACTBAR = '<div class="actbar" id="actbar"><div class="actbar-in" id="actbar-in"></div></div>';
+  const barBtn = (act, label, o = {}) => `<button class="btn${o.ghost ? ' ghost' : ''}" data-act="${act}"${o.disabled ? ' disabled' : ''}>${esc(label)}</button>`;
+  function setBar(msgHTML, buttons) {
+    const el = document.getElementById('actbar-in');
+    if (!el) return;
+    el.innerHTML = `${msgHTML ? `<p class="actbar-msg">${msgHTML}</p>` : ''}<div class="actbar-btns${buttons.length > 1 ? ' two' : ''}">${buttons.join('')}</div>`;
+  }
+  function runBar() {
+    const r = RUN;
+    if (!r || r.view === 'summary') return;
+    if (r.view === 'preview') { setBar('', [barBtn('preview-go', r.timeUp ? 'See results' : 'Got it, quiz me')]); return; }
+    const Q = CUR;
+    if (!Q) return;
+    if (Q.done) { setBar(Q.barMsg || '', [barBtn('next', r.timeUp ? 'See results' : 'Next question')]); return; }
+    const up = r.timeUp ? '<b>Time’s up.</b> Finish this one. ' : '';
+    const show = barBtn('reveal', 'Show answer', { ghost: true });
+    if (Q.kind === 'single') { setBar(up + 'Tap the answer you think is right.', [barBtn('reveal', 'Not sure? Show me the answer', { ghost: true })]); return; }
+    if (Q.kind === 'multi') {
+      const n = Q.picked.size;
+      setBar(up + (n ? `${n} selected. Check when you’re done.` : 'Select every one that fits.'), [show, barBtn('check', 'Check', { disabled: !n })]);
+      return;
+    }
+    if (Q.kind === 'order') {
+      const left = Q.seq.length - Q.placed.length;
+      setBar(up + (left ? `Tap them in order. ${left} to go.` : 'All placed. Check the order.'), [show, barBtn('check', 'Check', { disabled: left > 0 })]);
+    }
+  }
+  function focusBar() {
+    const b = document.querySelector('#actbar .btn:not([disabled]):not(.ghost)');
+    if (b) b.focus({ preventScroll: true });
   }
 
   function previewHTML(m) {
@@ -528,7 +580,6 @@
         <p class="hint"><b>Memory hook:</b> ${esc(m.hook)}</p>
       </div>
       <div class="answer-actions">
-        <button class="btn" data-act="preview-go">Got it, quiz me</button>
         <button class="linkbtn" data-act="no-previews">Skip these previews from now on</button>
       </div>`;
   }
@@ -543,7 +594,6 @@
     let body = '';
     if (Q.kind === 'single' || Q.kind === 'multi') {
       body = `<div class="opts" role="group" aria-label="Answers">${Q.opts.map((o, i) => `<button class="opt${Q.kind === 'multi' ? ' multi' : ''}" data-act="opt" data-i="${i}" aria-pressed="false"><span>${esc(o.t)}</span></button>`).join('')}</div>`;
-      if (Q.kind === 'multi') body += `<div class="answer-actions" id="checkrow"><button class="btn" data-act="check" disabled>Check</button></div>`;
     } else if (Q.kind === 'order') {
       body = `<div id="orderbox">${orderHTML(Q)}</div>`;
     }
@@ -558,9 +608,8 @@
       return `<button class="slot" disabled><span class="faint">${i === firstEmpty ? 'Tap the next one below' : ''}</span></button>`;
     }).join('');
     const pool = Q.pool.filter((t) => !Q.placed.includes(t)).map((t) => `<button class="chip" data-act="place" data-t="${esc(t)}">${esc(t)}</button>`).join('');
-    const ready = Q.placed.length === Q.seq.length;
     return `<div class="order-slots">${slots}</div><div class="pool">${pool}</div>
-      <div class="answer-actions" id="checkrow"><button class="btn" data-act="check" ${ready ? '' : 'disabled'}>Check the order</button>${Q.placed.length ? '<button class="linkbtn" data-act="clear-order">Start over</button>' : ''}</div>`;
+      ${Q.placed.length && !Q.done ? '<div class="answer-actions"><button class="linkbtn" data-act="clear-order">Start over</button></div>' : ''}`;
   }
 
   const optEls = () => Array.from(app.querySelectorAll('.opt'));
@@ -602,7 +651,28 @@
     const ok = Q.placed.every((t, i) => t === Q.seq[i]);
     app.querySelectorAll('.slot').forEach((s, i) => { s.disabled = true; s.classList.add(Q.placed[i] === Q.seq[i] ? 'ok' : 'bad'); });
     app.querySelectorAll('.pool .chip').forEach((b) => { b.disabled = true; });
+    const reset = app.querySelector('[data-act="clear-order"]');
+    if (reset) reset.closest('.answer-actions').remove();
     afterAnswer(ok);
+  }
+
+  // "Show me": counts as a miss (it comes back in a few cards) but never leaves you stuck.
+  function revealAnswer() {
+    const Q = CUR;
+    if (!Q || Q.done) return;
+    Q.done = true; Q.revealed = true;
+    if (Q.kind === 'order') {
+      Q.placed = Q.seq.slice();
+      document.getElementById('orderbox').innerHTML = orderHTML(Q);
+      app.querySelectorAll('.slot').forEach((s) => { s.disabled = true; });
+    } else {
+      optEls().forEach((b, k) => {
+        b.disabled = true;
+        b.setAttribute('aria-pressed', 'false');
+        b.classList.add(Q.opts[k].ok ? 'ok' : 'dim');
+      });
+    }
+    afterAnswer(false);
   }
 
   function afterAnswer(ok) {
@@ -612,6 +682,7 @@
       r.answered += 1; S.stats.answered += 1;
       if (ok) { r.firstRight += 1; S.stats.correct += 1; } else r.firstWrong += 1;
     }
+    const xp0 = r.xp;
     if (ok) {
       r.combo += 1; r.best = Math.max(r.best, r.combo);
       addXP(Q.retry ? 5 : 10 + Math.min(r.combo - 1, 5));
@@ -619,7 +690,7 @@
     } else {
       r.combo = 0;
       addXP(2);
-      haptic('bad'); sound('bad');
+      if (!Q.revealed) { haptic('bad'); sound('bad'); }
       if (!r.missed.includes(key)) r.missed.push(key);
       if (!Q.retry && !r.retried.has(key)) {
         r.retried.add(key);
@@ -627,9 +698,14 @@
         Q.requeued = true;
       }
     }
-    const row = document.getElementById('checkrow');
-    if (row) row.remove();
+    const gained = r.xp - xp0;
+    const again = Q.requeued ? 'You’ll get another try in a few cards.' : 'It’s on your review list.';
+    Q.barMsg = ok ? `<b>Correct.</b> <span class="hl">+${gained} XP</span>`
+      : Q.revealed ? `<b>Here’s the answer.</b> ${again}`
+      : `<b>Not quite.</b> ${again}`;
     showFeedback(ok);
+    runBar();
+    focusBar();
     live();
     checkBadges();
     save();
@@ -639,25 +715,21 @@
   function showFeedback(ok) {
     const Q = CUR; const r = RUN;
     const fb = document.getElementById('feedback');
-    let head = ok ? (Q.retry ? 'Got it this time.' : pickOne(PRAISE)) : 'Not quite.';
+    let head = ok ? (Q.retry ? 'Got it this time.' : pickOne(PRAISE)) : Q.revealed ? 'Here’s the answer.' : 'Not quite.';
     if (ok && r.combo >= 3) head += ` <span class="hl">${r.combo} in a row</span>`;
     let html = `<div class="why${ok ? '' : ' miss'}"><h3>${head}</h3><p class="small">${esc(Q.why)}</p>`;
     if (Q.kind === 'order' && !ok && Q.seq.length < Q.m.items.length) html += `<p class="small"><b>Right order for these ${Q.seq.length}:</b> ${Q.seq.map((t, i) => `${i + 1}. ${esc(t)}`).join(', ')}</p>`;
-    if (!ok && Q.requeued) html += '<p class="small faint">It will come back in a few cards.</p>';
     if (Q.m) {
       const tag = Q.m.kind === 'ordered' ? 'ol' : 'ul';
       html += `<details class="small"><summary>See the whole model</summary><p class="small" style="margin-top:6px"><b>${esc(Q.m.name)}</b>, ${esc(Q.m.who)}</p><${tag} class="small">${Q.m.items.map((i) => `<li><b>${esc(i.t)}</b>: ${esc(i.d)}</li>`).join('')}</${tag}><p class="small"><b>Memory hook:</b> ${esc(Q.m.hook)}</p></details>`;
     }
-    html += `</div><div class="answer-actions"><button class="btn" data-act="next">${r.timeUp ? 'See results' : 'Next'}</button></div>`;
+    html += '</div>';
     fb.innerHTML = html;
-    const next = fb.querySelector('[data-act="next"]');
-    if (next) next.focus({ preventScroll: true });
     fb.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
   }
 
   function onTimeUp() {
-    const next = app.querySelector('[data-act="next"]');
-    if (next) next.textContent = 'See results';
+    runBar();
     haptic('ok');
   }
 
@@ -717,7 +789,13 @@
   }
 
   /* ================= painting & navigation ================= */
-  function paint(html) { app.innerHTML = html; window.scrollTo(0, 0); }
+  function paint(html) {
+    app.innerHTML = html;
+    const bar = !!document.getElementById('actbar');
+    document.body.classList.toggle('has-actbar', bar);
+    document.documentElement.classList.toggle('has-actbar', bar);
+    window.scrollTo(0, 0);
+  }
   function setTab(name) {
     tabsEl.querySelectorAll('a').forEach((a) => { if (a.dataset.tab === name) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
   }
@@ -1019,10 +1097,21 @@
       <div class="card plain qcard" style="--tab:var(--hl-blue)"><span class="tab">Case: ${esc(c.title)}</span><p class="small" style="margin:0">${esc(c.setup)}</p></div>
       <div class="card plain qcard"><span class="tab">Step ${K.step + 1}</span><h1 class="prompt" id="qhead" tabindex="-1">${esc(st.text)}</h1><p class="hint">Select all that apply.</p></div>
       <div class="opts" role="group" aria-label="Options">${ord.map((oi) => `<button class="opt multi" data-act="case-opt" data-i="${oi}" aria-pressed="${K.picks.has(oi)}" ${K.submitted ? 'disabled' : ''}><span>${esc(st.options[oi][0])}</span></button>`).join('')}</div>
-      <div class="answer-actions" id="checkrow"><button class="btn" data-act="case-submit" ${K.picks.size ? '' : 'disabled'}>Submit this step</button></div>
-      <div id="feedback" aria-live="polite"></div>`);
+      <div id="feedback" aria-live="polite"></div>${ACTBAR}`);
+    caseBar();
     const h = document.getElementById('qhead');
     if (h) h.focus({ preventScroll: true });
+  }
+  function caseBar() {
+    const K = CASE;
+    if (!K || K.done) return;
+    if (!K.submitted) {
+      const n = K.picks.size;
+      setBar(`${n ? `${n} selected.` : 'Select all that apply.'} Wrong picks cost a point.`, [barBtn('case-submit', 'Submit this step', { disabled: !n })]);
+      return;
+    }
+    const last = K.step === K.c.steps.length - 1;
+    setBar(K.stepMsg || '', [barBtn('case-next', last ? 'Finish the case' : 'Next step')]);
   }
   function submitCaseStep() {
     const K = CASE; const st = K.c.steps[K.step];
@@ -1042,12 +1131,12 @@
     if (pill) pill.textContent = `${K.score} pts`;
     addXP(right * 3);
     if (right && !wrong) { haptic('ok'); sound('ok'); } else { haptic('bad'); sound('bad'); }
-    const row = document.getElementById('checkrow');
-    if (row) row.remove();
-    const last = K.step === K.c.steps.length - 1;
-    document.getElementById('feedback').innerHTML = `<div class="why${wrong ? ' miss' : ''}"><h3>This step: +${right}${wrong ? ` −${wrong}` : ''}</h3><p class="small">${esc(st.why)}</p></div>
-      <div class="answer-actions"><button class="btn" data-act="case-next">${last ? 'Finish the case' : 'Next step'}</button></div>`;
-    document.getElementById('feedback').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    const missedN = st.options.filter((o, oi) => o[1] && !K.picks.has(oi)).length;
+    K.stepMsg = `<b>This step: +${right}${wrong ? ` −${wrong}` : ''}.</b> ${wrong || missedN ? 'Right answers are highlighted.' : 'All the right picks.'}`;
+    document.getElementById('feedback').innerHTML = `<div class="why${wrong ? ' miss' : ''}"><h3>This step: +${right}${wrong ? ` −${wrong}` : ''}</h3><p class="small">${esc(st.why)}</p></div>`;
+    document.getElementById('feedback').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
+    caseBar();
+    focusBar();
     save();
   }
 
@@ -1215,13 +1304,17 @@
       if (Q.kind === 'single') { answerSingle(i); return; }
       if (Q.picked.has(i)) Q.picked.delete(i); else Q.picked.add(i);
       el.setAttribute('aria-pressed', Q.picked.has(i) ? 'true' : 'false');
-      const chk = app.querySelector('[data-act="check"]');
-      if (chk) chk.disabled = Q.picked.size === 0;
+      runBar();
     },
-    'check': () => { const Q = CUR; if (!Q || Q.done) return; if (Q.kind === 'multi') checkMulti(); else if (Q.kind === 'order') checkOrder(); },
-    'place': (el) => { const Q = CUR; if (!Q || Q.done) return; const t = el.dataset.t; if (!Q.placed.includes(t)) Q.placed.push(t); document.getElementById('orderbox').innerHTML = orderHTML(Q); },
-    'unplace': (el) => { const Q = CUR; if (!Q || Q.done) return; Q.placed.splice(+el.dataset.i, 1); document.getElementById('orderbox').innerHTML = orderHTML(Q); },
-    'clear-order': () => { const Q = CUR; if (!Q || Q.done) return; Q.placed = []; document.getElementById('orderbox').innerHTML = orderHTML(Q); },
+    'check': () => {
+      const Q = CUR; if (!Q || Q.done) return;
+      if (Q.kind === 'multi' && Q.picked.size) checkMulti();
+      else if (Q.kind === 'order' && Q.placed.length === Q.seq.length) checkOrder();
+    },
+    'reveal': () => revealAnswer(),
+    'place': (el) => { const Q = CUR; if (!Q || Q.done) return; const t = el.dataset.t; if (!Q.placed.includes(t)) Q.placed.push(t); document.getElementById('orderbox').innerHTML = orderHTML(Q); runBar(); },
+    'unplace': (el) => { const Q = CUR; if (!Q || Q.done) return; Q.placed.splice(+el.dataset.i, 1); document.getElementById('orderbox').innerHTML = orderHTML(Q); runBar(); },
+    'clear-order': () => { const Q = CUR; if (!Q || Q.done) return; Q.placed = []; document.getElementById('orderbox').innerHTML = orderHTML(Q); runBar(); },
     'next': () => { if (!RUN) return; if (RUN.timeUp) finishRun(true); else nextCard(); },
     'end-run': () => finishRun(true),
     'preview-go': () => { if (!RUN) return; const id = RUN.previewModel; if (id && !S.seen[id]) { S.seen[id] = Date.now(); save(); } if (RUN.timeUp) finishRun(true); else nextCard(); },
@@ -1244,7 +1337,7 @@
       S = fresh(); save(true); applyTheme(); toast('Progress erased.');
       if (location.hash === '#/' || location.hash === '') route(); else location.hash = '#/';
     },
-    'case-opt': (el) => { const K = CASE; if (!K || K.submitted) return; const i = +el.dataset.i; if (K.picks.has(i)) K.picks.delete(i); else K.picks.add(i); el.setAttribute('aria-pressed', String(K.picks.has(i))); const b = app.querySelector('[data-act="case-submit"]'); if (b) b.disabled = K.picks.size === 0; },
+    'case-opt': (el) => { const K = CASE; if (!K || K.submitted) return; const i = +el.dataset.i; if (K.picks.has(i)) K.picks.delete(i); else K.picks.add(i); el.setAttribute('aria-pressed', String(K.picks.has(i))); caseBar(); },
     'case-submit': () => { if (CASE && !CASE.submitted && CASE.picks.size) submitCaseStep(); },
     'case-next': () => {
       const K = CASE; if (!K) return;
@@ -1281,5 +1374,5 @@
   })();
   if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(() => { /* offline support is optional */ });
   route();
-  window.__cptd = { get state() { return S; }, CARDS, makeQ, buildQueue, version: C.version };
+  window.__cptd = { get state() { return S; }, get cur() { return CUR; }, CARDS, makeQ, buildQueue, version: C.version };
 })();

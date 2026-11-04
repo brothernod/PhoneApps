@@ -1,6 +1,6 @@
 // Offline support. Network first, so a fresh push shows up right away;
 // the cache is only used when there's no connection.
-const CACHE = 'cptd-study-v1';
+const CACHE = 'cptd-study-v2';
 const FILES = [
   './', 'index.html', 'app.js', 'content.js', 'manifest.webmanifest',
   'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'apple-touch-icon.png',

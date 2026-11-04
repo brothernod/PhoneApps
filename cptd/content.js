@@ -1366,6 +1366,27 @@ window.CPTD = (function () {
     },
   ];
 
+  // Models that are never offered as the wrong answers to each other in "which model?"
+  // drills, because one contains or overlaps the other and a careful reader could argue
+  // for both. "hub" pairs the first model with each listed one; "all" pairs every member.
+  const kin = [
+    { hub: 'leadership-8', with: ['contemporary', 'lewin', 'situational', 'transformational', 'goleman-styles', 'servant', 'authentic', 'adaptive', 'inclusive', 'kouzes-posner', 'nimble', 'zenger-folkman'] },
+    { hub: 'contemporary', with: ['servant', 'authentic', 'adaptive', 'inclusive', 'nimble', 'transformational', 'kouzes-posner', 'zenger-folkman'] },
+    { hub: 'ei-models', with: ['mayer-salovey', 'goleman-five', 'goleman-four', 'bar-on'] },
+    { hub: 'tuckman', with: ['hp-team', 'lencioni'] },
+    { hub: 'comm-process', with: ['barriers'] },
+    { hub: 'td-role-dei', with: ['dei-case'] },
+    { hub: 'pm-phases', with: ['pmi-groups', 'charter', 'close', 'milestones', 'status', 'risk-steps'] },
+    { hub: 'pmi-groups', with: ['charter', 'close', 'risk-steps'] },
+    { hub: 'risk-steps', with: ['risk-responses'] },
+    { hub: 'prioritization', with: ['moscow', 'eisenhower'] },
+    { hub: 'privacy-laws', with: ['gdpr-principles', 'gdpr-rights', 'data-practices'] },
+    { hub: 'info-types', with: ['ic-parts', 'ip-types', 'privacy-laws', 'data-practices'] },
+    { hub: 'ic-parts', with: ['ip-types'] },
+    // Practical advice lists that overlap in spirit.
+    { all: ['inform-influence', 'defuse-anger', 'strategic-message', 'feedback', 'written', 'conflict-basics', 'team-conflict', 'defuse-conflict', 'hp-team', 'status', 'data-practices'] },
+  ];
+
   /* =================== QUESTIONS =================== */
   const questions = [
     /* ----- 1.1.3 inform and influence ----- */
@@ -1912,5 +1933,5 @@ window.CPTD = (function () {
     ],
   };
 
-  return { areas, statements, tags, models, questions, cases, exam, version: '2026-11-03' };
+  return { areas, statements, tags, models, kin, questions, cases, exam, version: '2026-11-04' };
 })();

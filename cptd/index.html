@@ -67,6 +67,8 @@
     padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom));
   }
   body.focus-mode { padding-bottom: env(safe-area-inset-bottom); }
+  body.has-actbar { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
+  html.has-actbar { scroll-padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
   #app { max-width: 560px; margin: 0 auto; padding: max(16px, env(safe-area-inset-top)) 16px 32px; }
   button, input, select { font: inherit; color: inherit; }
   button { cursor: pointer; }
@@ -240,6 +242,19 @@
   .why h3 { margin-bottom: 4px; }
   .why .small + .small { margin-top: 6px; }
   .answer-actions { margin-top: 16px; display: grid; gap: 10px; }
+  .actbar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+    padding: 10px 16px calc(12px + env(safe-area-inset-bottom));
+    background: var(--paper); border-top: 1px solid var(--line);
+    box-shadow: 0 -10px 24px -18px rgba(0, 0, 0, .45);
+  }
+  .actbar-in { max-width: 528px; margin: 0 auto; }
+  .actbar-msg { margin: 0 0 8px; font-size: 15px; line-height: 1.35; color: var(--ink-2); }
+  .actbar-msg b { color: var(--ink); }
+  .actbar-msg .hl { font-weight: 800; }
+  .actbar-btns { display: grid; gap: 10px; }
+  .actbar-btns.two { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
+  .actbar .btn.ghost { font-size: 16px; }
   .preview ol, .preview ul, .model ol, .model ul { margin: 6px 0 0; padding-left: 22px; }
   .preview li, .model li { line-height: var(--lh); }
   .preview li b, .model li b { font-weight: 800; }

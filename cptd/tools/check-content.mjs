@@ -79,6 +79,13 @@ for (const m of C.models) {
   }
 }
 
+// Related-model groups ("kin") must name real models.
+for (const g of C.kin || []) {
+  const list = g.hub ? [g.hub, ...(g.with || [])] : g.all || [];
+  if (!list.length) err('kin: empty group');
+  for (const id of list) if (!ids.has(id)) err(`kin: unknown model ${id}`);
+}
+
 // Items that share a word stem with another model's items are left out of
 // "which model?" drills so those questions can't be ambiguous.
 const member = (o, t) => o.items.some((j) => clash(j.t, t)) || (o.groups || []).some((g) => g.m.some((x) => clash(x, t)));
