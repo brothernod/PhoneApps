@@ -293,6 +293,8 @@ body.cursive .plat { font-weight: 400; font-size: calc(var(--blk) * .4); }
 .seg { display: inline-flex; background: #e9f0f6; border-radius: 999px; padding: 4px; gap: 4px; }
 .seg button { padding: 7px 14px; border-radius: 999px; font-weight: 700; font-size: 15px; }
 .seg button.on { background: var(--ink); color: #fff; }
+.lsgrid { display: flex; flex-wrap: wrap; gap: 10px; --tile: 56px; }
+.lsgrid .tile { animation: none; }
 .danger { color: #b3261e; font-weight: 700; border: 2px solid #f0b5b0; border-radius: 999px; padding: 8px 16px; }
 .danger.armed { background: #b3261e; color: #fff; }
 .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 14px; color: var(--ink-2); margin-top: 8px; }
@@ -765,6 +767,9 @@ function renderParent() {
   </div>
   <h2>Words read so far</h2>
   ${chips ? `<div class="chips">${chips}</div><div class="legend"><span>Number: right on first try / times read</span><span>Green: solid</span><span>Amber: worth reading together</span></div>` : '<p>Words appear here after the first level.</p>'}
+  <h2>Letter sounds</h2>
+  <p>Tap a letter to hear the sound the game plays for it.</p>
+  <div class="lsgrid">${'abcdefghijklmnoprstuvwxyz'.split('').map(ch => `<button class="tile${isV(ch) ? ' v' : ''}" data-ch="${ch}" aria-label="Play ${ch}"><span>${ch}</span></button>`).join('')}</div>
   <h2>Settings</h2>
   <div class="set">
     <label>Child's name <input type="text" id="g-name" value="${esc(S.name)}" maxlength="20" autocomplete="off"></label>
@@ -788,6 +793,7 @@ function renderParent() {
     <li>No sound? Check the iPad volume and that silent mode is off.</li>
   </ul>`;
   $('#g-close').onclick = () => renderTitle();
+  $$('.lsgrid .tile', W).forEach(b => b.onclick = () => { Snd.unlock(); hitAnimTile(b); Snd.voice('p_' + b.dataset.ch); });
   $('#g-name').addEventListener('input', e => { S.name = e.target.value.slice(0, 20); applySettings(); save(); });
   const segWire = (id, fn) => $$('#' + id + ' button').forEach(b => b.onclick = () => { fn(b.dataset.v); save(); renderParent(); });
   segWire('g-goal', v => { S.goal = +v; });
@@ -802,6 +808,8 @@ function renderParent() {
     S = Object.assign(fresh(), keep); save(true); applySettings(); renderParent();
   };
 }
+
+function hitAnimTile(b) { b.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(-8px)' }, { transform: 'translateY(0)' }], 260); }
 /* ===== play ===== */
 let LV = null, inky = null, ipos = { x: 0, y: 0 };
 const stageEl = () => $('#stage');
