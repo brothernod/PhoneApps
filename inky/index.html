@@ -455,6 +455,15 @@ const Snd = {
         this.preload();
       }
       if (this.ctx.state !== 'running') this.ctx.resume();
+      // iPhone silent mode mutes Web Audio; playing an HTML audio element during a tap moves iOS to
+      // the "playback" audio session, and a 1-sample buffer finishes unlocking the context.
+      if (!this.tagOk && !this.tagBusy) {
+        this.tagBusy = true;
+        if (!this.tag) { this.tag = new Audio(silentWav()); this.tag.setAttribute('playsinline', ''); }
+        const p = this.tag.play();
+        const ok = () => { this.tagOk = true; this.tagBusy = false; try { const b = this.ctx.createBuffer(1, 1, 22050), s = this.ctx.createBufferSource(); s.buffer = b; s.connect(this.ctx.destination); s.start(0); } catch (e) {} };
+        if (p && p.then) p.then(ok, () => { this.tagBusy = false; }); else ok();
+      }
     } catch (e) {}
   },
   decode(key) {
@@ -513,6 +522,15 @@ const Snd = {
   click() { this.tone('sine', 900, 600, 0.05, 0.07); },
   deflate() { this.hiss(0.5, 1400, 0.8, 0.16, 0, 300); this.tone('sine', 500, 180, 0.45, 0.06); }
 };
+let silentUrl = null;
+function silentWav() {
+  if (silentUrl) return silentUrl;
+  const n = 800, b = new ArrayBuffer(44 + n), v = new DataView(b), w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  w(0, 'RIFF'); v.setUint32(4, 36 + n, true); w(8, 'WAVE'); w(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, 8000, true); v.setUint32(28, 8000, true); v.setUint16(32, 1, true); v.setUint16(34, 8, true); w(36, 'data'); v.setUint32(40, n, true);
+  for (let i = 0; i < n; i++) v.setUint8(44 + i, 128);
+  return (silentUrl = URL.createObjectURL(new Blob([b], { type: 'audio/wav' })));
+}
 const isQ = () => (S.name || '').trim().toLowerCase() === 'quentin';
 const praiseKey = () => 'l_' + rand(isQ() ? ['yes1', 'yes2', 'yes3', 'yes4', 'yes5', 'yes6'] : ['yes1', 'yes2', 'yes3', 'yes4']);
 
@@ -590,7 +608,7 @@ function updateCoins(bump) {
   if (bump) $$('.coins').forEach(c => { c.classList.remove('bump'); void c.offsetWidth; c.classList.add('bump'); });
 }
 function addCoins(n, from) {
-  S.coins += n;
+  S.coins += n; save();
   const pill = $$('.screen:not([hidden]) .coins')[0];
   if (!from || !pill) { updateCoins(true); return; }
   const a = from.getBoundingClientRect(), b = pill.getBoundingClientRect();
@@ -758,7 +776,7 @@ function renderParent() {
   </div>
   <h2>How it teaches</h2>
   <p>Every word is a Montessori pink-series word: three sounds, a short vowel, and each letter says its own sound. There are no sight words, blends, or silent letters. Letters use the classroom colors, pink consonants and blue vowels, like the moveable alphabet.</p>
-  <p>For each word he bonks the letters left to right to hear each sound, says the word fast, then picks its picture. The wrong pictures differ by one sound (cat, hat, bat), so he has to read the whole word. A wrong pick costs nothing: Inky replays the sounds and he tries again. One round per level is a build round, where he hears a word and taps its letters in order.</p>
+  <p>For each word he bonks the letters left to right to hear each sound, says the word fast, then picks its picture. The wrong pictures differ by one sound (cat, hat, bat), so he has to read the whole word. A wrong pick costs nothing: Inky replays the sounds and he tries again. From level 3 on, one round per level is a build round, where he hears a word and taps its letters in order.</p>
   <p>Worlds go short a, i, o, u, then e, then vowel switching (pan, pen, pin) and three-word sentences like "Pig on bus." Progress is saved with this page, so it follows him to any device signed in to your account.</p>
   <h2>Coaching tips</h2>
   <ul>
@@ -1063,7 +1081,8 @@ async function startLevel(n) {
   setTheme(C.worlds[L.wi].theme); show('play'); mountStage(!!L.sentences);
   const replay = !!S.done[L.id];
   const rounds = L.sentences ? (replay ? shuffle(L.sentences) : L.sentences).map(id => ({ t: 's', id }))
-    : (replay ? shuffle(L.words) : L.words).map((w, i) => ({ t: !L.boss && !L.vowelSwitch && i === 2 ? 'b' : 'r', w, alts: L.alts && L.alts[w] }));
+    : (replay ? shuffle(L.words) : L.words).map((w, i) => ({ t: !L.boss && !L.vowelSwitch && i === 2 && L.n >= 2 ? 'b' : 'r', w, alts: L.alts && L.alts[w] }));
+  LV.rounds = rounds;
   pearls(0, rounds.length);
   try {
     if (L.boss) { mountPuff(); await speak('l_boss'); } else await speak('l_go');
