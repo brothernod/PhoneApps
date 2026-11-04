@@ -8,9 +8,9 @@ Open it at `https://brothernod.github.io/PhoneApps/cptd/`. On Android, open it i
 
 - **Sprints** of 2, 5, 10, or 15 minutes that mix due reviews with new material, so a free moment between kid duties still counts
 - **Five drill types** built from each model: pick all the components, put the steps in order, match a description, name the model, and sort items into groups
-- **181 exam-style questions** in the exam's four-option format, each with an explanation
+- **183 exam-style questions** in the exam's four-option format, each with an explanation
 - **Three case studies** in the format of the exam's second section (multi-select steps, +1 for right picks, −1 for wrong)
-- **Learn** cards for 82 models: plain-language components, a memory hook, how it shows up on the exam, and the source
+- **Learn** cards for 83 models: plain-language components, a memory hook, how it shows up on the exam, and the source
 - **Listen** mode that reads models aloud for hands-free review
 - **Spaced repetition** (reviews after 1, 3, 7, 14, then 30 days) with mastery tracked for each of the 11 exam statements
 - **Study time, streaks, XP, levels, and stickers.** Time only counts while the app is on screen and in use. A daily goal (default 10 minutes) builds a streak, and busy-day passes, earned every 5 streak days, cover missed days
