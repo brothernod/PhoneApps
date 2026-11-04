@@ -398,7 +398,9 @@
     }
     if (card.type === 'which') {
       const it = pickOne(UNIQUE[m.id]);
-      const pool = MODELS.filter((o) => o.id !== m.id && !memberClash(o, it.t));
+      // Also skip models whose name, note, or descriptions overlap the item (e.g. "GDPR" vs. "GDPR principles").
+      const near = (o, t) => clash(o.name, t) || clash(o.short, t) || clash(o.note || '', t) || o.items.some((j) => norm(j.t).slice(0, 4) === norm(t).slice(0, 4) || norm(j.d).includes(norm(t)));
+      const pool = MODELS.filter((o) => o.id !== m.id && !memberClash(o, it.t) && !near(o, it.t));
       const others = shuffle(pool.filter((o) => o.area === m.area)).concat(shuffle(pool.filter((o) => o.area !== m.area))).slice(0, 3);
       return Object.assign(base, {
         kind: 'single', ctx: 'Which model?', prompt: `“${it.t}”`, hint: 'This belongs to which model?',

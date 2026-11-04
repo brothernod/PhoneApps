@@ -40,7 +40,7 @@ window.CPTD = (function () {
     '1.4.6': 'Integrating diversity and inclusion principles into talent development',
     '1.5.3': 'Evaluating and prioritizing implications, risks, feasibility, and consequences',
     '1.5.6': 'Setting, monitoring, and communicating progress toward goals and milestones',
-    '1.6.3': 'Laws, regulations, and ethics for accessing and using information',
+    '1.6.3': 'Laws, regulations, and ethics for accessing and using information (such as intellectual capital, PII, and customer data)',
   };
 
   const tags = {
@@ -574,7 +574,7 @@ window.CPTD = (function () {
       src: 'Maslow (1943); TDBoK 1.3.1 via study decks',
     },
     {
-      id: 'senge', area: 'collab', stmts: ['1.3.1'], tag: 'reflist',
+      id: 'senge', area: 'collab', stmts: ['1.3.1'], tag: 'extra',
       name: 'The five disciplines of a learning organization', short: 'Senge', who: 'Peter Senge, The Fifth Discipline (1990)', kind: 'set', unit: 'disciplines',
       items: [
         { t: 'Personal mastery', d: 'Continually clarifying what matters to you and growing toward it.' },
@@ -586,7 +586,7 @@ window.CPTD = (function () {
       decoys: ['Process control', 'Strategic planning', 'Knowledge hoarding'],
       hook: 'Me (personal mastery, mental models), we (shared vision, team learning), and the whole (systems thinking).',
       exam: 'Systems thinking is the fifth discipline. Senge also contrasts dialogue (exploring) with discussion (deciding), and the TDBoK draws on this in its communication chapter.',
-      src: 'Senge (1990, 2006); on ATD’s reading list',
+      src: 'Senge (1990, 2006); on ATD CI’s 2024 certification reading list (not on the 2025 list)',
     },
     {
       id: 'tki', area: 'collab', stmts: ['1.3.5'], tag: 'tdbok',
@@ -782,7 +782,7 @@ window.CPTD = (function () {
     },
     {
       id: 'inclusive', area: 'collab', stmts: ['1.3.10', '1.4.6'], tag: 'named',
-      name: 'Six signature traits of inclusive leaders', short: 'Inclusive leadership', who: 'Juliet Bourke & Bernadette Dillon, Deloitte (2016)', kind: 'set', unit: 'traits',
+      name: 'Six signature traits of inclusive leaders', short: 'Inclusive leadership', who: 'Bernadette Dillon & Juliet Bourke, Deloitte University Press (2016)', kind: 'set', unit: 'traits',
       items: [
         { t: 'Commitment', d: 'Personal dedication to diversity and inclusion, grounded in values and the business case.' },
         { t: 'Courage', d: 'Speaking up, challenging the status quo, and admitting personal limits.' },
@@ -794,7 +794,7 @@ window.CPTD = (function () {
       decoys: ['Charisma', 'Control', 'Consistency'],
       hook: 'Six Cs again, a different set: commitment, courage, cognizance, curiosity, cultural intelligence, collaboration.',
       exam: 'The exam statement names inclusive leadership. Admitting your own limits shows courage; awareness of blind spots is cognizance of bias.',
-      src: 'Bourke & Dillon, Deloitte (2016)',
+      src: 'Dillon & Bourke, Deloitte (2016)',
     },
     {
       id: 'kouzes-posner', area: 'collab', stmts: ['1.3.10'], tag: 'extra',
@@ -896,7 +896,7 @@ window.CPTD = (function () {
       name: 'Developmental model of intercultural sensitivity', short: 'Bennett’s DMIS', who: 'Milton Bennett (1986)', kind: 'ordered', unit: 'stages',
       items: [
         { t: 'Denial', d: 'Doesn’t notice or care about cultural difference.' },
-        { t: 'Defense', d: 'Sees difference as a threat: us versus them, with one’s own culture as superior.' },
+        { t: 'Defense', d: 'Sees difference as a threat: us versus them, usually with one’s own culture as superior (or, in “reversal,” another culture idealized and one’s own disparaged).' },
         { t: 'Minimization', d: 'Downplays difference by stressing what everyone has in common.' },
         { t: 'Acceptance', d: 'Recognizes and respects differences in behavior and values.' },
         { t: 'Adaptation', d: 'Shifts perspective and adjusts behavior to fit other cultures.' },
@@ -925,11 +925,11 @@ window.CPTD = (function () {
       decoys: ['High vs. low context', 'Universalism vs. particularism', 'Monochronic vs. polychronic'],
       hook: 'Power, people, priorities, predictability, planning horizon, pleasure.',
       exam: 'Use dimensions to anticipate classroom behavior. In high power-distance cultures, learners may be reluctant to challenge the facilitator.',
-      note: 'The decoys are real cultural dimensions from other researchers: Hall (context, time) and Trompenaars (universalism).',
+      note: 'The decoys are real cultural dimensions from other researchers: Hall (context, time) and Trompenaars (universalism). Hofstede’s current site renames masculinity vs. femininity “motivation towards achievement and success”; exam-era materials use masculinity vs. femininity.',
       src: 'Hofstede; TDBoK cultural awareness chapter (via study decks)',
     },
     {
-      id: 'cq', area: 'dei', stmts: ['1.4.6'], tag: 'reflist',
+      id: 'cq', area: 'dei', stmts: ['1.4.6'], tag: 'extra',
       name: 'Four capabilities of cultural intelligence', short: 'Cultural intelligence (CQ)', who: 'David Livermore, Leading with Cultural Intelligence (2015); research by Christopher Earley & Soon Ang', kind: 'set', unit: 'capabilities',
       items: [
         { t: 'CQ Drive', d: 'Interest, motivation, and confidence for working across cultures.' },
@@ -941,7 +941,7 @@ window.CPTD = (function () {
       hook: 'Want to (drive), know (knowledge), plan (strategy), do (action).',
       exam: 'Researching local norms builds CQ Knowledge; adjusting gestures and pacing is CQ Action.',
       note: 'The research names: motivational (drive), cognitive (knowledge), metacognitive (strategy), and behavioral (action).',
-      src: 'Livermore (2015); on ATD’s reading list',
+      src: 'Livermore (2015); on ATD CI’s 2024 certification reading list (not on the 2025 list)',
     },
     {
       id: 'hall', area: 'dei', stmts: ['1.4.6'], tag: 'extra',
@@ -969,7 +969,7 @@ window.CPTD = (function () {
         { t: 'Recency bias', d: 'Overweighting the most recent events, as in a performance review.' },
       ],
       hook: 'Like me, prove me right, one good thing, one bad thing, blame, follow the crowd, last month only.',
-      exam: 'The TDBoK covers identifying personal biases (1.2.3), and inclusive TD design depends on it. Expect a scenario where you name the bias.',
+      exam: 'Identifying personal biases is TDBoK 1.2.3, which isn’t one of the 11 CPTD statements, but bias awareness supports inclusive design (1.4.6) and inclusive leaders’ cognizance of bias (1.3.10).',
       src: 'TDBoK 1.2.3 (biases), common usage in DEI training',
     },
     {
@@ -1064,8 +1064,8 @@ window.CPTD = (function () {
       decoys: ['Ignore', 'Conceal'],
       hook: 'Dodge it, shrink it, hand it off, live with it, or watch it with a plan B.',
       exam: 'Name the response in a scenario. A fixed-price vendor contract transfers cost risk; an extra pilot round mitigates; switching to a proven tool avoids.',
-      note: 'PMI’s list for threats is escalate, avoid, transfer, mitigate, and accept. For opportunities it is escalate, exploit, share, enhance, and accept.',
-      src: 'TDBoK-keyed study decks (1.5.6); PMI PMBOK Guide',
+      note: 'PMI’s list for threats is escalate, avoid, transfer, mitigate, and accept. For opportunities it is escalate, exploit, share, enhance, and accept. PMI splits accept into passive (just log it) and active (set a contingency reserve or plan); the TDBoK-style “monitor and prepare” is PMI’s active acceptance.',
+      src: 'TDBoK-keyed study decks (1.5.3); PMI PMBOK Guide',
     },
     {
       id: 'risk-steps', area: 'pm', stmts: ['1.5.3'], tag: 'extra',
@@ -1110,7 +1110,7 @@ window.CPTD = (function () {
       ],
       orderNote: 'highest to lowest priority',
       hook: 'The capital letters spell it: M-S-C-W.',
-      exam: 'The W means won’t have this time, not “wish.”',
+      exam: 'The W means won’t have (this time): agreed to be out of scope for now. A few sources read it as “wish” or “would,” but the DSDM meaning, and the safe exam answer, is won’t have.',
       src: 'Clegg (1994); DSDM',
     },
     {
@@ -1174,7 +1174,7 @@ window.CPTD = (function () {
       id: 'close', area: 'pm', stmts: ['1.5.6'], tag: 'tdbok',
       name: 'Closing a project', short: 'Project close', who: 'TDBoK-based materials; common practice', kind: 'set', unit: 'activities',
       items: [
-        { t: 'Hand over deliverables and get acceptance', d: 'Formal sign-off.' },
+        { t: 'Get formal acceptance of deliverables', d: 'The sponsor signs off on what was handed over.' },
         { t: 'Hold a post-project review', d: 'Capture lessons learned.' },
         { t: 'Get the sponsor’s evaluation', d: 'How did the project do from the sponsor’s view?' },
         { t: 'Archive project artifacts', d: 'Store records where others can find them.' },
@@ -1182,7 +1182,7 @@ window.CPTD = (function () {
         { t: 'Celebrate and recognize the team', d: 'Mark the finish.' },
       ],
       decoys: ['Re-send the charter for approval', 'Build the work breakdown structure', 'Rebaseline the schedule'],
-      hook: 'Hand off, look back, get graded, file it, free it, celebrate.',
+      hook: 'Sign off, look back, get graded, file it, free it, celebrate.',
       exam: 'The project manager records the strategic knowledge gained and documents the project’s evaluation.',
       src: 'TDBoK-keyed study decks (1.5.6)',
     },
@@ -1267,7 +1267,7 @@ window.CPTD = (function () {
       ],
       hook: 'Words and works, brands, inventions, secrets.',
       exam: 'Intellectual property is intangible. Training an employee creates is generally the employer’s as a work made for hire; for a contractor, get a written agreement.',
-      note: 'In the US, copyright for an individual author generally lasts for life plus 70 years. Utility patents last 20 years from filing. Trade secrets last as long as they stay secret.',
+      note: 'In the US, copyright for an individual author generally lasts for life plus 70 years; for a work made for hire it lasts 95 years from publication or 120 years from creation, whichever ends first. Utility patents last 20 years from filing. Trade secrets last as long as they stay secret.',
       src: '17 U.S.C. (copyright); 35 U.S.C. (patents); Defend Trade Secrets Act (2016)',
     },
     {
@@ -1292,10 +1292,11 @@ window.CPTD = (function () {
         { t: 'SA (ShareAlike)', d: 'Share adaptations under the same license.' },
         { t: 'NC (NonCommercial)', d: 'No commercial use.' },
         { t: 'ND (NoDerivatives)', d: 'No changes or adaptations.' },
-        { t: 'CC0', d: 'The creator gives up their rights, so the work is effectively in the public domain.' },
       ],
-      hook: 'BY credit, SA same license, NC no money, ND no edits, CC0 no rules.',
+      decoys: ['CC0', 'Public Domain Mark', 'FU (Fair Use)'],
+      hook: 'BY credit, SA same license, NC no money, ND no edits. CC0 sits outside the licenses: no rules at all.',
       exam: 'CC BY-NC-ND lets you share the unchanged work with credit for noncommercial purposes only.',
+      note: 'The four elements combine into six licenses: BY, BY-SA, BY-NC, BY-NC-SA, BY-ND, and BY-NC-ND. Every license includes BY. CC0 is not a license element: it is a separate public-domain dedication in which the creator waives their rights as far as the law allows.',
       src: 'creativecommons.org',
     },
     {
@@ -1336,13 +1337,14 @@ window.CPTD = (function () {
       id: 'privacy-laws', area: 'ethics', stmts: ['1.6.3'], tag: 'extra',
       name: 'Privacy laws to recognize', short: 'Privacy laws', who: 'US and EU law', kind: 'set', unit: 'laws',
       items: [
-        { t: 'GDPR', d: 'EU regulation protecting the personal data of people in the EU. In force since May 2018.' },
-        { t: 'HIPAA', d: 'US law protecting health information held by health plans, providers, and their business associates.' },
+        { t: 'GDPR', d: 'EU regulation protecting the personal data of people in the EU. Adopted in 2016; it has applied since May 25, 2018.' },
+        { t: 'HIPAA', d: 'US law protecting health information held by health plans, health care clearinghouses, and providers that bill electronically, plus their business associates.' },
         { t: 'FERPA', d: 'US law protecting student education records.' },
         { t: 'CCPA/CPRA', d: 'California law giving consumers rights to know, delete, correct, and opt out of the sale or sharing of their personal information.' },
       ],
       hook: 'EU people, US patients, US students, California consumers.',
       exam: 'GDPR can apply to a company outside the EU that offers services to people in the EU.',
+      note: 'Since January 1, 2023, the CCPA also covers California employees’ and job applicants’ personal information, so it can reach learner data.',
       src: 'GDPR; HIPAA (1996); FERPA (1974); CCPA (2018) as amended by CPRA',
     },
     {
@@ -1645,7 +1647,7 @@ window.CPTD = (function () {
       o: ['Openly question or challenge the facilitator', 'Follow a structured agenda set by the facilitator', 'Take notes during a lecture-style presentation', 'Arrive on time and stay for the whole session'], a: 0, why: 'In high power-distance cultures, people tend to defer to those with authority.' },
     { id: 'q-ua', stmt: '1.4.6', model: 'hofstede', q: 'Which Hofstede dimension describes how comfortable people are with ambiguity and the unknown?',
       o: ['Uncertainty avoidance', 'Power distance', 'Long-term orientation', 'Indulgence vs. restraint'], a: 0, why: 'Uncertainty avoidance measures discomfort with ambiguity.' },
-    { id: 'q-cqknow', stmt: '1.4.6', model: 'cq', q: 'A global facilitator researches local norms and values before training in a new country. Which CQ capability is she building?',
+    { id: 'q-cqknow', stmt: '1.4.6', model: 'cq', q: 'A global facilitator reads up on a country’s values, religion, and business customs to understand how they differ from her own. Which CQ capability is she building?',
       o: ['CQ Knowledge', 'CQ Drive', 'CQ Strategy', 'CQ Action'], a: 0, why: 'Understanding how cultures are similar and different is CQ Knowledge.' },
     { id: 'q-cqaction', stmt: '1.4.6', model: 'cq', q: 'A trainer adjusts her gestures, pace, and humor to fit local norms while facilitating abroad. Which CQ capability is this?',
       o: ['CQ Action', 'CQ Drive', 'CQ Knowledge', 'CQ Strategy'], a: 0, why: 'Adapting behavior appropriately is CQ Action.' },
@@ -1693,7 +1695,7 @@ window.CPTD = (function () {
     { id: 'q-weighted', stmt: '1.5.3', model: 'prioritization', q: 'Which tool compares options by scoring each against criteria weighted by importance?',
       o: ['Weighted decision matrix', 'Pareto chart of causes', 'Cause-and-effect diagram', 'Gantt chart with milestones'], a: 0, why: 'A weighted decision matrix scores options against weighted criteria.' },
     { id: 'q-moscow-w', stmt: '1.5.3', model: 'moscow', q: 'In MoSCoW prioritization, what does the W stand for?',
-      o: ['Won’t have (this time)', 'Wish list', 'Wait and see', 'Worth considering'], a: 0, why: 'Must, should, could, won’t have this time.' },
+      o: ['Won’t have (this time)', 'Workaround exists', 'Wait and see', 'Worth considering'], a: 0, why: 'Must, should, could, won’t have this time.' },
     { id: 'q-schedule', stmt: '1.5.3', model: 'eisenhower', q: 'Building next year’s leadership curriculum is important but not urgent. Using the Eisenhower matrix, you should:',
       o: ['Schedule it', 'Do it now', 'Delegate it', 'Eliminate it'], a: 0, why: 'Important but not urgent work gets scheduled so it doesn’t get crowded out.' },
     { id: 'q-forcefield', stmt: '1.5.3', model: 'prioritization', q: 'Which tool lists the forces pushing for a change against the forces resisting it?',
@@ -1853,7 +1855,7 @@ window.CPTD = (function () {
             ['Decide participants aren’t engaged and shorten the session', false],
             ['Insist on direct yes-or-no answers', false],
           ],
-          why: 'Higher power distance and a high-context communication style make open challenge uncomfortable. Lower-risk channels and attention to context work better.' },
+          why: 'Japan is a high-context culture that values group harmony and saving face, and its power distance is higher than the US’s (though lower than Brazil’s), so openly challenging the facilitator in a large group feels risky. Small groups, written input, and attention to nonverbal cues work better.' },
       ],
     },
     {
@@ -1893,16 +1895,16 @@ window.CPTD = (function () {
 
   const exam = {
     facts: [
-      ['Length', '3 hours: 105 minutes for multiple choice, an optional 10-minute break, then 65 minutes for case scenarios.'],
+      ['Length', '3 hours: 105 minutes for multiple choice, an optional 10-minute break, then 65 minutes for case scenarios. Sections are timed separately, unused time doesn’t carry over, you can’t return to Section 1, and break time over 10 minutes comes out of Section 2.'],
       ['Format', '90 four-option multiple-choice questions, then 10 case management scenarios of 3 or 4 steps each.'],
       ['Domain weights', 'Building Personal Capability 20%, Developing Professional Capability 45%, Impacting Organizational Capability 35%.'],
       ['This domain', 'About 30 questions’ worth, drawn from 11 statements: 1.1.3, 1.1.5, 1.1.6, 1.2.1, 1.3.1, 1.3.5, 1.3.10, 1.4.6, 1.5.3, 1.5.6, and 1.6.3. Lifelong learning (1.7) is not on the CPTD outline for this domain.'],
-      ['Scoring', 'Scaled from 200 to 800; 500 passes. Wrong multiple-choice answers cost nothing, so answer every question.'],
-      ['Case steps', 'Select one or more options per step. Each right pick earns a point and each wrong pick loses one. You can’t go back to earlier steps.'],
-      ['Outline', 'The content outline has been in effect since July 1, 2020, and it is still the one in the 2025 CPTD handbook.'],
+      ['Scoring', 'Scaled from 200 to 800; 500 passes. Wrong multiple-choice answers cost nothing, and the handbook scores unanswered questions as incorrect, so answer every question.'],
+      ['Case steps', 'Select one or more options per step; you must pick at least one to move on. Each right pick earns a point and each wrong pick loses one. ATD’s study guide says some options are “optional” and score zero, and options you leave unselected never cost points. You can’t go back to earlier steps.'],
+      ['Outline', 'The content outline has been in effect since July 1, 2020, and it is still the one in the 2025 CPTD handbook. The handbook labels statements with letters (for example 1.4.A, 1.5.A, 1.5.B, 1.6.A); this app uses the TDBoK numbers from ATD’s APTD vs. CPTD comparison (1.4.6, 1.5.3, 1.5.6, 1.6.3).'],
     ],
     tips: [
-      'Most questions are applied: “What should the TD professional do?” Learn each model well enough to recognize it in a scenario.',
+      'ATD’s sample questions are mostly applied: “What should the TD professional do?” Learn each model well enough to recognize it in a scenario.',
       'Underline the qualifier: first, best, most, not, except.',
       'Name the model behind the scenario first (which stage, style, mode, or principle), then pick the answer that fits it.',
       'In case steps, only select options you’re confident in. A wrong pick cancels a right one.',
