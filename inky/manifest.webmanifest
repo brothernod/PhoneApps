@@ -1,0 +1,11 @@
+{
+  "name": "Inky's Word Reef",
+  "short_name": "Inky",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#1584ae",
+  "theme_color": "#2db5d1",
+  "icons": [{ "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }]
+}
