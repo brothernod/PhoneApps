@@ -3,6 +3,7 @@ import { cheddarHead, cheddarLoaf, partyHat, paw, treat } from './art.js';
 
 // ---------- constants ----------
 const NAME = 'Halina';
+const VERSION = '1.3'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
 const EMPTY = 0, PAW = 1, AUTO = 2, CORGI = 3;
@@ -88,12 +89,19 @@ function renderHome() {
       <button class="pill" id="go-past">📅 Past days</button>
       <button class="pill" id="go-help">❓ How to play</button>
       <button class="pill" id="go-set">⚙️</button>
-    </div>`;
+    </div>
+    <button class="ver" id="ver">v${VERSION}</button>`;
   $('go-daily').onclick = () => play('d:' + t);
   $('go-climb').onclick = renderClimb;
   $('go-past').onclick = renderPast;
   $('go-help').onclick = help;
   $('go-set').onclick = settings;
+  // Tap the version to drop any cached copy and reload fresh.
+  $('ver').onclick = async () => {
+    $('ver').textContent = 'refreshing…';
+    try { for (const k of await caches.keys()) await caches.delete(k); } catch {}
+    location.reload();
+  };
   show('home');
 }
 

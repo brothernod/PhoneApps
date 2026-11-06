@@ -36,6 +36,10 @@ node tools/generate.mjs --pool-sizes 9,10 --pool-grade hard --pool-count 100 --p
 
 Then rebuild with that pool (`--pool tools/pool-hard.json`), verify, and commit.
 
+## Releasing
+
+Bump `VERSION` in `app.js` and `CACHE` in `sw.js` together. The version shows faintly at the bottom of the home screen; tap it to clear the cache and reload.
+
 ## Special dates
 
 The 2026-11-11 week gets easy puzzles and a get-well banner. Every June 15 gets a birthday banner, an easy puzzle and a party hat for Cheddar. Messages live in `specialBanner()` and `winLine()` in `app.js`; the schedule lives in `want()` in `tools/generate.mjs`.
