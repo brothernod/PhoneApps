@@ -1,0 +1,11 @@
+{
+  "name": "Corgidoku",
+  "short_name": "Corgidoku",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF6FB",
+  "theme_color": "#FFE3F1",
+  "icons": [{ "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }]
+}
