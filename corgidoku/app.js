@@ -3,14 +3,14 @@ import { cheddarHead, cheddarLoaf, partyHat, paw, treat } from './art.js';
 
 // ---------- constants ----------
 const NAME = 'Halina';
-const VERSION = '1.4'; // bump with CACHE in sw.js on every release
+const VERSION = '1.5'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
 const EMPTY = 0, PAW = 1, AUTO = 2, CORGI = 3, NOPE = 4; // NOPE = a wrong guess, shown as a red paw
 const STORE = 'corgidoku:v1';
 
 // ---------- storage ----------
-const defaults = { progress: {}, settings: { autoPaws: true, relaxed: false, timer: true }, seenHelp: false };
+const defaults = { progress: {}, settings: { autoPaws: true, relaxed: false, timer: true, mode: 'cozy' }, seenHelp: false };
 let db;
 try { db = { ...defaults, ...JSON.parse(localStorage.getItem(STORE) || '{}') }; } catch { db = structuredClone(defaults); }
 db.settings = { ...defaults.settings, ...db.settings };
@@ -24,8 +24,23 @@ const pretty = (iso) => new Date(iso + 'T12:00:00Z').toLocaleDateString(undefine
 const clock = (s) => `${Math.floor(s / 60)}:${pad(Math.floor(s % 60))}`;
 
 // ---------- puzzles ----------
+// Modes. Each has its own puzzle file, ids, streak and climb. Add 'extreme' here later.
+const MODES = {
+  cozy: { file: 'puzzles.json', d: 'd', c: 'c', label: '🌈 Cozy', climb: 'The Climb' },
+  hard: { file: 'puzzles-hard.json', d: 'hd', c: 'hc', label: '🔥 Hard', climb: 'The Hard Climb' },
+};
+const DATA = {};
 let PUZ;
-const daily = new Map();
+let daily = new Map();
+const mode = () => (MODES[db.settings.mode] ? db.settings.mode : 'cozy');
+const D = (k) => `${MODES[mode()].d}:${k}`;
+const C = (k) => `${MODES[mode()].c}:${k}`;
+function useMode(m) {
+  db.settings.mode = m; save();
+  PUZ = DATA[m];
+  daily = new Map(PUZ.daily.map((p) => [p.date, p]));
+}
+const levelName = (p) => (mode() === 'hard' ? (p.lv >= 5 ? 'very hard' : 'hard') : p.g);
 function dailyFor(iso) {
   if (daily.has(iso)) return daily.get(iso);
   // Past the end of the file: wrap around so there's always a puzzle.
@@ -35,7 +50,8 @@ function dailyFor(iso) {
   return { ...PUZ.daily[((idx % len) + len) % len], date: iso };
 }
 function load(pid) {
-  const [kind, key] = pid.split(':');
+  const [pre, key] = pid.split(':');
+  const kind = pre.endsWith('d') ? 'd' : 'c';
   const p = kind === 'd' ? dailyFor(key) : PUZ.campaign[Number(key) - 1];
   return { pid, kind, key, n: p.n, reg: decodeRegions(p.r), sol: decodeSolution(p.s), grade: p.g };
 }
@@ -55,17 +71,17 @@ const prog = (pid) => db.progress[pid] || null;
 
 function streak() {
   let s = 0, d = todayISO();
-  if (!prog('d:' + d)?.solved) d = addDays(d, -1);
-  while (prog('d:' + d)?.solved) { s++; d = addDays(d, -1); }
+  if (!prog(D(d))?.solved) d = addDays(d, -1);
+  while (prog(D(d))?.solved) { s++; d = addDays(d, -1); }
   return s;
 }
-const solvedCount = () => Object.values(db.progress).filter((p) => p.solved).length;
-const climbLevel = () => { let i = 1; while (i <= PUZ.campaign.length && prog('c:' + i)?.solved) i++; return i; };
+const solvedCount = () => Object.entries(db.progress).filter(([k, p]) => p.solved && [MODES[mode()].d, MODES[mode()].c].includes(k.split(':')[0])).length;
+const climbLevel = () => { let i = 1; while (i <= PUZ.campaign.length && prog(C(i))?.solved) i++; return i; };
 
 // ---------- home ----------
 function renderHome() {
   const t = todayISO();
-  const p = prog('d:' + t);
+  const p = prog(D(t));
   const dp = dailyFor(t);
   const lvl = climbLevel();
   const banner = specialBanner(t);
@@ -73,13 +89,14 @@ function renderHome() {
   $('home').innerHTML = `
     <div class="title">Corgidoku</div>
     <div class="subtitle">Cheddar's puzzle yard for ${NAME}</div>
+    <div class="modes">${Object.entries(MODES).map(([k, v]) => `<button class="mode${k === mode() ? ' on' : ''}" data-m="${k}">${v.label}</button>`).join('')}</div>
     <div class="hero">${cheddarLoaf({ hat: birthday ? partyHat : '' })}</div>
     ${banner ? `<div class="banner">${banner}</div>` : ''}
     <div class="menu">
       <button class="big" id="go-daily"><div class="ico" style="background:#FFE0F0">☀️</div>
-        <div><b>Today's puzzle</b><span>${pretty(t)} · ${dp.n}×${dp.n} · ${p?.solved ? `solved in ${clock(p.best)} ✓` : p ? 'in progress' : dp.g}</span></div></button>
+        <div><b>Today's puzzle</b><span>${pretty(t)} · ${dp.n}×${dp.n} · ${p?.solved ? `solved in ${clock(p.best)} ✓` : p ? 'in progress' : levelName(dp)}</span></div></button>
       <button class="big" id="go-climb"><div class="ico" style="background:#E6DDFF">🧗‍♀️</div>
-        <div><b>The Climb</b><span>${lvl > PUZ.campaign.length ? 'Summit reached! 🏔️' : `Hold ${lvl} of ${PUZ.campaign.length}`}</span></div></button>
+        <div><b>${MODES[mode()].climb}</b><span>${lvl > PUZ.campaign.length ? 'Summit reached! 🏔️' : `Hold ${lvl} of ${PUZ.campaign.length}`}</span></div></button>
     </div>
     <div class="stats">
       <div class="stat"><b>${streak()}</b><span>Day streak</span></div>
@@ -91,11 +108,12 @@ function renderHome() {
       <button class="pill" id="go-set">⚙️</button>
     </div>
     <button class="ver" id="ver">v${VERSION}</button>`;
-  $('go-daily').onclick = () => play('d:' + t);
+  $('go-daily').onclick = () => play(D(t));
   $('go-climb').onclick = renderClimb;
   $('go-past').onclick = renderPast;
   $('go-help').onclick = help;
   $('go-set').onclick = settings;
+  document.querySelectorAll('.mode').forEach((b) => (b.onclick = () => { if (b.dataset.m !== mode()) { useMode(b.dataset.m); renderHome(); } }));
   // Tap the version to drop any cached copy and reload fresh.
   $('ver').onclick = async () => {
     $('ver').textContent = 'refreshing…';
@@ -111,8 +129,8 @@ function renderPast() {
   const first = PUZ.daily[0].date;
   const items = [];
   for (let d = t, k = 0; d >= first && k < 45; d = addDays(d, -1), k++) {
-    const p = prog('d:' + d), dp = dailyFor(d);
-    items.push(`<button class="item" data-pid="d:${d}">${d === t ? 'Today' : pretty(d)}<span>${dp.n}×${dp.n} ${p?.solved ? '✓ ' + clock(p.best) : p ? '…' : ''}</span></button>`);
+    const p = prog(D(d)), dp = dailyFor(d);
+    items.push(`<button class="item" data-pid="${D(d)}">${d === t ? 'Today' : pretty(d)}<span>${dp.n}×${dp.n} ${p?.solved ? '✓ ' + clock(p.best) : p ? '…' : ''}</span></button>`);
   }
   $('past').innerHTML = `<div class="bar"><button class="back">‹</button><h2>Past days</h2><span class="ghost"></span></div><div class="list">${items.join('')}</div>`;
   $('past').querySelector('.back').onclick = renderHome;
@@ -128,20 +146,20 @@ function renderClimb() {
   let holds = '';
   for (let i = 1; i <= total; i++) {
     const p = pos(i);
-    const cls = prog('c:' + i)?.solved ? 'solved' : i > lvl ? 'locked' : '';
+    const cls = prog(C(i))?.solved ? 'solved' : i > lvl ? 'locked' : '';
     const n = PUZ.campaign[i - 1].n;
     holds += `<button class="hold ${cls}" data-i="${i}" style="top:${p.top}px;left:${p.left}%;background:${HOLD_COLORS[(i - 1) % HOLD_COLORS.length]}">${i}<small style="position:absolute;bottom:-16px;font-size:11px;color:var(--ink-soft);text-shadow:none">${n}×${n}</small></button>`;
   }
   const cp = pos(Math.min(lvl, total));
   $('climb').innerHTML = `
-    <div class="bar"><button class="back">‹</button><h2>The Climb</h2><span class="ghost"></span></div>
+    <div class="bar"><button class="back">‹</button><h2>${MODES[mode()].climb}</h2><span class="ghost"></span></div>
     <div class="summit">🏔️ Rainbow Summit</div>
     <div class="wall" style="height:${h + 40}px"><div class="rope"></div>${holds}
       <div class="climber" style="top:${cp.top - 46}px;left:calc(${cp.left}% + 2px)">${cheddarHead()}</div></div>
     <div class="summit">Base camp</div>`;
   $('climb').querySelector('.back').onclick = renderHome;
   $('climb').querySelectorAll('.hold').forEach((b) => {
-    b.onclick = () => { const i = Number(b.dataset.i); if (i <= lvl) play('c:' + i); else sheet(`<h3>Not yet!</h3><p>Finish hold ${lvl} first, then Cheddar will climb higher.</p><button class="cta" id="okl">OK</button>`), ($('okl').onclick = closeSheet); };
+    b.onclick = () => { const i = Number(b.dataset.i); if (i <= lvl) play(C(i)); else sheet(`<h3>Not yet!</h3><p>Finish hold ${lvl} first, then Cheddar will climb higher.</p><button class="cta" id="okl">OK</button>`), ($('okl').onclick = closeSheet); };
   });
   show('climb');
   requestAnimationFrame(() => { $('climb').scrollTop = Math.max(0, cp.top - window.innerHeight / 2 + 120); });
@@ -189,7 +207,7 @@ function play(pid) {
 }
 
 function greeting() {
-  const lines = ['Find a cozy spot for every corgi!', 'One corgi per row, column and yard. No touching!', 'Tap once for a paw mark, twice for a corgi.', 'Cheddar believes in you! 🧡'];
+  const lines = ['Find a cozy spot for every corgi!', 'One corgi per row, column and yard. No touching!', 'Tap for a paw mark, double-tap for a corgi.', 'Cheddar believes in you! 🧡'];
   return lines[Math.floor(Math.random() * lines.length)];
 }
 
@@ -289,13 +307,26 @@ function attachInput(board) {
   board.onpointercancel = () => { start = null; dragging = false; };
 }
 
+// Single tap toggles a paw (or lifts a corgi). A quick second tap on the same cell
+// undoes that first tap and guesses a corgi instead.
+let lastTap = { i: -1, t: 0 };
 function tap(i) {
-  const v = G.cells[i];
-  if (v === NOPE) return say('Cheddar already sniffed here: no corgi in this spot.', true);
+  const now = performance.now();
+  const quick = lastTap.i === i && now - lastTap.t < 380;
+  lastTap = quick ? { i: -1, t: 0 } : { i, t: now };
+  if (G.cells[i] === NOPE && !quick) { lastTap = { i: -1, t: 0 }; return say('Cheddar already sniffed here: no corgi in this spot.', true); }
+  if (quick) {
+    const h = G.history.pop();
+    if (h) G.cells = h.cells;
+    if (G.cells[i] === CORGI) { persist(); drawBoard(); return; }
+    if (G.cells[i] === NOPE) return say('Cheddar already sniffed here: no corgi in this spot.', true);
+    snapshot();
+    placeCorgi(i);
+    return;
+  }
   snapshot();
-  if (v === EMPTY || v === AUTO) { G.cells[i] = PAW; persist(); drawBoard(); return; }
-  if (v === CORGI) { G.cells[i] = EMPTY; persist(); drawBoard(); return; }
-  placeCorgi(i);
+  G.cells[i] = G.cells[i] === EMPTY || G.cells[i] === AUTO ? PAW : EMPTY;
+  persist(); drawBoard();
 }
 
 function peers(i) {
@@ -387,7 +418,7 @@ function win() {
       <p>${winLine()}</p>
       ${hasNext ? '<button class="cta" id="next">Next hold 🧗‍♀️</button>' : ''}
       <button class="cta ${hasNext ? 'alt' : ''}" id="home3">Home</button>`);
-    if (hasNext) $('next').onclick = () => { closeSheet(); play('c:' + nextLvl); };
+    if (hasNext) $('next').onclick = () => { closeSheet(); play(C(nextLvl)); };
     $('home3').onclick = () => { closeSheet(); renderHome(); };
   }, 1700);
 }
@@ -449,7 +480,8 @@ function help() {
       <li>One corgi in every <b>colored yard</b></li>
       <li>Corgis never touch, <b>not even diagonally</b></li>
     </ol>
-    <p>Tap once for a 🐾 paw mark (“no corgi here”), tap again for a corgi. Drag across cells to paw-mark lots at once.</p>
+    <p>Tap for a 🐾 paw mark (“no corgi here”); tap it again to remove it. <b>Double-tap</b> to place a corgi. Drag across cells to paw-mark lots at once.</p>
+    <p>Want more challenge? Switch to <b>🔥 Hard</b> on the home screen.</p>
     <p>A wrong corgi costs a treat. Stuck? Tap <b>Sniff</b> and Cheddar will help.</p>
     <button class="cta" id="gotit">Let's go!</button>`);
   $('gotit').onclick = () => { db.seenHelp = true; save(); closeSheet(); };
@@ -469,13 +501,8 @@ function settings() {
 }
 
 // ---------- boot ----------
-fetch('puzzles.json')
-  .then((r) => r.json())
-  .then((data) => {
-    PUZ = data;
-    for (const p of PUZ.daily) daily.set(p.date, p);
-    renderHome();
-  })
+Promise.all(Object.entries(MODES).map(([k, m]) => fetch(m.file).then((r) => r.json()).then((d) => { DATA[k] = d; })))
+  .then(() => { useMode(mode()); renderHome(); })
   .catch(() => { $('home').innerHTML = '<p style="margin-top:40vh;font-weight:800">Cheddar couldn\'t find the puzzles. Check your connection and reopen.</p>'; });
 
 document.addEventListener('visibilitychange', () => { if (document.hidden && G && !G.solved && $('play').classList.contains('on')) persist(); });

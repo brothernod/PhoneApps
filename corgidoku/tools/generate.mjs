@@ -10,7 +10,10 @@
 // Rebuild puzzles.json using a heavy pool for some weekends:
 //   node tools/generate.mjs --pool tools/pool-9-10.json
 //
-// Options: --start YYYY-MM-DD  --days 730  --campaign 60  --seed 1  --out puzzles.json  --workers N
+// Hard mode file (puzzles-hard.json):
+//   node tools/generate.mjs --mode hard --start 2026-11-05
+//
+// Options: --mode cozy|hard  --start YYYY-MM-DD  --days 730  --campaign 60  --seed 1  --out puzzles.json  --workers N
 import { Worker, isMainThread, parentPort, workerData } from 'node:worker_threads';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { cpus } from 'node:os';
@@ -64,8 +67,31 @@ const CAMPAIGN = [
   [14, 8, ['medium']], [10, 8, ['medium', 'hard']],
 ];
 
+// Hard mode: big boards that need pair locks (L4) or group locks (L5).
+function wantHard(date) {
+  const dow = new Date(date + 'T00:00:00Z').getUTCDay();
+  if (date.slice(5) === '06-15') return [[9, 'L4']];
+  return {
+    1: [[8, 'L4']],
+    2: [[8, 'L4'], [8, 'L5']],
+    3: [[9, 'L4']],
+    4: [[9, 'L4'], [9, 'L5']],
+    5: [[9, 'L5']],
+    6: [[10, 'L4']],
+    0: [[10, 'L5'], [10, 'L4']],
+  }[dow];
+}
+const CAMPAIGN_HARD = [
+  [10, 8, ['L4']], [10, 8, ['L5']], [20, 9, ['L4']], [15, 9, ['L5']], [15, 10, ['L4']], [10, 10, ['L5']],
+];
+const MODES = {
+  cozy: { want, plan: CAMPAIGN, key: (p) => `${p.n}:${p.g}`, out: 'puzzles.json', campaign: 60 },
+  hard: { want: wantHard, plan: CAMPAIGN_HARD, key: (p) => `${p.n}:L${p.lv}`, out: 'puzzles-hard.json', campaign: 80 },
+};
+
 function main() {
-  const out = resolve(here, '..', arg('out', 'puzzles.json'));
+  const mode = MODES[arg('mode', 'cozy')];
+  const out = resolve(here, '..', arg('out', mode.out));
   const seed = Number(arg('seed', 1));
   const workers = Number(arg('workers', Math.max(1, cpus().length - 1)));
   const poolSizes = arg('pool-sizes');
@@ -74,12 +100,12 @@ function main() {
 
   const start = arg('start', '2026-11-06');
   const days = Number(arg('days', 730));
-  const campaignLen = Number(arg('campaign', 60));
+  const campaignLen = Number(arg('campaign', mode.campaign));
   const pool = arg('pool') ? JSON.parse(readFileSync(resolve(arg('pool')), 'utf8')).puzzles : [];
 
   // Count what each bucket needs.
   const dates = [...Array(days).keys()].map((d) => addDays(start, d));
-  const slots = dates.map((date) => ({ date, opts: want(date) }));
+  const slots = dates.map((date) => ({ date, opts: mode.want(date) }));
   // With a heavy pool, every other Sunday (outside recovery week) becomes a big board.
   let poolIdx = 0;
   if (pool.length) {
@@ -89,7 +115,7 @@ function main() {
     }
   }
   const camp = [];
-  for (const [count, n, grades] of CAMPAIGN) for (let i = 0; i < count && camp.length < campaignLen; i++) camp.push({ n, grades });
+  for (const [count, n, grades] of mode.plan) for (let i = 0; i < count && camp.length < campaignLen; i++) camp.push({ n, grades });
 
   const buckets = new Map(); // "n:grade" -> array
   const need = new Map();
@@ -105,7 +131,7 @@ function main() {
   const t0 = Date.now();
 
   runWorkers(workers, seed, sizesNeeded(), (p, setSizes) => {
-    const key = `${p.n}:${p.g}`;
+    const key = mode.key(p);
     if (!need.has(key) || (buckets.get(key)?.length || 0) >= need.get(key)) return false;
     const ck = canonicalKey(p.n, p.r);
     if (seen.has(ck)) return false;
@@ -133,7 +159,7 @@ function main() {
     const daily = slots.map((s, i) => ({ date: s.date, ...filled[i] }));
     // Within each size block, order campaign by steps so it ramps.
     let i = 0;
-    for (const [count] of CAMPAIGN) {
+    for (const [count] of mode.plan) {
       const block = campaign.slice(i, i + count).sort((a, b) => a.lv - b.lv || a.st - b.st);
       campaign.splice(i, block.length, ...block);
       i += count;
