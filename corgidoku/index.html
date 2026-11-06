@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Corgidoku</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Corgidoku">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#FFE3F1">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+  :root{
+    --ink:#4B2350; --ink-soft:#8A5F8F; --card:#FFFFFF; --edge:#5B2A6E;
+    --pink:#FF6FB5; --purple:#9B6BFF; --sky:#4FB8FF; --mint:#38D9A0; --sun:#FFC93C; --coral:#FF7A7A;
+    --round: ui-rounded, "SF Pro Rounded", "Nunito", system-ui, -apple-system, sans-serif;
+    --safe-t: env(safe-area-inset-top); --safe-b: env(safe-area-inset-bottom);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    font-family:var(--round); color:var(--ink); overflow:hidden;
+    background:
+      radial-gradient(60% 40% at 0% 0%, #FFD6EC 0%, transparent 70%),
+      radial-gradient(60% 40% at 100% 10%, #DCCBFF 0%, transparent 70%),
+      radial-gradient(70% 50% at 50% 100%, #C9F4FF 0%, transparent 70%),
+      #FFF6FB;
+    -webkit-user-select:none; user-select:none;
+  }
+  button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+  .screen{position:absolute;inset:0;padding:calc(var(--safe-t) + 12px) 16px calc(var(--safe-b) + 16px);display:none;flex-direction:column;align-items:center;overflow-y:auto}
+  .screen.on{display:flex}
+
+  /* ---------- home ---------- */
+  .title{font-size:44px;font-weight:900;letter-spacing:-1px;margin-top:8px;
+    background:linear-gradient(90deg,#FF5FA8,#FF9F45,#FFD23C,#3FD98B,#46B3FF,#9B6BFF,#FF5FA8);background-size:200% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 6s linear infinite}
+  @keyframes shimmer{to{background-position:200% 0}}
+  .subtitle{color:var(--ink-soft);font-weight:700;margin-top:2px}
+  .hero{width:190px;margin:10px 0 2px;animation:bob 3s ease-in-out infinite}
+  @keyframes bob{50%{transform:translateY(-6px)}}
+  .banner{width:100%;max-width:440px;border-radius:20px;padding:12px 16px;margin:6px 0 4px;font-weight:800;text-align:center;
+    background:linear-gradient(90deg,#FFE0F0,#E9DDFF,#D9F3FF);border:2px solid #fff;box-shadow:0 4px 14px rgba(155,107,255,.18)}
+  .banner small{display:block;font-weight:700;color:var(--ink-soft);margin-top:2px}
+  .menu{width:100%;max-width:440px;display:flex;flex-direction:column;gap:12px;margin-top:12px}
+  .big{display:flex;align-items:center;gap:14px;width:100%;padding:16px 18px;border-radius:22px;background:var(--card);
+    box-shadow:0 6px 0 rgba(91,42,110,.12),0 10px 24px rgba(91,42,110,.10);text-align:left}
+  .big:active{transform:translateY(3px);box-shadow:0 3px 0 rgba(91,42,110,.12)}
+  .big .ico{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:28px;flex:none}
+  .big b{display:block;font-size:20px}
+  .big span{color:var(--ink-soft);font-weight:700;font-size:15px}
+  .row{display:flex;gap:10px;width:100%;max-width:440px;margin-top:12px}
+  .pill{flex:1;padding:12px;border-radius:16px;background:rgba(255,255,255,.75);font-weight:800;text-align:center}
+  .stats{display:flex;gap:10px;width:100%;max-width:440px;margin-top:12px}
+  .stat{flex:1;background:rgba(255,255,255,.7);border-radius:16px;padding:10px;text-align:center}
+  .stat b{display:block;font-size:24px}
+  .stat span{font-size:12px;font-weight:800;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.5px}
+
+  /* ---------- top bar ---------- */
+  .bar{width:100%;max-width:520px;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px}
+  .bar h2{font-size:20px;font-weight:900;text-align:center;flex:1}
+  .bar .back,.bar .ghost{width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.8);font-size:22px;font-weight:900;display:grid;place-items:center;flex:none}
+  .bar .ghost{visibility:hidden}
+
+  /* ---------- play ---------- */
+  .meta{width:100%;max-width:520px;display:flex;justify-content:space-between;align-items:center;margin:6px 0 10px;font-weight:800;color:var(--ink-soft)}
+  .treats{display:flex;gap:4px}
+  .treat{width:34px;height:18px;fill:#E7A869;stroke:#B9773C;stroke-width:1.5}
+  .treat.gone{fill:#EBDDE6;stroke:#D8C6D2}
+  .board{--n:6;width:min(94vw,58vh,520px);aspect-ratio:1;display:grid;grid-template-columns:repeat(var(--n),1fr);
+    border:3px solid var(--edge);border-radius:14px;overflow:hidden;background:var(--edge);touch-action:none;
+    box-shadow:0 10px 30px rgba(91,42,110,.22)}
+  .cell{position:relative;display:grid;place-items:center;border:0 solid var(--edge);border-width:.5px}
+  .cell.bt{border-top-width:2.5px}.cell.bb{border-bottom-width:2.5px}.cell.bl{border-left-width:2.5px}.cell.br{border-right-width:2.5px}
+  .cell svg.corgi{width:84%;height:84%;animation:pop .28s cubic-bezier(.3,1.6,.5,1)}
+  .cell svg.paw{width:48%;height:48%;fill:var(--edge);opacity:.5}
+  .cell svg.paw.auto{opacity:.2}
+  .cell.wrong{animation:shake .4s}
+  .cell.wrong::after{content:"";position:absolute;inset:0;background:rgba(255,60,90,.45)}
+  .cell.glow::after{content:"";position:absolute;inset:8%;border-radius:50%;border:3px dashed #fff;box-shadow:0 0 0 3px var(--pink);animation:pulse 1s ease-in-out infinite}
+  .cell.done{filter:saturate(1.15)}
+  @keyframes pop{0%{transform:scale(.2)}100%{transform:scale(1)}}
+  @keyframes shake{20%,60%{transform:translateX(-4px)}40%,80%{transform:translateX(4px)}}
+  @keyframes pulse{50%{transform:scale(.9);opacity:.6}}
+  .bubble{width:100%;max-width:520px;min-height:58px;margin-top:12px;display:flex;align-items:center;gap:10px}
+  .bubble .face{width:46px;height:46px;flex:none}
+  .bubble p{flex:1;background:#fff;border-radius:16px;padding:10px 14px;font-weight:700;font-size:15px;line-height:1.3;position:relative;box-shadow:0 3px 10px rgba(91,42,110,.08)}
+  .bubble p:empty{visibility:hidden}
+  .tools{width:100%;max-width:520px;display:flex;gap:10px;margin-top:12px}
+  .tool{flex:1;padding:12px 6px;border-radius:16px;background:#fff;font-weight:800;font-size:15px;box-shadow:0 4px 0 rgba(91,42,110,.10)}
+  .tool:active{transform:translateY(2px);box-shadow:none}
+  .tool .e{display:block;font-size:22px}
+
+  /* ---------- climb ---------- */
+  .wall{position:relative;width:100%;max-width:420px;margin-top:8px}
+  .hold{position:absolute;width:60px;height:52px;border-radius:46% 54% 40% 60% / 55% 45% 55% 45%;display:grid;place-items:center;font-weight:900;font-size:18px;color:#fff;
+    text-shadow:0 1px 2px rgba(0,0,0,.25);box-shadow:inset 0 -6px 0 rgba(0,0,0,.15),0 4px 10px rgba(91,42,110,.18)}
+  .hold.locked{filter:grayscale(.85) opacity(.45)}
+  .hold.solved::after{content:"✓";position:absolute;right:-4px;top:-6px;background:#fff;color:var(--mint);border-radius:50%;width:22px;height:22px;font-size:14px;display:grid;place-items:center;text-shadow:none}
+  .climber{position:absolute;width:56px;transition:top .6s,left .6s;pointer-events:none}
+  .rope{position:absolute;left:50%;top:0;bottom:0;width:4px;margin-left:-2px;background:repeating-linear-gradient(#FFB3D6 0 10px,#C7B2FF 10px 20px);border-radius:2px;opacity:.6}
+  .summit{text-align:center;font-weight:900;font-size:20px;margin:8px 0}
+
+  /* ---------- lists & overlays ---------- */
+  .list{width:100%;max-width:440px;display:flex;flex-direction:column;gap:8px;margin-top:8px}
+  .item{display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:16px;padding:14px 16px;font-weight:800}
+  .item span{color:var(--ink-soft);font-weight:700}
+  .overlay{position:fixed;inset:0;background:rgba(75,35,80,.35);display:none;align-items:center;justify-content:center;padding:20px;z-index:10}
+  .overlay.on{display:flex}
+  .sheet{background:#fff;border-radius:26px;padding:22px;width:100%;max-width:420px;text-align:center;box-shadow:0 20px 50px rgba(75,35,80,.3);max-height:90vh;overflow:auto}
+  .sheet h3{font-size:26px;font-weight:900;margin-bottom:6px}
+  .sheet p{font-weight:700;color:var(--ink-soft);line-height:1.4;margin:6px 0}
+  .sheet ol{text-align:left;font-weight:700;line-height:1.45;margin:10px 0 10px 22px}
+  .sheet .cta{display:block;width:100%;margin-top:10px;padding:14px;border-radius:16px;font-weight:900;font-size:18px;color:#fff;background:linear-gradient(90deg,var(--pink),var(--purple))}
+  .sheet .cta.alt{background:#F3EAF6;color:var(--ink)}
+  .toggle{display:flex;justify-content:space-between;align-items:center;padding:12px 4px;border-bottom:1px solid #F1E6F3;font-weight:800;text-align:left;gap:12px}
+  .toggle small{display:block;color:var(--ink-soft);font-weight:700}
+  .toggle input{width:26px;height:26px;accent-color:var(--pink);flex:none}
+
+  /* ---------- celebration ---------- */
+  .zoom{position:fixed;left:-160px;top:38%;width:110px;z-index:20;pointer-events:none;animation:zoomies 2.2s cubic-bezier(.45,.05,.55,.95) forwards}
+  .zoom::before{content:"";position:absolute;right:70%;top:30%;width:260px;height:40px;border-radius:20px;
+    background:linear-gradient(180deg,#FF5FA8 0 16%,#FF9F45 16% 33%,#FFD23C 33% 50%,#3FD98B 50% 66%,#46B3FF 66% 83%,#9B6BFF 83%);opacity:.85}
+  @keyframes zoomies{0%{left:-160px;transform:translateY(0)}20%{transform:translateY(-14px)}40%{transform:translateY(0)}60%{transform:translateY(-14px)}80%{transform:translateY(0)}100%{left:110vw}}
+  .heart{position:fixed;top:-30px;font-size:24px;z-index:19;pointer-events:none;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(110vh) rotate(260deg)}}
+</style>
+</head>
+<body>
+  <section id="home" class="screen on"></section>
+  <section id="play" class="screen"></section>
+  <section id="climb" class="screen"></section>
+  <section id="past" class="screen"></section>
+  <div id="overlay" class="overlay"><div class="sheet" id="sheet"></div></div>
+  <script type="module" src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+  </script>
+</body>
+</html>
