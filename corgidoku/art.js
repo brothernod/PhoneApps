@@ -1,12 +1,13 @@
 // Corgidoku art: Cheddar (a tailless red-and-white Pembroke), paw marks, treats.
 // All inline SVG strings so everything works offline.
 
-const RED = '#EC8B3E', LINE = '#7A3F1C', CREAM = '#FFF8EE', EYE = '#2A1810', PINK = '#F9A9BC', TONGUE = '#FF7D9C', BROW = '#F8C48F';
+const RED = '#DE9A52', LINE = '#7A4A22', CREAM = '#FFF9F1', EYE = '#2B1A10', EAR_IN = '#FBEFE4', EAR_PINK = '#F4CFC6', TONGUE = '#FF8AA5', NOSE_SPOT = '#B98C88';
 
 // Ear pieces in head space (200x200). Mirrored for the right ear.
 const earL = `<path d="M50 98 C40 72 32 44 36 22 C38 12 47 9 54 15 C68 28 82 50 90 68 Z" fill="${RED}" stroke="${LINE}" stroke-width="3.5" stroke-linejoin="round"/>
-  <path d="M54 86 C48 66 44 46 46 31 C49 26 54 27 58 32 C67 44 75 57 80 68 Z" fill="${PINK}"/>
-  <path d="M52 88 L55 74 L60 84 L63 70 L68 81 L72 69 L75 80" fill="none" stroke="${CREAM}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
+  <path d="M54 86 C48 66 44 46 46 31 C49 26 54 27 58 32 C67 44 75 57 80 68 Z" fill="${EAR_IN}"/>
+  <path d="M58 76 C54 62 52 48 53 38 C57 44 63 54 68 64 Z" fill="${EAR_PINK}"/>
+  <path d="M50 70 L57 74 M48 60 L55 66 M47 50 L53 57" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`;
 const mirror = (svg) => `<g transform="translate(200 0) scale(-1 1)">${svg}</g>`;
 
 // Face pieces in head space.
@@ -20,15 +21,15 @@ function face({ blink = false, happy = false } = {}) {
     ? `<path d="M88 141 C90 156 110 156 112 141 Z" fill="${TONGUE}" stroke="${LINE}" stroke-width="2.5" stroke-linejoin="round"/>`
     : `<path d="M95 144 C95 152 105 152 105 144 Z" fill="${TONGUE}"/>`;
   return `
-  <path d="M100 64 C95 78 92 92 90 104 C80 112 64 124 58 142 C70 162 86 169 100 169 C114 169 130 162 142 142 C136 124 120 112 110 104 C108 92 105 78 100 64 Z" fill="${CREAM}"/>
-  <ellipse cx="69" cy="95" rx="6" ry="3.5" fill="${BROW}" transform="rotate(-12 69 95)"/>
-  <ellipse cx="131" cy="95" rx="6" ry="3.5" fill="${BROW}" transform="rotate(12 131 95)"/>
+  <path d="M96 59 L104 59 C105 74 107 88 111 99 C124 106 138 118 152 136 C140 160 120 170 100 170 C80 170 60 160 48 136 C62 118 76 106 89 99 C93 88 95 74 96 59 Z" fill="${CREAM}"/>
+  <ellipse cx="80" cy="99" rx="8" ry="4.5" fill="${CREAM}" transform="rotate(-25 80 99)"/>
+  <ellipse cx="120" cy="99" rx="8" ry="4.5" fill="${CREAM}" transform="rotate(25 120 99)"/>
   ${eyes}
-  <ellipse cx="57" cy="134" rx="10" ry="6" fill="#FF8FAB" opacity=".45"/><ellipse cx="143" cy="134" rx="10" ry="6" fill="#FF8FAB" opacity=".45"/>
+  <ellipse cx="57" cy="134" rx="10" ry="6" fill="#FF9DB5" opacity=".35"/><ellipse cx="143" cy="134" rx="10" ry="6" fill="#FF9DB5" opacity=".35"/>
   ${mouth}
   <path d="M100 136 L100 141 M100 141 C97 147 90 147 87 142 M100 141 C103 147 110 147 113 142" stroke="${LINE}" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M91 128 C91 122 109 122 109 128 C109 133 104 137 100 137 C96 137 91 133 91 128 Z" fill="${EYE}"/>
-  <ellipse cx="96" cy="126" rx="3" ry="1.8" fill="#fff" opacity=".6"/>`;
+  <ellipse cx="100" cy="125.5" rx="5" ry="2.6" fill="${NOSE_SPOT}"/><ellipse cx="94.5" cy="128" rx="1.6" ry="1.1" fill="#fff" opacity=".5"/>`;
 }
 
 const headShape = `<path d="M100 58 C128 58 150 70 160 92 C166 104 172 112 181 121 L167 126 L175 138 L158 140 C146 160 124 171 100 171 C76 171 54 160 42 140 L25 138 L33 126 L19 121 C28 112 34 104 40 92 C50 70 72 58 100 58 Z" fill="${RED}" stroke="${LINE}" stroke-width="3.5" stroke-linejoin="round"/>`;
@@ -49,7 +50,7 @@ export function cheddarLoaf({ hat = '', happy = true } = {}) {
   <ellipse cx="30" cy="236" rx="18" ry="9" fill="${CREAM}" stroke="${LINE}" stroke-width="3"/>
   <ellipse cx="170" cy="236" rx="18" ry="9" fill="${CREAM}" stroke="${LINE}" stroke-width="3"/>
   <path d="M60 150 C42 172 44 220 58 238 L142 238 C156 220 158 172 140 150 Z" fill="${RED}" stroke="${LINE}" stroke-width="3.5" stroke-linejoin="round"/>
-  <path d="M68 152 L62 170 L73 167 L67 186 L79 182 L77 202 C86 218 114 218 123 202 L121 182 L133 186 L127 167 L138 170 L132 152 Z" fill="${CREAM}"/>
+  <path d="M62 150 L54 170 L66 168 L58 190 L70 188 L66 214 L134 214 L130 188 L142 190 L134 168 L146 170 L138 150 Z" fill="${CREAM}"/>
   <path d="M70 200 C70 192 92 192 92 200 L92 232 C92 240 70 240 70 232 Z" fill="${CREAM}" stroke="${LINE}" stroke-width="3"/>
   <path d="M108 200 C108 192 130 192 130 200 L130 232 C130 240 108 240 108 232 Z" fill="${CREAM}" stroke="${LINE}" stroke-width="3"/>
   <path d="M77 231 L77 237 M85 231 L85 237 M115 231 L115 237 M123 231 L123 237" stroke="${LINE}" stroke-width="2.4" stroke-linecap="round"/>
