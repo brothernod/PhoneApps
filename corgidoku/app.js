@@ -3,10 +3,10 @@ import { cheddarHead, cheddarLoaf, partyHat, paw, treat } from './art.js';
 
 // ---------- constants ----------
 const NAME = 'Halina';
-const VERSION = '1.3'; // bump with CACHE in sw.js on every release
+const VERSION = '1.4'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
-const EMPTY = 0, PAW = 1, AUTO = 2, CORGI = 3;
+const EMPTY = 0, PAW = 1, AUTO = 2, CORGI = 3, NOPE = 4; // NOPE = a wrong guess, shown as a red paw
 const STORE = 'corgidoku:v1';
 
 // ---------- storage ----------
@@ -179,7 +179,7 @@ function play(pid) {
   $('restart').onclick = () => confirmSheet('Start this puzzle over?', 'Your corgis and paw marks will be cleared.', () => { snapshot(); G.cells.fill(EMPTY); G.treats = 3; G.solved = false; persist(); drawBoard(); drawTreats(); say(''); startClock(); });
   $('undo').onclick = undo;
   $('hint').onclick = hint;
-  $('clearpaws').onclick = () => { snapshot(); G.cells = G.cells.map((v) => (v === CORGI ? v : EMPTY)); persist(); drawBoard(); };
+  $('clearpaws').onclick = () => { snapshot(); G.cells = G.cells.map((v) => (v === CORGI || v === NOPE ? v : EMPTY)); persist(); drawBoard(); };
   buildBoard();
   drawTreats();
   say(G.solved ? `You solved this one in ${clock(G.best)}! 🎉` : greeting());
@@ -217,15 +217,17 @@ function drawBoard() {
   const cells = $('board').children;
   for (let i = 0; i < cells.length; i++) {
     const v = G.cells[i], el = cells[i];
-    const want = v === CORGI ? 'c' : v === PAW ? 'p' : v === AUTO ? 'a' : '';
+    const want = v === CORGI ? 'c' : v === PAW ? 'p' : v === AUTO ? 'a' : v === NOPE ? 'n' : '';
     if (el.dataset.v === want) continue;
     el.dataset.v = want;
-    el.innerHTML = v === CORGI ? cheddarHead() : v === PAW ? paw(false) : v === AUTO ? paw(true) : '';
+    el.classList.toggle('nope', v === NOPE);
+    el.innerHTML = v === CORGI ? cheddarHead() : v === PAW || v === NOPE ? paw(false) : v === AUTO ? paw(true) : '';
   }
 }
 
-function drawTreats() {
+function drawTreats(justLost = false) {
   $('treats').innerHTML = db.settings.relaxed ? '<span>🌈 Relaxed</span>' : [0, 1, 2].map((i) => treat(i < G.treats)).join('');
+  if (justLost) $('treats').children[G.treats]?.classList.add('lost');
 }
 
 function drawClock() { $('clock').textContent = db.settings.timer ? '⏱ ' + clock(G.solved ? G.best : G.elapsed) : ''; }
@@ -289,6 +291,7 @@ function attachInput(board) {
 
 function tap(i) {
   const v = G.cells[i];
+  if (v === NOPE) return say('Cheddar already sniffed here: no corgi in this spot.', true);
   snapshot();
   if (v === EMPTY || v === AUTO) { G.cells[i] = PAW; persist(); drawBoard(); return; }
   if (v === CORGI) { G.cells[i] = EMPTY; persist(); drawBoard(); return; }
@@ -312,20 +315,23 @@ function placeCorgi(i) {
   if (sol[r] !== c) {
     // Explain with a visible rule if one applies.
     const clash = peers(i).find((j) => G.cells[j] === CORGI);
-    let why = 'Ruff! That spot doesn\'t work out. Try somewhere else.';
+    let why = 'No corgi belongs here. Cheddar marked it with a red paw.';
     if (clash !== undefined) {
       const rr = Math.floor(clash / n), cc = clash % n;
       why = rr === r ? 'Two corgis in one row? Too crowded!' : cc === c ? 'Two corgis in one column? Too crowded!'
         : reg[clash] === reg[i] ? 'That yard already has a corgi!' : 'Corgis need personal space, even diagonally!';
     }
-    G.cells[i] = PAW;
-    if (!db.settings.relaxed) { G.treats--; drawTreats(); }
+    G.cells[i] = NOPE;
+    if (!db.settings.relaxed) { G.treats--; drawTreats(true); }
+    persist();
+    // Show the corgi shaking on the spot, then swap it for the red paw.
     const el = $('board').children[i];
+    el.dataset.v = 'c';
+    el.innerHTML = cheddarHead();
     el.classList.remove('wrong'); void el.offsetWidth; el.classList.add('wrong');
-    setTimeout(() => el.classList.remove('wrong'), 700);
+    setTimeout(() => { el.classList.remove('wrong'); drawBoard(); }, 650);
     if (navigator.vibrate) navigator.vibrate(60);
-    say(why + (db.settings.relaxed ? '' : G.treats > 0 ? ` (${G.treats} treat${G.treats === 1 ? '' : 's'} left)` : ''));
-    persist(); drawBoard();
+    say(why + (db.settings.relaxed ? '' : G.treats > 0 ? ` ${G.treats} treat${G.treats === 1 ? '' : 's'} left.` : ''), true);
     if (!db.settings.relaxed && G.treats <= 0) outOfTreats();
     return;
   }
@@ -415,12 +421,14 @@ function celebrate() {
 
 // ---------- messages & sheets ----------
 let msgTimer = null;
-function say(text) {
+function say(text, alert = false) {
   const m = $('msg');
   if (!m) return;
   m.textContent = text;
+  m.classList.toggle('alert', alert);
   clearTimeout(msgTimer);
-  if (text) msgTimer = setTimeout(() => { if (m.textContent === text && !G?.solved) m.textContent = ''; }, 6000);
+  // Alerts stay until the next message; friendly chatter fades.
+  if (text && !alert) msgTimer = setTimeout(() => { if (m.textContent === text && !G?.solved) m.textContent = ''; }, 6000);
 }
 function sheet(html) { $('sheet').innerHTML = html; $('overlay').classList.add('on'); }
 function closeSheet() { $('overlay').classList.remove('on'); }
