@@ -3,14 +3,14 @@ import { cheddarHead, cheddarLoaf, partyHat, paw, treat } from './art.js';
 
 // ---------- constants ----------
 const NAME = 'Halina';
-const VERSION = '1.5'; // bump with CACHE in sw.js on every release
+const VERSION = '1.6'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
 const EMPTY = 0, PAW = 1, AUTO = 2, CORGI = 3, NOPE = 4; // NOPE = a wrong guess, shown as a red paw
 const STORE = 'corgidoku:v1';
 
 // ---------- storage ----------
-const defaults = { progress: {}, settings: { autoPaws: true, relaxed: false, timer: true, mode: 'cozy' }, seenHelp: false };
+const defaults = { progress: {}, settings: { autoPaws: true, relaxed: false, timer: true, mode: 'cozy', research: false }, seenHelp: false };
 let db;
 try { db = { ...defaults, ...JSON.parse(localStorage.getItem(STORE) || '{}') }; } catch { db = structuredClone(defaults); }
 db.settings = { ...defaults.settings, ...db.settings };
@@ -179,6 +179,10 @@ function play(pid) {
     elapsed: saved?.elapsed ?? 0,
     solved: !!saved?.solved,
     best: saved?.best,
+    mistakes: saved?.mistakes ?? 0,
+    hints: saved?.hints ?? 0,
+    rating: saved?.rating,
+    solvedAt: saved?.solvedAt,
     history: [],
   };
   if (G.solved) { G.cells = G.cells.map((v, i) => (G.sol[Math.floor(i / G.n)] === i % G.n ? CORGI : v === CORGI ? EMPTY : v)); }
@@ -264,7 +268,7 @@ function startClock() {
 function stopClock() { if (tick) clearInterval(tick); tick = null; if (G && !G.solved) persist(); }
 
 function persist() {
-  db.progress[G.pid] = { cells: G.cells.join(''), treats: G.treats, elapsed: Math.round(G.elapsed), solved: G.solved, best: G.best };
+  db.progress[G.pid] = { cells: G.cells.join(''), treats: G.treats, elapsed: Math.round(G.elapsed), solved: G.solved, best: G.best, mistakes: G.mistakes, hints: G.hints, rating: G.rating, solvedAt: G.solvedAt };
   save();
 }
 function snapshot() { G.history.push({ cells: G.cells.slice(), treats: G.treats }); if (G.history.length > 200) G.history.shift(); }
@@ -353,6 +357,7 @@ function placeCorgi(i) {
         : reg[clash] === reg[i] ? 'That yard already has a corgi!' : 'Corgis need personal space, even diagonally!';
     }
     G.cells[i] = NOPE;
+    G.mistakes++;
     if (!db.settings.relaxed) { G.treats--; drawTreats(true); }
     persist();
     // Show the corgi shaking on the spot, then swap it for the red paw.
@@ -386,6 +391,7 @@ function outOfTreats() {
 
 function hint() {
   if (G.solved) return;
+  G.hints++; persist();
   const { n, sol } = G;
   // Clear any wrong paw marks on solution cells first: that's the kindest hint.
   const badPaw = G.cells.findIndex((v, i) => v === PAW && sol[Math.floor(i / n)] === i % n);
@@ -404,6 +410,7 @@ function hint() {
 
 function win() {
   G.solved = true;
+  if (!G.solvedAt) G.solvedAt = todayISO();
   G.best = G.best ? Math.min(G.best, G.elapsed) : G.elapsed;
   stopClock(); persist(); drawClock();
   // Clear paws so the finished board shows just the corgis.
@@ -416,11 +423,49 @@ function win() {
     sheet(`<div style="width:150px;margin:0 auto">${cheddarLoaf()}</div><h3>Pawsome! 🎉</h3>
       <p>Solved in <b>${clock(G.elapsed)}</b>${G.kind === 'd' ? ` · streak <b>${streak()}</b> 🔥` : ''}</p>
       <p>${winLine()}</p>
+      ${db.settings.research ? ratingRow() : ''}
       ${hasNext ? '<button class="cta" id="next">Next hold 🧗‍♀️</button>' : ''}
       <button class="cta ${hasNext ? 'alt' : ''}" id="home3">Home</button>`);
     if (hasNext) $('next').onclick = () => { closeSheet(); play(C(nextLvl)); };
     $('home3').onclick = () => { closeSheet(); renderHome(); };
+    document.querySelectorAll('.rate button').forEach((b) => (b.onclick = () => {
+      G.rating = Number(b.dataset.r); persist();
+      document.querySelectorAll('.rate button').forEach((x) => x.classList.toggle('on', x === b));
+    }));
   }, 1700);
+}
+
+// ---------- field research ----------
+function ratingRow() {
+  return `<div class="rate"><b>How hard was that?</b>
+    <div>${[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((r) => `<button data-r="${r}" class="${G.rating === r ? 'on' : ''}">${r}</button>`).join('')}</div>
+    <small>1 = way too easy · 10 = brutal</small></div>`;
+}
+function rawPuzzle(pid) {
+  const [pre, key] = pid.split(':');
+  const m = Object.keys(MODES).find((k) => [MODES[k].d, MODES[k].c].includes(pre));
+  const d = DATA[m];
+  if (!d) return null;
+  const p = pre === MODES[m].d ? d.daily.find((x) => x.date === key) : d.campaign[Number(key) - 1];
+  return p ? { m, ...p } : null;
+}
+function report() {
+  const rows = Object.entries(db.progress)
+    .filter(([, p]) => p.solved)
+    .map(([pid, p]) => ({ pid, p, raw: rawPuzzle(pid) }))
+    .filter((x) => x.raw)
+    .sort((a, b) => (a.p.solvedAt || '').localeCompare(b.p.solvedAt || ''));
+  const lines = rows.map(({ pid, p, raw }) => [raw.m, pid, raw.n, raw.lv, raw.st, p.best != null ? Math.round(p.best) : '', p.mistakes ?? '', p.hints ?? '', p.rating ?? '', p.solvedAt ?? ''].join(','));
+  return { count: rows.length, rated: rows.filter((x) => x.p.rating).length,
+    text: `Corgidoku field report v${VERSION} · ${todayISO()} · ${rows.length} solved\nmode,id,size,lv,steps,secs,mistakes,hints,rating,date\n${lines.join('\n')}` };
+}
+async function sendReport() {
+  const r = report();
+  try {
+    if (navigator.share) { await navigator.share({ title: 'Corgidoku field report', text: r.text }); return; }
+  } catch (e) { if (e && e.name === 'AbortError') return; }
+  try { await navigator.clipboard.writeText(r.text); sheet(`<h3>Copied!</h3><p>The report is on your clipboard. Paste it into a text.</p><button class="cta" id="okc">OK</button>`); $('okc').onclick = closeSheet; }
+  catch { sheet(`<h3>Report</h3><textarea style="width:100%;height:40vh;font:12px ui-monospace,monospace">${r.text}</textarea><button class="cta" id="okc">Done</button>`); $('okc').onclick = closeSheet; }
 }
 
 function winLine() {
@@ -493,9 +538,12 @@ function settings() {
     <label class="toggle"><div>Auto paw marks<small>Mark spots a new corgi rules out</small></div><input type="checkbox" id="s-auto" ${s.autoPaws ? 'checked' : ''}></label>
     <label class="toggle"><div>Relaxed mode<small>Mistakes never cost treats</small></div><input type="checkbox" id="s-relax" ${s.relaxed ? 'checked' : ''}></label>
     <label class="toggle"><div>Show timer</div><input type="checkbox" id="s-timer" ${s.timer ? 'checked' : ''}></label>
+    <label class="toggle"><div>Field research mode 🔬<small>Rate how hard each puzzle felt, 1–10, to help tune the game</small></div><input type="checkbox" id="s-research" ${s.research ? 'checked' : ''}></label>
+    <button class="cta alt" id="s-report">📤 Send report <small>(${report().count} solved, ${report().rated} rated)</small></button>
     <button class="cta" id="s-done">Done</button>`);
+  $('s-report').onclick = () => { s.research = $('s-research').checked; save(); sendReport(); };
   $('s-done').onclick = () => {
-    s.autoPaws = $('s-auto').checked; s.relaxed = $('s-relax').checked; s.timer = $('s-timer').checked;
+    s.autoPaws = $('s-auto').checked; s.relaxed = $('s-relax').checked; s.timer = $('s-timer').checked; s.research = $('s-research').checked;
     save(); closeSheet();
   };
 }

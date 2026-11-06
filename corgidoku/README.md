@@ -39,6 +39,10 @@ node tools/generate.mjs --pool-sizes 9,10 --pool-grade hard --pool-count 100 --p
 
 Then rebuild with that pool (`--pool tools/pool-hard.json`), verify, and commit.
 
+## Field research reports
+
+Settings → Field research mode asks for a 1–10 difficulty rating after each solve. Send report shares one CSV line per solved puzzle: `mode,id,size,lv,steps,secs,mistakes,hints,rating,date`. `lv` and `steps` come from the grader, so ratings vs `lv`/`steps` show how well the grader's difficulty matches how hard it felt.
+
 ## Releasing
 
 Bump `VERSION` in `app.js` and `CACHE` in `sw.js` together. The version shows faintly at the bottom of the home screen; tap it to clear the cache and reload.
