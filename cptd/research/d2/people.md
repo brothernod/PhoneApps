@@ -1,5 +1,7 @@
 # Leadership development & coaching (2.6.6, 2.6.8, 2.7.2, 2.7.3)
 
+Gap fill: 2026-11-08, 21 web calls, resolved 8 of 11 (1 more partly). Resolved: SMART (Doran's original letters, via a secondary source); IDP quality characteristics (ATD); action learning's six components (Marquardt, T+D); licensure vs certification, registration and recertification (ICE); Registered Apprenticeship components (DOL); ICF core competencies (2025); GROW co-creator credit (Fine's firm); who grants a certification (ICE). Partly: sourcing (ATD build-vs-buy post, visible part only; "borrow" not seen). Open: the Seven Cs' own definitions; 360 feedback and assessment centers. The over-budget calls went on the extra models requested for this pass. Other Unverified lines (Haneberg, SBI, Zenger and Folkman editions, Winkle Giulioni definitions, 70-20-10 origin, CCL countries) were not retried. Edits are marked "(gap fill)".
+
 Statements (from `scope.md`, handbook codes in brackets):
 - 2.6.6 [2.6.B] Knowledge of how to develop and implement qualification programs.
 - 2.6.8 [2.6.A] Skill in sourcing, designing, building, and evaluating leadership development experiences.
@@ -18,6 +20,15 @@ Sources used (numbered, so entries can cite [S1] and so on):
 - [S9] Key Insights from the Extraordinary Leader, J. Zenger and J. Folkman, Zenger Folkman, © 2019 (excerpted from The Extraordinary Leader, 2nd ed., McGraw-Hill), https://zengerfolkman.com/wp-content/uploads/2023/05/Key_Insights_From_EL_Zenger_Folkman.pdf. Tier: 3 original author
 - [S10] Promotions Are So Yesterday (product page), J. Winkle Giulioni, ATD, 2022, https://www.td.org/product/book--promotions-are-so-yesterday/112202. Tier: 3 original author (ATD publisher page)
 - [S11] What's the 70-20-10 Framework? (70-20-10 rule), Center for Creative Leadership, n.d. (based on research by C. McCauley), https://www.ccl.org/articles/leading-effectively-articles/70-20-10-rule/. Tier: 3 original author/owner
+- [S12] A Brief History of SMART Goals, Project Smart, n.d., https://www.projectsmart.co.uk/brief-history-of-smart-goals.php. Quotes fragments of G. T. Doran, "There's a S.M.A.R.T. way to write management's goals and objectives", *Management Review* 70(11), 35–36, 1981 (the article itself was not fetched). Tier: other (secondary source quoting the original) (gap fill)
+- [S13] Are Your Employees Creating High-Quality IDPs?, ATD Blog (no author named), Sep 4 2013, https://td.org/content/atd-blog/are-your-employees-creating-high-quality-idps. Tier: other (ATD td.org) (gap fill)
+- [S14] Build Versus Buy: Lessons From Peers, ATD Blog (no author named; reports a 2023 ATD Forum Spring Lab discussion among 19 companies), Jul 25 2023, https://td.org/atd-blog/build-versus-buy-lessons-from-peers. Visible part only (members-only paywall). Tier: other (ATD td.org) (gap fill)
+- [S15] Harnessing the Power of Action Learning, M. Marquardt, *T+D* magazine, June 2004, pp. 26–32, https://assets.td.org/m/20bfa311256de1d3/original/Harnessing-the-Power-of-Action-Learning.pdf. Tier: 3 original author (ATD publication) (gap fill)
+- [S16] Basic Guide to Credentialing Terminology, J. Knapp, L. Fabrey, M. Rops and N. McCurry, Institute for Credentialing Excellence, October 2006 (copy hosted by SSIH, 2025), https://ssih.org/sites/default/files/2025-03/ICE%20Basic%20Guide%20to%20Credentialing%20Terminology.pdf. Tier: 3 standards body (gap fill)
+- [S17] Registered Apprenticeship Program (employer page), U.S. Department of Labor, apprenticeship.gov, n.d., https://apprenticeship.gov/employers/registered-apprenticeship-program. Tier: 3 owner (gap fill)
+- [S18] 2025 ICF Core Competencies, International Coaching Federation, September 2025 (rev. 09.08.25), https://coachingfederation.org/wp-content/uploads/2025/09/icf-cs-core-competencies-2025.pdf. Tier: 3 owner (gap fill)
+- [S19] Alan Fine: Developing the GROW Model, The Inner Game (Alan Fine's firm; no individual author), n.d., https://theinnergame.com/alan-fine-developing-the-grow-model/. Tier: 3 (a co-creator's own firm) (gap fill)
+- [S20] Everyday Coaching (product page), ATD, https://td.org/product/111719. Confirms publication August 2017, 168 pages, ISBN 9781562869939; no Seven Cs content. Also tried: O'Reilly's chapter 1 preview, https://oreilly.com/library/view/everyday-coaching-using/9781562866877/OEBPS/c01.htm, which only says the chapter's examples "illustrate the seven Cs". Tier: 3 publisher page (gap fill)
 
 Wording check: the 2025 handbook prints 2.7.A in full as "Skill in helping individuals or teams identify goals, develop realistic action plans, seek development opportunities, and monitor progress and accountability." (fetched 2026-11-08 in two quoted segments; nothing omitted between them). [S2]
 
@@ -48,6 +59,7 @@ The two 2.7 reading-list books serve both 2.7 statements. Everyday Coaching is e
 - Confusables: GROW (Goal, Reality, Options, Will) also has an "options" step; Haneberg's coaching model (also has goals, agreement, action planning); the "Seven Cs of communication" (a different, unrelated list).
 - Variants or contested points: the reading list spells the title "Every Day Coaching"; the book is "Everyday Coaching". The O'Reilly page names the seven only through chapter titles; the count of seven matches the seven C-verbs in those titles, but the book's own one-word labels (e.g. "Collect" vs "Collect Data") weren't seen.
 - Unverified: the authors' own one-line definitions of each C (paraphrases above are inferred from the chapter titles only). Whether the book presents the Cs as strictly sequential or as a navigable cycle ("Navigating" suggests the latter). Authors should test only the seven names and their order.
+- Gap fill: still unresolved. Tried the O'Reilly chapter 1 preview (it only says the examples "illustrate the seven Cs"; the rest is paywalled) and ATD's product page (no Seven Cs content; it confirms August 2017, 168 pages). [S20] A search for the authors' own definitions found no tier 1–3 page. The count of seven still rests on the chapter titles alone. Caution: ATD describes the model as a tool for giving feedback, making agreements and guiding behavior (paraphrase) [S3][S20], so agreement-type items (ICF's "Establishes and Maintains Agreements" [S18], Haneberg's "Gain Agreement" [S4]) are not safe decoys on a Seven Cs card.
 
 ### Haneberg's coaching model (Coaching Basics)
 - Origin: Lisa Haneberg, *Coaching Basics*, 2nd ed., 2016, ATD Press (Training Basics series), ch. 2 "A Coaching Model". Draws on a survey of about 40 experienced coaches. [S4]
@@ -100,10 +112,64 @@ The two 2.7 reading-list books serve both 2.7 statements. Everyday Coaching is e
 - Confusables: Seven Cs (Create Options); Haneberg's model (Clarify Goals, Action Planning); SMART goals (used inside the G stage); "Way forward" or "What/When/Whom" versions of W.
 - Variants or contested points: W is often given as "Way Forward" (common in UK and NHS materials) or "What will you do"; the owner's page uses Will. [S6] Origin is often credited jointly to Graham Alexander, Alan Fine and Whitmore; the owner's page credits only "Sir John Whitmore and his peers". [S6] The owner's page says GROW is used "in conjunction with" core coaching skills, not "in isolation", and frames coaching as "collaborative" rather than "command and control". [S6]
 - Unverified: Whitmore's book's guidance that sessions may start with Reality when the goal is unclear, and his "awareness and responsibility" principle (general knowledge; not on the fetched page). Stage definitions above are general paraphrase; the owner's page doesn't define them.
+- Credit (gap fill): Alan Fine's firm calls Fine, Alexander and Whitmore "co-creators of the GROW model". [S19] It says the three worked together "for three years in the early 1980s", inspired by Tim Gallwey's Inner Game, then each went on to use his own version. [S19] The page gives surnames only, so "Graham" Alexander isn't confirmed there. It doesn't spell out the letters either, so W = "Will" still rests on [S6].
+- Contested (gap fill): the decade differs. Performance Consultants says late 1980s [S6]; Fine's firm says early 1980s [S19]. Each firm also leans on its own founder. Safe to test: the three co-creators and Whitmore's *Coaching for Performance* as the book that popularized it. Don't test the decade or a single "inventor".
+
+### SMART goals (Doran's original) (gap fill)
+- Origin: George T. Doran, "There's a S.M.A.R.T. way to write management's goals and objectives", *Management Review* 70(11), pp. 35–36, 1981 (S12 dates the acronym's first appearance to November 1981). The article itself wasn't fetched; the letters below are as quoted by a secondary source. [S12]
+- Tie to the exam: general knowledge for 2.7.2 ("identify goals, develop realistic action plans"). Not on the 2025 reading list and no TDBoK link shown. A targeted search for ATD's own SMART usage returned no td.org page, so ATD's preferred wording is unknown. The `design` shard lists "SMART objectives" as a confusable but has no source for it; this entry can serve both (use `kin`).
+- Suggested tag: extra
+- Kind: ordered acronym (letter order S-M-A-R-T; not a sequence of steps)
+- Items, in the source's own terms (Doran's 1981 words as quoted by [S12]):
+  1. Specific: aim at a specific area for improvement. [S12]
+  2. Measurable: quantify progress, or at least suggest an indicator of it. [S12]
+  3. Assignable: "specify who will do it." [S12]
+  4. Realistic: state what results can realistically be achieved with the resources available. [S12]
+  5. Time-related: specify when the result can be achieved. [S12]
+- Principle: Doran said the acronym "doesn't mean that every objective written will have all five criteria". [S12]
+- Confusables: Mager's three-part objectives and ABCD objectives (`design`/`learn` shards; those are learning objectives, not goals); GROW's Goal stage; IDP "Actionable" and "Alignment" characteristics [S13].
+- Variants or contested points: later versions swap in other words. [S12] mentions "agreed-upon" and "achievable or attainable" for A, and SMARTER (adding Evaluated and Reviewed), but credits no one. The common modern reading "Achievable, Relevant, Time-bound" isn't Doran's; [S12] doesn't mention "Relevant" at all. Because the exam may use a modern version, don't write a question whose key depends on A = Assignable vs Achievable, or R = Realistic vs Relevant, unless both the stem and options name Doran 1981 explicitly.
+- Unverified: Doran's exact wording (secondary source only); who introduced each variant; which version ATD uses.
+
+### Individual development plan (IDP): five characteristics of a high-quality IDP (gap fill)
+- Origin: ATD Blog, "Are Your Employees Creating High-Quality IDPs?", September 4, 2013 (no author named; the author refers to their own Lunch & Learn sessions on an "OPM-prescribed IDP planning process", so it's written from a U.S. federal context). [S13]
+- Tie to the exam: general knowledge for 2.7.2 (goals, action plans, development opportunities) and 2.7.3 (supervisors guiding IDP discussions). ATD td.org, but not on the reading list and no TDBoK link shown.
+- Suggested tag: extra
+- Kind: set (a checklist of qualities, no order)
+- Definition: an IDP is a tool to "identify and plan for training and other developmental experiences", aligning the employee's goals, strengths and development areas with suitable activities. [S13]
+- Items, in the source's own terms:
+  1. Robust: includes challenging development activities. [S13]
+  2. Variety: mixes formal, informal, relationship, experiential and instructive activities. [S13]
+  3. Structure: contains the key parts, such as activities, competencies, skills, goals and the resources to reach them. [S13]
+  4. Alignment: matches the organization's goals and requirements. [S13]
+  5. Actionable: can be achieved within the full development cycle. [S13]
+- Roles: employees use the checklist to check their own IDP; supervisors use it to guide IDP discussions and review employees' plans. [S13]
+- Confusables: SMART (goal criteria, not IDP qualities); 70-20-10 (the Variety mix resembles it, but [S13] doesn't mention 70-20-10, so don't link them in a question); Winkle Giulioni's seven growth dimensions.
+- Variants or contested points: this is one blog's checklist, not a standard IDP model. [S13] gives no list of IDP sections and no creation steps.
+- Unverified: standard IDP sections or steps, and the OPM process itself (not described). Test only the five characteristic names and the definition.
+
+### ICF core competencies (2025) (gap fill)
+- Origin: International Coaching Federation, "2025 ICF Core Competencies", released September 2025 (rev. 09.08.25). [S18]
+- Tie to the exam: general knowledge for 2.7 (ICF is the coaching profession's credentialing body). Not on the 2025 reading list; no TDBoK link shown.
+- Suggested tag: extra
+- Kind: set of eight, numbered 1–8 and grouped into four lettered domains (the numbering is ICF's, not a process sequence)
+- Items, in the source's own terms (paraphrased definitions):
+  1. Demonstrates Ethical Practice: understands and consistently applies coaching ethics and standards. [S18]
+  2. Embodies a Coaching Mindset: keeps an open, curious, flexible, client-centered mindset; keeps learning as a coach; works with coaching supervisors or mentor coaches as needed. [S18]
+  3. Establishes and Maintains Agreements: partners with the client and relevant stakeholders on clear agreements about the relationship, process, plans and goals, for the whole engagement and for each session. [S18]
+  4. Cultivates Trust and Safety: partners with the client on a safe, supportive environment where the client can share freely; mutual respect and trust. [S18]
+  5. Maintains Presence: is fully conscious and present, with an open, flexible, grounded and confident style. [S18]
+  6. Listens Actively: focuses on what the client is and is not saying, in the context of the client's systems, to support self-expression. [S18]
+  7. Evokes Awareness: "Facilitates client insight and learning by using tools and techniques" such as powerful questioning, silence, metaphor or analogy. [S18]
+  8. Facilitates Client Growth: "Partners with the client to transform learning and insight into action", promoting client autonomy. [S18]
+- Groups: A. Foundation → 1–2; B. Co-Creating the Relationship → 3–5; C. Communicating Effectively → 6–7; D. Cultivating Learning and Growth → 8. [S18]
+- Confusables: Haneberg's "Gain Agreement" and "Clarify Goals" [S4]; Seven Cs; GROW. "Evokes Awareness" vs "Facilitates Client Growth": awareness and insight vs turning insight into action.
+- Variants or contested points: the 2025 update came from a 14-month job analysis of nearly 3,000 coaches. It added no new main competencies, but added five sub-competencies, revised 11, updated one competency definition and added a glossary. [S18] Which definition changed wasn't identified. The fetch mixed definitions with some sub-competency lines (item 2 especially), so test the eight names, their domains and the 2–3–2–1 grouping, not exact definition wording.
+- Unverified: 2019-vs-2025 wording differences; ICF credential levels (not fetched).
 
 ## 2.6.6: Qualification programs
 
-No ATD reading-list title covers this, and the TDBoK chapter wasn't available. The only ATD material found treats "qualification" through credentials: certificate programs vs certification. Authors should keep questions to the distinctions below.
+No ATD reading-list title covers this, and the TDBoK chapter wasn't available. The only ATD material found treats "qualification" through credentials: certificate programs vs certification. Authors should keep questions to the distinctions below. (Gap fill: licensure, registration and recertification are now sourced from ICE [S16], and Registered Apprenticeship from DOL [S17]. Both are standards-body or owner sources, not ATD, so they carry `extra`.)
 
 ### Certificate program vs certification
 - Origin: ATD blog post "Distinctions Between Certification and Certificate Programs", Feb 21, 2013, drawing on a November 2010 *T+D* article and an Infoline by Sara Bushman (February 2013). No blog author named. [S7]
@@ -116,6 +182,7 @@ No ATD reading-list title covers this, and the TDBoK chapter wasn't available. T
 - Confusables: certificate of attendance/participation (no assessment); licensure (government-mandated to practice); accreditation (applies to programs or organizations, not individuals); digital badges. None of these are in the fetched ATD text.
 - Variants or contested points: the original comparison table (who awards, expiry, recertification, role analysis) was an image and could not be read. [S7]
 - Unverified: everything about who awards each, recertification, or job-analysis basis. Don't test those from this source.
+- Gap fill: partly resolved from ICE [S16]. Certification is granted by a non-governmental entity, is voluntary and time-limited, and is kept up through recertification (see the licensure entry below). Still not shown: job analysis as the stated basis of certification exams ([S16] defines job analysis but, as fetched, doesn't make that link).
 
 ### Steps for building a certificate program (ATD Infoline outline)
 - Origin: Sara Bushman, ATD Infoline (February 2013), as previewed on the ATD blog. [S7]
@@ -144,6 +211,39 @@ No ATD reading-list title covers this, and the TDBoK chapter wasn't available. T
 - Confusables: ATD's two-way certificate vs certification split [S7] (same idea, fewer types). Licensure and accreditation (not on this page). CPTD itself is a certification (tests existing competence, awards a designation), which makes a good worked example.
 - Variants or contested points: ICE's full guidance document lists 12 distinctions; not fetched. [S8]
 - Unverified: licensure (government permission to practice), ISO/IEC 17024, recertification and job/practice analysis (role delineation) as the basis of certification exams. These are general knowledge, not on the fetched page.
+- Gap fill: licensure and recertification are now sourced [S16] (next entry). Job/practice analysis is defined there, but not tied to exam design. ISO/IEC 17024 is still unsourced.
+
+### Licensure vs certification, and related credentialing terms (ICE) (gap fill)
+- Origin: Institute for Credentialing Excellence, *Basic Guide to Credentialing Terminology* (Knapp, Fabrey, Rops and McCurry, October 2006; several definitions are cited to a 2005 ICE guide). [S16]
+- Tie to the exam: general knowledge for 2.6.6 (choosing what kind of qualification a program confers). Not ATD; not on the reading list.
+- Suggested tag: extra
+- Kind: set (contrasting terms)
+- Items, in the source's own terms:
+  1. Licensure: "The mandatory process by which a governmental agency grants time-limited permission" to an individual (to practice). [S16]
+  2. Certification: "The voluntary process by which a non-governmental entity grants" time-limited recognition and use of a credential. [S16]
+  3. Registration: a governmental process granting time-limited status on a registry, based on set requirements. The guide also gives a second sense: a government listing with no competency requirements. [S16]
+  4. Recertification: the requirements and procedures, set as part of a certification program, that certificants must meet to show continuing competence and renew their certification. [S16]
+  5. Accreditation: approval of an educational program against defined standards (general use); the 2005 ICE sense is a voluntary process granting time-limited recognition to an entity (not an individual). [S16]
+  6. Job analysis / practice analysis / role delineation study: any of several methods, alone or combined, for identifying the performance domains and their tasks, knowledge and skills. [S16]
+- Key contrast: licensure is mandatory and governmental; certification is voluntary and non-governmental. Both are time-limited. [S16]
+- Confusables: certificate program and certificate of attendance (previous entries); the ATD blog's two-way split [S7]. CPTD is a worked example of certification: voluntary, granted by a non-governmental body (ATD CI) and renewed through recertification. That's an inference from the definitions, not stated in [S16].
+- Variants or contested points: the 2006 guide defines a certificate program as training on a topic after which attendees receive a certificate, usually with no credential granted, and doesn't use the term "assessment-based". ICE's current page [S8] instead describes an assessment-based certificate with an assessment of the learning outcomes. Use [S8] for certificate programs and [S16] for licensure, registration and recertification. The 2006 guide is old; current ICE wording may differ.
+- Unverified: apprenticeship and "credential" (neither is defined in [S16]); ISO/IEC 17024.
+
+### Registered Apprenticeship: five components (U.S. DOL) (gap fill)
+- Origin: U.S. Department of Labor, apprenticeship.gov, "Registered Apprenticeship Program" employer page. The page calls Registered Apprenticeship an industry-driven, high-quality career pathway, and says programs are "validated by the U.S. Department of Labor or a State Apprenticeship Agency". [S17]
+- Tie to the exam: general knowledge for 2.6.6 (apprenticeship as a qualification route combining work and instruction and ending in a credential). Not ATD; no TDBoK link shown.
+- Suggested tag: extra
+- Kind: set (five components, no order)
+- Items, in the source's own terms:
+  1. Industry Led: industry vets and approves programs so they meet industry standards for in-demand, skilled occupations. [S17]
+  2. Paid Job: apprentices are employees whose wages rise as their skills and productivity grow ("Apprenticeships are jobs!"). [S17]
+  3. Structured On-the-Job Learning/Mentorship: organized hands-on training guided by an experienced mentor. [S17]
+  4. Supplemental Education: classroom instruction tailored to the employer's training needs. [S17]
+  5. Credentials: a portable, nationally recognized industry credential. [S17]
+- Confusables: cognitive apprenticeship (a learning-theory method in the `learn` shard; unrelated to Registered Apprenticeship); OJT; certificate programs (instruction plus assessment, but no paid job).
+- Variants or contested points: other DOL or state pages may use other labels, such as "related instruction" or "wage progression". This page doesn't use those labels and lists wage increases under Paid Job. Use this page's five names.
+- Unverified: U.S.-only scope (international apprenticeship models aren't covered); minimum hours or durations; ATD's own treatment of apprenticeships (none found).
 
 ## 2.6.8: Leadership development experiences (sourcing, designing, building, evaluating)
 
@@ -253,15 +353,50 @@ No ATD reading-list title covers this, and the TDBoK chapter wasn't available. T
 - Confusables: 70-20-10 (umbrella; put in `kin`); stretch assignments in UMN supervisor guidance [S5].
 - Unverified: the countries studied and the full list of experiences (only the five "universally important" ones are named on the page).
 
+### Build vs buy: sourcing TD solutions from an external supplier (ATD Forum peer lessons) (gap fill)
+- Origin: ATD Blog, "Build Versus Buy: Lessons From Peers", July 25, 2023 (no author named), reporting a 2023 ATD Forum Spring Lab discussion among 19 companies. Only the part before the paywall was read. [S14]
+- Tie to the exam: the "sourcing" part of 2.6.8. ATD td.org, but not on the reading list, and the visible text treats build-or-buy for TD solutions in general rather than leadership programs specifically.
+- Suggested tag: extra
+- Kind: set (decision factors, not a named model)
+- Core point: build-or-buy isn't either-or. Options run from fully outsourcing to partnering with an outside source for only some components. [S14] The decision affects budget, people, support, time, employee results and organizational success. [S14]
+- Items, in the source's own terms (paraphrased):
+  - Reasons to use an external supplier: diversity of thought and expertise (credibility the organization lacks); wider networks for ideas, people and solutions, including mentorships; speed ("Time to market can be much faster."); an existing model or tool that makes metrics and ROI easier to show; a dedicated team maintaining content. [S14]
+  - Reasons not to: the supplier may not understand the organization's context; executive buy-in can be hard; cost, especially when the burden rate is treated as a sunk cost; risk from internal leadership changes or the vendor being acquired; contract setup time (legal, compliance, IT); expertise that may not transfer across industries. [S14]
+  - Selection criteria (two questions): will the offering really meet the need (ask for demos or pilots; notice how the supplier probes your needs)? Can the supplier be a thought partner in your context (client references, a sample scenario, published work or thought leadership)? [S14]
+  - Tools named: the Value Proposition Canvas (clarify needs before engaging a supplier); Cathy Moore's action mapping (define the problem internally first); burden rate (cost of an employee beyond wages, for cost comparisons). [S14]
+- Confusables: talent "build, buy, borrow" (hiring strategy, a different decision); make-or-buy in procurement generally; action mapping (a `design` topic).
+- Variants or contested points: the visible text never uses "borrow" or "blended". "Build vs buy vs borrow" as a named three-way model for leadership development is unsourced here.
+- Unverified: the rest of the article (paywalled); leadership-specific sourcing criteria; any ATD use of "borrow". Don't write a "three options" card from this file.
+
+### Action learning: six components (Marquardt) (gap fill)
+- Origin: Michael Marquardt, "Harnessing the Power of Action Learning", *T+D* (ATD's magazine), June 2004. Action learning is learning by "real people resolving and taking action on real problems in real time". Marquardt credits Reg Revans, who first introduced it in the coal mines of Wales and England in the 1940s, and notes that many variations have developed since. [S15]
+- Tie to the exam: 2.6.8 (designing leadership development experiences). Marquardt presents action learning as a major way to develop leaders and calls conventional programs "ineffective and expensive". Examples include Boeing's global leadership program, Novartis, Deutsche Bank and Fairfax County Public Schools principals. [S15] ATD publication, not on the 2025 reading list; no TDBoK link shown.
+- Suggested tag: extra
+- Kind: set (six components; [S15] numbers them, but they're elements, not steps)
+- Items, in the source's own terms:
+  1. A problem: a significant, urgent issue, project or task that the group is responsible for solving and that offers learning. [S15]
+  2. An action learning group or team: usually four to eight people with diverse backgrounds. [S15]
+  3. A process of questioning and reflection: insightful questions and reflective listening take priority over statements and opinions; the group clarifies (reframes) the problem before choosing actions. [S15]
+  4. Taking action on the problem: members must be able to act themselves, or be sure their recommendations will be carried out. [S15]
+  5. A commitment to learning: individual and team learning get equal weight, and lessons are applied across the organization. [S15]
+  6. An action learning coach: helps the group learn rather than solve the problem; may step in at any time to ask questions; the role can rotate or stay with one person. [S15]
+- Other points: recommendation-only groups lose energy and commitment, so recommendations should be implemented. GE's practice sets clear limits on what's open to change, and sponsors respond positively to recommendations unless they're illegal, unethical or out of bounds. [S15]
+- Confusables: executive or performance coaching (the action learning coach focuses on the group's learning, not on the problem or an individual's goals); Kolb's cycle and reflection models (`learn` shard); 70-20-10 (action learning is often classed as experiential, but [S15] doesn't make that link).
+- Variants or contested points: Marquardt's six-component version is one of several; [S15] notes there are many variations of Revans's approach. Use Marquardt's six names when a question is about the components.
+- Unverified: Revans's own formulation; the World Institute for Action Learning's current wording (wial.org documents appeared in search results but weren't fetched).
+
 ## Open questions
 
-Things authors must not guess at, and gaps this file doesn't fill (web budget reached at 22 calls):
+Things authors must not guess at, and gaps this file doesn't fill (first pass: 22 web calls; gap fill: 21 more):
 
 1. **TDBoK coverage of 2.6 and 2.7 was not seen.** No model in this file can carry `tdbok`. The strongest tag shown is `reflist` (Zenger and Folkman, Winkle Giulioni, Haneberg, Bianco-Mathis and Nabors).
-2. **Qualification programs (2.6.6) is thinly sourced.** ATD's only fetched material treats it as certificate programs vs certification. What the TDBoK means by "qualification programs" (for example credentialing, apprenticeships, job qualification or OJT sign-off) is unknown. Don't write questions about apprenticeships, licensure, digital badges, recertification or job/role analysis from this file.
-3. **Sourcing leadership development (2.6.8 "sourcing")**: no source fetched for build vs buy vs partner decisions, vendor selection criteria, or evaluating leadership programs. Evaluation models (Kirkpatrick, Phillips) belong to the `eval` shard; reuse those rather than inventing a leadership-specific evaluation model.
-4. **Not researched, and not in this file (don't add from memory):** SMART goals (including Doran's 1981 original wording), individual development plan (IDP) components, ICF core competencies, Kouzes and Posner's Five Practices, Situational Leadership, the leadership pipeline (Charan), action learning (Revans or Marquardt), mentoring vs coaching distinctions, coaching culture models, and CCL's assessment–challenge–support (ACS) model. Any of these needs a fresh source before authoring. SMART is the most likely fit for 2.7.2 ("realistic action plans"); it's worth one targeted lookup.
+2. **Qualification programs (2.6.6) is still thinly sourced from ATD.** ATD's only fetched material treats it as certificate programs vs certification. (Gap fill) Licensure, certification, registration, accreditation, recertification and job analysis now have ICE definitions [S16], and Registered Apprenticeship has DOL's five components [S17]; test those only at the level of those definitions. Still unknown: what the TDBoK means by "qualification programs" (for example OJT sign-off or job qualification), digital badges, ISO/IEC 17024, and job analysis as the stated basis of certification exams. Don't write questions on those.
+3. **Sourcing leadership development (2.6.8 "sourcing")**: (gap fill) partly covered by ATD's build-vs-buy post [S14] (visible part only; general TD solutions, not leadership-specific). "Borrow" as a third option and any leadership-specific vendor criteria are still unsourced. For evaluating leadership programs, Kirkpatrick and Phillips belong to the `eval` shard; reuse those rather than inventing a leadership-specific evaluation model.
+4. **Not researched, and not in this file (don't add from memory):** Kouzes and Posner's Five Practices, Situational Leadership, the leadership pipeline (Charan), mentoring vs coaching distinctions, coaching culture models, CCL's assessment–challenge–support (ACS) model, **360-degree feedback** and **assessment centers** (requested for this gap fill but not searched: the web budget ran out), and Revans's own formulation of action learning. Any of these needs a fresh source before authoring. (Gap fill: SMART, IDPs, ICF core competencies and Marquardt's action learning are now in the file.)
 5. ***Leaders Start to Finish*** (Bruce and Montanez, 2012) is on the 2.6 reading list, but its content wasn't fetched. If it has a named road map or stages, it's missing here.
-6. **Seven Cs vs seven career dimensions**: both are ATD books with seven C-words on adjacent capabilities. A "which model?" card on either is likely ambiguous for a test-taker; prefer `pick` or `order` cards, or add both to `kin`.
+6. **Seven Cs vs seven career dimensions**: both are ATD books with seven C-words on adjacent capabilities. A "which model?" card on either is likely ambiguous for a test-taker; prefer `pick` or `order` cards, or add both to `kin`. (Gap fill) The Seven Cs' own definitions are still unseen; test names and order only.
 7. **Haneberg's model ordering** depends on table-of-contents sub-headings; items 2 and 3 are probably alternative entry points. Don't build an `order` card that depends on their relative order.
-8. **Possible duplicates with other shards or Domain 1**: SBI and Zenger and Folkman (Domain 1, 1.3), and 70-20-10 (`learn`/`design`). Check before adding, and use `kin` if they're kept in two places.
+8. **Possible duplicates with other shards or Domain 1**: SBI and Zenger and Folkman (Domain 1, 1.3), and 70-20-10 (`learn` has a gap-filled ATD version; `design`). (Gap fill) Also SMART: `design` lists "SMART objectives" as a confusable without a source, so use this file's entry and `kin`. Check before adding, and use `kin` if they're kept in two places.
+9. **SMART version (gap fill).** Doran's 1981 letters are Specific, Measurable, Assignable, Realistic, Time-related [S12], but the exam may use a modern version, and ATD's preferred wording wasn't found. Don't key a question on A or R alone unless the item names Doran 1981.
+10. **GROW origin (gap fill).** Performance Consultants says late 1980s [S6]; Fine's firm says early 1980s, with Fine, Alexander and Whitmore as co-creators [S19]. Don't test the decade or a single inventor.
+11. **ICF 2025 vs 2019 (gap fill).** The eight competency names and four domains are confirmed for 2025 [S18]; which definition changed in 2025 wasn't identified. Don't write "what changed in 2025" questions beyond "no new main competencies".

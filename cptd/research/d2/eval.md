@@ -1,4 +1,5 @@
 # Evaluating impact (2.8.1, 2.8.3, 2.8.4)
+Gap fill: 2026-11-08, 18 web calls, resolved 8 of 12 (2 more partly: required-driver categories, CIPP; still open: Kaufman, interview structure types)
 
 Statements (full wording from `scope.md`, which takes it from the CPTD Certification Handbook 2025):
 - 2.8.1 (2.8.A): Knowledge of models and methods to evaluate the impact of learning and talent development solutions.
@@ -20,6 +21,16 @@ Sources used (numbered, so entries can cite [S1] and so on):
 - [S10] Elevating Extension Educational Program Impact, Mississippi State University Extension, n.d., https://extension.msstate.edu/publications/elevating-extension-educational-program-impact (cites Thalheimer, W., 2018, *The Learning-Transfer Evaluation Model: Sending Messages to Enable Learning Effectiveness*). Tier: other (university extension publication summarising the original).
 - [S11] "A Better Framework for L&D Measurement and Analytics," ATD Blog, January 11, 2021 (by the authors of *Measurement Demystified: Creating Your L&D Measurement, Analytics, and Reporting Strategy*, David Vance & Peggy Parskey), https://www.td.org/content/atd-blog/a-better-framework-for-l-d-measurement-and-analytics. Tier: other (ATD publication, not ATD CI; summarises the original authors' framework).
 
+Added in the gap fill (2026-11-08):
+- [S12] Kirkpatrick Model Workbook 1, Kirkpatrick Partners, n.d. (shows only "©KIRKPATRICK PARTNERS"; uploaded 2024-03), https://kirkpatrickpartners.com/wp-content/uploads/2024/03/Kirkpatrick-Model-Workbook-1.pdf. Tier: 3 original author. Calls the model "THE KIRKPATRICK MODEL OF TODAY" (not "New World").
+- [S13] "Demonstrating the Impact and ROI of Learning & Talent Development" (participant slides), Patti P. Phillips, ROI Institute, dated 10/19/22, © 2022, https://roiinstitute.net/wp-content/uploads/2022/10/2022.10.24-Demonstrating-the-Impact-and-ROI-of-Learning-and-Talent-Development_Participants.pdf. Tier: 3 original author (Patti Phillips is the reading-list author [S1]). Newest of the three ROI Institute sources here.
+- [S14] *Telling Training's Story* (excerpt), Robert O. Brinkerhoff, Berrett-Koehler, book 2006, excerpt © 2009, https://www.bkconnection.com/static/Telling_Trainings_Story_EXCERPT.pdf. Tier: 3 original author (the SCM book written for training).
+- [S15] *The Learning-Transfer Evaluation Model: Sending Messages to Enable Learning Effectiveness* (report), Will Thalheimer, Work-Learning Research, Version 12, February 2018 (updated May 2018), https://worklearning.com/wp-content/uploads/2018/02/Thalheimer-The-Learning-Transfer-Evaluation-Model-Report-for-LTEM-v12.pdf. Tier: 3 original author. (An earlier one-page Version 11a also exists on worklearning.com; not fetched.)
+- [S16] "CIPP evaluation model checklist" (resource page), BetterEvaluation, n.d., https://www.betterevaluation.org/tools-resources/cipp-evaluation-model-checklist. Describes Stufflebeam, D. L. (2007), *CIPP Evaluation Model Checklist: A tool for applying the CIPP Model to assess long-term enterprises* (Evaluation Checklists Project; the PDF it cites is on wmich.edu). Tier: other (evaluation-methods site describing the original; lists its contents but does not define them).
+- [S17] "Evaluation Framework, Design, and Reports," supplement to *Training & Development Journal* (ASTD, now ATD), July 1990, pp. S-15 to S-23, no author named, https://assets.td.org/m/72c5bd2542ff21d0/original/Evaluation-Framework-Design-and-Reports.pdf. Tier: other (ATD publication archive on assets.td.org; not ATD CI; old).
+- [S18] Maher, J. H., Jr. & Kur, C. E., "Constructing Good Questionnaires," *Training and Development Journal*, June 1983, pp. 100–108, https://assets.td.org/m/46f7e48ebc0c45c3/original/Constructing-Good-Questionnaires.pdf. Tier: other (ATD publication archive; not ATD CI; old).
+- [S19] Phillips, P. P., Phillips, J. J. & Aaron, B., *Survey Basics: A Guide to Developing Surveys and Questionnaires* (ASTD Training Basics Series), ASTD Press, 2013, excerpt at https://roiinstitute.net/wp-content/uploads/2020/02/Survey-Basics.pdf (ATD product page: https://www.td.org/product/book--survey-basics-a-guide-to-developing-surveys-and-questionnaires/111319). Tier: 3 original author (Patti Phillips, reading-list author) and ATD Press; not itself on the reading list. Fetch covered the first 100,000 of 116,103 characters; the validity/reliability section (p. 123) was not in it.
+
 ## 2.8.1: Models and methods to evaluate impact
 
 Tie note for this whole statement: the statement names no models. The reading list [S1] puts two evaluation books under 2.8: the Kirkpatricks' *Four Levels of Training Evaluation* (2016) and Patti Phillips's *ATD's Handbook for Measuring and Evaluating Training* (2nd ed., 2025). Kirkpatrick and Phillips models are therefore `reflist`. The Success Case Method has a chapter in the Kirkpatrick reading-list book [S2], so it is also `reflist` (via that book). Nothing below could be tied to the TDBoK text itself, because the TDBoK sample chapter covers Domain 1 only; no model here is tagged `tdbok`.
@@ -35,8 +46,8 @@ Tie note for this whole statement: the statement names no models. The reading li
   3. Behavior: the degree to which participants apply what they learned once they are back on the job. [S4]
   4. Results: the degree to which targeted outcomes occur because of the learning event(s) and the follow-up reinforcement. [S4]
 - Groups: none in the source. [S2] defines two umbrella terms that loosely map to the levels: "effective training" (well-received training that provides relevant knowledge and skills, i.e., Levels 1–2) and "training effectiveness" (training plus follow-up leading to improved job performance, i.e., Levels 3–4). The mapping to levels is our inference; the definitions are from the preface.
-- Confusables: Phillips ROI Methodology (adds Level 5 ROI; some sources also add a "Level 0 Input", unconfirmed; Phillips's Level 1 is "Reaction and Planned Action", Level 3 is "Application and Implementation", Level 4 is "Impact" not "Results"); Kaufman's Five Levels (adds societal outcomes); LTEM (8 tiers, explicitly written as an alternative). "Results" (Kirkpatrick L4) vs "Impact" (Phillips L4) is a classic word swap.
-- Variants or contested points: Original (1959) definitions were narrower: Level 1 measured only "customer satisfaction" with the training [S4]. The New World Kirkpatrick Model (Jim and Wendy Kirkpatrick) keeps the four level names and adds sub-components (next entry). Whether Kirkpatrick is a "hierarchy" or a causal chain is a commonly debated point; the Kirkpatrick sources fetched do not use the word hierarchy. The levels are sometimes called "steps"; Kirkpatrick Partners says "levels".
+- Confusables: Phillips ROI Methodology (adds Level 5 ROI; Phillips's own 2022 deck [S13] also numbers a "Level 0" Input(s); Phillips's Level 1 is "Reaction and Planned Action", Level 3 is "Application and Implementation", Level 4 is "Impact" not "Results"); Kaufman's Five Levels (adds societal outcomes); LTEM (8 tiers, explicitly written as an alternative). "Results" (Kirkpatrick L4) vs "Impact" (Phillips L4) is a classic word swap.
+- Variants or contested points: Original (1959) definitions were narrower: Level 1 measured only "customer satisfaction" with the training [S4]. ATD's own 1990 *Training & Development Journal* supplement [S17] gives the classic four-level wording: Reaction = how well participants liked the program; Learning = the knowledge, principles, facts and techniques gained; Behavior = positive changes in job behavior; Results = organizational effects such as reduced costs and better quality or quantity of work. (Gap fill: corroborates the older, narrower definitions; the level names are unchanged.) The New World Kirkpatrick Model (Jim and Wendy Kirkpatrick) keeps the four level names and adds sub-components (next entry). Whether Kirkpatrick is a "hierarchy" or a causal chain is a commonly debated point; the Kirkpatrick sources fetched do not use the word hierarchy. The levels are sometimes called "steps"; Kirkpatrick Partners says "levels".
 - Unverified: Exact original 1959 wording of each level (the articles themselves were not fetched).
 
 ### New World Kirkpatrick Model (sub-components by level)
@@ -62,11 +73,11 @@ Tie note for this whole statement: the statement names no models. The reading li
     11. On-the-job learning: ongoing learning at work, included because most learning happens on the job and depends on personal responsibility and motivation. [S4]
   - Level 4 Results:
     12. Leading indicators: short-term observations and measurements suggesting critical behaviors are on track to create a positive impact on desired results (examples: customer satisfaction, employee engagement, sales volume, cost containment, quality, market share). [S4]
-    13. Desired results / targeted outcomes: the Level 4 outcomes themselves. [S4] uses "targeted outcomes" and "desired results"; it does not list a formal second Level 4 sub-component name.
-- Groups: by level, as above.
+    13. Desired results: the Level 4 outcomes themselves. [S12] names exactly two elements under Results: "Desired Result" and "Leading Indicator". [S4] uses "targeted outcomes" and "desired results" in prose. (Gap fill: confirmed as a formal Level 4 component in [S12]; the earlier "not a formal sub-component" note is withdrawn.)
+- Groups: by level, as above. [S12] (Kirkpatrick Partners' workbook) shows no sub-components for Levels 1–3, only the level names, and puts Required Drivers between Behavior and Results; it calls the model "THE KIRKPATRICK MODEL OF TODAY".
 - Confusables: "Customer satisfaction" appears both as a Level 1 sub-component and as an example leading indicator at Level 4 [S4] — avoid questions that depend on only one placement. Level 2 "confidence" and "commitment" were added by the New World model and are not in the original. "Required drivers" (Kirkpatrick) vs Phillips's "barriers and enablers" (Level 3 data).
-- Variants or contested points: Some secondary sources state Level 4 sub-components as "leading indicators" and "desired outcomes"; [S4] treats leading indicators under Level 4 but does not formally name a second item. Use "leading indicators" as the only safe Level 4 item.
-- Unverified: The 2016 book's own chapter 2 text (not available); exact year New World model was introduced.
+- Variants or contested points: Level 4 has two components, "Leading Indicator" and "Desired Result" [S12]. Secondary sources' "desired outcomes" is a paraphrase; use the source term "desired results". Kirkpatrick Partners' newer material [S12] says "The Kirkpatrick Model of Today" where older material [S3] [S4] says "New World Kirkpatrick Model"; the reading-list book (2016) uses "New World" [S2]. Use "New World" in questions, and don't make the model's name the answer.
+- Unverified: The 2016 book's own chapter 2 text (not available); exact year New World model was introduced; the year of [S12].
 
 ### Kirkpatrick required drivers (four functions)
 - Origin: Jim & Wendy Kirkpatrick, New World Kirkpatrick Model. [S4] [S5]
@@ -79,10 +90,10 @@ Tie note for this whole statement: the statement names no models. The reading li
   3. Encourage. [S4] [S5]
   4. Reward. [S4] [S5] ([S4] describes drivers as processes and systems that reinforce, monitor, encourage and reward critical behaviors.)
 - Examples given: job aids, coaching, work review, pay-for-performance systems, recognition. [S4]
-- Groups: None in the fetched sources. Secondary sources often split them into "support" (reinforce, encourage, reward) and "accountability" (monitor); this is NOT confirmed in [S4] or [S5].
+- Groups: two categories exist. Kirkpatrick Partners' workbook [S12] shows the labels "Support" and "Accountability" under Required Drivers, and defines drivers as processes and systems that "reinforce, monitor, encourage and reward performance of critical behaviors" [S12]. It does NOT say which of the four verbs belongs to which label. Secondary sources put reinforce, encourage and reward under support and monitor under accountability; that membership is still unconfirmed in a Kirkpatrick source. (Gap fill: the category names are now sourced; membership is not.)
 - Confusables: the four drivers vs the five Level 2 sub-components; vs Phillips's isolation techniques; vs Brinkerhoff's "performance system" factors.
-- Variants: [S4] orders them reinforce, monitor, encourage, reward; [S5] orders them reinforcement, encouragement, monitoring and reward. Order is not meaningful.
-- Unverified: support/accountability grouping (see above).
+- Variants: [S4] and [S12] order them reinforce, monitor, encourage, reward; [S5] orders them reinforcement, encouragement, monitoring and reward. Order is not meaningful.
+- Unverified: which driver sits in "support" vs "accountability". Safe to test: the two category names exist [S12], and the four verbs are the drivers' functions [S4] [S12]. Not safe: "monitor is an accountability driver".
 
 ### Kirkpatrick Foundational Principles (five)
 - Origin: Kirkpatrick Partners (Jim & Wendy Kirkpatrick), © 2010–2018. [S5] Chapter 4 of the reading-list book is titled "The Kirkpatrick Foundational Principles." [S2]
@@ -104,7 +115,8 @@ Tie note for this whole statement: the statement names no models. The reading li
 - Tie to the exam: 2.8.1. On ATD's reading list under 2.8 (Patti Phillips, *ATD's Handbook for Measuring and Evaluating Training*, 2nd ed., 2025). [S1]
 - Suggested tag: reflist
 - Kind: ordered, lowest to highest (each level builds on the one below; higher levels are more valuable to executives and costlier to measure).
-- Items, in the source's own terms [S6]:
+- Items, in the source's own terms [S6] (Level 0 from [S13]):
+  0. Input(s): [S13] numbers "Level 0" with the label "Inputs" (table) / "INPUT" (diagram). The deck gives only the label. What Level 0 contains (commonly who attended, how many, for how long, at what cost) is not in a fetched source.
   1. Reaction: participants' reaction to the program. [S6]
   2. Learning: learning what is necessary to make the program successful. [S6]
   3. Application: application of what is necessary to make the program successful (on the job). [S6]
@@ -112,37 +124,37 @@ Tie note for this whole statement: the statement names no models. The reading li
   5. ROI: return on investment, expressed as a benefit-cost ratio and a percent. [S6]
 - Groups: [S6]'s process steps put "Input, Reaction, and Learning" together (step 4) and "Application and Impact" together (step 5).
 - Confusables: Kirkpatrick's four levels (Phillips L1–L3 align with Kirkpatrick L1–L3; Phillips L4 is "Impact", Kirkpatrick L4 is "Results"; only Phillips has L5 ROI). Kirkpatrick ROE vs Phillips ROI.
-- Variants or contested points: The ROI Institute fold-out [S7] uses the longer level names **Level 1: Reaction and Planned Action**, Level 2: Learning, **Level 3: Application and Implementation**, Level 4: Impact, Level 5: ROI. These long names are the safest for exam wording (they are the ROI Institute's official model). Neither [S6] nor [S7] numbers a "Level 0: Input" as a level; "Input" appears only in process step 4 ("Design for Input, Reaction, and Learning") and [S7] has a stray "Level 0" in a timing note. Many secondary sources (and some Phillips books) describe Input as "Level 0"; treat that as a variant. Phillips's model is sometimes described as "Kirkpatrick plus a fifth level"; ROI Institute presents it as its own methodology.
+- Variants or contested points: The ROI Institute fold-out [S7] uses the longer level names **Level 1: Reaction and Planned Action**, Level 2: Learning, **Level 3: Application and Implementation**, Level 4: Impact, Level 5: ROI. Patti Phillips's 2022 deck [S13] agrees: its table reads Level 0 "Inputs", Level 1 "Reaction & Planned Action", Level 2 "Learning", Level 3 "Application & Implementation", Level 4 "Impact", Level 5 "Return on Investment". Its diagram shortens Level 3 to "APPLICATION" and Level 5 to "ROI". These long names are the safest for exam wording. **Level 0 (gap fill, changed):** [S13] numbers Level 0 Input(s) explicitly, so Level 0 is part of Phillips's current model, not just a secondary-source variant. [S6] and [S7] don't number it ("Input" appears only in process step "Design for Input, Reaction, and Learning", plus a stray "Level 0" in a timing note in [S7]), so the five-level presentation also remains current. Whether the 2025 ATD handbook on the reading list shows Level 0 is still unchecked. Phillips's model is sometimes described as "Kirkpatrick plus a fifth level"; ROI Institute presents it as its own methodology.
 - Best-practice share of programs evaluated at each level [S7]: L1 90–100%, L2 60–90%, L3 30–40%, L4 10–20%, L5 5–10%. (The fold-out calls these best-practice minimums; secondary sources quote slightly different figures.)
-- Unverified: "Level 0" as a numbered level; the 1983 origin date.
+- Unverified: what Level 0 Input contains; whether the 2025 ATD handbook numbers it; the 1983 origin date. Safe: "Phillips's model can include a Level 0, Input" [S13]. Not safe: a question whose key needs Phillips to have exactly five or exactly six levels.
 
 ### Phillips ROI Methodology: ROI Process Model (12 steps in four phases)
 - Origin: Jack J. Phillips & Patti P. Phillips, ROI Institute (*Value for Money*, 2020). [S6]
 - Tie to the exam: 2.8.1, reading-list author [S1].
 - Suggested tag: reflist
 - Kind: ordered (sequence of an evaluation project).
-- Items, in the source's own terms [S6]:
+- Items, in the source's own terms (gap fill, changed: order and step 3 wording now follow [S7] and [S13], two of the three ROI Institute sources including the newest; wording otherwise [S6]):
   - Plan the Evaluation:
     1. Start with Why: Align Programs with the Business.
     2. Make it Feasible: Select the Right Solution.
-    3. Expect Success: Design for Results.
+    3. Expect Success: Plan for Results. ([S7] [S13]; [S6] says "Design for Results".)
   - Collect Data:
     4. Make it Matter: Design for Input, Reaction, and Learning.
     5. Make it Stick: Design for Application and Impact.
   - Analyze Data:
-    6. Make it Credible: Isolate the Effects of the Program.
+    6. Make it Credible: Isolate the Effects of the Program. ([S13] "Isolate the Effects".)
     7. Make it Credible: Convert Data to Monetary Value.
-    8. Make it Credible: Identify Intangible Measures.
-    9. Make it Credible: Capture Costs of Program.
-    10. Make it Credible: Calculate the Return on Investment.
+    8. Make it Credible: Capture Costs of Program. ([S13] "Tabulate Costs of Program".)
+    9. Make it Credible: Calculate the Return on Investment. ([S13] "Calculate ROI".)
+    10. Make it Credible: Identify Intangible Measures. ([S13] "Identify Intangibles"; [S6] puts this step at 8, before costs.)
   - Optimize Results:
     11. Tell the Story: Communicate Results to Key Stakeholders.
     12. Optimize the Results: Use Black Box Thinking to Increase Funding.
-- Groups: four phases as above. The fetch tool reported steps 1–5 all under "Plan the Evaluation" with Collect Data covered "within steps 4 and 5"; the phase boundary between Plan and Collect is therefore uncertain. Do not write questions that hinge on whether steps 4–5 are "planning" or "data collection".
+- Groups: four phases as above. [S13] has the same four phase names in capitals (PLAN THE EVALUATION, COLLECT DATA, ANALYZE DATA, OPTIMIZE RESULTS) but doesn't number the steps or map them to phases in its text. The fetch tool reported steps 1–5 all under "Plan the Evaluation" with Collect Data covered "within steps 4 and 5"; the phase boundary between Plan and Collect is therefore uncertain. Do not write questions that hinge on whether steps 4–5 are "planning" or "data collection".
 - Confusables: The older ROI Process Model (widely taught, e.g., in ATD's 2010 *ASTD Handbook of Measuring and Evaluating Training*) has about 10 steps in four phases: evaluation planning (objectives, plans), data collection (during and after the program), data analysis (isolate effects, convert to money, tabulate costs, calculate ROI, identify intangibles), reporting. Not confirmed in this pass.
-- Variants: older 10-step vs this 12-step version. Which version the 2025 reading-list handbook uses is not confirmed. The fold-out [S7] differs from [S6] in two places: step 3 reads "Expect Success: Plan for Results" (not "Design for Results"), and it places Identify Intangible Measures *after* Calculate Return on Investment (as step 10) where [S6] has it as step 8; [S7] shows only 11 labeled steps in its flow. The four phase names (Plan the Evaluation, Collect Data, Analyze Data, Optimize Results) agree in both. Authors: test phase names and the step *themes* (isolate, convert, costs, ROI, intangibles, communicate), not exact step numbers 8–10.
+- Variants: older 10-step vs this 12-step version. Which version the 2025 reading-list handbook uses is not confirmed. The fold-out [S7] differs from [S6] in two places: step 3 reads "Expect Success: Plan for Results" (not "Design for Results"), and it places Identify Intangible Measures *after* Calculate Return on Investment (as step 10) where [S6] has it as step 8; [S7] shows only 11 labeled steps in its flow. **Gap fill tie-break:** Patti Phillips's 2022 deck [S13] sides with [S7] on both points. It uses "Expect Success: Plan for Results", and its Analyze Data steps read isolate → convert → tabulate costs → calculate ROI → identify intangibles. Caveat: [S13]'s page text isn't in step order overall (it puts "Expect Success" ninth, an artefact of the diagram layout), so it supports only the order within the Analyze Data block. The four phase names agree in all three sources. Authors: test phase names, the step *themes* (isolate, convert, costs, ROI, intangibles, communicate) and "intangibles come after the ROI calculation" (2 of 3 sources). Don't test exact step numbers 8–10 or the step 3 tagline.
 - Data collection methods by level, per [S7]: Level 2 (Learning) — feedback questionnaires, tests/exercises, performance demonstrations, performance observation, case studies, simulations, peer and self assessment, skill/confidence-building exercises. Level 4 (Impact) — follow-up surveys, questionnaires, observations, interviews, focus groups, action planning, performance contracting, performance records (plus isolation methods such as control groups, trend line analysis, mathematical modeling and estimates).
-- Unverified: older 10-step version; which version the reading-list book uses.
+- Unverified: older 10-step version; which version the reading-list book uses; the order of steps 11 and 12 (from [S6] only).
 
 ### Phillips ROI and BCR formulas
 - Origin: ROI Institute. [S6]
@@ -220,60 +232,64 @@ Tie note for this whole statement: the statement names no models. The reading li
 - "Chain of impact": [S6] says the challenge is to collect data "along a chain of impact"; it does not define the term further. Do not confuse with Kirkpatrick's "chain of evidence."
 
 ### Brinkerhoff Success Case Method (SCM)
-- Origin: Robert O. Brinkerhoff, *The Success Case Method: Find Out Quickly What's Working and What's Not*, Berrett-Koehler, 2003. [S8] [S9] (Brinkerhoff's related book *Telling Training's Story*, 2006, applies it to training; not fetched.)
+- Origin: Robert O. Brinkerhoff, *The Success Case Method: Find Out Quickly What's Working and What's Not*, Berrett-Koehler, 2003. [S8] [S9] His *Telling Training's Story* (Berrett-Koehler, 2006; excerpt © 2009) applies it to training. [S14]
 - Tie to the exam: 2.8.1. Chapter 13 of the reading-list Kirkpatrick book is "Using the Success Case Method to Drive Performance and Results." [S1] [S2] Brinkerhoff himself is not on the 2.8 reading list.
 - Suggested tag: reflist (via the Kirkpatrick book chapter)
 - Kind: ordered (five steps of a study, in sequence).
-- Items, in the source's own terms (step wording from [S9], which cites Brinkerhoff 2003; [S8]'s excerpt names chapter 2 "The SCM Steps" but its list was not in the excerpt):
-  1. Focusing and planning a Success Case study. [S9]
-  2. Creating an "impact model" that defines what success should look like. [S9] [S8] has a chapter "Envisioning Success: Creating an Impact Model."
-  3. Designing and implementing a survey to search for best and worst cases. [S9]
-  4. Interviewing and documenting success cases. [S9]
-  5. Communicating findings, conclusions, and recommendations. [S9]
-- Groups: [S8] describes two basic parts: (1) locate potential success cases, often with a survey (usage records, performance data or simply asking people also work); (2) interview the identified cases, first to screen whether each is a real success, then to document it. [S8]
+- Items. The count is now from Brinkerhoff: [S14] refers to "the five steps in planning and implementing a SCM evaluation." Step wording is from [S9] (which cites Brinkerhoff 2003). The matching chapter titles of Brinkerhoff's own book [S14] (chs. 4–9) are in brackets; mapping chapters to steps is our reading.
+  1. Focusing and planning a Success Case study. [S9] [S14 ch. 4: "Focusing and Planning a Success Case Method Study"]
+  2. Creating an "impact model" that defines what success should look like. [S9] [S14 ch. 5: "Constructing a Simple Training Impact Model"; S8 ch. "Envisioning Success: Creating an Impact Model"]
+  3. Designing and implementing a survey to search for best and worst cases. [S9] [S14 ch. 6: "Fishing for Success Conducting the SCM Survey" (punctuation lost in the text extraction); ch. 7: "Sorting the 'Catch'—Analyzing Survey Results"]
+  4. Interviewing and documenting success cases. [S9] [S14 ch. 8: "Digging Out and Telling the Stories—the SCM Interviews"]
+  5. Communicating findings, conclusions, and recommendations. [S9] [S14 ch. 9: "Drawing Compelling Conclusions"; the excerpt has no chapter titled "communicating"]
+- Groups: [S8] describes two basic parts, and [S14] titles chapter 2 "How the Success Case Method Works: Two Basic Steps": (1) locate potential success cases, often with a survey (usage records, performance data or simply asking people also work); (2) interview the identified cases, first to screen whether each is a real success, then to document it. [S8] So "two basic steps" (the method's core) and "five steps" (planning and running a full study) are both Brinkerhoff's; a question must say which it means.
 - Key ideas [S8]:
   - Definition: a relatively quick, easy way to find out what is and is not working. [S8] "quick and easy method of finding out what is working"
   - It compares the most successful and least successful cases (extremes, not averages). [S9] "identifying the most and least successful cases in a program"
   - Four basic questions it answers: what is really happening; what results the program is producing; what those results are worth; how the initiative could be improved. [S8]
-  - Training alone is rarely sufficient: in the book's example, success also needed a pay incentive and coaching. [S8] "The training alone was not sufficient."
+  - Training alone is rarely sufficient: in the book's example, success also needed a pay incentive and coaching. [S8] "The training alone was not sufficient." [S14] puts it more strongly: "Training alone is never the sole factor in bringing about improved performance." Other factors it names: the manager's support and coaching, follow-up materials, job aids, incentives, market conditions, office procedures. [S14]
+  - It does not estimate what percentage of the impact came from training. It aims to show that training made a necessary, important difference and to identify the other factors involved. [S14]
   - Uses stories (case evidence) rather than statistics as the main output, to show concrete models for others.
-- Confusables: Kirkpatrick chain of evidence; Phillips isolation methods (SCM does not attempt to isolate effects statistically). Brinkerhoff also wrote about "high-impact learning" (*High Impact Learning*, 2001) — a different model.
-- Variants: Some sources describe the steps with slightly different verbs (e.g., "Focus and plan", "Create an impact model", "Design and implement a survey", "Interview and document", "Communicate findings"). Count is consistently five.
-- Unverified: the five step names in Brinkerhoff's own words (taken from [S9], a tier "other" summary of the book); the SCM chapter in the Kirkpatrick book was not read.
+  - Brinkerhoff's own one-line pitch: the SCM "measures and evaluates training sensibly—accurately, simply, and quickly." [S14]
+- Confusables: Kirkpatrick chain of evidence; Phillips isolation methods (SCM does not attempt to isolate effects statistically). [S14] contrasts the SCM with control-group experiments (a "gold standard" it calls too impractical and costly for most organizations), quasi-experimental designs such as utility analysis, Phillips's ROI methods (which it calls time-consuming and expensive and reliant on extrapolation) and "smile sheets". Brinkerhoff also wrote about "high-impact learning" (*High Impact Learning*, 2001), a different model.
+- Variants: Some sources describe the steps with slightly different verbs (e.g., "Focus and plan", "Create an impact model", "Design and implement a survey", "Interview and document", "Communicate findings"). Count is five in all sources, now including Brinkerhoff [S14].
+- Unverified: a list of the five step names in Brinkerhoff's own words (the [S14] excerpt gives the count and chapter titles, not a list). The fifth step's name is the weakest: "communicating" [S9] vs "drawing compelling conclusions" [S14 chapter]. Don't test the fifth step's exact verb. The SCM chapter in the Kirkpatrick book was not read.
 
 ### LTEM: Learning-Transfer Evaluation Model (Thalheimer)
-- Origin: Will Thalheimer, *The Learning-Transfer Evaluation Model: Sending Messages to Enable Learning Effectiveness*, 2018 (Work-Learning Research). [S10]
+- Origin: Will Thalheimer, *The Learning-Transfer Evaluation Model: Sending Messages to Enable Learning Effectiveness*, Work-Learning Research, Version 12, February 2018 (updated May 2018). [S15] [S10]
 - Tie to the exam: 2.8.1 by general knowledge only. Not on the 2.8 reading list [S1]; not shown in the TDBoK.
 - Suggested tag: extra
 - Kind: ordered, lowest to highest (Tier 1 is the weakest evidence of learning effectiveness, Tier 8 the strongest).
-- Items, in the source's own terms (names per [S10]):
-  1. Attendance: signing up, starting, sitting through and completing learning; flagged as inadequate to validate learning. [S10] "inadequate to validate learning outcomes"
-  2. Activity: learners' participation, interest and engagement in learning activities; also flagged inadequate. [S10]
-  3. Learner Perceptions: learners' reports of motivation to apply, satisfaction, likelihood to recommend; hints at outcomes but not enough on its own. [S10]
-  4. Knowledge: knowing facts, terminology, concepts, processes; measured right after training (recitation) or days later (retention). [S10]
-  5. Decision-Making Competence: making realistic work decisions, typically tested with scenarios. [S10]
-  6. Task Competence: deciding and then acting (performing the task), not just deciding. [S10]
-  7. Transfer: using the learning on the job; two forms, assisted transfer (still needs help) and full transfer (no additional help). [S10]
-  8. Effects of Transfer: the results of transfer, beyond the learner. [S10] (In Thalheimer's original, effects on learners, coworkers, the organization, community and society/environment; not confirmed in [S10], which frames it as social, environmental and economic benefits.)
-- Groups: [S10] flags Tiers 1–2 as inadequate. Thalheimer's original one-page diagram also groups tiers by colour; not confirmed here.
-- Confusables: Kirkpatrick L1 (Reaction) ≈ LTEM Tier 3 (Learner Perceptions); Kirkpatrick L2 (Learning) splits into LTEM Tiers 4–6; Kirkpatrick L3 (Behavior) ≈ Tier 7 (Transfer); Kirkpatrick L4 (Results) ≈ Tier 8 (Effects of Transfer). Thalheimer designed LTEM as an alternative to Kirkpatrick (a critic of the four-level model). Do not confuse "Learner Perceptions" with Kirkpatrick "Reaction" in a question that asks for the LTEM term.
-- Variants: In Thalheimer's own version, Tiers 4–6 each split into a "recitation"/"remembrance" sub-level and a retention-type sub-level (e.g., Knowledge Recitation vs Knowledge Retention; Decision-Making Competence and Task Competence each tested immediately vs after delay). [S10] gives recitation vs retention only for Knowledge. Version history (several 2018 revisions) not checked.
-- Unverified: exact sub-level names for Tiers 4–6; Tier 8 sub-items; colour grouping. All tier names come from a tier "other" source [S10], not from Thalheimer directly.
+- Items, in the source's own terms (gap fill: names and sub-levels now from Thalheimer's own report [S15]; descriptions from [S10] unless marked):
+  1. Attendance: signing up, starting, sitting through and completing learning. [S10] [S15] calls Tiers 1 and 2 "completely inadequate in validating our learning results."
+  2. Activity: learners' engagement in learning activities. [S15] names three kinds of activity measure: attention, interest, participation. Also completely inadequate. [S15]
+  3. Learner Perceptions: learners' reports (e.g., motivation to apply, satisfaction, likelihood to recommend). [S10] Two sub-levels [S15]: **3A**, queries that reveal insights related to learning effectiveness (can hint at effectiveness but should be supplemented with objective measures), and **3B**, queries that don't (inadequate). [S15]
+  4. Knowledge: knowing facts, terminology, concepts, processes. Sub-levels [S15]: **Knowledge Recitation** (right after learning) and **Knowledge Retention** (after a delay). Both are "usually inadequate" to validate learning. [S15]
+  5. Decision Making Competence: making realistic work decisions, typically tested with scenarios. [S10] Sub-levels [S15]: **Decision Making Competence** and **Remembered Decision Making Competence** (after a delay).
+  6. Task Competence: deciding and then acting (performing the task), not just deciding. [S10] Sub-levels [S15]: **Task Competence** and **Remembered Task Competence**.
+  7. Transfer: using the learning on the job. Sub-levels [S15]: **Assisted Transfer** (still needs help) and **Full Transfer** (no additional help). [S10] [S15]
+  8. Effects of Transfer: outcomes of transfer, affecting "(a) learners, (b) coworkers/family/friends, (c) organization, (d) community, (e) society, and (f) the environs" [S15]. No sub-levels. [S15]
+- Groups: [S15] colour-codes methods red (poor or inadequate), yellow (mediocre) and green (good or useful), and notes that colour meanings vary by culture. Its text does not say which tiers get which colour, so don't test colours. The adequacy judgments above (1–2 completely inadequate; 3B inadequate; 4 usually inadequate) are from the text and are safe.
+- Confusables: Kirkpatrick L1 (Reaction) ≈ LTEM Tier 3 (Learner Perceptions); Kirkpatrick L2 (Learning) splits into LTEM Tiers 4–6; Kirkpatrick L3 (Behavior) ≈ Tier 7 (Transfer); Kirkpatrick L4 (Results) ≈ Tier 8 (Effects of Transfer). (This mapping is our reading, not from [S15].) Thalheimer designed LTEM as an alternative to Kirkpatrick (a critic of the four-level model). Do not confuse "Learner Perceptions" with Kirkpatrick "Reaction" in a question that asks for the LTEM term. Tier 5/6 "Remembered …" sub-levels vs Tier 4 "Retention": same idea (delay), different words.
+- Variants: (gap fill, changed) the delayed sub-levels of Tiers 5–6 are "Remembered …", not "retention", and Tier 3 also has sub-levels (A/B). [S15] prints "Decision Making Competence" without the hyphen that [S10] uses; don't test the hyphen. Earlier versions exist (e.g., one-page Version 11a); this file follows Version 12.
+- Unverified: which colour each tier carries; any version after v12.
 
-### CIPP Model (Stufflebeam) — UNVERIFIED ENTRY
-- Origin: Daniel L. Stufflebeam, developed late 1960s (commonly dated 1966–1971), later maintained as the CIPP Evaluation Model Checklist at Western Michigan University's Evaluation Center. Not fetched in this pass (web budget).
+### CIPP Model (Stufflebeam) — PARTLY VERIFIED (component names only; definitions unverified)
+- Origin: Daniel L. Stufflebeam. The 2007 *CIPP Evaluation Model Checklist* (Evaluation Checklists Project; PDF on wmich.edu, i.e., Western Michigan University) is confirmed via [S16], which calls it a tool for evaluating programs with relatively long-term goals. The model's late-1960s origin (commonly 1966–1971) is not confirmed in a fetched source.
 - Tie to the exam: 2.8.1 by general knowledge only; scope.md lists it as likely. Not on the 2.8 reading list [S1].
 - Suggested tag: extra
 - Kind: set of four evaluation types (usually presented in this order, which follows a program's life cycle from planning to results).
-- Items (general knowledge, not source-checked):
+- Items (names: Context, Input, Process confirmed as checklist topics [S16]; "Product" itself and every definition below are general knowledge, not source-checked):
   1. Context: assesses needs, problems, assets and opportunities to define goals and priorities.
   2. Input: assesses alternative approaches, plans, resources and budgets.
   3. Process: assesses implementation of the plan (is it being done as planned?).
-  4. Product: assesses outcomes, intended and unintended. Stufflebeam's later checklist splits Product into impact, effectiveness, sustainability and transportability.
-- Confusables: Phillips "Input" (Level 0 variant) vs CIPP "Input" (different meaning: plans and resources, not participant counts). Kaufman's Level 1a "Enabling". Formative (Context/Input/Process mainly) vs summative (Product mainly) uses.
-- Unverified: ENTIRE ENTRY. Authors must not use it until checked against Stufflebeam or WMU's CIPP checklist.
+  4. Product: assesses outcomes, intended and unintended. In the 2007 checklist this appears as four separate topics, Impact, Effectiveness, Sustainability and Transportability evaluation [S16]. [S16] doesn't use the word "Product", so the grouping of those four under Product is general knowledge.
+- The 2007 checklist's full topic list, in order [S16]: 1 Contractual agreements; 2 Context evaluation; 3 Input evaluation; 4 Process evaluation; 5 Impact evaluation; 6 Effectiveness evaluation; 7 Sustainability evaluation; 8 Transportability evaluation; 9 Metaevaluation; 10 The final synthesis report.
+- Confusables: Phillips Level 0 "Input(s)" [S13] vs CIPP "Input" (different meaning: plans and resources, not participant counts). Kaufman's Level 1a "Enabling". Formative (Context/Input/Process mainly) vs summative (Product mainly) uses (general knowledge; [S16] says nothing about this).
+- Unverified: what each component evaluates; the expansion "Product"; the origin date; the improvement/accountability (formative/summative) framing. Safe to author only: CIPP is Stufflebeam's; the 2007 checklist's topics include Context, Input, Process, Impact, Effectiveness, Sustainability, Transportability [S16]. Tried: BetterEvaluation's checklist page (lists topics only). Stufflebeam's checklist PDF itself did not appear in search results, so it could not be fetched.
 
-### Kaufman's Five Levels of Evaluation — UNVERIFIED ENTRY
+### Kaufman's Five Levels of Evaluation (UNSOURCED, do not author)
+- Gap fill (2026-11-08): one search for Kaufman & Keller 1994 returned only blogs and vendor pages (thinkdev, Watershed, Bizfluent, Training Industry) plus a Springer journal landing page; no tier 1–3 text with the level names. Nothing below is confirmed.
 - Origin: Roger Kaufman & John M. Keller, "Levels of Evaluation: Beyond Kirkpatrick," *Human Resource Development Quarterly*, 1994; extended by Kaufman, Keller & Watkins (1995). Not fetched in this pass.
 - Tie to the exam: 2.8.1 by general knowledge only; scope.md lists it as likely. Not on the 2.8 reading list [S1].
 - Suggested tag: extra
@@ -289,11 +305,14 @@ Tie note for this whole statement: the statement names no models. The reading li
 - Confusables: Kirkpatrick (no societal level); Phillips (Level 5 is ROI, not society); LTEM Tier 8 (effects of transfer can include society). "Kaufman's five levels" vs "Phillips's five levels" is a likely trap — the fifth levels differ (society vs ROI).
 - Unverified: ENTIRE ENTRY, including whether the count is "five" (1a/1b split makes six rows) and exact level names.
 
-### Formative vs summative evaluation — UNVERIFIED ENTRY
-- Origin: Michael Scriven, 1967, "The Methodology of Evaluation." Not fetched.
-- Tie: 2.8.1, general knowledge. Suggested tag: extra. Kind: set of two.
-- Items (general knowledge): Formative: done during development or delivery to improve the program. Summative: done after delivery to judge overall worth or effectiveness.
-- Unverified: ENTIRE ENTRY.
+### Formative vs summative evaluation
+- Origin: the terms are usually credited to Michael Scriven, 1967, "The Methodology of Evaluation" (not fetched; unverified). Definitions here are from ATD's own *Training & Development Journal* (July 1990 supplement) [S17].
+- Tie: 2.8.1, general knowledge (an ATD publication, but not on the reading list or in the TDBoK as shown). Suggested tag: extra. Kind: set of two.
+- Items, in the source's own terms [S17]:
+  1. Formative: "improvement-oriented evaluations" that help decide whether a program should be modified; carried out before and during the first running of a program. [S17]
+  2. Summative: evaluations that help decide whether a program should be maintained, expanded, contracted out or eliminated; they collect information after the program has run at least once. [S17]
+- Confusables: formative/summative (purpose and timing of an evaluation) vs Kirkpatrick/Phillips levels (what is measured). CIPP's improvement framing (unverified, see above).
+- Unverified: the Scriven 1967 attribution.
 
 ### Kirkpatrick "Blended Evaluation®" — NAME ONLY
 - The reading-list book has a chapter "Blended Evaluation® Items and Sample Tools" [S2] and the companion guide mentions a "Blended Evaluation" approach [S3]. Neither fetched source defines it. Commonly described as gathering data on several levels at once with a mix of methods and timing. Unverified: definition. Do not write a question on it from this file.
@@ -336,7 +355,7 @@ Tie note: the statement names no models. ATD material that defines *kinds* of me
 - Unverified: definitions of scorecard and dashboard in TDRp terms.
 
 ### Kirkpatrick leading indicators vs desired results (as outcome metrics)
-- See the New World Kirkpatrick Model entry (2.8.1). Leading indicators are short-term observations and measures that show critical behaviors are on track to create the desired results; examples [S4]: customer satisfaction, employee engagement, sales volume, cost containment, quality, market share. Suggested tag: reflist.
+- See the New World Kirkpatrick Model entry (2.8.1). Leading indicators are short-term observations and measures that show critical behaviors are on track to create the desired results; examples [S4]: customer satisfaction, employee engagement, sales volume, cost containment, quality, market share. Kirkpatrick Partners' workbook names the pair "Leading Indicator" and "Desired Result" as the two Level 4 elements [S12]. Suggested tag: reflist.
 - Note: "leading vs lagging indicators" as a general pair is standard measurement vocabulary; none of the fetched sources pairs Kirkpatrick's "leading indicators" with the word "lagging". Do not attribute "lagging indicators" to Kirkpatrick.
 
 ### Phillips impact measures: hard data categories
@@ -344,7 +363,7 @@ Tie note: the statement names no models. ATD material that defines *kinds* of me
 
 ## 2.8.4: Creating data collection tools (questionnaires, surveys, structured interviews)
 
-Tie note: the statement names three tools: questionnaires, surveys, structured interviews (all `named`). The Kirkpatrick reading-list book has chapters "Evaluation Instrument Creation Basics" (ch. 10) and "Blended Evaluation® Items and Sample Tools" (ch. 11) [S2], so instrument design is reflist content, but those chapters were not available. The only fetched, sourced lists of methods are Phillips's [S6] [S7]. A web search for ATD/td.org guidance on survey and question design (call 22) returned only vendor blogs, so most "how to build the tool" content below is general knowledge and flagged.
+Tie note: the statement names three tools: questionnaires, surveys, structured interviews (all `named`). The Kirkpatrick reading-list book has chapters "Evaluation Instrument Creation Basics" (ch. 10) and "Blended Evaluation® Items and Sample Tools" (ch. 11) [S2], so instrument design is reflist content, but those chapters were not available. Sourced lists of methods: Phillips's [S6] [S7]. The gap fill added three ATD-published sources on building the tools: Phillips, Phillips & Aaron's *Survey Basics* (ASTD Press, 2013) [S19], Maher & Kur's "Constructing Good Questionnaires" (*Training and Development Journal*, 1983) [S18], and the 1990 *T&D Journal* evaluation supplement [S17]. No TD at Work issue on these tools turned up. Interview structure types are still unsourced.
 
 ### Data collection methods (Phillips list, applied to tool choice)
 - Origin: ROI Institute. [S6] [S7]
@@ -354,16 +373,32 @@ Tie note: the statement names three tools: questionnaires, surveys, structured i
 - Items, in the source's own terms [S6]: surveys; questionnaires; tests; observations; interviews; focus groups; action plans; performance contracts; business performance monitoring.
 - By level [S7]: Level 2 tools include feedback questionnaires, tests/exercises, performance demonstrations, observation, case studies, simulations, peer and self assessment. Level 4 tools include follow-up surveys, questionnaires, observations, interviews, focus groups, action planning, performance contracting, performance records.
 - Confusables: Phillips separates "surveys" from "questionnaires" [S6]; many sources use them interchangeably. Focus groups vs interviews (group vs one-to-one). Action plans and performance contracts are Phillips-specific tools for Level 3/4 follow-up.
-- Unverified: Phillips's own definitions of the survey/questionnaire distinction (commonly: a *survey* measures attitudes, beliefs and opinions; a *questionnaire* is a broader instrument that can mix question types and capture both subjective data and measurable results). Not confirmed in a fetched source — do not test the distinction from this file.
+- Survey vs questionnaire (gap fill, now sourced from Phillips, ASTD Press [S19]): the difference is the kind of data. A **survey** is where "attitudinal data are collected via simple categorical scales" (e.g., a five-point Strongly Disagree to Strongly Agree scale). A **questionnaire** is where "more in-depth and numerical data are collected" (e.g., rating grids, check-one items, percentage estimates, confidence ratings, and verbatim comments that need content analysis). [S19] [S19] also notes that the terms are often used interchangeably, and older ATD articles do just that: [S18] calls questionnaire items "survey questions", and [S17] lists "standardized questionnaires and survey instruments" together as quantitative tools. So the distinction is safe to test only when attributed to Phillips (e.g., "In the Phillips approach, which instrument collects in-depth numerical data?"). Don't present it as universal. The earlier general-knowledge wording ("attitudes, beliefs and opinions") is replaced by [S19]'s.
 
-### Survey and questionnaire item types — UNVERIFIED (general knowledge)
-- Tie: 2.8.4 (named tools). Suggested tag: extra. Kind: set.
-- Items (general knowledge; Phillips's books list a similar set — open-ended, checklist, two-way, multiple choice, ranking — but not fetched):
-  1. Open-ended: respondent answers in their own words; yields qualitative data.
-  2. Closed-ended: fixed choices; yields quantitative data. Sub-types: two-way/dichotomous (yes/no), multiple choice, checklist, ranking, rating scale.
-  3. Likert-type rating scale: agreement or frequency on an ordered scale (commonly 5 or 7 points).
-- Design rules (general knowledge): one idea per item (avoid double-barreled items); neutral wording (avoid leading or loaded items); clear, simple language; consistent scales; keep it short; pilot test before use; state purpose and confidentiality/anonymity; plan the analysis before writing items.
-- Unverified: ENTIRE ENTRY. No tier 1–3 source fetched.
+### Questionnaire item (question) types
+- Origin: Maher & Kur, "Constructing Good Questionnaires," *Training and Development Journal* (ASTD, now ATD), June 1983. [S18]
+- Tie: 2.8.4 (named tools: questionnaires, surveys). Suggested tag: named (the tools are named in the statement; the list itself is from an old ATD journal article, not the reading list). Kind: set.
+- Items, in the source's own terms [S18] (gap fill, changed: this list replaces the earlier general-knowledge one):
+  1. Closed-ended (forced-choice): fixed options; easy to summarize and analyze. [S18] "Most survey questions are closed-ended."
+  2. Open-ended: respondents write their answers freely; allows "original responses", but scoring is complex. [S18]
+  3. Checklist: shows whether something is present or absent (e.g., equipment used in a job); include all reasonable options. [S18]
+  4. Two-way: a yes/no choice, sometimes with a "no opinion" option; use only when just the two answers are possible. [S18]
+  5. Multiple-choice: when more than two answers are possible, including frequency scales (e.g., daily, weekly, monthly). [S18]
+  6. Ranked: shows the relative importance of several items (no more than about seven); ties not allowed. [S18]
+- Groups: items 3–6 are kinds of closed-ended question (our reading; [S18] presents closed vs open first, then the four formats).
+- Rating and agreement scales: [S18] does not name "Likert" or "rating scale". [S19] shows a five-point agreement scale (Strongly Disagree to Strongly Agree) as the typical survey item. "Likert" as a named type is general knowledge; don't make it the key of a "which type is this?" question built on [S18]'s list.
+- Design rules [S18] (and [S19] where marked):
+  - Write simply and clearly, so the meaning is obvious.
+  - Ask discrete questions, one judgment per item. [S19] calls the double question "barreling": "Barreling is a common error found in survey questions."
+  - Give discrete response options and explain them.
+  - Limit response options (typically three to nine; five preferred).
+  - Match the response mode to the question.
+  - Make response categories mutually exclusive and balanced, so neither side of an issue is favored; avoid vague terms such as "often".
+  - Avoid slang, jargon and emotionally charged wording.
+  - Pilot test the questions with others, then revise.
+  - Assure anonymity: it improves respondents' candor and accuracy. [S17]
+- Confusables: "two-way" (Maher & Kur's term) = dichotomous/yes-no (general term). Ranked vs rating items (ranking forces an order; a rating scale scores each item separately).
+- Unverified: the terms "leading" and "loaded" question (neither [S18] nor the fetched part of [S19] uses them; [S18]'s balance rule covers the same idea). Use "barreling"/"double-barreled" and "balanced" instead.
 
 ### Interview structure types — UNVERIFIED (general knowledge)
 - Tie: 2.8.4 names "structured interviews". Suggested tag: named (for "structured interview" only); extra for the others. Kind: set of three, ordered by increasing flexibility.
@@ -371,26 +406,35 @@ Tie note: the statement names three tools: questionnaires, surveys, structured i
   1. Structured: same predetermined questions, same order, for every respondent; responses comparable across people; often uses a script or protocol.
   2. Semi-structured: a core question guide with freedom to probe and follow up.
   3. Unstructured: conversational, few or no set questions.
-- Unverified: ENTIRE ENTRY.
+- Unverified: the three-type taxonomy and every definition above. Tried: td.org-restricted searches (two) and the three ATD-published sources fetched [S17] [S18] [S19]; none names structured, semi-structured or unstructured interviews.
+- Sourced facts about interviews that authors CAN use (gap fill):
+  - Phillips [S19]: an interview works from a set of prepared questions, and "additional questions may arise during the conversation" (follow-up probing). Advice: "interviewers should develop an interview protocol." [S19]
+  - Maher & Kur [S18]: "Questionnaires are an indirect method of collecting data", because there is no face-to-face contact. Interviews reveal tone and body language; questionnaires can reach more people. [S18]
+  - [S17]: interviews can be individual or group, and are listed among qualitative instruments (with observations, focus groups, case studies). Standardized questionnaires, survey instruments, performance records and tests are listed as quantitative. [S17]
 
-### Instrument quality: validity and reliability — UNVERIFIED (general knowledge)
+### Instrument quality: validity and reliability — PARTLY VERIFIED (definitions only)
 - Tie: 2.8.4. Suggested tag: extra. Kind: set of two core criteria.
-- Items (general knowledge): Validity: the tool measures what it is intended to measure (types often listed: content, construct, criterion/predictive, face). Reliability: the tool gives consistent results (types: test–retest, inter-rater, internal consistency, parallel forms).
+- Items, in the source's own terms [S18] (gap fill):
+  1. Reliability: "the degree to which an instrument consistently measures that which it measures." [S18]
+  2. Validity: whether the instrument "actually measures what it is intended to measure." [S18]
+  - [S18] adds that standardized questionnaires are usually tested for both, with indexes from 0 to 1 (higher is better). Questionnaires you write yourself have no such data unless you develop it. [S19] (fetched part) says a properly handled questionnaire "can generate information with a high level of reliability"; its validity and reliability section (p. 123) was outside the fetched text.
+- Types (general knowledge, unverified): validity: content, construct, criterion/predictive, face; reliability: test–retest, inter-rater, internal consistency, parallel forms.
 - Related Phillips principle (sourced): "use only the most credible sources" (Guiding Principle 3) [S6].
-- Unverified: ENTIRE ENTRY except the Phillips principle.
+- Confusables: reliable ≠ valid (a tool can be consistent yet measure the wrong thing; this follows from the two definitions).
+- Unverified: the sub-types listed above.
 
 ## Open questions
 
 Authors must not guess at any of these:
 1. **TDBoK wording.** Nothing in this file was checked against the TDBoK text for 2.8.1/2.8.3/2.8.4 (no public sample covers Domain 2). No `tdbok` tags.
-2. **Phillips level names and Level 0.** The ROI Institute fold-out [S7] uses "Reaction and Planned Action" and "Application and Implementation"; [S6] uses the short names. Neither numbers "Level 0: Input". The 2025 reading-list handbook may differ. Use the long names; do not write a question whose key depends on "Level 0" existing.
-3. **ROI Process Model step order.** [S6] and [S7] disagree on where "Identify Intangible Measures" falls (step 8 vs step 10) and on step 3's wording ("Design for Results" vs "Plan for Results"). Test phase names (Plan the Evaluation, Collect Data, Analyze Data, Optimize Results) and step themes, not step numbers. Whether the 2025 handbook uses the older ~10-step model is unknown.
-4. **Kirkpatrick required drivers grouping.** "Support" (reinforce, encourage, reward) vs "accountability" (monitor) is common in secondary sources but absent from [S4] and [S5]. Do not test it.
-5. **Kirkpatrick Level 4 sub-components.** Only "leading indicators" is safe. "Desired outcomes" as a formal second sub-component is not confirmed.
+2. **Phillips level names and Level 0.** (Gap fill: partly resolved.) The long names "Reaction and Planned Action" and "Application and Implementation" are in two ROI Institute sources [S7] [S13]; use them. Patti Phillips's 2022 deck [S13] numbers "Level 0" Inputs, so Level 0 is real in Phillips's model, but [S6] and [S7] show only Levels 1–5. Still open: what Level 0 contains, and whether the 2025 reading-list handbook shows it. Don't write a question whose key depends on Phillips having exactly five or exactly six levels.
+3. **ROI Process Model step order.** (Gap fill: resolved by majority.) The newest source [S13] sides with [S7] against [S6]: step 3 is "Expect Success: Plan for Results", and "Identify Intangibles" comes after "Calculate ROI". The entry now follows that order. Still: test phase names and step themes, not step numbers 8–10, steps 11 vs 12 or the step 3 tagline. Whether the 2025 handbook uses the older ~10-step model is unknown.
+4. **Kirkpatrick required drivers grouping.** (Gap fill: partly resolved.) The category labels "Support" and "Accountability" are confirmed in Kirkpatrick Partners' workbook [S12]. Which of reinforce, monitor, encourage and reward belongs to each is not. Don't test membership.
+5. **Kirkpatrick Level 4 sub-components.** (Gap fill: resolved.) Two: "Leading Indicator" and "Desired Result" [S12]. Use "desired results", not "desired outcomes".
 6. **Customer satisfaction** appears both as a Level 1 sub-component and as a Level 4 leading-indicator example in [S4]. Avoid questions that hinge on its level.
-7. **Success Case Method steps** come from BetterEvaluation [S9], not Brinkerhoff's own text. The five-step count and order are consistent across sources; exact wording is not from the author.
-8. **LTEM** tier names come from a university extension summary [S10], not Thalheimer's own document. Sub-levels of Tiers 4–6, Tier 8 sub-items and colour groupings are unconfirmed.
-9. **CIPP, Kaufman, formative/summative, Blended Evaluation, question types, interview types, validity/reliability**: unverified general knowledge (web budget ran out). Need a tier 1–3 check before any question is authored on them. Kaufman's level count (five, with 1a/1b) is a likely trap.
-10. **Survey vs questionnaire.** Phillips lists them separately [S6]; the definitions of the difference were not fetched. Do not author a "which is a survey vs a questionnaire" question.
+7. **Success Case Method steps.** (Gap fill: mostly resolved.) Brinkerhoff confirms "five steps" and, in a separate chapter, "Two Basic Steps" [S14]. His chapter titles match steps 1–4 [S14]. The fifth step's name differs: "communicating findings" [S9] vs "Drawing Compelling Conclusions" [S14]. Don't test the fifth step's wording or confuse the 2-step and 5-step framings.
+8. **LTEM.** (Gap fill: resolved.) Tier names and sub-levels are now from Thalheimer's v12 report [S15]. Still open: which colour each tier carries.
+9. **CIPP** is partly verified: only the 2007 checklist's topic names are sourced [S16], not the definitions or "Product". **Kaufman** is UNSOURCED, do not author. **Blended Evaluation** was not attempted (still name only). **Interview structure types** (structured/semi-structured/unstructured) are still unverified; use only the sourced interview facts in that entry. **Formative/summative**, **question types** and **validity/reliability definitions** are now sourced from ATD journal articles [S17] [S18]; the Scriven attribution and the validity/reliability sub-types are not.
+10. **Survey vs questionnaire.** (Gap fill: resolved, with a caveat.) Phillips et al., *Survey Basics* [S19]: a survey collects attitudinal data on simple categorical scales; a questionnaire collects more in-depth, numerical data. The same source says the terms are often interchangeable, and older ATD articles use them so [S17] [S18]. Attribute the distinction to Phillips in any question.
 11. **TDRp publisher.** ATD Press inferred from ISBN prefix only.
 12. **Kirkpatrick origin date.** 1959 articles are sourced [S2]; the dissertation year (1954 per Biech's foreword vs "the 1950s" per the preface) should be stated as "1950s" unless the question needs 1954.

@@ -1,4 +1,5 @@
 # Technology & knowledge management (2.4.1, 2.4.4, 2.5.3, 2.5.7)
+Gap fill: 2026-11-08, 16 web calls, resolved 5 of 11 (2 more partly). Resolved: Hansen et al. details incl. 80/20 [S15]; SCORM/xAPI/cmi5 [S14]; SAMR [S20]; CRAAP [S16]; CoP three elements [S17]. Partly: platform definitions (LMS and LXP only [S13]); AAR (content areas, not exact question wording [S18][S19]). Not resolved, now UNSOURCED: Rogers, TAM, DIKW. Not attempted (budget): *Ready, Set, Curate* details.
 
 Statements (from scope.md, full wording):
 - 2.4.1 (2.4.B): Skill in selecting, integrating, managing, and/or maintaining learning platforms (for example, learning management systems, knowledge management systems, performance management systems).
@@ -9,7 +10,7 @@ Statements (from scope.md, full wording):
 Sources used (numbered, so entries can cite [S1] and so on):
 - [S1] Certification Resources List 2025, ATD Certification Institute, 2025, https://assets.td.org/m/2049c52a0b8e8c7c/original/Certification-Resources-List-2025.pdf. Tier: 2 ATD CI. Under capability 2.4 (Technology Application) it lists: Cavalier, *Applying AI in Learning and Development* (2025, ATD Press); Dillon, *The Modern Learning Ecosystem* (2022, ATD Press); Udall & Woodill, *Shock of the New* (2019, ATD Press); Foreman, *The LMS Guidebook* (2017, ATD Press). Under 2.5 (Knowledge Management): Betts & Anderson, *Ready, Set, Curate* (listed as 2015, ATD Press); Atwood, *Knowledge Management Basics* (2009, ATD Press); O'Dell & Grayson, given by the fetch as *If We Only Knew What We Know: The Transfer of Internal Knowledge* (2012, Free Press). The book's usual title is *If Only We Knew What We Know: The Transfer of Internal Knowledge and Best Practice* (O'Dell & Grayson, Free Press, 1998). The word order and date may be a list error or a fetch error; check the PDF before citing it. The list maps books to capability areas only, not to individual statements. Its "Comprehensive Resources" section (where the TDBoK Guide would sit) is images only and could not be read.
 - [S2] Nonaka, I., Toyama, R., & Konno, N., "SECI, Ba and Leadership: a Unified Model of Dynamic Knowledge Creation," *Long Range Planning* 33, 5–34, 2000 (Elsevier), https://tingene.tekniskmuseum.no/images/PDF/Litteratur_MK/SECI_Ba_and_Leadership_a_Unified_Model.pdf. Tier: 3 original author.
-- [S3] Nohria, N., Hansen, M. T., & Tierney, T. J., "What's Your Strategy for Managing Knowledge?" HBS Working Knowledge excerpt of the *Harvard Business Review* article (HBR 1999; March–April issue from memory). The HBS page lists the authors as Nohria, Hansen, Tierney; The HBR byline puts Hansen first (from memory)., posted November 23, 1999, https://www.library.hbs.edu/working-knowledge/whats-your-strategy-for-managing-knowledge. Tier: 3 original author (excerpt only).
+- [S3] Nohria, N., Hansen, M. T., & Tierney, T. J., "What's Your Strategy for Managing Knowledge?" HBS Working Knowledge excerpt of the *Harvard Business Review* article, posted November 23, 1999, https://www.library.hbs.edu/working-knowledge/whats-your-strategy-for-managing-knowledge. Tier: 3 original author (excerpt only). The HBS page lists the authors as Nohria, Hansen, Tierney; the HBR byline is Hansen, Nohria, Tierney, March–April 1999 (now confirmed in [S15]).
 - [S4] Atwood, C. G., *Knowledge Management Basics* (ATD/ASTD Press, Training Basics series, 2009), O'Reilly listing with table of contents and publisher description, https://www.oreilly.com/library/view/knowledge-management-basics/9781562865481/. Tier: 2 by proxy (a reading-list book [S1]; only the TOC and blurb were seen, not the text).
 - [S5] Betts, B. & Anderson, A., *Ready, Set, Curate: 8 Learning Experts Tell You How*, ATD product page, https://www.td.org/product/book--ready-set-curate/111514. Tier: 2 by proxy (reading-list book [S1]; product page only). Says the book is 120 pages, December 2015, ISBN 9781562869403, with eight contributing experts (not named on the page). Names no curation model or steps.
 - [S6] Webb, M. & Kaminski, J. M., *Target Learning With Curation*, TD at Work (ATD), product page, https://www.td.org/td-at-work-guide/target-learning-with-curation. Tier: other (ATD publication, not on the reading list; product page only; no date shown).
@@ -19,6 +20,14 @@ Sources used (numbered, so entries can cite [S1] and so on):
 - [S10] ATD press release, "The Modern Learning Ecosystem Framework Helps L&D Teams Become Disruption-Ready," November 29, 2022, https://www.td.org/content/press-release/the-modern-learning-ecosystem-framework-helps-l-d-teams-become-disruption-ready. Tier: other (ATD publisher text for a reading-list book [S1]). Treat it as the book's own (2022) wording.
 - [S11] Foreman, S., *The LMS Guidebook: Learning Management Systems Demystified*, ATD Press, December 2017, 248 pp., O'Reilly listing with table of contents and publisher description, https://oreilly.com/library/view/the-lms-guidebook/9781607281658. Tier: 2 by proxy (reading-list book [S1]; TOC and blurb only).
 - [S12] Foreman, S., "Five Steps to Evaluate and Select an LMS: Proven Practices," Learning Guild, June 5, 2013, https://www.learningguild.com/articles/five-steps-to-evaluate-and-select-an-lms-proven-practices. Tier: 3 original author (the author of the reading-list book [S11]; written before the book).
+- [S13] "LXP Versus LMS: What Is the Difference?" ATD Blog, td.org, March 4, 2022 (the page says it was first published in 2021 and updated; no author named), https://www.td.org/content/atd-blog/lxp-versus-lms-what-is-the-difference. Tier: 2 by proxy (ATD td.org article). Defines LMS and LXP only; does not define LCMS, KMS or performance management system.
+- [S14] Miller, B., Rutherford, T., Pack, A. (Rustici Software) & Johnson, A. (ADL Initiative), "Bridging the SCORM and xAPI Gap: The Role of cmi5," I/ITSEC 2021 Paper No. 21177, hosted on adlnet.gov, https://www.adlnet.gov/assets/uploads/Bridging%20the%20SCORM%20and%20xAPI%20Gap%20-%20the%20Role%20of%20cmi5.pdf. Tier: 3 (co-authored by ADL, the standards' owner, and hosted on its site).
+- [S15] Hansen, M. T., Nohria, N., & Tierney, T., "What's Your Strategy for Managing Knowledge?" *Harvard Business Review*, March–April 1999, pp. 106–116. Full text read from a HEC Montréal course-reserve copy, https://zonecours2.hec.ca/sdata/c/attachment/6-415-95.H2017/OpenSyllabus/Hansen,%20Morten%20T,%20Nitin%20Nohria,%20and%20Thomas%20Tierney-What_s%20Your%20Strategy%20for%20Managing%20Knowledge-p%201-11.pdf. Tier: 3 original author. The copy is an OCR scan; the fetch tool corrected OCR errors in the quotes, so treat punctuation in quotes as approximate.
+- [S16] "Evaluating Information – Applying the CRAAP Test," Meriam Library, California State University, Chico, dated 9/17/10, https://library.csuchico.edu/sites/default/files/craap-test.pdf. Tier: 3 (the originating library's own handout). No author credit on the PDF.
+- [S17] Wenger-Trayner, E. & Wenger-Trayner, B., "Introduction to communities of practice," wenger-trayner.com, June 2015, https://www.wenger-trayner.com/introduction-to-communities-of-practice/. Tier: 3 original author (Etienne Wenger, now Wenger-Trayner).
+- [S18] "Foundations of the After Action Review Process," technical report, DTIC accession ADA368651 (abstract page only; author, organization and year not shown in the fetch), https://apps.dtic.mil/sti/html/tr/ADA368651/index.html. Tier: 3 by proxy (U.S. Army AAR research held by DoD's DTIC; abstract only).
+- [S19] U.S. Army training manual, Appendix G "After Action Reviews," GlobalSecurity.org mirror, https://www.globalsecurity.org/military/library/policy/army/fm/25-101/fm251_13.htm. The URL path indicates FM 25-101; the fetched text did not show the FM number, title or date. Tier: 3 by proxy (the Army's own doctrine, via a third-party mirror).
+- [S20] Puentedura, R. R., "SAMR: Two Questions," hippasus.com, PDF filed under 2011/11/23 (no date in the text), https://www.hippasus.com/rrpweblog/archives/2011/11/23/SAMR_TwoQuestions.pdf. Tier: 3 original author.
 
 ## 2.4.1: Selecting, integrating, managing, and maintaining learning platforms
 
@@ -57,32 +66,33 @@ Statement examples to cover: learning management systems, knowledge management s
 - Unverified: chapter content, including the feature lists, governance tasks and the standards covered. The five-item sequence is chapter order, not a named model; don't give it a name.
 
 ### Learning platform types (named in 2.4.1, plus close relatives)
-- Origin: The statement names three types (LMS, KMS, performance management systems). The others come from Foreman [S11] (LCMS, corporate vs academic LMS) and general TD usage.
+- Origin: The statement names three types (LMS, KMS, performance management systems). The others come from Foreman [S11] (LCMS, corporate vs academic LMS), an ATD blog article [S13] (LMS vs LXP) and general TD usage.
 - Tie to the exam: named in the statement (LMS, KMS, PMS). The LCMS appears in a reading-list book's chapter title [S11].
 - Suggested tag: named (LMS, KMS, PMS); reflist (LCMS, corporate/academic LMS categories); extra (LXP, talent management suite)
 - Kind: set
 - Items:
-  1. Learning management system (LMS): software to administer, deliver, track and report on learning (enrollments, completions, compliance records). Foreman divides LMS features into Corporate and Academic. [S11] Definition paraphrased from general knowledge; the book's own definition (Ch. 1) was not seen.
+  1. Learning management system (LMS): in ATD's framing, a system for organizing and delivering the content the organization decides its people must know, assigned by department, job function or similar criteria. The model is top-down and organization-driven. [S13] "focus on organizing and delivering the topics an organization identifies as critical". Foreman divides LMS features into Corporate and Academic. [S11] The administer/track/report functions (enrollments, completions, compliance records) are general knowledge, not in [S13]; the book's own definition (Ch. 1) was not seen.
   2. Learning content management system (LCMS): a system for authoring, storing, reusing and managing learning content (often as reusable objects), sometimes combined with an LMS ("LCMS-LMS"). [S11] for the term; definition from general knowledge.
   3. Knowledge management system (KMS): a system that captures, organizes, stores and lets people find organizational knowledge (repositories, wikis, expert directories, lessons-learned databases). Expert directories also appear in the personalization strategy [S3]; repositories in codification [S3]. Definition from general knowledge.
   4. Performance management system: a system for setting goals, tracking progress, and recording reviews and feedback. It is often part of a talent management suite and linked to the LMS so development plans can link to learning. General knowledge only.
-  5. Learning experience platform (LXP, sometimes LEP): a learner-centered platform that recommends and aggregates content (often from many sources) and supports curation and social features. General knowledge only. It is relevant to curation (2.5.7) too.
-- Confusables: LMS vs LCMS (track and administer vs author and manage content). LXP vs LMS. KMS vs LCMS (organizational knowledge vs learning content). PMS (performance management) vs EPSS (electronic performance support system, Gery), which is in-the-flow job support, not appraisal.
-- Unverified: every definition except the names. The TDBoK's definitions of LMS, LCMS, LXP and KMS were not available. Authors should keep any definition question at the level of "track/administer vs create/manage content" and get a checker to confirm.
+  5. Learning experience platform (LXP): a learner-centered platform that identifies and personalizes growth opportunities for each employee. It uses AI to build individual learning paths from self-reported data, data on similar users and data on the learner. It draws on varied content, including material curated from the internet, and puts the employee in charge of their own development. [S13] "focus on the learner journey by identifying and personalizing opportunities". It is relevant to curation (2.5.7) too. (The "LEP" abbreviation is from memory; [S13] uses LXP.)
+- Confusables: LMS vs LCMS (track and administer vs author and manage content). LXP vs LMS: learner-driven personalization vs organization-driven delivery [S13]. ATD notes the line is blurring, because some LMS vendors now offer LXP-like features, so check what a system actually does [S13]. Don't write a question that treats the two as cleanly separate product categories. KMS vs LCMS (organizational knowledge vs learning content). PMS (performance management) vs EPSS (electronic performance support system, Gery), which is in-the-flow job support, not appraisal.
+- Unverified: the LCMS, KMS and performance management system definitions (general knowledge only; [S13] doesn't define them and no other ATD source was found within budget). LMS and LXP are now sourced to an ATD article [S13], not the TDBoK. Authors: for LMS vs LXP, use the [S13] contrast (organization-directed delivery vs learner-centered personalization). For LCMS, KMS and PMS, keep questions at the level of "track/administer vs create/manage content" and get a checker to confirm.
 
 ### E-learning interoperability standards (Foreman Ch. 5 topic)
-- Origin: The topic is Ch. 5 of *The LMS Guidebook*, "Relevant Technology Standards and Specifications" [S11]. The standards' owners are ADL (SCORM, xAPI, and cmi5 with AICC) and 1EdTech/IMS Global (LTI). Those owners' pages were not fetched (budget).
+- Origin: The topic is Ch. 5 of *The LMS Guidebook*, "Relevant Technology Standards and Specifications" [S11]. SCORM, xAPI and cmi5 are described in an ADL co-authored paper on ADL's site [S14]. 1EdTech/IMS Global (LTI) was not checked.
 - Tie to the exam: 2.4.1 ("integrating ... learning platforms"). The book chapter exists [S11], but which standards it covers was not visible.
 - Suggested tag: extra (until a checker confirms the Ch. 5 contents)
 - Kind: set
-- Items (general knowledge only; every line is unverified here):
-  1. AICC: the oldest CBT/e-learning interoperability guidelines, from the aviation industry's committee (now retired).
-  2. SCORM (Sharable Content Object Reference Model): ADL's set of specifications for packaging content and for the content-to-LMS run-time (launch, tracking of completion/score). Common versions are SCORM 1.2 and SCORM 2004.
-  3. xAPI (Experience API, formerly "Tin Can"): ADL's specification for recording learning experiences anywhere, as actor–verb–object statements stored in a learning record store (LRS). It isn't limited to an LMS or a browser.
-  4. cmi5: an xAPI profile that defines how an LMS launches and tracks xAPI content, a "SCORM-like" rule set for xAPI.
-  5. LTI (Learning Tools Interoperability): the 1EdTech/IMS standard for plugging external tools into a learning platform, common in academic LMSs.
-- Confusables: SCORM vs xAPI (LMS-bound packages vs statements to an LRS from any experience). LRS vs LMS. cmi5 vs SCORM.
-- Unverified: all items. Authors: either get a checker to confirm against adlnet.gov and 1edtech.org, or limit content to "SCORM and xAPI are interoperability standards; xAPI stores statements in an LRS".
+- Items:
+  1. AICC: [S14] expands it as the Aviation Industry Computer-Based Training Committee and cites it as the source of its cmi5 descriptions. Nothing else is confirmed. "Oldest e-learning interoperability guidelines" and "now retired" are from memory; don't author them.
+  2. SCORM: a set of rules telling developers how to apply the standards so courseware is interoperable. It also helps an LMS handle and play content from many sources. [S14]. Versions ADL supports today: SCORM 1.2, SCORM 2004 3rd Edition and SCORM 2004 4th Edition. [S14] The expansion "Sharable Content Object Reference Model" was not shown in the fetch (general knowledge).
+  3. xAPI (Experience Application Programming Interface, usually "Experience API"): a specification that lets software capture and share data on learning experiences and performance. [S14] Each statement must include an actor, verb and object, which record the learner, the action and the activity. [S14] "Statements must include an actor, verb, and object". Statements go to a learning record store (LRS), which receives, stores and gives access to learning records. [S14] The old name Tin Can is from memory, not confirmed.
+  4. cmi5: an xAPI Profile for using xAPI with a traditional launching system. It covers the LMS case, where the learner launches content from an LMS. [S14] "an xAPI Profile for using xAPI in the context of a traditional launching system". Who developed cmi5 is not stated in [S14] (it cites AICC); don't test the developer.
+  5. LTI (Learning Tools Interoperability): the 1EdTech/IMS standard for plugging external tools into a learning platform, common in academic LMSs. Unverified (not checked).
+- Confusables: SCORM vs xAPI (LMS-bound packages vs actor–verb–object statements to an LRS). LRS vs LMS. cmi5 vs SCORM: cmi5 is an xAPI profile that brings SCORM-style LMS launch to xAPI [S14].
+- Variants or contested points: The full name of xAPI appears as "Experience Application Programming Interface" in [S14]; "Experience API" is the common short form. Either is correct.
+- Unverified: AICC beyond its name, the SCORM expansion, "Tin Can", the cmi5 developer, and LTI. Authors may now test: SCORM's purpose and versions, xAPI's actor–verb–object statements and the LRS, and cmi5 as an xAPI profile for LMS launch.
 
 ## 2.4.4: Identifying, selecting, and implementing learning technologies
 
@@ -105,23 +115,25 @@ Statement examples to cover: using evaluative criteria; identifying appropriate 
 - Variants or contested points: The layer names changed between 2017 and 2022 (see brackets). Use the 2022 names; they come from the reading-list book's own publisher [S10]. That the 2022 order matches the 2017 bottom-to-top numbering is my inference from the same order in both sources. The release lists them in that order but doesn't say "bottom to top".
 - Unverified: whether the 2022 book still keeps the "framework, tactics, process" trio and the "big rule", and its full measurement chapter.
 
-### Technology adoption and integration models (general knowledge; no source fetched)
-These three are common answers to "how do I judge whether a learning technology fits and will be adopted". They serve 2.4.4 ("identifying appropriate applications in an instructional environment" and "implementing"). No tier 1–3 source was fetched for any of them (web budget). Every item below is from memory and must be checked before authoring. Suggested tag for all: extra.
+### Technology adoption and integration models (SAMR sourced; Rogers and TAM UNSOURCED)
+These three are common answers to "how do I judge whether a learning technology fits and will be adopted". They serve 2.4.4 ("identifying appropriate applications in an instructional environment" and "implementing"). The gap fill sourced SAMR to its author [S20]. A search for Rogers returned only secondary sites (consultancy and blog pages, none tier 1–3), so nothing was fetched. TAM was not searched (budget). Suggested tag for all: extra.
 
 #### SAMR model
-- Origin: Ruben Puentedura, about 2006 (blog/presentations). Unverified.
+- Origin: Ruben R. Puentedura (hippasus.com). The "Two Questions" handout used here is filed under 2011 [S20]. "About 2006" for the model's first appearance is from memory; don't test the date.
 - Tie to the exam: 2.4.4, "appropriate applications in an instructional environment". No ATD tie shown.
-- Kind: ordered (lowest to highest degree of change the technology brings to the task)
-- Items (unverified):
-  1. Substitution: tech replaces an older tool, with no functional change.
-  2. Augmentation: tech replaces it with functional improvement.
-  3. Modification: tech allows significant redesign of the task.
-  4. Redefinition: tech allows new tasks that were previously impossible.
-- Groups (unverified): Enhancement = Substitution + Augmentation. Transformation = Modification + Redefinition.
-- Confusables: TPACK (Mishra & Koehler 2006; knowledge domains, not levels). Bloom's levels.
-- Unverified: all of the above.
+- Kind: ordered (lowest to highest degree of change the technology brings to the task; Puentedura asks what must be added to move a task from S to A to M to R [S20])
+- Items, in the source's own terms [S20]:
+  1. Substitution: tech is a direct substitute for the old tool, with no functional change. [S20] "Tech acts as a direct tool substitute, with no functional change"
+  2. Augmentation: tech is still a direct substitute, but with functional improvement. [S20]
+  3. Modification: tech allows significant task redesign. [S20]
+  4. Redefinition: tech allows the creation of new tasks that were previously inconceivable. [S20] "Tech allows for the creation of new tasks, previously inconceivable"
+- Groups: Enhancement and Transformation are both labels on the handout [S20]. The fetch reported that the layout places Enhancement beside the first two levels and Transformation beside the last two, but the text doesn't state it. So Enhancement = Substitution + Augmentation and Transformation = Modification + Redefinition is a layout reading, consistent with common usage.
+- Changed: Redefinition now uses the source's word "inconceivable" (was "impossible").
+- Confusables: TPACK (Mishra & Koehler 2006; knowledge domains, not levels). Bloom's levels. The trap pair is Substitution vs Augmentation: both are direct substitutes, and only Augmentation adds functional improvement.
+- Unverified: the origin year, and the Enhancement/Transformation grouping as a stated rule (it is shown only by layout).
 
-#### Diffusion of innovations
+#### Diffusion of innovations (UNSOURCED, do not author)
+- Gap fill: one search for the adopter categories and percentages returned only secondary pages (Corporate Finance Institute, Whatfix, productmint and similar), none tier 1–3, so nothing was fetched. Everything below is still from memory. Don't author it unless a later pass sources it to Rogers or a university page that quotes him.
 - Origin: Everett Rogers, *Diffusion of Innovations*, 1962 (later editions to 2003). Unverified.
 - Tie to the exam: 2.4.4 ("implementing learning technologies": adoption and change). It may also appear in Domain 3 change management. No ATD tie shown.
 - Kind: two lists. Five innovation attributes (a set) and five adopter categories (ordered, earliest to latest adopters).
@@ -129,7 +141,8 @@ These three are common answers to "how do I judge whether a learning technology 
 - Confusables: Moore's "chasm" (*Crossing the Chasm*, 1991), which is not Rogers. TAM.
 - Unverified: all of the above, including the percentages.
 
-#### Technology Acceptance Model (TAM)
+#### Technology Acceptance Model (TAM) (UNSOURCED, do not author)
+- Gap fill: not searched (budget). Everything below is still from memory.
 - Origin: Fred Davis, 1989 (*MIS Quarterly*). Unverified.
 - Tie to the exam: 2.4.4 (selecting tech users will actually use). No ATD tie shown.
 - Kind: set of two core beliefs that predict intention to use, then use (ordered as a causal chain).
@@ -207,17 +220,25 @@ These three are common answers to "how do I judge whether a learning technology 
 - Unverified: the one-line meanings are paraphrased from general knowledge of the paper. The fetch confirmed the four names only. Low priority; an author may skip this model.
 
 ### Codification vs personalization (KM strategy choice)
-- Origin: Morten T. Hansen, Nitin Nohria & Thomas Tierney, "What's Your Strategy for Managing Knowledge?" *Harvard Business Review*, 1999. [S3]
+- Origin: Morten T. Hansen, Nitin Nohria & Thomas Tierney, "What's Your Strategy for Managing Knowledge?" *Harvard Business Review*, March–April 1999, pp. 106–116 (byline in that order). [S15] Excerpt also at HBS Working Knowledge [S3].
 - Tie to the exam: 2.5.3 ("designing ... knowledge management strategy"). It is the classic named pair of KM strategies. The tie is not shown in a tier 1 or 2 source.
 - Suggested tag: extra
 - Kind: set (two strategies; pick one as primary)
 - Items, in the source's own terms:
-  1. Codification strategy: knowledge is captured in documents and stored in databases, where anyone in the firm can find and reuse it. The approach is "people-to-documents". Examples: Andersen Consulting, Ernst & Young. It relies on electronic repositories and staff who codify and manage content (E&Y had a 250-person Center for Business Knowledge). [S3] "people-to-documents"
-  2. Personalization strategy: knowledge stays with the person who built it and is shared mainly through direct contact. IT is used to find who knows what (expert directories), not to store knowledge objects. Examples: Bain, BCG, McKinsey. It relies on people networks, transfers between offices, and returning colleagues' calls quickly. [S3]
-- Key principle: Don't split effort evenly. Effective firms focus on one strategy and use the other in a supporting role. [S3] "using the other in a supporting role"
-- Confusables: Tacit vs explicit. Codification goes with explicit knowledge and personalization with tacit, but they are strategies, not knowledge types. SECI Externalisation (tacit → explicit) is a conversion, not a strategy. People also mix this up with "know-how vs know-who".
-- Variants or contested points: The widely quoted "80/20 split" (about 80% one strategy, 20% the other) is from the full HBR article, as commonly cited. The HBS excerpt [S3] gives no ratio and says only that effective firms did not use the two approaches equally. The terms "reuse economics" (codification) and "expert economics" (personalization), and the pairing of each strategy with incentives, are also commonly attributed to the full article. None of them appears in the excerpt. KMWorld (search result, not fetched) calls the pair a "false dichotomy", which is a criticism, not ATD's position.
-- Unverified: the 80/20 figure, "reuse/expert economics", and the incentive differences. All are believed to be in the full HBR article, but none was confirmed here. The author may use 80/20 only if it's worded as "the authors suggest roughly 80/20" and a checker confirms it.
+  1. Codification strategy: knowledge is carefully codified and stored in databases, where anyone in the firm can find and reuse it. The approach is "people-to-documents". Examples: Andersen Consulting, Ernst & Young. It relies on electronic repositories and staff who codify and manage content (E&Y had a 250-person Center for Business Knowledge). [S3][S15] "people-to-documents"
+  2. Personalization strategy: knowledge is closely tied to the person who developed it and is shared mainly through direct contact. IT is used to find who knows what (expert directories), not to store knowledge objects. Examples in the article's exhibit: McKinsey & Company and Bain & Company [S15]. ([S3] was earlier read as also naming BCG; the exhibit names only McKinsey and Bain, so use those two.) It relies on people networks, transfers between offices, and returning colleagues' calls quickly. [S3][S15]
+- Key principle (80/20): Don't split effort evenly. Effective firms focus on one strategy and use the other in a supporting role. [S3] The authors call this an 80-20 split. [S15] "80% of their knowledge sharing follows one strategy, 20% the other"
+- Exhibit "How Consulting Firms Manage Their Knowledge": five comparison rows, in this order [S15]:
+  1. Competitive Strategy.
+  2. Economic Model: codification = Reuse economics, which means investing once in a knowledge asset and reusing it many times. [S15] "Invest once in a knowledge asset; reuse it many times." Personalization = Expert economics, which means charging high fees for highly customized solutions to unique problems. [S15]
+  3. Knowledge Management Strategy: codification is people-to-documents [S3]; personalization is person-to-person (the second label is general knowledge, not quoted in the fetch).
+  4. Information Technology: heavy IT support is critical for codification and much less important for personalization. [S15]
+  5. Human Resources: codification hires new college graduates suited to reusing knowledge and trains people in groups and through computer-based distance learning. Personalization hires MBAs who like problem solving and can tolerate ambiguity and trains people through one-on-one mentoring. [S15]
+- Incentives (row not shown in the fetch): codification rewards people for using and contributing to document databases; personalization rewards people for directly sharing knowledge with others. [S15] At Bain, direct help given to colleagues can count for up to a quarter of a partner's annual pay. [S15]
+- Confusables: Tacit vs explicit. Codification goes with explicit knowledge and personalization with tacit, but they are strategies, not knowledge types. SECI Externalisation (tacit → explicit) is a conversion, not a strategy. People also mix this up with "know-how vs know-who". Trap pairs from the exhibit: reuse vs expert economics, group/distance training vs one-on-one mentoring, new graduates vs MBAs.
+- Variants or contested points: The 80/20 split is now confirmed in the full article [S15]; the HBS excerpt [S3] gives no ratio. KMWorld (search result, not fetched) calls the pair a "false dichotomy", which is a criticism, not ATD's position.
+- Changed: 80/20, reuse/expert economics, the incentive differences, and the IT and HR differences moved from Unverified to confirmed [S15]. The personalization examples were cut to McKinsey and Bain (the exhibit's two). Byline and issue confirmed.
+- Unverified: which exhibit row the incentives sit in (the fetch quoted the reward lines but not their row), and the exact "person-to-person" label. Quotes come from an OCR copy that the fetch tool corrected, so recheck punctuation before any verbatim use.
 
 ### Building a KM system: Atwood's process (reading-list book)
 - Origin: Christee Gabour Atwood, *Knowledge Management Basics*, ASTD (now ATD) Press, 2009. [S4]
@@ -236,32 +257,40 @@ These three are common answers to "how do I judge whether a learning technology 
 - Variants or contested points: The five-step list is the publisher's blurb paired with the chapter titles. It is not a named model. Don't present it as "Atwood's Five-Step KM Model" or similar.
 - Unverified: the book's actual content (definitions, any tacit/explicit or SECI coverage, its KM tools list). The pairing of each step with a chapter is my reading of the order, not a statement in the source.
 
-### KM practices and hierarchy (general knowledge; no source fetched)
-These are standard KM-strategy content for 2.5.3. No tier 1–3 source was fetched for them, so every item is from memory and must be checked before authoring. Suggested tag for all: extra.
+### KM practices and hierarchy (CoP sourced; AAR partly sourced; DIKW UNSOURCED)
+These are standard KM-strategy content for 2.5.3. The gap fill sourced the CoP elements to Wenger-Trayner [S17] and the AAR's content to Army sources [S18][S19]. DIKW was not searched (budget). Suggested tag for all: extra.
 
 #### Communities of practice (CoP)
-- Origin: Jean Lave & Etienne Wenger, *Situated Learning*, 1991 (the term and "legitimate peripheral participation"). Wenger, *Communities of Practice*, 1998. Wenger, McDermott & Snyder, *Cultivating Communities of Practice*, 2002. Unverified. Jarche's post [S8] confirms only that he gives CoPs a filtering role in PKM.
+- Origin: Jean Lave and Etienne Wenger coined the term while studying apprenticeship as a learning model. [S17] Usual citations (from memory, not checked): Lave & Wenger, *Situated Learning*, 1991; Wenger, *Communities of Practice*, 1998; Wenger, McDermott & Snyder, *Cultivating Communities of Practice*, 2002. Etienne Wenger now writes as Wenger-Trayner, with Beverly Wenger-Trayner. [S17] Jarche's post [S8] gives CoPs a filtering role in PKM.
+- Definition: groups of people who share a concern or passion for something they do and learn how to do it better by interacting regularly. [S17] "groups of people who share a concern or a passion for something they do"
 - Tie to the exam: 2.5.3 (CoPs are a main personalization and tacit-knowledge tactic). No ATD tie shown.
-- Kind: set (three structural elements). There is also an ordered list (five stages of development, earliest to latest).
-- Items (unverified). Three elements: Domain (the shared area of interest), Community (the members and their relationships), Practice (the shared repertoire of tools, stories and methods). Stages (2002): Potential, Coalescing, Maturing, Stewardship, Transformation.
-- Confusables: teams and work groups (CoPs are voluntary and self-selecting, built around a domain rather than a deliverable). Tuckman's stages (also five, but different names). Jarche's networks vs communities.
-- Unverified: all of the above, including the stage names.
+- Kind: set (three crucial characteristics; the source lists them in this order)
+- Items, in the source's own terms [S17]:
+  1. Domain: the community has an identity defined by a shared domain of interest. [S17]
+  2. Community: members engage in joint activities and discussions, help each other and share information. [S17]
+  3. Practice: members develop a shared repertoire of resources, such as experiences, stories, tools and ways of addressing recurring problems. [S17] "a shared repertoire of resources"
+- Confusables: teams and work groups (CoPs are defined by a shared domain and regular interaction, not by a deliverable). Tuckman's stages. Jarche's networks vs communities. "Legitimate peripheral participation" is a Lave & Wenger term from memory; [S17] says only "peripheral forms of participation".
+- Changed: the five development stages (Potential, Coalescing, Maturing, Stewardship, Transformation) are not on [S17] and remain from memory. Don't author them. The "voluntary and self-selecting" claim was dropped from the confusables because [S17] doesn't say it.
+- Unverified: the stage names, the 1991/1998/2002 book citations, and the exact phrase "legitimate peripheral participation".
 
-#### After-action review (AAR)
-- Origin: U.S. Army, 1970s. Unverified.
+#### After-action review (AAR) (partly sourced)
+- Origin: U.S. Army. The Army adopted the AAR as its primary feedback method after unit collective training exercises. [S18] A "twenty-five year history" of AAR research is mentioned [S18], but the report's own year wasn't shown, so the "1970s" origin is still unverified.
+- Definition: a review of training that lets soldiers, leaders and units discover for themselves what happened during the training and why. [S19] "allows soldiers, leaders, and units to discover for themselves"
 - Tie to the exam: 2.5.3 (a lessons-learned capture method). No ATD tie shown.
-- Kind: ordered (four questions, asked in order)
-- Items (unverified): 1. What was supposed to happen? 2. What actually happened? 3. Why was there a difference? 4. What can we learn from this (what will we sustain or improve)?
-- Confusables: project post-mortems and retrospectives. Kirkpatrick-style evaluation (the `eval` shard).
-- Unverified: all of the above, including the exact wording of question 4, which varies widely across sources.
+- Kind: ordered (questions asked in order)
+- Content areas confirmed in Army sources (paraphrase, not question wording): what was planned or supposed to happen; what happened; why it happened; and how to improve or sustain performance. [S18][S19] The Army appendix [S19] also gives a seven-part discussion outline (introduction, commander's and OPFOR's plan, summary of recent events, key issues, analysis of key BOS, training to sustain or improve, conclusion). That is a meeting agenda, not the question list.
+- Common four-question form (wording from memory; not quoted by either source): 1. What was supposed to happen? 2. What actually happened? 3. Why was there a difference? 4. What can we learn from this (what will we sustain or improve)?
+- Confusables: project post-mortems and retrospectives. Kirkpatrick-style evaluation (the `eval` shard). The [S19] discussion outline vs the four questions.
+- Unverified: the exact wording and count of the four questions (the sources support the content, not the phrasing), and the 1970s origin. Authors: test the order of the ideas (plan → actual → why → sustain/improve) and the "discover for themselves" self-review principle, not exact question wording.
 
-#### DIKW hierarchy (data → information → knowledge → wisdom)
+#### DIKW hierarchy (data → information → knowledge → wisdom) (UNSOURCED, do not author)
+- Gap fill: not searched (budget). Everything below is still from memory.
 - Origin: Usually credited to Russell Ackoff, "From Data to Wisdom," 1989. Ackoff's version had five levels, adding "understanding" between knowledge and wisdom. Unverified.
 - Tie to the exam: 2.5.3 (defining what "knowledge" is). No ATD tie shown.
 - Kind: ordered (lowest to highest)
 - Items (unverified): Data, Information, Knowledge, Wisdom.
 - Confusables: tacit vs explicit (a different axis). Bloom's levels.
-- Unverified: all of the above. Authors: ask only the four-level order, if anything.
+- Unverified: all of the above. Don't author it.
 
 ## 2.5.7: Curating instructional content, tools, and resources
 
@@ -278,7 +307,7 @@ Statement examples to cover: researching, evaluating, selecting, and/or assembli
   3. The book's eight experts give case studies and best practices for building a curation strategy. [S5]
 - Related ATD material: The TD at Work issue *Target Learning With Curation* (Webb & Kaminski) covers learning curation vs content curation, an "intelligent curation mindset", a "learning board" process and its governance, and an intelligent curation checklist [S6]. None of its steps were visible.
 - Confusables: Bhargava's "Elevation" (one of his five models) vs the generic word "elevate" in the ATD blurb. Don't let a question treat the blurb as naming Bhargava's model.
-- Unverified: the book's contents, including whether it presents Bhargava's five models, Jarche's Seek > Sense > Share, or a stepwise curation process, and who the eight experts are. The listed year (2015) differs from some catalog listings (2016). Either year is defensible; avoid testing it.
+- Unverified: the book's contents, including whether it presents Bhargava's five models, Jarche's Seek > Sense > Share, or a stepwise curation process, and who the eight experts are. The listed year (2015) differs from some catalog listings (2016). Either year is defensible; avoid testing it. Gap fill (2026-11-08): not attempted, because the web budget went to higher-ranked gaps.
 
 ### The statement's own curation steps (2.5.7 named example)
 - Origin: the 2.5.7 statement wording (scope.md).
@@ -324,13 +353,19 @@ Statement examples to cover: researching, evaluating, selecting, and/or assembli
 - Unverified: whether Jarche contributed to *Ready, Set, Curate* or is cited in it or the TDBoK.
 
 ### CRAAP test (evaluating online sources)
-- Origin: Sarah Blakeslee, Meriam Library, California State University, Chico, about 2004. Unverified.
+- Origin: Meriam Library, California State University, Chico. The library's handout used here is dated 9/17/10. [S16] The credit to Sarah Blakeslee and the "about 2004" date are from memory; the PDF carries no author credit, so don't test either.
 - Tie to the exam: 2.5.7 ("evaluating ... publicly available online courseware"). No ATD tie shown.
 - Suggested tag: extra
-- Kind: set (five criteria; the order spells the acronym)
-- Items (unverified): Currency (how recent), Relevance (fit to your need), Authority (who made it, and their credentials), Accuracy (reliability, evidence), Purpose (why it exists: inform, sell, persuade; bias).
-- Confusables: Bhargava's models (types of curation, not criteria). Foreman's LMS criteria (for platforms, not content).
-- Unverified: all of the above. If used, label it "a common source-evaluation checklist", not an ATD model.
+- Kind: set (five criteria; the source lists them in this order, which spells the acronym)
+- Items, in the source's own terms [S16]:
+  1. Currency: the timeliness of the information (when it was published or posted; whether it has been revised or updated). [S16]
+  2. Relevance: the importance of the information for your needs (does it relate to your topic; who the intended audience is). [S16]
+  3. Authority: the source of the information (the author, publisher, source or sponsor, and their credentials or affiliations). [S16]
+  4. Accuracy: the reliability, truthfulness and correctness of the content (where it comes from; whether it is supported by evidence). [S16] "The reliability, truthfulness and correctness of the content."
+  5. Purpose: the reason the information exists (to inform, teach, sell, entertain or persuade; whether the authors make their intent clear). [S16] "The reason the information exists."
+- Changed: Purpose's examples now follow the source (inform, teach, sell, entertain, persuade), not "inform, sell, persuade". Accuracy is "reliability, truthfulness and correctness", not "reliability, evidence" (evidence is one of its questions).
+- Confusables: Bhargava's models (types of curation, not criteria). Foreman's LMS criteria (for platforms, not content). Currency vs Relevance (timeliness vs fit to need). Authority vs Accuracy (who made it vs whether the content is correct).
+- Unverified: the original author and year. If used, label it "a source-evaluation checklist from CSU Chico's Meriam Library", not an ATD model.
 
 ## Open questions
 - TDBoK coverage: No TDBoK text for 2.4 or 2.5 was available (the public sample chapter covers Domain 1). So no entry here can carry the `tdbok` tag. The TDBoK's own lists (for example its technology selection criteria, its LMS/LCMS/LXP/KMS definitions, its KM process or KM tools, its curation steps) are unknown. Don't write "the TDBoK says ..." for any of them.
@@ -339,7 +374,12 @@ Statement examples to cover: researching, evaluating, selecting, and/or assembli
 - *Ready, Set, Curate* year (2015 on the list and the ATD page vs 2016 in some catalogs) and contents (any named curation model or steps, the eight contributors). Unknown. Don't attribute Bhargava or Jarche to this book.
 - Foreman's five steps come from his 2013 article, not the 2017 book. Whether the book's Ch. 6 uses the same steps or names is unknown.
 - MLE layer names: The 2022 ATD release names (Shared knowledge, Performance support, Reinforcement, Coaching, Pull training, Push training) differ from the 2017 blog (Continued reinforcement, Management support, On-demand training, Formal training). Use the 2022 names. "Bottom to top, start at layer 1" is confirmed only for the 2017 version.
-- Hansen, Nohria & Tierney: the "80/20" ratio, "reuse economics / expert economics", and the incentive differences are not in the excerpt fetched [S3]. Don't test them unless a checker confirms them in the full HBR article.
-- Unverified models (from memory only): SAMR, Diffusion of innovations (including the adopter percentages), TAM, Communities of practice (elements and stages), the AAR four questions, DIKW, the CRAAP test, all interoperability standards (AICC, SCORM, xAPI, cmi5, LTI), and the definitions of LMS, LCMS, KMS, performance management system and LXP. A checker must confirm each against its owner's source (Puentedura; Rogers; Davis 1989; Wenger et al. 2002; U.S. Army TC 25-20; Ackoff 1989; CSU Chico Meriam Library; adlnet.gov and 1edtech.org) before it's authored. If budget is short, drop them rather than guess.
+- Hansen, Nohria & Tierney: resolved in the gap fill. The 80/20 split, reuse vs expert economics, incentives, IT and HR differences are confirmed in the full HBR article [S15]. Still open: which exhibit row holds the incentives, and the exact "person-to-person" label.
+- Gap fill status (2026-11-08) for the models that were from memory only:
+  - Now sourced: SAMR [S20]; CRAAP criteria [S16]; CoP definition and three elements [S17]; SCORM, xAPI and cmi5 [S14]; LMS and LXP definitions [S13].
+  - Partly sourced: AAR (content areas and definition [S18][S19], not the exact four-question wording); AICC (name only [S14]).
+  - Still unverified: CoP development stages; LTI; the LCMS, KMS and performance management system definitions; the SCORM expansion; "Tin Can".
+  - UNSOURCED, do not author: Diffusion of innovations (including the adopter percentages), TAM, DIKW.
+  - Owners still to check for the open items: Rogers; Davis 1989; Wenger, McDermott & Snyder 2002 (stages); U.S. Army TC 25-20 (question wording); Ackoff 1989; 1edtech.org (LTI); an ATD source for LCMS, KMS and PMS.
 - Ba names: the 1998 names ("interacting", "cyber") are from memory. The 2000 names (dialoguing, systemising) are confirmed [S2].
 - Knowledge assets: only the four names are confirmed [S2]. The one-line meanings are paraphrased from memory.
