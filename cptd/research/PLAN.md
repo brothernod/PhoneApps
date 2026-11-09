@@ -1,0 +1,107 @@
+# Plan: add CPTD Domains 2 and 3
+
+Agreed with Jonathan on 2026-11-08. Read this first, then `STATUS.md` (where things stand) and `LESSONS.md` (how the app and content work, and what went wrong in Domain 1). Don't read anything else until a step needs it.
+
+## Goal
+
+Add the other two CPTD domains to the study app at https://brothernod.github.io/PhoneApps/cptd/ (repo `brothernod/PhoneApps`, folder `cptd/`):
+
+| Domain | Name | Exam weight |
+|---|---|---|
+| 1 (done) | Building Personal Capability | 20% |
+| 2 | Developing Professional Capability | 45% |
+| 3 | Impacting Organizational Capability | 35% |
+
+The weights come from ATD CI's 2025 CPTD Certification Handbook (recorded in `content.js` → `exam.facts`). Step 0 re-confirms them.
+
+Two requirements, in this order:
+
+1. **Accuracy at the Domain 1 bar or better.** A friend is studying for the real exam with this app. A wrong fact or an ambiguous question is worse than a missing one.
+2. **A fraction of Domain 1's token cost, and no usage-limit blowouts.** Domain 1 hit the usage limit three times.
+
+## Why Domain 1 was expensive
+
+The whole project cost about $80 by the session's own meter. Weighted shares (cache reads ×0.1, cache writes ×2, output ×5):
+
+| Share | Cause |
+|---|---|
+| 35% | The main conversation re-reading its own history. One chat did everything, and its history reached about 780k tokens before it was compacted. Every step re-reads all of it. |
+| 14% | Files, test output and web pages pulled into that same history. |
+| 9% | Main conversation thinking and writing. |
+| 18% | The two fact-checker agents thinking. Their brief was open-ended ("check everything in these areas against anything you can find"). |
+| 17% | Fact-checkers reloading their history. Each collected 100+ web pages (up to about 220k tokens of history). One paused just over 5 minutes between steps, longer than the cache lasts, and reloaded its whole history 11 times, plus again after a 5½-hour usage-limit wait. |
+| 6% | Fact-checkers re-reading their history. |
+
+There was also rework: two review rounds rewrote content after it was written (49 questions rebalanced, decoy rules added afterwards).
+
+**Not waste:** the two checkers split the content between them rather than duplicating each other, and between them they found a wrong answer key, two swapped definitions, a wrong model and several ambiguous questions. Independent checking stays.
+
+## Rules
+
+1. **Short histories.** Each domain gets its own new conversation. Heavy work (research, checking) goes to helper agents whose history is thrown away when they finish. Hand-offs go through files in `cptd/research/`, never through chat history. Target: no history over about 100k tokens, checked with `tools/spend.py` ("max ctx").
+2. **Research once, into files.** Each group of tested statements gets a source file. It lists every model's exact components or steps, with source links and short quotes. Authoring and checking work from those files. They go back to the web only for a claim the file can't support.
+3. **Check claims, not "everything."** A script turns content into a numbered list of atomic claims ("Kirkpatrick has four levels, in this order", "q-x's answer is B because …"). Checkers verify each claim against the source file and return only discrepancies, in a fixed table.
+4. **Write it right the first time.** The authoring checklist in `LESSONS.md` and `tools/check-content.mjs` enforce Domain 1's lessons while writing, instead of in review rounds afterwards.
+5. **No stalls.** Agents run back to back, sized to finish in one go, and write results to their file as they go. If a usage limit interrupts an agent with a large history, start a fresh agent from its file instead of resuming it, because resuming reloads its whole history.
+
+Not used, because they'd risk accuracy: a smaller model or lower reasoning effort for checking.
+
+## How the work is split
+
+- **Conversation A: Domain 2.** Steps 0–6 below, then **stop at the checkpoint** and report to Jonathan. He reviews before Domain 3 starts.
+- **Conversation B: Domain 3.** Steps 2–6 again, reusing everything from A (step 0 already covered both domains; step 1 is done once).
+
+To start a conversation, Jonathan says: *"Continue the CPTD build from cptd/research/PLAN.md in brothernod/PhoneApps."* The new conversation adds and clones the repo, reads `PLAN.md`, `STATUS.md` and `LESSONS.md`, and picks up at "Next action" in `STATUS.md`.
+
+## Steps
+
+### 0. Scope (main conversation, small)
+- Get the current ATD CI CPTD Certification Handbook. Record the tested statements for Domains 2 and 3 with their exact wording, plus the domain weights and question counts, in `research/scope.md`. Domain 1's handbook list mapped letters to statements (1.1.A = 1.1.3, and so on); expect the same style.
+- Group the tested statements into **shards** of about 4–6, along capability-area lines (2.1 Learning Sciences … 2.8 Evaluating Impact; 3.1 Business Insight … 3.8 Future Readiness), and list them in `scope.md`.
+- Estimate size. Domain 1 had 11 statements, 83 models, 183 questions and 3 cases. Tell Jonathan the estimate in a line or two, then carry on, unless it's far larger than expected.
+
+### 1. Multi-domain app support (once, in conversation A)
+- Split content: `content.js` stays Domain 1. Add `content-d2.js` and `content-d3.js` in the same format, and merge them all at load. Ids must be unique across domains (card keys are `m:<model>:<type>` and `q:<id>`), and existing Domain 1 progress must keep working.
+- Add a domain picker on Home, with sprints per domain or across all domains. Show progress and mastery per domain, filter Learn by domain, and group cases by domain. Exam countdown and settings stay shared.
+- Update titles and descriptions that say "Building Personal Capability" (`app.js` brand line and About text, `index.html` meta, `manifest.webmanifest`).
+- Extend `tools/check-content.mjs` for multiple domains, and add `tools/claims.mjs` (step 5).
+- Test with a two-model stub domain, then remove the stub. Run `tools/tests/run_all.sh`. Commit.
+
+### 2. Source files (helper agents, 2–3 at a time)
+One agent per shard. The brief gives **paths, not pasted content**: `PLAN.md` (this section), `LESSONS.md` (sources and error types), `scope.md` (its statements) and its output path. Limits: about 20 web calls, and append to its file as it goes. It returns a summary of 300 words or fewer.
+
+Output: `research/d2/<shard>.md`. For each tested statement, list the models the TDBoK and ATD's materials tie to it. For each model, give:
+- name, author or origin, and whether it's ordered;
+- every component or step in the source's own words;
+- a source link and a short quote for each fact;
+- which source tier supports it (see `LESSONS.md`);
+- anything contested or unverifiable, called out explicitly.
+
+### 3. Authoring (main conversation or one agent per shard)
+- Write `content-dN.js` **from the source files only**: no new web research, and every model, item and question traceable to a source-file line.
+- Follow the authoring checklist in `LESSONS.md`. Run `node cptd/tools/check-content.mjs` after each shard, and fix before moving on.
+- Add `kin` groups for umbrella and overlapping models at authoring time.
+
+### 4. Machine checks (scripts, nearly free)
+`bash cptd/tools/tests/run_all.sh`, with the local server running from the repo root. All must pass before step 5.
+
+### 5. Independent check (fresh agents that didn't write the content)
+Per shard, two passes:
+- **Claims pass.** `node cptd/tools/claims.mjs <shard>` writes `research/dN/claims-<shard>.md`. The agent checks each claim against the source file, goes to the web only where the file has no quote, and returns a table: claim #, verdict (OK / WRONG-KEY / FALSE / AMBIGUOUS / MISLEADING / MINOR / UNVERIFIABLE), evidence, exact fix.
+- **Cold-answer pass.** A script writes the shard's questions **without answer keys**. The agent answers each one and marks any where two options are defensible. A script compares its answers with the keys; every disagreement or "two defensible" flag gets adjudicated against the sources.
+
+### 6. Fix, re-check, commit, report
+- Apply only the listed fixes. Re-check just the changed items, with one small agent. Run the tests again.
+- Commit and push (commit messages end with the session's Co-Authored-By and Claude-Session lines).
+- Update `STATUS.md`: steps done, spend from `python3 cptd/tools/spend.py`, and the list of things that couldn't be verified.
+- **Checkpoint after Domain 2:** report to Jonathan (what was added, the unverified list, spend versus Domain 1) and stop.
+
+## Main-conversation habits
+- Don't read whole files. `content.js` and `app.js` are big; use grep, line ranges, or a script that prints a summary.
+- Keep command output short: pipe through `tail`, `grep` or `cut`. `run_all.sh` already prints only pass/fail lines.
+- Look at screenshots only when checking a visual change.
+- Don't paste source files or content into agent briefs. Give paths.
+- Commit at the end of every step, so an interrupted conversation loses nothing.
+
+## Expected cost
+This is an estimate, to be checked at the checkpoint. Per question and per model, roughly a third to a half of Domain 1's cost, mostly from removing the history re-reading and the reloads. Domains 2 and 3 are bigger than Domain 1 (45% and 35% of the exam versus 20%), so the totals depend on step 0's statement count. Report actual spend at every commit.

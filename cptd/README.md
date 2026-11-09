@@ -31,9 +31,19 @@ Each model is labeled with how we know it matters: **In the TDBoK**, **On ATD's 
 - `sw.js`, `manifest.webmanifest`, icons: offline support and home-screen install
 - `fonts/`: Atkinson Hyperlegible Next (SIL Open Font License, see `fonts/OFL.txt`)
 - `tools/check-content.mjs`: checks the content for broken or ambiguous questions
+- `tools/tests/`: browser tests (Playwright); `run_all.sh` runs them all
+- `tools/spend.py`: token spend report used at build checkpoints
+- `research/`: the plan for adding Domains 2 and 3 (`PLAN.md`), where it stands (`STATUS.md`), and Domain 1's lessons and reference (`LESSONS.md`)
 
 After editing `content.js`, run this from the repo root (needs Node):
 
 ```
 node cptd/tools/check-content.mjs
+```
+
+To run the browser tests, serve the repo root and run the suite:
+
+```
+python3 -m http.server 8765 --bind 127.0.0.1 &
+bash cptd/tools/tests/run_all.sh
 ```
