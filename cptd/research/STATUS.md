@@ -8,7 +8,7 @@ Start **conversation A (Domain 2)** at step 0. Jonathan opens a new chat and say
 
 ## Domain 2: Developing Professional Capability (conversation A)
 
-- [ ] 0. Scope: tested statements for Domains 2 and 3 in `scope.md`, shards, size estimate
+- [x] 0. Scope: tested statements for Domains 2 and 3 in `scope.md`, shards, size estimate (2026-11-08: D2 18 statements in 5 shards, D3 32 in 7)
 - [ ] 1. Multi-domain app support, `claims.mjs`, checker update
 - [ ] 2. Source files `research/d2/*.md`
 - [ ] 3. `content-d2.js` written from the source files
