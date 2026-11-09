@@ -1,4 +1,5 @@
 # Data & analytics (3.7.2, 3.7.3, 3.7.4, 3.7.6)
+Gap fill 2: 2026-11-09, 13 web calls, resolved 3 of 8 (statistics basics in part); 3 tried and still open (Torrance wording, Evergreen's text on word clouds and heat maps, qualitative chooser groups); 2 not reached (Bersin, Abela, both still UNSOURCED). Details at the end of the file.
 
 Gap fill: 2026-11-09, 14 web calls, resolved 5 of 10 (two only in part); 2 more marked UNSOURCED (Abela, analytics maturity); 3 still open (statistics basics, primary/secondary, structured/unstructured). Details in each entry and in Open questions.
 
@@ -39,6 +40,9 @@ Sources used (numbered, so entries can cite [S1] and so on):
 - [S14] "Anxious About Analytics?", TD magazine (ATD), May 2021 issue (posted April 30, 2021), no byline visible, https://td.org/content/td-magazine/anxious-about-analytics. Tier: other (ATD magazine; member-only banner, but the text was readable). Names three analytics types (descriptive, predictive, prescriptive) with one-line definitions; no diagnostic.
 - [S15] ATD Store product page, *TD at Work Guide: A Strategic Approach to Talent Development*, ATD Press, March 2019, ISBN 9781949036787, 116 pp., https://td.org/product/td-at-work-guide--a-strategic-approach-to-talent-development/241901. Tier: 2-adjacent (publisher page for a reading-list title; no table of contents shown). Learning goals: align TD solutions with strategic objectives; take a systems approach to build organizational capability; design an executive dashboard around intended outcomes (page: "start with outcomes in mind when developing an executive dashboard"). Its focus is strategic alignment and showing impact, not analytics types or chart selection.
 - [S16] Table-of-contents scan of Evergreen, *Effective Data Visualization*, via the obalkyknih.cz library cover/TOC service, https://www.obalkyknih.cz/file/toc/502698/pdf. Tier: 2-adjacent (reading-list book's own contents). The scan does not print title or edition; its 11 chapter titles match [S5]'s 2nd-edition list (ch. 10 reads "Reporting Out: Sharing Your Data With the World"), so treated as the 2nd edition. Gives the chart-type subheadings inside each chapter (listed under "Evergreen's data situations" below).
+- [S17] Gruszeczka, A., "Types of Data", Data and Statistics LibGuide, Old Dominion University Libraries, created 2012-06-28, updated 2026-11-09, https://guides.lib.odu.edu/data/types. Tier: other (university library guide; a standard-definition reference for concepts with no single original author). Gap fill 2. Defines primary and secondary data, quantitative (discrete, continuous) and qualitative data. Does not mention structured or unstructured data.
+- [S18] Peart, D., "What is data?", Working with Data research guide, University of Delaware Library, created 2021-06-25, updated 2026-04-22, https://guides.lib.udel.edu/datalit. Tier: other (university library guide). Gap fill 2. Two-way split, structured vs unstructured; no semi-structured; no primary/secondary.
+- [S19] Martelli, J. T., "Using Statistics in HRD", *Training & Development* magazine (ASTD, now ATD), "The Business of Training" column, February 1997, pp. 62–63, hosted by ATD at https://assets.td.org/m/1574feb7030d9fea/original/Using-statistics-in-HRD.pdf. Tier: other (ATD's own magazine, hosted on ATD's asset site; not TDBoK, CI or reading list, so it doesn't by itself carry `tdbok` or `reflist`). Gap fill 2. Key-terms glossary: measures of central tendency, standard deviation, the four levels of data, correlation and its coefficient, causation, null hypothesis, sample and population, descriptive vs inferential statistics. Read via the fetch tool's paraphrase with short quotes.
 
 ## 3.7.2: Gathering and organizing data
 
@@ -59,16 +63,16 @@ Statement: "Skill in gathering and organizing data from internal and/or external
 - Unverified: no ATD list of internal and external sources was seen; the examples are general knowledge.
 
 ### Primary vs secondary data
-- Origin: general research-methods knowledge; not seen in an ATD source this session (the TDBoK deck [S7] does not cover it).
+- Origin: general research-methods concept (no single author); definitions now from a university library guide [S17] (gap fill 2). Not seen in an ATD source (the TDBoK deck [S7] does not cover it).
 - Tie to the exam: 3.7.2 (gathering data); named in the shard's ownership brief.
-- Suggested tag: extra
+- Suggested tag: extra (no ATD tie shown; tag unchanged by gap fill 2)
 - Kind: set
 - Items:
-  1. Primary data: collected first-hand by the analyst for the current question (surveys, interviews, focus groups, observation, tests, experiments).
-  2. Secondary data: collected earlier, by someone else or for another purpose, and reused (existing records, HRIS and LMS reports, published research, benchmarks). Also called extant or existing data in needs-assessment writing.
+  1. Primary data: collected first-hand by the analyst for the current question. [S17] "data that researchers collect or create themselves"; its examples: interviews, surveys, observations, experiments. L&D examples (general): a new pulse survey, focus groups, tests.
+  2. Secondary data: collected earlier, by someone else or for another purpose, and reused. [S17] "data that were collected or created by someone else"; its example: government census data. L&D examples (general): existing HRIS and LMS reports, published research, benchmarks. Also called extant or existing data in needs-assessment writing (general knowledge).
 - Confusables: internal vs external (independent axis, above); qualitative vs quantitative; Phillips's hard vs soft data (`phillips-hard-data`).
 - Variants: some texts add tertiary sources (summaries of secondary sources). Not needed for the exam as far as seen.
-- Unverified: no tier 1–3 source fetched; definitions are standard. Gap fill 2026-11-09: a search found university library data guides (for example Old Dominion University's "data types" guide, https://guides.lib.odu.edu/data/types), but the fetch failed (tool usage limit; the host is also blocked for direct download), so nothing was confirmed. A follow-up could fetch that guide or a similar .edu page.
+- Unverified: ATD/TDBoK wording and whether the TDBoK uses the pair at all. Note a wrinkle for question writers: [S17] defines secondary data as collected "by someone else", while the L&D examples above include the organization's own HRIS and LMS records (reused, collected for another purpose). Key questions on clear cases (a new survey = primary; published benchmark or census data = secondary), not on reused in-house records.
 
 ### Qualitative vs quantitative data
 - Origin: [S4] index entries "qualitative data", "quantitative data" and "categorical data" (definitions on pages outside the sample); [S5] ch. 8, "When the words have the meaning: visualizing qualitative data"; [S7] card 51.
@@ -76,11 +80,11 @@ Statement: "Skill in gathering and organizing data from internal and/or external
 - Suggested tag: reflist (the terms are covered in reading-list books; the definitions below are general knowledge)
 - Kind: set
 - Items:
-  1. Quantitative data: numbers that can be counted or measured and analyzed statistically (scores, ratings, completion rates, time, cost).
-  2. Qualitative data: non-numeric data such as words, images or observations (open-ended comments, interview notes, focus group transcripts), analyzed for themes. The Lyons and Evergreen chooser names "Thematic Analysis" as a route [S11].
+  1. Quantitative data: numbers that can be counted or measured and analyzed statistically (scores, ratings, completion rates, time, cost). [S17] (gap fill 2) "data that can be represented numerically, including counts and measurements"; it splits them into discrete (countable) and continuous (any value in a range).
+  2. Qualitative data: non-numeric data such as words, images or observations (open-ended comments, interview notes, focus group transcripts), analyzed for themes. [S17] "concepts and information that cannot be represented by numbers"; its examples: text, audio and other media. The Lyons and Evergreen chooser names "Thematic Analysis" as a route [S11].
 - How they work together: the TDBoK deck's card says qualitative data is used to explain the quantitative findings and is compiled after the numbers are quantified [S7].
 - Confusables: Stevens's levels (nominal and ordinal data are often called categorical or qualitative variables even when coded with numbers); structured vs unstructured; hard vs soft data (`phillips-hard-data`: soft data such as attitudes can still be quantitative ratings).
-- Unverified: TDBoK and Torrance definitions not seen.
+- Unverified: TDBoK and Torrance definitions not seen. Gap fill 2: standard definitions now sourced to a university library guide [S17]; tag stays reflist on the strength of the reading-list books' coverage, not [S17].
 
 ### Levels (scales) of measurement: Stevens's four scales
 - Origin: S. S. Stevens, "On the Theory of Scales of Measurement", *Science*, 1946 [S13].
@@ -95,19 +99,21 @@ Statement: "Skill in gathering and organizing data from internal and/or external
 - Groups (general usage, not Stevens): categorical / qualitative = nominal, ordinal; numerical / quantitative / continuous = interval, ratio.
 - Confusables: measures of central tendency (mode, median and mean line up with nominal, ordinal and interval); qualitative vs quantitative; discrete vs continuous.
 - Variants or contested points: whether Likert-scale data may be treated as interval (and averaged) is a long-running dispute; common practice averages them. Don't write a question that hinges on it. Stevens's "permissible statistics" rules are themselves debated (Velleman and Wilkinson 1993 appeared in search results; not fetched).
-- Unverified: whether the TDBoK covers the four scales at all.
+- ATD corroboration (gap fill 2): an ATD-hosted *Training & Development* article [S19] lists the same four "levels of data" in Stevens's order with matching definitions: nominal "identifies or classifies items into groups"; ordinal "can be rank-ordered" without known equal distances; interval has "equal distances between adjacent values" and no true zero; ratio adds "a zero point with a clear meaning". So the names, order and definitions agree across the original [S13] and ATD's own magazine [S19].
+- Unverified: whether the TDBoK covers the four scales at all. Tag stays extra ([S19] is ATD magazine, not TDBoK or reading list).
 
 ### Structured vs unstructured data
-- Origin: general knowledge; not seen in an ATD source.
+- Origin: general data-management concept (no single author); two-way definitions now from a university library guide [S18] (gap fill 2). Not seen in an ATD source.
 - Tie to the exam: 3.7.2 ("organizing ... to support retrieval and manipulation"); 3.7.6 (word clouds are a way to visualize unstructured text).
-- Suggested tag: extra
+- Suggested tag: extra (tag unchanged by gap fill 2)
 - Kind: set
 - Items:
-  1. Structured: organized in a fixed schema of rows and columns (databases, spreadsheets, LMS completion records, HRIS fields); easy to query and sort.
-  2. Semi-structured: tagged but not tabular (JSON, XML, xAPI statements, email headers).
-  3. Unstructured: no predefined model (free text, open-ended survey comments, video, chat logs, documents); needs coding or text analytics before analysis.
+  1. Structured: organized in a fixed format such as rows and columns, easy to query and sort. [S18] "structured data is organized in some way"; its examples: spreadsheet formats (CSV, XLSX, TSV), and also HTML, XML and JSON. L&D examples (general): LMS completion records, HRIS fields.
+  2. Semi-structured (general knowledge only, not in [S18]): tagged but not tabular (JSON, XML, xAPI statements, email headers). Many vendor and data-science sources use this middle tier; [S18] instead files XML and JSON under structured.
+  3. Unstructured: no predefined model, so it needs coding or text analytics before analysis. [S18] "less organized than structured data"; its examples: groups of images (JPG, PNG, TIFF) and plain text files, and it notes an image of a data table may not be machine-readable. L&D examples (general): open-ended survey comments, video, chat logs, documents.
 - Confusables: qualitative vs quantitative (unstructured data is usually qualitative, but not always); big data ([S6] defines it as data "too big or complex for traditional data software").
-- Unverified: whether ATD uses a two-way or three-way split. Gap fill 2026-11-09: same failed attempt as primary vs secondary (ODU library guide found, not read). Keep questions to the two-way split (structured vs unstructured); don't key "semi-structured".
+- Variants or contested points (gap fill 2): the split is two-way in [S18] and three-way in many industry sources, and JSON/XML land in different tiers depending on the source (structured in [S18], semi-structured elsewhere). Keep questions to the two-way split with clear cases (spreadsheet or database table = structured; free-text comments, images, video = unstructured). Don't key "semi-structured", and don't ask where JSON, XML or xAPI statements belong.
+- Unverified: whether ATD or the TDBoK uses the distinction at all.
 
 ### Organizing and cleaning data for retrieval and manipulation
 - Origin: general data-management practice; [S4] chapter titles 10 "Build in Data Capture", 11 "Store the Data" and 12 "Iterate on the Data and the Analysis" and the index entry "noisy data layer" show Torrance covers this ground (text not seen); [S7] card 36/50 (analysis in software: pivot tables, plotting, correlations); Wickham's "tidy data" (2014, *Journal of Statistical Software*) is general knowledge, not fetched.
@@ -222,7 +228,7 @@ Statement: "Skill in analyzing and interpreting results of data analyses to iden
   - Count: four (Gartner) vs three (descriptive, predictive, prescriptive: [S10], [S14] and many HR-analytics sources, which drop diagnostic). Gap fill: a second ATD magazine piece [S14] (TD, May 2021) also uses three: descriptive "uses data to describe the current situation"; predictive "the use of data to describe what is going to happen next"; prescriptive tools "proactively suggest actions to be taken" (via machine learning and AI). So both ATD magazine sources seen use three; only the TDBoK-keyed deck [S7] shows diagnostic. Some vendors add a fifth (for example "cognitive"); a search hit titled "The 5 Types of Data Analytics" shows this, not fetched. The TDBoK deck uses "diagnostic", so the four-type version is the safer key.
   - Question wording for prescriptive: [S9] "how can we make it happen?"; many sources say "what should we do?" Treat both as correct and don't make them rival options.
   - Labels: a common figure labels the four hindsight, insight, foresight and optimization; [S9] uses only "information and hindsight" and "optimization and foresight". Don't test the four-label version.
-- Unverified: which version and wording the TDBoK and Torrance use. ATD's own count is split: ATD magazine [S10] [S14] uses three; the deck keyed to the TDBoK [S7] uses diagnostic (so four, or at least diagnostic as a type). Safe items to test: descriptive = what happened / current situation; predictive = what will happen; prescriptive = what action to take. Test diagnostic only as "why did it happen" and never in a question whose key depends on the total count.
+- Unverified: which version and wording the TDBoK and Torrance use. ATD's own count is split: ATD magazine [S10] [S14] uses three; the deck keyed to the TDBoK [S7] uses diagnostic (so four, or at least diagnostic as a type). Safe items to test: descriptive = what happened / current situation; predictive = what will happen; prescriptive = what action to take. Test diagnostic only as "why did it happen" and never in a question whose key depends on the total count. Gap fill 2: tried to see Torrance's version: a search for her td.org writing on analytics types found only the 2021 TD article [S14] and vendor pages; a library e-book contents page (JGU/EBSCO) prints chapter titles only; the book's blurb at content.td.org/r/120613 names no types or levels. Still unseen.
 
 ### Analytics maturity models (UNSOURCED, do not author)
 - Origin: several, none fetched this session. Most cited in HR: Bersin by Deloitte's Talent Analytics Maturity Model (about 2012, general knowledge): Level 1 Operational Reporting, Level 2 Advanced Reporting, Level 3 Advanced (in some versions "Strategic") Analytics, Level 4 Predictive Analytics. Davenport and Harris's *Competing on Analytics* has five stages (analytically impaired → analytical competitors). Torrance ch. 14 is "Build Scale and Maturity" and her index has analytics "levels of" [S4]; her model was not seen.
@@ -231,7 +237,7 @@ Statement: "Skill in analyzing and interpreting results of data analyses to iden
 - Kind: ordered (lowest to highest maturity)
 - Items: not confirmed in any source this session; see Origin.
 - Confusables: the four analytics types (Gartner's levels are sometimes drawn as a maturity staircase, which is why the two get mixed up); the deck's data-driven-organization traits (below).
-- Unverified: all level names. **Don't author a maturity-level model or key a question on level names** without a sourced gap fill. Gap fill 2026-11-09: no source found within budget (one search for Torrance's "levels of analytics" returned only vendor blogs; Bersin/Deloitte not searched). Still unsourced.
+- Unverified: all level names. **Don't author a maturity-level model or key a question on level names** without a sourced gap fill. Gap fill 2026-11-09: no source found within budget (one search for Torrance's "levels of analytics" returned only vendor blogs; Bersin/Deloitte not searched). Still unsourced. Gap fill 2: Bersin/Deloitte not reached (budget); Torrance's book blurb mentions "building scale and maturity" but names no levels. Still UNSOURCED.
 
 ### Data-driven organization traits (deck-level)
 - Origin: deck keyed to TDBoK 3.7 [S7] cards 1–2, 41.
@@ -246,13 +252,14 @@ Statement: "Skill in analyzing and interpreting results of data analyses to iden
 - Tie to the exam: 3.7.4; named in the ownership brief.
 - Suggested tag: reflist (covered in Torrance ch. 5 per its index; definitions are standard)
 - Kind: set
-- Items (standard definitions):
-  1. Mean: the arithmetic average (sum ÷ count). Pulled by outliers and skew. Needs interval or ratio data [S13].
-  2. Median: the middle value when sorted (half above, half below). Resists outliers; preferred for skewed data such as salaries or time-to-fill. Needs at least ordinal data [S13].
-  3. Mode: the most frequent value. The only one usable with nominal data [S13]; a distribution can have more than one mode.
+- Items (definitions from ATD's magazine [S19], gap fill 2; the outlier and data-level notes are standard or from [S13]):
+  1. Mean: the arithmetic average (sum ÷ count). [S19] "the arithmetic average of a set of data". Pulled by outliers and skew. Needs interval or ratio data [S13].
+  2. Median: the middle value when sorted (half above, half below). [S19] "the middle value in a rank-ordered set of data". Resists outliers; preferred for skewed data such as salaries or time-to-fill (general knowledge). Needs at least ordinal data [S13].
+  3. Mode: the most frequent value. [S19] "the most frequently observed value in a set of data". The only one usable with nominal data [S13]; a distribution can have more than one mode.
+- Group name: [S19] calls the three "measures of central tendency".
 - Pitfall (TDBoK deck): over-relying on the mean while neglecting the median and mode [S7].
 - Confusables: measures of dispersion (below); Stevens's scales.
-- Unverified: TDBoK wording.
+- Unverified: TDBoK wording. The "median resists outliers" point is standard but not in a fetched source.
 
 ### Measures of dispersion (variability)
 - Origin: general statistics; [S4] index lists variance (ch. 5); [S5] ch. 2 "measures of variability".
@@ -263,9 +270,9 @@ Statement: "Skill in analyzing and interpreting results of data analyses to iden
   1. Range: highest value minus lowest. Simple; driven entirely by the two extremes.
   2. Interquartile range (IQR): spread of the middle 50% (third quartile minus first). Resists outliers; shown by a box plot.
   3. Variance: the average squared distance from the mean.
-  4. Standard deviation: the square root of the variance, in the data's own units. In a normal distribution about 68% of values fall within 1 SD of the mean and about 95% within 2 SD.
+  4. Standard deviation: the square root of the variance, in the data's own units. [S19] (gap fill 2) "a measure of how widely a set of data varies from its average value". In a normal distribution about 68% of values fall within 1 SD of the mean and about 95% within 2 SD (general knowledge).
 - Confusables: central tendency; standard error (the precision of a sample mean, not the spread of the data).
-- Unverified: which measures the TDBoK names (deck [S7] doesn't cover dispersion). Gap fill 2026-11-09: no ATD or standard reference fetched (budget and fetch limit). Evergreen's ch. 2 title confirms "measures of variability" is reading-list content [S5] [S16].
+- Unverified: which measures the TDBoK names (deck [S7] doesn't cover dispersion). Gap fill 2: standard deviation now sourced to ATD's magazine [S19]; range, IQR and variance are not defined there and stay general knowledge, as does the 68/95 rule. Evergreen's ch. 2 title confirms "measures of variability" is reading-list content [S5] [S16]. Safest question: SD as spread around the mean.
 
 ### Correlation vs causation
 - Origin: general statistics; [S4] index lists correlation and causation (ch. 5) and its references include Vigen, *Spurious Correlations* (2015); [S5] ch. 7 (correlation and regression); [S7] cards 10, 21.
@@ -273,26 +280,27 @@ Statement: "Skill in analyzing and interpreting results of data analyses to iden
 - Suggested tag: reflist
 - Kind: set
 - Items (standard):
-  1. Correlation: a measure of how two variables move together. The correlation coefficient (Pearson's r) runs from −1 (perfect negative) through 0 (none) to +1 (perfect positive); the sign gives the direction, the size gives the strength. Shown with a scatter plot [S7].
-  2. Causation: one variable produces the change in the other. Correlation alone does not show it.
+  1. Correlation: a measure of how two variables move together. [S19] (gap fill 2) "a measure of the strength of a relationship between two items"; its coefficient runs from +1.00 to −1.00, with zero meaning no relationship [S19]. The sign gives the direction, the size gives the strength (general knowledge; Pearson's r is the usual coefficient). Shown with a scatter plot [S7].
+  2. Causation: one variable produces the change in the other. Correlation alone does not show it. [S19]: a "clear cause and effect connection" needs "a highly controlled experimental environment"; otherwise only relationships can be inferred.
   3. Why a correlation may not be causal: a third (confounding) variable drives both; reverse causation (the effect drives the "cause"); coincidence (spurious correlation, Vigen's book [S4]); selection bias.
   4. What supports a causal claim: a control or comparison group, or a randomized experiment; the cause coming before the effect; ruling out other explanations. In evaluation these are the isolation methods in `roi-isolate`.
 - Confusables: regression (predicts one variable from others; still not proof of cause); `roi-isolate`.
-- Unverified: TDBoK wording.
+- Unverified: TDBoK wording. Gap fill 2: items 1 and 2 now sourced to ATD's magazine [S19]; items 3 and 4 (reasons and remedies) stay general knowledge apart from Vigen [S4] and the controlled-experiment point [S19].
 
 ### Statistical significance and sample size
 - Origin: general statistics; not seen in an ATD source this session (not in the Torrance sample or the deck). [S7] card 25 says to establish the sample size (respondents vs the ideal total) before interpreting.
 - Tie to the exam: 3.7.4; named in the ownership brief.
 - Suggested tag: extra
 - Kind: set
-- Items (standard):
-  1. Null hypothesis: the assumption of no effect or no difference.
-  2. p-value: the probability of getting a result at least this extreme if the null hypothesis were true.
+- Items (standard, except where cited):
+  1. Null hypothesis: the assumption of no effect or no difference. [S19] (gap fill 2) "a statement that asserts that there is no relationship between two measures"; it is rejected when an inferential statistic is "significantly different from zero" [S19].
+  2. p-value: the probability of getting a result at least this extreme if the null hypothesis were true. (Not defined in [S19]; general knowledge.)
   3. Significance level (alpha): the cut-off chosen in advance, conventionally 0.05; p below alpha is called statistically significant.
   4. Sample size and response rate: small samples give unstable results and wide margins of error; check how many responded out of how many could have [S7].
   5. Practical vs statistical significance: a statistically significant difference can be too small to matter to the business (effect size).
-- Confusables: confidence level (for example 95%) and margin of error, used in survey sampling.
-- Unverified: whether the TDBoK covers significance at all.
+- Related terms from ATD's magazine [S19] (gap fill 2): sample, "a small number of cases drawn from the population"; population, "the whole group of people or things of interest"; descriptive statistics "describe data", while inferential statistics "let the user make inferences about a population" from a sample.
+- Confusables: confidence level (for example 95%) and margin of error, used in survey sampling. Descriptive **statistics** (summarizing a sample, [S19]) vs descriptive **analytics** (Gartner's "what happened?" level, below): same word, different lists; and inferential statistics vs predictive analytics.
+- Unverified: whether the TDBoK covers significance at all; p-value, alpha 0.05, and practical vs statistical significance stay general knowledge. Tag stays extra.
 
 ### Interpretation pitfalls (deck-level)
 - Origin: deck keyed to TDBoK 3.7 [S7] cards 22–26, 52.
@@ -376,7 +384,7 @@ Statement: "Skill in selecting and/or using data visualization techniques, for e
 - Items (general knowledge): 1. Comparison (among items or over time: bar, column, line). 2. Distribution (histogram, scatter for two variables). 3. Composition (parts of a whole, static or changing: pie, stacked bar or area, waterfall). 4. Relationship (scatter, bubble for three variables).
 - Confusables: Evergreen's eight situations; the deck mapping.
 - Variants: Evergreen's book organizes by eight situations, not Abela's four. Which ATD uses: the reading list names Evergreen, not Abela. Prefer Evergreen's terms in questions.
-- Unverified: all of it (not fetched). Gap fill 2026-11-09: not searched (budget spent on reading-list sources; the web-fetch tool then hit a usage limit). Not on the reading list, and Evergreen's book [S16] uses her own eight situations, so Abela's four categories should not be authored. A histogram-as-distribution question can still be written from the TDBoK deck mapping as `extra`.
+- Unverified: all of it (not fetched). Gap fill 2026-11-09: not searched (budget spent on reading-list sources; the web-fetch tool then hit a usage limit). Not on the reading list, and Evergreen's book [S16] uses her own eight situations, so Abela's four categories should not be authored. A histogram-as-distribution question can still be written from the TDBoK deck mapping as `extra`. Gap fill 2: not reached (budget). Still UNSOURCED.
 
 ### Lyons and Evergreen's Qualitative Chart Chooser 3.0
 - Origin: Jennifer Lyons and Stephanie Evergreen, Qualitative Chart Chooser 3.0, n.d. (2017 upload) [S11].
@@ -385,7 +393,7 @@ Statement: "Skill in selecting and/or using data visualization techniques, for e
 - Kind: set
 - Items, as printed [S11]: Word Cloud; Spectrum Display; Heatmap; Histomap; Bubble Chart; Speedometer; Icons and Color Coding; Indicator Dots; Venn Diagram; Quote and Pic; Callout Box; Bolded Words; Change Photos; Concept Mapping; Network Mapping; Timeline; Journey Map; Dendrogram; Mind Mapping; Flow/Path Diagram.
 - Groups: the chooser's top split is "Quantification" vs "Non-Quantification"; other labels include "Thematic Analysis", "Ways to Highlight a Word", and Hierarchy, Flow, Comparison, Cluster, Comment/words; it starts from "What story are you trying to tell?" [S11]. Which charts sit under which label could not be read (garbled extraction). Likely (unverified): word clouds, heatmaps and spectrum displays fall under quantification (counting themes or words); quotes, callouts and flow diagrams under non-quantification.
-- Unverified: the chart-to-group pairing. Don't key a question on it.
+- Unverified: the chart-to-group pairing. Don't key a question on it. Gap fill 2: tried the earlier version, Qualitative Chooser 1.0 (Lyons and Evergreen, https://stephanieevergreen.com/wp-content/uploads/2017/03/Qualitative-Chooser-1.0.pdf, tier 3); its text also extracts with the branch structure lost, so pairings are still unread. It shows the item list changed between versions: 1.0 has "Comparative Word Cloud" (no plain word cloud), Heat Map, Flow/Path Diagram, plus items not on 3.0 such as Ripple Effect Mapping, Word Tree, Phrase Net, Graphic Recording and Evidence Matrix. So don't key a question on what is or isn't "on the chooser"; cite 3.0 [S11] for the items listed above. Evergreen's own text on when to use word clouds and heat maps was still not found (the search turned up only third-party blog posts and her promo page).
 
 ### Visualization design and data-storytelling principles
 - Origin: deck keyed to TDBoK 3.7 [S7] cards 3, 27–28; [S5] ch. 1 "why we visualize"; [S8] (intro only); [S6] (APTD 3.7.5 examples: color mapping, texture mapping). The list below is partly general knowledge as marked.
@@ -407,14 +415,14 @@ Statement: "Skill in selecting and/or using data visualization techniques, for e
 - **Analytics types count and wording.** Gap fill: both ATD magazine sources seen ([S10] 2017, [S14] 2021) use three (descriptive, predictive, prescriptive); only the TDBoK-keyed deck [S7] uses diagnostic. The TDBoK's and Torrance's (index p. 77, pp. 22–23) versions were not seen. Don't make three vs four the point of a question; don't test hindsight/insight/foresight labels; accept "what should we do?" and "how can we make it happen?" alike for prescriptive.
 - **Analytics maturity levels** (Bersin, Davenport, Torrance ch. 14): no level names sourced; heading now marked UNSOURCED. Don't author.
 - **TDBoK chapter 3.7 wording**: only a study deck was seen. Everything marked [S7] is deck paraphrase and can't carry `tdbok`. The five-step analysis process, segmentation bases, first-project criteria and pitfalls need TDBoK confirmation before a question keys on exact step names.
-- **Levels of measurement**: sourced to Stevens (tier 3) only; no ATD source. Don't test whether Likert data is ordinal or interval.
-- **Statistics basics** (central tendency, dispersion, correlation vs causation, significance): standard definitions, and Torrance ch. 5's index confirms the terms, but no ATD text was seen (gap fill didn't reach this). Keep questions to textbook-level facts (median resists outliers; correlation is not causation; mode for nominal data).
+- **Levels of measurement**: sourced to Stevens (tier 3) and, since gap fill 2, corroborated by an ATD-hosted *Training & Development* article [S19] with the same four names and order. Still no TDBoK or reading-list text, so the tag stays extra. Don't test whether Likert data is ordinal or interval.
+- **Statistics basics** (central tendency, dispersion, correlation vs causation, significance): gap fill 2 sourced mean, median, mode, standard deviation, correlation and its −1 to +1 range, causation needing a controlled experiment, null hypothesis, sample vs population and descriptive vs inferential statistics to ATD's magazine [S19]. Still general knowledge only: range, IQR, variance, the 68/95 rule, p-value, alpha 0.05, practical vs statistical significance, "median resists outliers". Keep questions to textbook-level facts; Torrance ch. 5 text still unseen.
 - **Graphs vs plots**: the statement lists them separately but no source defines the line. Evergreen's naming [S16] happens to follow "graph" for bar, column, line and area and "plot" for dot and scatter, but she never defines the difference. Don't key a question on it.
 - **Pie charts**: the deck accepts them for parts of a whole; Evergreen keeps them but only as "Pie Charts Done Right", alongside 100% stacked bars and treemaps [S16]. Avoid "pie chart is best" keys.
 - **Word cloud limits**: general knowledge only; Evergreen's stance not seen.
 - **Evergreen's chart pairings**: resolved by the gap fill at the level of the book's contents [S16] (which charts sit in which chapter). Her text on when to use each chart, and the qualitative chooser's groups, are still unseen. Note her placements differ from the deck's (heat map, bubble chart, Venn under qualitative; histogram and maps under parts of a whole).
 - **Abela's chooser** (now marked UNSOURCED) and **tidy data**: general knowledge, not fetched.
-- **Primary vs secondary, structured vs unstructured, internal vs external examples**: general knowledge; no ATD list seen.
+- **Primary vs secondary, structured vs unstructured, internal vs external examples**: gap fill 2 sourced the primary/secondary and structured/unstructured definitions to university library guides [S17] [S18] (not ATD; tags stay extra). Changed: semi-structured is now marked general knowledge only, because [S18] uses a two-way split and files XML and JSON under structured; don't key semi-structured or the placement of JSON, XML or xAPI. Internal vs external examples are still general knowledge apart from Torrance's L&D sources [S4]; no ATD list seen.
 - **Reading-list title**: the list prints "Data & Analytics for Instructional Design"; the book is *Data & Analytics for Instructional Designers*. Use the book's title in `src`.
 - The first reading-list title, *TD at Work Guide: A Strategic Approach to Talent Development* (2019): gap fill found only its product page [S15] (no contents). Its stated goals are strategic alignment, a systems approach to capability and an outcomes-first executive dashboard; nothing on analytics types, data types or chart selection was visible. An executive-dashboard question could cite it only for "start with outcomes in mind".
 
@@ -423,3 +431,7 @@ Web calls used: 24 (10 searches, 14 fetches). Stopped at budget; nothing left ha
 Gap fill 2026-11-09: 14 web calls (7 searches, 6 fetches of which 1 failed, 1 failed direct download). The web-fetch tool hit a usage limit on call 13, and the follow-up host was blocked for direct download.
 
 Stopped at: primary vs secondary and structured vs unstructured data (fetch an .edu library data-types guide, such as the ODU one named under primary vs secondary); statistics basics from an ATD or standard reference; Torrance ch. 2/5/13 wording (no td.org article by her turned up); Evergreen's text on word clouds and heat maps (her qualitative-viz page is a promo with no content); the qualitative chooser's groups; Bersin's maturity levels and Abela's chooser if anyone wants to un-mark them.
+
+Gap fill 2: 2026-11-09, 13 web calls (6 searches, 7 fetches; 1 fetch blocked by robots.txt at it.uw.edu, no usage-limit errors). Worked the list above in order. Resolved: primary vs secondary [S17]; structured vs unstructured [S18] (two-way; semi-structured demoted to general knowledge); statistics basics in large part [S19], which also corroborates Stevens's four levels; qualitative/quantitative definitions also sourced [S17]. Not resolved: Torrance ch. 2/5/13 wording (contents and blurb pages show chapter titles only); Evergreen's own text on word clouds and heat maps (not found); the qualitative chooser's groups (version 1.0 also garbled). Not reached: Bersin, Abela.
+
+Stopped at: Torrance ch. 2/5/13 wording (try a td.org article or podcast transcript by Torrance, or a Google Books preview of ch. 2 and ch. 5); Evergreen's text on word clouds and heat maps (try her blog posts by title, for example a search on stephanieevergreen.com for "word cloud"); the qualitative chooser's groups (try the USAID Learning Lab webinar page "Qualitative Visualization: Chart choosing and the design process", usaidlearninglab.org, which appeared in gap fill 2's search); Bersin by Deloitte's talent analytics maturity levels; Abela's chart chooser (his extremepresentation site); range, IQR, variance and p-value from a standard reference (for example the NIST/SEMATECH e-Handbook) if anyone wants them sourced.

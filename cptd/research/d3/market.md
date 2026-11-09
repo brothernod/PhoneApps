@@ -1,6 +1,7 @@
 # Marketing & communicating TD (3.4.6, 3.4.7, 3.4.8, 3.4.9)
 
 Gap fill: 2026-11-09, 14 web calls (8 searches, 3 fetches, 3 fetches refused by a usage limit), resolved 2 of 7 (Capability Model definition of lifelong learning; ATD/i4cp study figures and practices, partly). Still open: 1987 excerpt authorship, an ATD marketing source to confirm the 1987 lists, communication-plan components, branding, 3.4.8 framing. Leads for each are in "Stopped at".
+Gap fill 2: 2026-11-09, 14 web calls, resolved 2 of 6 (from the gap-fill "Stopped at" list: 3.4.8 *Communicating the Value of TD* research, now sourced from ATD's summaries; the 1987 excerpt's authors, Gilley and Eggland, read from the PDF's bio lines). Partly: communication planning (two new ATD-sourced entries, but still no component list). Not resolved: branding (still UNSOURCED). Not attempted: items 5–6.
 
 Written 2026-11-09 (step 2, shard `market`), about 25 web calls (one redirect, one refused by the allowlist). 19 model entries plus cross-references. No reading-list title and no TDBoK text covers these statements, so every entry is tagged `extra` (gap fill: except capability 1.7 Lifelong Learning, now `named`); several are thin and say so. See the "Stopped at" line before the end for what's still unsourced.
 
@@ -29,7 +30,7 @@ Sources used (numbered, so entries can cite [S1] and so on):
 - [S4] "Marketing Training Programs", TD at Work Guide (originally an ASTD *Infoline* issue), ATD/ASTD, February 2001, product code 250102, ISBN 9781562862657, 16 pages. Pages read: https://www.td.org/td-at-work/marketing-training-programs and https://www.td.org/product/td-at-work-guide--marketing-training-programs/750102E. Tier: other (ATD's own product description of an ATD publication; the issue itself is paywalled, no author shown).
 - [S5] "Market Your Internal Learning Solutions Like a Pro", *TD* magazine, ATD, March 1, 2021, https://www.td.org/content/td-magazine/market-your-internal-learning-solutions-like-a-pro. Tier: other. Paywalled; visible opening names no model. Listed only so later agents don't re-fetch it.
 - [S6] Bob Dust, "Marketing training services internally", *Training & Development* (ASTD), October 1, 1996, https://www.td.org/content/td-magazine/marketing-training-services-internally. Tier: other. Paywalled abstract only: "guidelines on the internal marketing of training services"; topics proactive and reactive marketing, market research, advertising, identifying competitors. No named model visible.
-- [S7] "Hook, Line, and Sinker" (title partly garbled in the scan), *Training and Development Journal* (ASTD), September 1987, excerpted from the authors' book *Principles of HRD*; one author chaired the training and development program at the University of Nebraska-Lincoln. https://assets.td.org/m/1fe735b1a95262b3/original/Hook-Line-and-Sinker.pdf. Tier: other (ASTD's own journal, hosted on ATD's asset server; the authors are almost certainly Jerry W. Gilley and Steven A. Eggland, whose *Principles of Human Resource Development* appeared in 1989, but the names are garbled in the scan, so treat the attribution as unverified).
+- [S7] "Hook, Line, and Sinker" (title partly garbled in the scan), *Training and Development Journal* (ASTD), September 1987, excerpted from the authors' book *Principles of HRD*; one author chaired the training and development program at the University of Nebraska-Lincoln. https://assets.td.org/m/1fe735b1a95262b3/original/Hook-Line-and-Sinker.pdf. Tier: other (ASTD's own journal, hosted on ATD's asset server; the authors are almost certainly Jerry W. Gilley and Steven A. Eggland, whose *Principles of Human Resource Development* appeared in 1989, but the names are garbled in the scan, so treat the attribution as unverified). Gap fill 2: the scan's bio lines read "(Ulley" (University of Nebraska-Lincoln, vocational and adult education) and "ligglanil" (professor of marketing education), book *Principles of HRD* from Addison-Wesley; attribution to Gilley and Eggland is now well supported (see Open questions). td.org HTML page for it: https://www.td.org/content/td-magazine/hook-line-and-sinker (blank byline, dated September 1, 1987).
 - [S8] Bianca Baumann and Mike Taylor, "Think Like a Marketer: Supercharge Your L&D Programs", ATD blog, td.org, May 23, 2025, https://www.td.org/content/atd-blog/think-like-a-marketer-supercharge-your-l-and-d-programs. Tier: other (ATD-published article by authors of an ATD Press book). Names no marketing mix, no branding, no AIDA.
 - [S9] "3 Proven Marketing Strategies to Enhance Your Next Learning Program", ATD Insights, td.org, November 16, 2017, byline blank (author ex-Procter & Gamble and PepsiCo marketing), https://www.td.org/insights/3-proven-marketing-strategies-to-enhance-your-next-learning-program. Tier: other.
 - [S10] Bianca Baumann and Mike Taylor, *Think Like a Marketer, Train Like an L&D Pro*, ATD Press, 2025; sample chapter (front matter, Introduction, Chapter 1, index), https://assets.td.org/m/19ab988f955df929/original/112507_Think-Like-a-Marketer_Sample-Chapter.pdf. Tier: other (ATD Press book, **not** on the 2025 reading list [S3], which predates or omits it). The sample names no marketing mix.
@@ -41,6 +42,13 @@ Sources used (numbered, so entries can cite [S1] and so on):
 - [S16] "Capability Areas and Knowledge and Skill Statements" (file name: TD Capability Model Definitions and KSA Statements), ATD, © 2019–2025, no version number, https://assets.td.org/asset/7dd8fa44-ebf5-4c7d-8f87-a536f0c2b1de/TD-Capability-Model-Definitions-and-KSA-Statements.pdf. Tier: 3 (ATD is the owner of the Capability Model, on which the CPTD outline is built). Used for capability 1.7 Lifelong Learning and for a numbering check of 3.4. (Also found in search, not fetched: "ATD Capability Model Definitions Nov2024", https://assets.td.org/m/6c9087bc07156878/original/ATD-Capability-Model-Definitions-Nov2024.pdf.)
 - [S17] *Lifelong Learning: The Path to Personal and Organizational Performance*, ATD Research with i4cp, August 2018, ISBN 9781949036091, product code 191811; ATD's report page https://www.td.org/research-reports/lifelong-learning. Tier: 3 (the author's own page). The page is a summary only; the full report (paperback/PDF/whitepaper) is sold and was **not** read. No individual authors named on the page.
 - [S18] Carol Morrison (senior research analyst, i4cp), "Next practices L&D leaders apply to turn employees into continuous learners", i4cp Productivity Blog, undated, https://www.i4cp.com/productivity-blog/next-practices-l-d-leaders-apply-to-turn-employees-into-continuous-learners. Tier: 3 (i4cp co-produced the 2018 study; the post reports its figures). Used for the practices list and the high-performer comparisons.
+- [S19] *Communicating the Value of TD: Insights From TD Professionals and the C-Suite*, ATD Research, March 2026, 19 pp., PDF, ISBN 9781963392975, product code 792602; ATD's report page https://www.td.org/product/research-report--communicating-the-value-of-td/792602. Tier: 3 (the author's own page). Summary only; the report itself (sold) was **not** read. No partner organization.
+- [S20] Press release, "ATD Research: Communicating the Value of TD Helps L&D Remain Relevant", ATD, td.org, dateline March 5 (the fetch tool read the dateline year as 2025 but the page metadata as 2026; the report page [S19] says March 2026, so take **2026**), https://www.td.org/content/press-release/atd-research-communicating-the-value-of-td-helps-l-and-d-remain-relevant. Tier: 3 (ATD about its own research).
+- [S21] "The Metrics That Matter: New Insights on Demonstrating TD's Value", ATD blog, td.org, March 23, 2026, byline blank, https://td.org/content/atd-blog/the-metrics-that-matter-new-insights-on-demonstrating-td-s-value. Tier: 3 (ATD summarizing [S19]). Also quotes Phillips and Phillips in *ATD's Handbook for Training and Talent Development*.
+- [S22] "Thinking About Communication With Stakeholders", ATD blog, td.org, May 25, 2012, by ATD Staff, ideas attributed to Jenn Labin (author of *Real World Training Design*, ATD Press), https://www.td.org/content/atd-blog/thinking-about-communication-with-stakeholders. Tier: other (ATD-published; member-only after the opening, but the four-group list is in the visible part).
+- [S23] "Communicating Effectively Through Repetition and Channels", ATD blog, td.org, December 14, 2023, byline blank (a copy appears on thorprojects.com, so probably Robert Bogue; not confirmed), https://www.td.org/content/atd-blog/communicating-effectively-through-repetition-and-channels. Tier: other (ATD-published; member-only notice at the end, figures described but not shown).
+- [S24] "Branding the Learning Function", *TD* magazine, ATD, September 2012, byline blank, https://td.org/content/td-magazine/branding-the-learning-function. Tier: other. Member-only; summary line only.
+- [S25] "Rebranding Learning and Development", ATD newsletter, td.org, November 12, 2019, byline blank, https://www.td.org/content/newsletter/rebranding-learning-and-development. Tier: other. Member-only; opening only, no model. Listed so later agents don't re-fetch it.
 
 ## 3.4.6: Marketing strategy to promote TD
 
@@ -107,9 +115,9 @@ What ATD material ties to it: the reading list has nothing [S3]. ATD's own marke
 - Items:
   1. Personal selling: one-to-one promotion (for example, talking a program through with a manager). [S7]
   2. Mass selling: reaching many users at once; it includes advertising and public relations. [S7] "Mass selling communicates with many users at the same time"
-  3. Sales promotion: short-term incentives or devices to prompt use (paraphrase; the excerpt's own definition was not quoted). [S7]
+  3. Sales promotion: activities that stimulate customer interest, trial or involvement. [S7] "activities designed to stimulate customer interest, trial, or involvement" (gap fill 2: definition now read from the PDF; the earlier "short-term incentives" gloss was general knowledge and is replaced). [S7] calls it "the third promotional form".
 - Confusables: the 4 Ps' Promotion (this list is the breakdown of that one P); the general "promotion mix" in marketing texts adds direct marketing and others (general knowledge).
-- Unverified: [S7]'s definition of sales promotion.
+- Unverified: nothing left on the item names; [S7]'s exact definitions of personal selling were not re-read.
 
 ### Target-market approaches (segmentation and coverage, six)
 - Origin: *Principles of HRD* excerpt, Figure 2, ASTD journal, 1987. [S7]
@@ -199,6 +207,7 @@ What ATD material ties to it: the reading list has nothing [S3]. ATD's own marke
 
 ### Branding the TD function (UNSOURCED, do not author)
 - Gap fill 2026-11-09: still no source read. A search found ATD pages that look relevant ("Branding the Learning Function", *TD* magazine; "Rebranding Learning and Development", ATD newsletter; "The Importance of Branding in Learning Design", ATD video), but the fetch limit was hit before any could be read. URLs are in "Stopped at".
+- Gap fill 2 (2026-11-09): two of the leads read; both are member-only past a short opening, and neither names steps, elements or components. "Branding the Learning Function" [S24]: its summary says "Good branding communicates the value of learning and its impact on employees' professional development" (the one sourced line on branding; it also ties branding to 3.4.9). "Rebranding Learning and Development" [S25]: opening only, on how L&D is perceived (employees "often dread" compliance-training reminders); no model. **Heading stays UNSOURCED.**
 - Origin: no ATD source read names a branding model. The brief lists branding as part of this shard's scope.
 - Tie to the exam: 3.4.6, general knowledge only.
 - Suggested tag: extra
@@ -242,6 +251,7 @@ What ATD material ties to it: a TD at Work "Communications Strategy Template" (F
 
 ### Communication plan components (general practice) (UNSOURCED, do not author)
 - Gap fill 2026-11-09: no sourced list found. A td.org search turned up the same template [S12] plus two unread ATD pages ("Communicating Effectively Through Repetition and Channels", ATD blog; "Thinking About Communication With Stakeholders", ATD Insights); the fetch limit was hit before they could be read. **Authors: write 3.4.7 questions from the ATD template [S12] above, not from this list.** The list stays only as context for checkers.
+- Gap fill 2 (2026-11-09): both ATD pages now read; neither gives a component list, so the heading stays UNSOURCED. They do support two items here: item 2 (audience: [S22] plans communication by four stakeholder groups) and items 4 and 6 (channel and frequency: [S23] on repetition and channel choice). Both are now separate entries below. A fresh general search for an ATD communication-plan component list found only non-ATD templates.
 - Origin: general communications-planning practice (project management and change management texts). **No ATD source read gives a numbered component list.** [S12] covers the same ground as questions (audience/stakeholders, need to know, goal, tools, follow-up, messenger, tone).
 - Tie to the exam: 3.4.7. General knowledge plus [S12].
 - Suggested tag: extra
@@ -257,6 +267,41 @@ What ATD material ties to it: a TD at Work "Communications Strategy Template" (F
 - Confusables: the SMCR / communication process model (`comm-process`: sender, message, channel, receiver, feedback), which shares several words; the marketing mix (Promotion/Communication); RACI (`raci`), which assigns roles, not messages.
 - Variants or contested points: names and counts vary by source (five to ten parts). Don't key a question on an exact count.
 - Unverified: TDBoK's own component list for a communication plan or strategy.
+
+### Four audiences for communicating a training initiative (Labin, ATD 2012)
+- Origin: "Thinking About Communication With Stakeholders", ATD blog, May 25, 2012, ATD Staff, from ideas by Jenn Labin. [S22]
+- Tie to the exam: 3.4.7 (designing communication strategy: who you communicate with and what each needs). Also 3.4.6 (item 2 is a marketing campaign). ATD-published; not on the reading list [S3]; not TDBoK text.
+- Suggested tag: extra
+- Kind: set (four groups; printed order kept, no meaning to the order)
+- Items, in the source's own terms, with what to communicate (fetch-tool paraphrase unless quoted):
+  1. Stakeholders: regular status meetings; share deliverables as they are completed. [S22]
+  2. Learners: start a marketing campaign during the design phase to build anticipation. [S22] "Hype a new training event the correct way."
+  3. Learning & Development Team: brief, frequent status checks; encourage peer reviews. [S22]
+  4. Managers: tell them what behavior changes to expect and how to support performance on the job. [S22] "you need manager buyin to see a true change in performance"
+- Confusables: the ATD template's Stakeholders section [S12] (who is involved, what each needs to know); stakeholder analysis and power/interest grid (`biz`); learner personas (above); the Kirkpatrick "required drivers" idea that managers reinforce on-the-job behavior (`kirk-levels`, general knowledge).
+- Variants or contested points: written about a single training project, not a talent-management strategy. The text after the opening is member-only, so there may be more detail per group.
+- Unverified: anything beyond the four group names and one-line actions.
+
+### Repetition and channel selection (ATD blog 2023)
+- Origin: "Communicating Effectively Through Repetition and Channels", ATD blog, December 14, 2023, byline blank. [S23]
+- Tie to the exam: 3.4.7 (implementing communication strategy: how often and through which channels). ATD-published; not on the reading list [S3]; not TDBoK text.
+- Suggested tag: extra
+- Kind: set (principles, plus a five-criterion channel selection set)
+- Principles (fetch-tool paraphrase unless quoted) [S23]:
+  1. Repeat important messages; avoid "one and done" communication. [S23] "Repetition is the key to building memory, muscle, and skill."
+  2. Plan the number of messages to a reach target (the article's figure uses **95 percent**). With email, a 30% open rate counts as good; below that you need **more than eight** messages; "eight times or more" virtually ensures reception. [S23]
+  3. Use several channels: a multichannel strategy reaches more people but plateaus at an "acceptable ignorance" level (5% in the example). [S23]
+  4. Don't overcommunicate: too many repeats become noise and people stop listening. [S23]
+- Channel selection criteria (five; set) [S23]:
+  1. Direction: one-way or interactive.
+  2. Scale: one, a few, or many people.
+  3. Sensitivity: not at all, somewhat, or highly sensitive.
+  4. Purpose: inform, educate, persuade, or support.
+  5. Urgency: urgent, timely, or eternal.
+- The article's Figure 3 lists 27 channel options (not itemized in the text); channels named in the text include email, postal mail and X (Twitter), the last a poor fit for long reading. [S23]
+- Confusables: the "rule of seven" in marketing (general knowledge; this article says eight or more, so don't key a question on seven); `inform-influence` (Domain 1; "inform" and "persuade" also appear as purposes here); the communication process model's channel (`comm-process`); learning campaigns (above).
+- Variants or contested points: the numbers are tied to the article's own example figures, not general rules. Use the idea (repeat across channels; choose channels by direction, scale, sensitivity, purpose, urgency), not the percentages, in any key.
+- Unverified: author (a copy on thorprojects.com suggests Robert Bogue; not confirmed); the figures themselves (not seen).
 
 ### TD's need for a communications plan (CTDO 2017)
 - Origin: "May I Have Your Attention, Please?", *CTDO* magazine, Summer 2017 (June 15, 2017), no author visible. [S13]
@@ -278,7 +323,7 @@ What ATD material ties to it: no ATD source read gives a named model for this sk
 - See `data`: data visualization types (for dashboards and charts).
 
 ### Communicating TD's business contribution: what ATD sources say to do
-- Origin: assembled from ATD articles [S9][S13] and the cross-references above. Not a named model.
+- Origin: assembled from ATD articles [S9][S13], ATD's 2026 research summaries [S19][S20] (gap fill 2) and the cross-references above. Not a named model.
 - Tie to the exam: 3.4.8. General knowledge plus ATD articles.
 - Suggested tag: extra
 - Kind: set
@@ -286,10 +331,32 @@ What ATD material ties to it: no ATD source read gives a named model for this sk
   1. Have a communications plan for showing value; TD "often lacks" one, per CTDO [S13]. First win support and resources, then show productive use and ROI [S13].
   2. Use data and "Tell a story with the data." [S9]
   3. Start from the business outcome, not the program (see `strategy`'s executive-dashboard point and `phillips-levels`).
-  4. Report in the stakeholder's terms (business metrics and money, not training activity counts). General knowledge; consistent with TDRP's split between efficiency, effectiveness and outcome measures (`tdrp-measures`).
+  4. Report in the stakeholder's terms: executives want TD's impact on KPIs such as employee satisfaction, productivity improvement and ROI [S19]. (Gap fill 2: was general knowledge; now ATD-sourced. Note that executives are also very interested in content costs and learning hours [S20][S21], so "never report activity counts" would overstate it.) Consistent with TDRP's split between efficiency, effectiveness and outcome measures (`tdrp-measures`).
+  5. Communicate regularly, at least quarterly, mostly by oral presentations and written reports [S19]; doing so is linked to better partnerships and more advocacy from senior leaders [S19].
 - Confusables: evaluation (measuring results; Domain 2) vs communicating results (this statement); TDRP's three report types (`tdrp-mgmt-reports`) vs its three measure types (`tdrp-measures`).
-- Unverified: item 4's wording; any TDBoK list for this statement.
+- Unverified: any TDBoK list for this statement; item 3 is still a cross-reference, not ATD wording.
 - Gap fill 2026-11-09: not resolved. A search found ATD's own research report on exactly this skill, *Communicating the Value of TD* (ATD Research, product code 792602), with an ATD press release ("ATD Research: Communicating the Value of TD Helps L&D Remain Relevant") and a secondary headline saying TD communicates with the C-suite quarterly. None of it was read (fetch limit). That report is the best lead for 3.4.8 and could replace items 3–4 above; don't use the "quarterly" claim until it's read.
+- Gap fill 2 (2026-11-09): resolved in part. The report's summary pages are now read; see the next entry. Item 4 ("report in the stakeholder's terms") now has ATD support: executives want TD's impact on KPIs [S19]. The "quarterly" claim is confirmed as "at least once a quarter" [S19][S20].
+
+### ATD Research: *Communicating the Value of TD* (2026)
+- Origin: ATD Research, *Communicating the Value of TD: Insights From TD Professionals and the C-Suite*, March 2026 [S19]; ATD press release [S20]; ATD blog summary [S21]. The report itself was **not** read; everything below is from ATD's own summaries (fetch-tool paraphrase unless quoted).
+- Tie to the exam: 3.4.8 (communicating how TD supports business/organizational results). ATD's own research on exactly this skill; not on the 2025 reading list [S3] (it postdates it); not TDBoK text. **Caution:** published March 2026, after the 2025 handbook [S1]; an exam form built earlier won't draw on it, so use it for "best practice" framing, not as a named-study question.
+- Suggested tag: extra (tier 3 source, but the study is not named in the statement)
+- Kind: set (method, findings, preferred metrics, benefits)
+- Method [S19]: two surveys. 356 TD professionals (methods and metrics they use to show TD's value to senior leaders and executives); 103 C-suite executives, **excluding HR and TD executives** (which metrics they want TD to use).
+- Core claim: "TD professionals must be able to communicate the value of talent development" to senior leaders and executives. [S19] Historically TD stressed efficiency and cost cutting; business leaders now expect learning that delivers long-term value [S19]. CEOs see TD as "a strategic investment in long-term organizational success" [S21].
+- Findings:
+  1. Frequency: most TD functions communicate with senior leaders and executives **at least once a quarter**. [S19][S20] "at least once a quarter"
+  2. Channels: **oral presentations and written reports** are the most common. [S19][S20]
+  3. What executives want: TD's impact on KPIs, led by **employee satisfaction, productivity improvement and ROI**. [S19][S21] The release adds **content development costs** and **time to employee readiness or competence** to the list of metrics executives prefer [S20]. Executives are also very interested in learning hours and employees trained [S21].
+  4. Benefit: TD functions that communicate their value see **better partnerships with other departments** and **greater advocacy from senior leaders and executives**. [S19][S20]
+  5. Gaps between the two groups [S21]: ROI is less popular with TD professionals than with executives. 78% of executives are very interested in content development costs (21% somewhat), but only 54% of TD professionals use that metric (the 54% is from ATD's 2025 *State of the Industry*, as cited in [S21]).
+  6. Difficulty: 84% of TD functions say measuring TD's impact is difficult when communicating value to senior leaders. [S20]
+  7. 64% of C-suite executives prefer employee satisfaction as the measure of TD performance. [S20]
+- ROI rationale quoted in [S21] from Phillips and Phillips (*ATD's Handbook for Training and Talent Development*): ROI "positions talent development as an investment, rather than a cost". [S21]
+- Confusables: `phillips-levels` (ROI is Phillips Level 5) and `roi-formulas`; TDRP's measure types (`tdrp-measures`: efficiency, effectiveness, outcome; learning hours and employees trained are efficiency measures, productivity is an outcome); `kirk-levels` (employee satisfaction is not Kirkpatrick Level 1 "reaction", which is learner satisfaction with a program; don't conflate). The 2018 ATD/i4cp lifelong-learning study below is a different ATD report.
+- Variants or contested points: the 78%, 84% and 64% figures are the fetch tool's reading of the release/blog, not quotes. Use "most", "at least quarterly" and the named KPIs in any key, not exact percentages. Press-release year read as both 2025 and 2026 (see [S20]).
+- Unverified: the report's own action plan or recommendations (the blog refers readers to the full report for one [S21]); the full ranking of executive-preferred metrics.
 
 ## 3.4.9: Communicating the value of lifelong learning and professional development
 
@@ -360,13 +427,14 @@ Numbering note (gap fill): ATD's own Capability Model KSA document [S16] numbers
 
 - **TDBoK text for 3.4.6–3.4.9 was not seen.** No source shows which marketing mix (4 Ps, 7 Ps, 4 Cs) the TDBoK uses, or whether it lists marketing-plan steps, communication-plan components, or lifelong-learning benefits. The only ATD-published HRD source with a mix uses the **four** Ps [S7]. Don't write "the TDBoK says" for anything here.
 - **No reading-list title covers this shard** [S3]. Nothing here can carry `reflist`.
-- **Gilley and Eggland attribution** of [S7] is an inference from the University of Nebraska-Lincoln line and the *Principles of HRD* title; the names are garbled in the scan. Recheck the PDF before naming authors in content. Gap fill 2026-11-09: search results (titles only, not read) list *Principles of Human Resource Development* under Jerry W. Gilley (ISBNs 9780201090130 and 2nd ed. 9780738206042) and Gilley's *Marketing HRD Within Organizations* (ISBN 9781555424022). That makes the inference stronger but still doesn't show the excerpt's byline. td.org has an HTML page for the excerpt (https://www.td.org/content/td-magazine/hook-line-and-sinker) that probably shows the byline; the fetch was refused by the usage limit. **Still unverified: don't name authors.**
+- **Gilley and Eggland attribution** of [S7] is an inference from the University of Nebraska-Lincoln line and the *Principles of HRD* title; the names are garbled in the scan. Recheck the PDF before naming authors in content. Gap fill 2026-11-09: search results (titles only, not read) list *Principles of Human Resource Development* under Jerry W. Gilley (ISBNs 9780201090130 and 2nd ed. 9780738206042) and Gilley's *Marketing HRD Within Organizations* (ISBN 9781555424022). That makes the inference stronger but still doesn't show the excerpt's byline. td.org has an HTML page for the excerpt (https://www.td.org/content/td-magazine/hook-line-and-sinker) that probably shows the byline; the fetch was refused by the usage limit. **Still unverified: don't name authors.** Gap fill 2 (2026-11-09): td.org's HTML page for the excerpt shows a **blank byline** (dated September 1, 1987; summary: "Presents marketing-based guidelines for improving an employee training program"). A targeted re-read of the PDF [S7] returned the author bio lines, OCR-garbled but legible: "(Ulley chairs the Department of locatio n ami Adult Education's training and development program at the I niversity of Xchrasha l.inenln" and "ligglanil is professor of marketing education at the university", plus "excerpted from a hook hy the authors, Principles of IIRD, soon to he published hy Addison Wesley". "(Ulley" and "ligglanil" match **Gilley** and **Eggland**, and the book, publisher and university match the catalog titles above. **Resolved enough to attribute "Gilley and Eggland" in source notes**; in content, prefer "an ASTD journal excerpt from *Principles of HRD*" and don't build a question on the authors' names.
 - **The 1987 lists (planning steps, 4 Ps, promotion, target markets, life cycle) are still confirmed only by [S7].** No newer ATD source to confirm or replace them was read in the gap fill.
 - **Capability Model numbering differs** from the exam documents: [S16] has 3.4.9 as succession planning and 3.4.10 as "communicating the value of learning and professional development". Use the handbook's 3.4.9 / 3.4.H wording [S1].
 - **The six-step ATD process** [S4]: only step names are public. Don't write questions on what happens inside a step.
 - **HRD product life-cycle names** (Exposure, Acceptance, Maturity, Decline) [S7] differ from the standard marketing names (Introduction, Growth, Maturity, Decline). If both appear, a question must not treat one set as wrong.
-- **Branding**: no source at all. Avoid item-level questions.
-- **Communication plan components**: no ATD list with a fixed count. Use the ATD template's questions [S12] and avoid "how many components" questions.
+- **Branding**: no source for any branding model. Gap fill 2 found only one ATD summary line ("Good branding communicates the value of learning..." [S24]). Avoid item-level questions.
+- **Communication plan components**: no ATD list with a fixed count. Use the ATD template's questions [S12], plus (gap fill 2) Labin's four audiences [S22] and the five channel-selection criteria [S23]; avoid "how many components" questions.
+- **3.4.8 research** (gap fill 2): *Communicating the Value of TD* [S19] is from **March 2026**, after the 2025 handbook. Read via summaries only; its action plan is unread. Use "at least quarterly", "oral presentations and written reports" and the named KPIs, not the exact percentages.
 - **3.4.7 says "talent management objectives"**, not TD objectives. No source read ties a communication strategy specifically to talent management; the ATD template is for change initiatives [S12].
 - **ATD/i4cp 2018 numbers** come from summaries (ATD's press release [S14], ATD's report page [S17], an i4cp post [S18]), never the full report. The **55%** figure means different things in [S14] and [S18]. Use ranges, not exact figures, in a key.
 
@@ -379,3 +447,5 @@ Stopped at (gap fill, 2026-11-09): 14 web calls; WebFetch then returned a usage-
 4. Communication plan: "Communicating Effectively Through Repetition and Channels" (https://www.td.org/content/atd-blog/communicating-effectively-through-repetition-and-channels), "Thinking About Communication With Stakeholders" (https://www.td.org/insights/thinking-about-communication-with-stakeholders).
 5. Newer ATD marketing source to check the 1987 lists: "Unlocking Top Marketing Secrets for L&D Professionals" (https://www.td.org/content/atd-blog/unlocking-top-marketing-secrets-for-lampd-professionals); the book page for *Think Like a Marketer* (https://www.td.org/product/book--think-like-a-marketer-train-like-an-ld-pro/112507) for its table of contents.
 6. Lifelong learning: the full ATD/i4cp report (sold, ISBN 9781949036091) for sample, method and recommendations; ATD's Nov 2024 Capability Model definitions PDF (in [S16]'s note) to recheck the 3.4.9/3.4.10 numbering.
+
+Stopped at (gap fill 2, 2026-11-09): 14 web calls (5 searches, 9 fetches; no usage-limit errors). Done: item 1 (3.4.8 report, from ATD's summaries [S19][S20][S21]); item 2 (byline read from the PDF's bio lines, Gilley and Eggland; also [S7]'s sales-promotion definition). Tried, not resolved: item 3 (branding: both pages member-only, no model; stays UNSOURCED); item 4 (communication plan: both pages read and added as new entries [S22][S23], but no component list; heading stays UNSOURCED). Not attempted (budget): item 5 (newer ATD marketing source / *Think Like a Marketer* table of contents) and item 6 (Nov 2024 Capability Model PDF; full ATD/i4cp report). Still open from earlier: the TDBoK's own text; *Communicating the Value of TD*'s action plan (full report, sold); "Five Rules for Communicating Value to Executives" and "One Message, Three Audiences" (leads for 3.4.8, not searched for again). A follow-up agent must search again to get any of these URLs in its own results before fetching.

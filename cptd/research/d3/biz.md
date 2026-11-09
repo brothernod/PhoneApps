@@ -2,6 +2,8 @@
 
 Gap fill: 2026-11-09, 10 web calls (4 searches, 4 fetches, 2 fetches refused by a usage limit), resolved 2 of 6 priority gaps (3.2 reading-list entry; a sourced partnering model). Added 2 reading-list models (now 15 entries). Stopped early: the fetch tool hit a usage limit (see "Stopped at" at the end).
 
+Gap fill 2: 2026-11-09, 14 web calls, resolved 2 of 7 (plus 2 partly; the 7 are the first gap fill's "Stopped at" list). Added 2 entries (now 17) and corrected Scott and Barnes from seven to eight phases. See "Stopped at (gap fill 2)" at the end.
+
 Researched 2026-11-09 (step 2, Domain 3).
 
 ## Statement check (current handbook)
@@ -51,6 +53,11 @@ Sources used (numbered, so entries can cite [S1] and so on):
 - [S16] I. Guerra-López and K. Hicks, *Turning Trainers into Strategic Business Partners*, TD at Work vol. 32, issue 1506, June 2015, ATD Press, sample PDF, https://assets.td.org/m/4980ec1965273111/original/samplePDF-251506_undefined.pdf. Tier: 2-ish (ATD Press issue; reading-list title under 3.2, see [S3] note; sample pages only)
 - [S17] TD.org product page for the same issue, product code 251506, ISBN 9781607282891, https://td.org/product/p/251506. Tier: 2-ish. Note: the fetch tool read the page's authors as "Matthew Pierce and Karen Hicks"; the issue's own sample [S16] says Guerra-López and Hicks. Use [S16]; don't test the author.
 - [S18] K. Newbauer, *Aligning Instructional Design with Business Goals*, ATD Press, 2023, sample PDF (contents, introduction, chapter 1), https://assets.td.org/m/7a36b6d769f21eb/original/samplePDF-112304_Aligning-Instructional-Design-With-Business-Goals.pdf. Tier: 2-ish (ATD Press; reading-list title under 3.1 [S3])
+- [S19] "What's My Consulting Role?", Designed Learning (Peter Block's Flawless Consulting workshop company), n.d., https://designedlearning.com/wp-content/uploads/2023/01/Whats-My-Consulting-Role_.pdf. Tier: 3 (original author's organization; attributes the role descriptions to Block)
+- [S20] A. Pangarkar and T. Kirkwood (per author bios; byline blank), "Boost Your Financial IQ", *CTDO* magazine (ATD), October 14, 2022, https://www.td.org/content/ctdo-article/boost-your-financial-iq. Tier: other (ATD article)
+- [S21] "Use the Budget Cycle to Evaluate Training Programs", *TD* magazine (ATD), no author shown, tips "adapted from the December 2017 issue of TD at Work" (i.e. Oliver Bigas [S6], a 3.1 reading-list title), https://www.td.org/magazines/td-magazine/use-the-budget-cycle-to-evaluate-training-programs. Tier: 2-ish (ATD summary of a reading-list issue)
+- [S22] Scott and Barnes, *Consulting on the Inside*, 2nd ed., ASTD Press, 2011, ch. 4 "Overcoming Challenges and Roadblocks", O'Reilly free preview (introduction only; paywall), https://www.oreilly.com/library/view/consulting-on-the/9781562867454/chapter4.xhtml. Tier: 3 (reading-list book under 3.2 [S3])
+- [S23] TD.org book page, *Consulting on the Inside*, 2nd ed., Scott and Barnes, ASTD/ATD Press, https://www.td.org/books/consulting-on-the-inside-2nd-edition. Tier: 2-ish (ATD publisher page for a 3.2 reading-list book; the book itself was not read)
 
 ## 3.1.7 (3.1.A): Business cases
 
@@ -115,8 +122,29 @@ No tier 1–3 source read for this shard gives a named list of business-case com
 - Variants or contested points: **conventions differ outside ATD.** (a) In corporate finance, ROI is often quoted as a ratio or as (gain − cost) ÷ cost without "× 100"; Phillips/ATD always expresses ROI as a percentage of net benefits over fully loaded costs. (b) Some finance texts compute payback from cumulative (or discounted) cash flows year by year; Phillips uses the simple costs ÷ annual benefits form. (c) "Break-even" in accounting is often a unit volume (fixed costs ÷ contribution margin per unit); in Phillips it is BCR 1:1 / ROI 0%. (d) NPV sign convention: positive NPV means the investment earns more than the discount rate; Phillips gives no decision rule. Use Phillips's version on the exam.
 - Unverified: the other rows of Table 1-1 (only PP, NPV and IRR were read beyond ROI and BCR); the edition number of *ROI Basics*.
 
-### Capital vs operating expenses, and cost categories (UNSOURCED, do not author)
-- Gap fill (2026-11-09): marked UNSOURCED because no source of any tier supports it. One ATD lead was found by search but could not be read (fetch refused by a usage limit): the CTDO article "Boost Your Financial IQ" (td.org). A follow-up agent that sources these terms may lift the mark.
+### Pangarkar and Kirkwood's financial terms for TD leaders (CTDO, 2022)
+- Origin: A. Pangarkar and T. Kirkwood, "Boost Your Financial IQ", *CTDO* (ATD), October 2022 [S20]. Added in gap fill 2.
+- Tie to the exam: 3.1.7 ("financial ... data") and 3.1.6 (budgets). ATD-published; not on the reading list.
+- Suggested tag: extra
+- Kind: set of definitions, several in contrasting pairs
+- Items, in the source's terms [S20]:
+  1. Cost center: an activity that incurs expenses but earns no revenue from selling goods or services; the article says TD is one, contributing to the bottom line only indirectly.
+  2. Expense (period expense): a cost recorded in the period it occurs, with no performance evidence beyond that period; examples given are onboarding and compliance training.
+  3. Investment: an asset acquired to generate income or appreciation rather than to be consumed; typically long term and tangible, judged by its return over its useful life. [S20] "an asset or item with the goal of generating income or appreciation" (the article is quoting Investopedia)
+  4. Costs (cost of goods sold, cost of sales): spending tied directly to the product or service sold; rarely applies to L&D.
+  5. Fixed costs: costs required to run the L&D department, which can't be charged to an internal client's request and must sit in the department's own budget. [S20] "are fixed costs required to operate the L&D department"
+  6. Relevant costs: only the financial data that directly affects a decision; stakeholders expect these costs to show value.
+  7. ROI: the return expected from tangible capital investments; the article calls it the decision element of an L&D business case.
+  8. Cost-benefit analysis: expected (qualitative) benefits must exceed the cost of the effort; the article contrasts it with cost payback analysis.
+  9. Forecast vs budget: a forecast plans long-term strategic growth; a budget is an operational control tool for immediate, shorter-term expectations.
+- Actions the article sequences for TD leaders (not a named list) [S20]: build financial competence (the common language of stakeholders); itemize the relevant expenditures for each learning activity and asset; work with IT on feasibility and with finance on the required contribution and expected return; engage operational managers when allocating L&D funds to forecast growth.
+- Confusables: expense vs investment (the article's core contrast: treat TD as an investment); forecast vs budget; cost-benefit analysis vs Phillips's BCR (its output, [S11]); ROI here (business-case decision element) vs Phillips's ROI formula (`roi-formulas`); cost center vs profit center (not defined in [S20]).
+- Variants or contested points: the article's ROI framing ("tangible capital investments") is looser than Phillips's formula; on the exam, use Phillips for ROI arithmetic and this article only for the vocabulary.
+- Unverified: the authors (byline blank; inferred from bios).
+
+### Capital vs operating expenses, and other cost categories (UNSOURCED, do not author)
+- Gap fill (2026-11-09): marked UNSOURCED because no source of any tier supports it.
+- Gap fill 2 (2026-11-09): read the CTDO lead [S20]. It does **not** define capex/opex (it says "tangible capital investments" once), never mentions variable costs, and doesn't define direct vs indirect. It does define fixed costs, expense vs investment and cost center; those are now in the entry above. Items 1–5 below stay UNSOURCED, except "fixed costs" in item 3, which [S20] supports as the L&D department's own running costs. Also, ATD's summary of the reading-list budget issue [S21] says to submit a **capital budget for major equipment purchases**, working with finance (see the 2017 TD at Work entry under 3.1.6). That one usage is sourced; the capex/opex accounting definitions (asset, depreciation, expensed in period) are not.
 - Origin: general accounting practice; no ATD or original-author source was read for this shard. The budgeting titles' pages [S4][S5][S6] and the deck [S9] do not mention these terms.
 - Tie to the exam: 3.1.6 and 3.1.7 (financial data); named in the shard's ownership brief.
 - Suggested tag: extra
@@ -146,7 +174,7 @@ No tier 1–3 source read for this shard gives a named list of business-case com
 - Core principle: "plan first, budget later" [S5] "The essence is plan first, budget later." The 2017 TD at Work issue by the same author gives the same core approach, "plan first and budget later" [S6]. The book also says each planning and budgeting cycle "represents an opportunity for change" [S5], and covers the TD professional's role in the organization's planning and budgeting cycle, preparing a sound budget, and defending it to the next level of management [S4].
 - Confusables: the book's own "10 steps" (not found; see Open questions); Block's five consulting phases (also five items); Domain 1 `pm-phases`.
 - Variants or contested points: book title "to" vs "for" (see [S5]).
-- Unverified: the book's 10 step names and their order. Neither the ATD page [S4] nor the publisher description [S5] lists them. Do not invent them.
+- Unverified: the book's 10 step names and their order. Neither the ATD page [S4] nor the publisher description [S5] lists them. Do not invent them. Gap fill 2 (2026-11-09): searched for the table of contents and read the newer td.org product page (td.org/product/p/111822): no contents shown, only the same five keys and "plan first, budget later". No other tier 1–3 page with the step names surfaced in search. Still unverified.
 
 ### Contents of the 2017 TD at Work budget issue (thin; components only)
 - Origin: L. Oliver Bigas, *TD at Work: Preparing and Defending Your Training Budget*, December 2017. [S6]
@@ -155,6 +183,13 @@ No tier 1–3 source read for this shard gives a named list of business-case com
 - Kind: set (the tools the issue says it contains)
 - Items, from the issue page: questions to ask when planning; suggested performance metrics; tips for defending your budget; guidance for specific line items; a sample expenditure chart; a template for documenting your work plan. [S6] "plan first and budget later"
 - Use: background only. The page names no budget types, cost categories or financial formulas, so do not build questions on what the issue "says" about those.
+- Gap fill 2 (2026-11-09): ATD's *TD* magazine ran tips "adapted from the December 2017 issue of TD at Work" [S21]. They give **four areas to review when assessing resource allocation** (the article's order; a set, not a cycle):
+  1. Head count: does the training structure meet customer needs; can programs be consolidated.
+  2. Spending: training-related costs beyond head count.
+  3. Capital budget: submit one for major equipment purchases, working with finance. [S21] "capital budget"
+  4. Assumptions, risks, and opportunities: review the SWOT analysis and work plan for risks such as project delays or cost overruns.
+  - Cost categories named [S21]: labor and employee-related costs (training, travel, supplies); course development; equipment rental; promotional materials; major equipment purchases (capital budget).
+  - [S21] names **no** budget-cycle stages and no budget types (zero-based, incremental and so on). SWOT is owned by `strategy`.
 
 ### Budget process stages (deck-level)
 - Origin: deck wording only [S9]; the stage names look like a TDBoK-style budget cycle but no tier 1–3 source was found.
@@ -188,7 +223,14 @@ These serve the whole 3.2 capability ("Consulting & Business Partnering"). The c
   5. Extension, Recycle, or Termination: evaluating the engagement and deciding whether to extend it, cycle back to an earlier phase, or end it. [S7][S8] "Extension, Recycle, or Termination"
 - Confusables: the action research cycle and ATD's OD process (owner `od`); the HPI/ATD performance improvement model and Robinson's performance consulting process (owner `perf`); ADDIE (`addie`); Domain 1 `pm-phases` (initiating … closing). The word "contracting" here means agreeing expectations with the client, not a legal or procurement contract.
 - Variants or contested points: **phase names change by edition.** 2nd ed. (1999/2000): "Discovery and Dialogue", "Feedback and the Decision to Act" [S8]. 4th ed. (2023): "Discovery", "Analysis and the Decision to Act" [S7]. The 2nd edition's chapter titles still use older words ("Getting the Data", "From Diagnosis to Discovery", "Preparing for Feedback") [S8], and the 1st edition (1981) is widely cited with "Data Collection and Diagnosis" as phase 2 (not verified here). Study guides mix these. Phases 1, 4 and 5 are the same in both editions read. Safest exam framing: use the stable names (phase 1, 4, 5) and accept either edition's wording for 2 and 3.
-- Unverified: the one-line meanings above are paraphrases from general knowledge of the book; the excerpt read [S7] confirmed the phase names and their order, not their definitions. 1st-edition wording not checked.
+- Gap fill 2 (2026-11-09): re-read [S7] (4th ed., Wiley 2023) for the phase descriptions. The one-line meanings above hold; Block's own points per phase:
+  1. Entry and Contracting: first contact, setting up the first meeting, clarifying the problem and expectations, and whether this consultant is the right fit. Contracting recurs in ongoing relationships. [S7] "Contracting also occurs on a regular basis with ongoing relationships."
+  2. Discovery: the consultant forms an independent view of the problem and of the client's strengths, and helps the client do the same; includes deciding who will be involved in defining the problem. [S7] "Who is going to be involved in defining the problem."
+  3. Analysis and the Decision to Act: organizing and reporting the inquiry, handling resistance, then choosing goals and action steps. [S7] "reducing large amounts of data to a manageable number of issues."
+  4. Engagement and Implementation: carrying out phase 3's plan, either mainly through the line organization or with the consultant deeply involved in design and facilitation. [S7] "This involves carrying out the planning of phase 3."
+  5. Extension, Recycle, or Termination: learning from the whole process, then deciding to expand the work, renegotiate a new contract, or end the relationship. [S7] "Phase 5 is about learning from the whole process."
+- Note for authors: in the 4th edition, **handling resistance sits in phase 3** (when data is fed back), not phase 4.
+- Unverified: 1st-edition wording not checked. (Phase meanings were general knowledge in pass 1; now sourced to [S7].)
 
 ### Block's three consultant roles
 - Origin: Block, *Flawless Consulting*, section "Roles Consultants Choose" (2nd ed. section 2.5) [S8]; same three roles in the 4th ed. [S7]. The 4th-edition excerpt discusses them in connection with Ed Schein (see Variants).
@@ -199,10 +241,15 @@ These serve the whole 3.2 capability ("Consulting & Business Partnering"). The c
   1. Expert Role: the client hands the problem to the consultant, who diagnoses and decides what to do; the client is fairly passive. [S7] "Expert Role"
   2. Pair-of-Hands Role: the client keeps control and decides; the consultant applies specialized knowledge to carry out what the client has already chosen. [S7] "Pair-of-Hands Role"
   3. Collaborative Role: consultant and client work as partners, share data, decisions and responsibility, so problems stay solved and the client learns to solve them. [S7] "Collaborative Role"
-- Block's preferred role: collaborative (general knowledge; the excerpt was cut off inside the Collaborative section).
+- Block's preferred role: collaborative. Gap fill 2 (2026-11-09): confirmed by Designed Learning's handout [S19], which has a section "Choose the Collaborative Role".
+- Gap fill 2 definitions, from [S19] (who controls):
+  - Expert: the consultant is given authority and diagnoses, designs and fixes; the client stays largely uninvolved. Control: consultant. [S19] "the 'Expert' is given control to use their experience"
+  - Pair of Hands: the consultant carries out the manager's existing plan with specialized skills, without questioning it; the manager keeps control and judges results from a distance. Control: manager. [S19] "The 'Pair of Hands' takes a passive role"
+  - Collaborative: consultant and client combine technical and organizational knowledge and share responsibility for diagnosis, solutions and results. Control: shared, by mutual agreement. [S19] "shares responsibility with the manager"
+  - Spelling: [S19] writes "Pair of Hands" without hyphens; [S7] writes "Pair-of-Hands". Don't test the hyphens.
 - Confusables: Schein's three models of consultation (purchase of expertise or expert, doctor–patient, process consultation), which overlap with Block's expert role but are a different list; ATD/Robinson's "transactional vs. performance/strategic" consulting (see 3.2.1 below); "order taker" in TD writing is close to pair-of-hands.
 - Variants or contested points: [S7] mentions Schein near the roles; the roles are normally attributed to Block, and Schein's own list is different. Do not credit the three roles to Schein.
-- Unverified: the role definitions are paraphrased from general knowledge of the book; [S7] and [S8] confirm the three names only.
+- Unverified: the "continuum" framing only. (The role definitions were general knowledge in pass 1; gap fill 2 sourced them from [S19], Block's own workshop company.)
 
 ### Block's definition of a consultant and the three skill areas
 - Origin: Block, *Flawless Consulting*, ch. 1 (4th ed.). [S7]
@@ -215,13 +262,15 @@ These serve the whole 3.2 capability ("Consulting & Business Partnering"). The c
   2. Interpersonal Skills: working with people (listening, support, disagreeing reasonably). [S7] "Interpersonal Skills"
   3. Consulting Skills: managing each phase of the consulting process (contracting, discovery, feedback, etc.). [S7] "Consulting Skills"
 - Confusables: Domain 1 communication/influence models (`inform-influence`, `cialdini`); "influence without authority".
-- Unverified: the one-line meanings of the three skills are general knowledge; names confirmed in [S7]. Block's two-part meaning of "flawless" (being authentic, and completing the business of each phase) is widely quoted but was not seen in the excerpt.
+- Meaning of "flawless" (gap fill 2, [S7]): consulting as well as you can regardless of the outcome, [S7] "consulting as best we can, independent of the eventual outcome." Two strands in the 4th-ed. text: (a) authenticity, behavior matching what you believe and feel, with manipulation or pretense called self-destructive; (b) competence in the early phases (contracting, discovery, feedback), completed in sequence. Intended outcomes named: expertise used more fully, recommendations implemented more often, partnership and trusting relationships with clients. The fetch tool found no formal two-item list, so test the idea, not a count.
+- Unverified: the one-line meanings of the three skills are general knowledge; names confirmed in [S7].
 
 ### Scott and Barnes's internal consulting process (Consulting on the Inside)
 - Origin: B. Scott and B. K. Barnes, *Consulting on the Inside*, 2nd ed., ASTD Press, 2011, Section II "The Consulting Process" (chapters 5–11). [S13]
 - Tie to the exam: 3.2 overall, especially 3.2.1 (establishing and managing partnerships) and 3.2.5. The book is on ATD's reading list under 3.2 Consulting & Business Partnering [S3] (see Open questions on how the list entry reads). This is the consulting-process model with the strongest ATD tie found.
 - Suggested tag: reflist
 - Kind: ordered (chapter order of Section II, first to last; read from chapter titles only)
+- **Count correction (gap fill 2, 2026-11-09):** ATD's own page for the book says it covers "the eight phases of the consulting process" [S23], not seven. The page names none of them. The seven chapter titles below therefore hold eight phases; the likeliest split is chapter 9 as two phases, "Alignment and Change Targets" and "Transition Strategies", but that is an inference. **Don't test the count, and don't test chapter 9's phases** until the names are sourced. The process is called "phases" by ATD [S23].
 - Items, in the source's own terms (chapter titles) [S13]:
   1. Contact (ch. 5)
   2. Agreement (ch. 6)
@@ -233,8 +282,9 @@ These serve the whole 3.2 capability ("Consulting & Business Partnering"). The c
 - Other parts of the book [S13]: Section I "The Life of the Internal Consultant" (Living as an Internal Consultant; Identifying and Creating Your Role; Building Your Practice; **Overcoming Challenges and Roadblocks**, which serves 3.2.8); Section III interpersonal skills (Communication and Influence; Problem-Solving and Negotiation; Facilitation and Coaching); Section IV (Trends; Consulting Mastery). Appendices include sample agreement memoranda and an agreement form, an OD contract, a readiness checklist, courtesy and group feedback meetings, a survey-feedback flowchart, and a role-clarification meeting.
 - Internal vs external consultants [S13]: internal consultants are employed by their client organizations but must still give much of what external consultants give, including "objective, unfiltered advice and recommendations."
 - Confusables: **Block's five phases** (Entry and Contracting ≈ Contact + Agreement; Discovery ≈ Information and Assessment; decision to act ≈ Feedback + Alignment; Engagement and Implementation ≈ Implementation; Extension, Recycle, or Termination ≈ Evaluation and Learning). A question naming "Agreement" or "Contact" as a phase points to Scott and Barnes; "Entry and Contracting" or "Extension, Recycle, or Termination" points to Block. Also the action research cycle and ATD's OD process (owner `od`).
-- Variants or contested points: whether the authors call these "phases" or "stages", and whether chapter 9 is one phase or two ("Alignment and Change Targets" and "Transition Strategies"), can't be told from the contents page. Count of seven is an inference from chapter titles.
-- Unverified: what each phase involves (only titles were read); whether the book presents the seven as a cycle.
+- Variants or contested points: count is **eight phases** per ATD [S23]; pass 1's "seven" was an inference from chapter titles and is withdrawn. Which chapter holds two phases is unsourced (chapter 9 is the likely one).
+- Other things ATD's page names [S23]: two roles for the internal consultant, "change agent" and "trusted advisor"; skills such as keeping objectivity while using insider knowledge, building relationships, designing the role to fit the client, handling roadblocks and difficult clients, and marketing consulting services internally. Useful for 3.2.1 (partnership roles).
+- Unverified: the eight phase names as the authors print them; what each phase involves (only titles were read); whether the book presents them as a cycle.
 
 
 ## 3.2.1 (3.2.B): Partnerships and relationships
@@ -324,19 +374,44 @@ Statement verbs, in order: identifying, minimizing, and overcoming; object: "org
 - See `change`: resistance to change, Lewin, Kotter, Bridges, ADKAR (resistance is the barrier most change models address).
 - See `od`: culture models (Schein) for "culture" as a barrier; power dynamics (3.3.4).
 - See `strategy`: 3.4.5 constraints (resource deficiencies, lack of support).
-- Scott and Barnes's chapter "Overcoming Challenges and Roadblocks" (ch. 4) [S13] is the reading-list home for internal consultants' barriers; its contents were not read.
-- Block's chapter on client resistance (forms such as "give me more detail", flooding with detail, time, impracticality, attack, confusion, silence, compliance, "pressing for solutions") is widely taught but was **not** verified this pass; do not author from memory.
+- Scott and Barnes's chapter "Overcoming Challenges and Roadblocks" (ch. 4) [S13] is the reading-list home for internal consultants' barriers. Gap fill 2 (2026-11-09) read the chapter's free preview [S22]: it sorts the challenges internal consultants face into **four categories: "external, organizational, interpersonal, and intrapersonal"** (the chapter's order). The preview stops mid-introduction, so the specific challenges in each category and the chapter's strategies for overcoming them were not read. Testable: the four category names only (tag `reflist`, set). Confusables: the six barriers above [S14] (performance barriers, not consultant challenges); Block's faces of resistance (client behaviors).
+- Block's faces of resistance: sourced in gap fill 2, see the entry below.
+
+### Block's faces of resistance (Flawless Consulting)
+- Origin: Block, *Flawless Consulting*, 2nd ed., Jossey-Bass/Pfeiffer, 1999/2000, ch. 8 "Understanding Resistance", section 8.1 "The Faces of Resistance" (O'Reilly table of contents) [S8]. Added in gap fill 2 (2026-11-09).
+- Tie to the exam: 3.2.8 (identifying and overcoming organizational barriers: resistance is the barrier a consultant meets face to face); also 3.2.5 (resistance shows up when recommendations are fed back, which Block's 4th edition places in phase 3 [S7]). Not on the reading list.
+- Suggested tag: extra
+- Kind: set (14 headings in the book's order; Block gives them as a catalogue, not a sequence)
+- Items, as the section headings read [S8]:
+  1. Give Me More Detail
+  2. Flood You with Detail
+  3. Time
+  4. Impracticality
+  5. I'm Not Surprised
+  6. Attack
+  7. Confusion
+  8. Silence
+  9. Intellectualizing
+  10. Moralizing
+  11. Compliance
+  12. Methodology
+  13. Flight into Health
+  14. Pressing for Solutions
+- Groups: the same chapter names two **underlying concerns** behind resistance: "Control" and "Vulnerability" (sections 8.3.1, 8.3.2) [S8]. Other section headings: "What Are Clients Resisting When They Are Resisting Us?", "Sometimes It Is Not Resistance", "The Fear and the Wish" (with "Being Dependent, Asking for Help" and "Wanting Confirmation, Not Change") [S8].
+- Confusables: resistance to change in change models (owner `change`: Kotter, ADKAR, Kübler-Ross); "Give Me More Detail" (the client asks for more) vs "Flood You with Detail" (the client gives too much); "Compliance" and "I'm Not Surprised" are on the list, a likely trap because they look like agreement (what they mean is unverified); Block's three roles; the six barriers above [S14] (organizational conditions, not client behaviors).
+- Variants or contested points: names and count are from the **2nd edition**'s headings; the 4th edition's chapter was not read and may differ. Study guides often give a shorter list. Don't test the count of 14.
+- Unverified: what each face means (only headings were read; meanings such as "Silence" = no reaction to the data are general knowledge); Block's steps for dealing with resistance (the next chapter) were not read.
 
 ## Open questions
 
 - **Reading-list entry under 3.2** [S3]: rechecked 2026-11-09 [S15]; the fetch tool still returns one line. Best reading: two titles run together, the TD at Work issue *Turning Trainers into Strategic Business Partners* (Guerra-López and Hicks, June 2015) [S16][S17] and Scott and Barnes's *Consulting on the Inside* (2011) [S13]. Unresolved: the list says "Trusted" where the issue says "Strategic", and the year/author printed belong to Scott and Barnes only. Cite both as 3.2 reading-list titles; don't test the list's wording, year or author for the issue.
 - **Business-case components**: no tier 1–3 list. Gap fill checked Newbauer's 3.1 reading-list book [S18]: no component list there either (it offers the eight-step framework instead). Everything under 3.1.7's component list rests on a deck [S9] and general practice. Authors should test only the definition, the three data types the statement names (economic, financial, organizational), and unambiguous points (executive summary first; focus on business impact, not just the implementation plan).
-- **Budget process stages** (planning; analysis and research; draft and review; approval; budget management): deck only [S9]. Don't tag `tdbok` and don't test the exact stage count.
+- **Budget process stages** (planning; analysis and research; draft and review; approval; budget management): deck only [S9]. Don't tag `tdbok` and don't test the exact stage count. Gap fill 2: ATD's summary of the reading-list budget issue [S21] names no cycle stages either; it gives four review areas (head count, spending, capital budget, assumptions/risks/opportunities), which are sourced.
 - **Oliver and Nin's 10 steps**: not found. Only the five keys and "plan first, budget later" are sourced [S5].
-- **Capex/opex, fixed/variable, direct/indirect**: general knowledge only; heading now marked UNSOURCED. Lead not read: CTDO article "Boost Your Financial IQ" (td.org).
+- **Capex/opex, fixed/variable, direct/indirect**: heading stays UNSOURCED. Gap fill 2 read the CTDO lead [S20]: it defines fixed costs, expense vs investment, cost center, relevant costs and forecast vs budget (now a separate entry), but not capex/opex, variable or direct/indirect. [S21] supports only "submit a capital budget for major equipment purchases". Unread lead: ATD blog "What You Need to Include in Your L&D Budget" (td.org/content/atd-blog/...).
 - **Financial-metric conventions**: Phillips (ATD Press) uses ROI = net benefits ÷ costs × 100, BCR = benefits ÷ costs, PP = costs ÷ benefits, break-even = BCR 1:1 = ROI 0% [S11]. Corporate-finance texts differ (ROI as a ratio, cumulative or discounted payback, unit-volume break-even). Use Phillips's forms. The other rows of Phillips's Table 1-1 were not read.
-- **Block's phase names** differ by edition (2nd: "Discovery and Dialogue", "Feedback and the Decision to Act"; 4th: "Discovery", "Analysis and the Decision to Act"). 1st-edition wording not checked. Block's role and skill definitions, and his meaning of "flawless", are from general knowledge; only names were confirmed.
-- **Scott and Barnes**: seven phases inferred from chapter titles; their content and whether chapter 9 is one phase are unknown.
+- **Block's phase names** differ by edition (2nd: "Discovery and Dialogue", "Feedback and the Decision to Act"; 4th: "Discovery", "Analysis and the Decision to Act"). 1st-edition wording not checked. Gap fill 2 sourced the phase descriptions [S7], the three role definitions [S19] and the idea of "flawless" [S7]. Still general knowledge: the three skill areas' meanings, the meanings of the 14 faces of resistance [S8] (headings only), and Block's steps for dealing with resistance.
+- **Scott and Barnes**: ATD's book page says **eight** phases [S23] (pass 1 inferred seven from chapter titles). The eight names, and which chapter holds two of them, are unsourced; phase content is unread. Chapter 4's four challenge categories (external, organizational, interpersonal, intrapersonal) are sourced [S22]; its strategies are not.
 - **Partnering models** (3.2.1, 3.2.2): one now sourced, Guerra-López and Hicks's SCALE and four skills [S16] (SCALE's own steps unread). Robinson's business-partner attributes and the trusted-advisor trust equation still need a source before use. Unread ATD leads from search: TD at Work Guide *Become a Trusted Partner to Drive Performance* (td.org product 252510); ATD newsletter "Ten Strategies for Building Successful Partnerships"; ATD blog "Elevating Your Approach as a Strategic Business Partner".
 - **Mendelow's date**: 1981 per Mind Tools [S12]; 1991 in many other sources.
 - **Author of the 2018 ATD barriers article** [S14] and its overlap with Robinson's environmental factors (which `perf` may cover).
@@ -348,3 +423,7 @@ Stopped at (first pass): web budget reached with 13 models.
 Gap fill 2026-11-09: 10 web calls (4 searches; 4 fetches read; 2 fetches refused with a usage-limit error, "resets 4:20pm America/New_York"). Direct downloads of td.org and assets.td.org are blocked by the session proxy, so no workaround.
 
 Stopped at: fetch tool usage limit, with 15 entries. Left, best first: (1) Block's phases and roles in his own terms (needs a fresh search to surface a quotable Block or Wiley page; the 4th-ed. sample [S7] cut off inside the Collaborative role); (2) budget cycle and cost categories from ATD: leads "What You Need to Include in Your L&D Budget" (ATD blog) and "Boost Your Financial IQ" (CTDO article), plus Oliver and Nin's 10 step names (a pocketbook.uk listing for ISBN 9781947308879 may show contents); (3) 3.2.8 barriers: Block's forms of resistance from the original, Scott and Barnes ch. 4; (4) SCALE's steps (Guerra-López and Hicks); (5) business-case components from an ATD source (none found in td.org search or in Newbauer [S18]; lead: CTDO "What's the Business Impact of Learning?"); (6) Scott and Barnes phase content; (7) rest of Phillips's Table 1-1. Re-surface every lead by search before fetching (brief rule).
+
+Gap fill 2, 2026-11-09: 14 web calls (6 searches, 8 fetches; no usage-limit errors). Resolved: Block's phases and roles in his own terms [S7][S19]; Block's faces of resistance (14 names, 2nd ed.) [S8]. Partly resolved: ATD budget content (two new sourced entries or notes from [S20][S21]; capex/opex still UNSOURCED; Oliver and Nin's 10 steps still not found); Scott and Barnes (count corrected from seven to **eight** phases [S23]; chapter 4's four challenge categories [S22]). Not attempted: SCALE's steps, business-case components, rest of Phillips's Table 1-1.
+
+Stopped at (gap fill 2): web budget, with 17 entries. Left, best first: (1) Scott and Barnes's eight phase names (search for a contents page or ATD article that lists them; td.org press release "ASTD Press releases new book that promises excellence in internal consulting" surfaced but was not read); (2) business-case components from an ATD source (lead: CTDO "What's the Business Impact of Learning?"); (3) SCALE's steps (Guerra-López and Hicks); (4) capex/opex and variable/direct/indirect costs (lead: ATD blog "What You Need to Include in Your L&D Budget"; also "5 Basic Financial Skills Every Manager Should Have", ATD blog); (5) Oliver and Nin's 10 step names; (6) meanings of Block's faces of resistance and his steps for dealing with it; (7) rest of Phillips's Table 1-1. Re-surface every lead by search before fetching.
