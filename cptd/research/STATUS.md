@@ -9,8 +9,8 @@ Start **conversation A (Domain 2)** at step 0. Jonathan opens a new chat and say
 ## Domain 2: Developing Professional Capability (conversation A)
 
 - [x] 0. Scope: tested statements for Domains 2 and 3 in `scope.md`, shards, size estimate (2026-11-08: D2 18 statements in 5 shards, D3 32 in 7)
-- [ ] 1. Multi-domain app support, `claims.mjs`, checker update
-- [ ] 2. Source files `research/d2/*.md`
+- [x] 1. Multi-domain app support, `claims.mjs`, checker update (one agent, high effort)
+- [x] 2. Source files `research/d2/*.md` (5 first-pass agents plus 5 gap-fill agents, xhigh; `BRIEF-sources.md`, `BRIEF-gaps.md`)
 - [ ] 3. `content-d2.js` written from the source files
 - [ ] 4. Machine checks pass
 - [ ] 5. Claims pass and cold-answer pass, per shard
