@@ -61,8 +61,8 @@ export function cheddarLoaf({ hat = '', happy = true } = {}) {
 
 export const partyHat = `<g transform="translate(118 2) rotate(18)"><path d="M0 52 L22 0 L44 52 Z" fill="#FF6FB5" stroke="#C93F86" stroke-width="3" stroke-linejoin="round"/><circle cx="22" cy="0" r="8" fill="#FFE870" stroke="#E0B92E" stroke-width="2"/><path d="M9 36 L35 36 M14 22 L30 22" stroke="#FFE870" stroke-width="5" stroke-linecap="round"/></g>`;
 
-export function paw(auto = false) {
-  return `<svg viewBox="0 0 40 40" class="paw${auto ? ' auto' : ''}" aria-label="paw mark">
+export function paw(auto = false, color = null) {
+  return `<svg viewBox="0 0 40 40" class="paw${auto ? ' auto' : ''}${color ? ' tinted' : ''}" aria-label="paw mark"${color ? ` style="fill:${color}"` : ''}>
   <ellipse cx="20" cy="26" rx="8.5" ry="7"/><circle cx="10" cy="17" r="3.6"/><circle cx="16.5" cy="11" r="3.6"/><circle cx="23.5" cy="11" r="3.6"/><circle cx="30" cy="17" r="3.6"/>
 </svg>`;
 }

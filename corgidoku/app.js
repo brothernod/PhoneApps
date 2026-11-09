@@ -3,14 +3,18 @@ import { cheddarHead, cheddarLoaf, partyHat, paw, treat } from './art.js';
 
 // ---------- constants ----------
 const NAME = 'Halina';
-const VERSION = '1.6'; // bump with CACHE in sw.js on every release
+const VERSION = '1.7'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
 const EMPTY = 0, PAW = 1, AUTO = 2, CORGI = 3, NOPE = 4; // NOPE = a wrong guess, shown as a red paw
+// Brainstorm paw colors. Index 0 is the normal paw (PAW); 1-4 are stored as cell values 5-8.
+const PAW_COLORS = [null, '#1F5FE0', '#13924A', '#F07C00', '#B0179A'];
+const isPaw = (v) => v === PAW || v >= 5;
+const pawValue = () => (db.settings.pawColor ? 4 + db.settings.pawColor : PAW);
 const STORE = 'corgidoku:v1';
 
 // ---------- storage ----------
-const defaults = { progress: {}, settings: { autoPaws: true, relaxed: false, timer: true, mode: 'cozy', research: false }, seenHelp: false };
+const defaults = { progress: {}, settings: { autoPaws: true, relaxed: false, timer: true, mode: 'cozy', research: false, pawColor: 0 }, seenHelp: false };
 let db;
 try { db = { ...defaults, ...JSON.parse(localStorage.getItem(STORE) || '{}') }; } catch { db = structuredClone(defaults); }
 db.settings = { ...defaults.settings, ...db.settings };
@@ -191,6 +195,7 @@ function play(pid) {
     <div class="bar"><button class="back">‹</button><h2>${title}</h2><button class="back" id="restart" title="Start over">↺</button></div>
     <div class="meta"><div class="treats" id="treats"></div><div id="clock"></div></div>
     <div class="board" id="board" style="--n:${P.n}"></div>
+    <div class="swatches" id="swatches">${PAW_COLORS.map((c, k) => `<button class="sw${(db.settings.pawColor || 0) === k ? ' on' : ''}" data-k="${k}" aria-label="paw color ${k}">${paw(false, c || '#5B2A6E')}</button>`).join('')}</div>
     <div class="bubble"><div class="face">${cheddarHead()}</div><p id="msg"></p></div>
     <div class="tools">
       <button class="tool" id="undo"><span class="e">↩️</span>Undo</button>
@@ -200,6 +205,10 @@ function play(pid) {
   $('play').querySelector('.back').onclick = () => { stopClock(); P.kind === 'c' ? renderClimb() : renderHome(); };
   $('restart').onclick = () => confirmSheet('Start this puzzle over?', 'Your corgis and paw marks will be cleared.', () => { snapshot(); G.cells.fill(EMPTY); G.treats = 3; G.solved = false; persist(); drawBoard(); drawTreats(); say(''); startClock(); });
   $('undo').onclick = undo;
+  document.querySelectorAll('#swatches .sw').forEach((b) => (b.onclick = () => {
+    db.settings.pawColor = Number(b.dataset.k); save();
+    document.querySelectorAll('#swatches .sw').forEach((x) => x.classList.toggle('on', x === b));
+  }));
   $('hint').onclick = hint;
   $('clearpaws').onclick = () => { snapshot(); G.cells = G.cells.map((v) => (v === CORGI || v === NOPE ? v : EMPTY)); persist(); drawBoard(); };
   buildBoard();
@@ -239,11 +248,11 @@ function drawBoard() {
   const cells = $('board').children;
   for (let i = 0; i < cells.length; i++) {
     const v = G.cells[i], el = cells[i];
-    const want = v === CORGI ? 'c' : v === PAW ? 'p' : v === AUTO ? 'a' : v === NOPE ? 'n' : '';
+    const want = v === CORGI ? 'c' : isPaw(v) ? 'p' + v : v === AUTO ? 'a' : v === NOPE ? 'n' : '';
     if (el.dataset.v === want) continue;
     el.dataset.v = want;
     el.classList.toggle('nope', v === NOPE);
-    el.innerHTML = v === CORGI ? cheddarHead() : v === PAW || v === NOPE ? paw(false) : v === AUTO ? paw(true) : '';
+    el.innerHTML = v === CORGI ? cheddarHead() : v === NOPE ? paw(false) : isPaw(v) ? paw(false, PAW_COLORS[v >= 5 ? v - 4 : 0]) : v === AUTO ? paw(true) : '';
   }
 }
 
@@ -282,7 +291,14 @@ function undo() {
 
 // ---------- input: tap to cycle, drag to paint paws ----------
 function attachInput(board) {
-  let start = null, dragging = false, painted = new Set();
+  let start = null, dragging = false, erasing = false, painted = new Set();
+  // Dragging from a paw erases paws; dragging from anything else paints paws in the chosen color.
+  const paint = (i) => {
+    const v = G.cells[i];
+    painted.add(i);
+    if (erasing) { if (isPaw(v) || v === AUTO) G.cells[i] = EMPTY; }
+    else if (v === EMPTY || v === AUTO || isPaw(v)) G.cells[i] = pawValue();
+  };
   const cellAt = (e) => {
     const el = document.elementFromPoint(e.clientX, e.clientY)?.closest('.cell');
     return el && board.contains(el) ? Number(el.dataset.i) : null;
@@ -298,9 +314,10 @@ function attachInput(board) {
     if (i === null) return;
     if (!dragging && i !== start) {
       dragging = true; snapshot();
-      if (G.cells[start] === EMPTY || G.cells[start] === AUTO) { G.cells[start] = PAW; painted.add(start); }
+      erasing = isPaw(G.cells[start]);
+      paint(start);
     }
-    if (dragging && !painted.has(i) && (G.cells[i] === EMPTY || G.cells[i] === AUTO)) { G.cells[i] = PAW; painted.add(i); drawBoard(); }
+    if (dragging && !painted.has(i)) { paint(i); drawBoard(); }
   };
   board.onpointerup = (e) => {
     if (start === null) return;
@@ -329,7 +346,7 @@ function tap(i) {
     return;
   }
   snapshot();
-  G.cells[i] = G.cells[i] === EMPTY || G.cells[i] === AUTO ? PAW : EMPTY;
+  G.cells[i] = G.cells[i] === EMPTY || G.cells[i] === AUTO ? pawValue() : EMPTY;
   persist(); drawBoard();
 }
 
@@ -394,7 +411,7 @@ function hint() {
   G.hints++; persist();
   const { n, sol } = G;
   // Clear any wrong paw marks on solution cells first: that's the kindest hint.
-  const badPaw = G.cells.findIndex((v, i) => v === PAW && sol[Math.floor(i / n)] === i % n);
+  const badPaw = G.cells.findIndex((v, i) => isPaw(v) && sol[Math.floor(i / n)] === i % n);
   const given = [];
   G.cells.forEach((v, i) => { if (v === CORGI) given.push(i); });
   const g = grade(n, G.reg, { given });
@@ -525,7 +542,8 @@ function help() {
       <li>One corgi in every <b>colored yard</b></li>
       <li>Corgis never touch, <b>not even diagonally</b></li>
     </ol>
-    <p>Tap for a 🐾 paw mark (“no corgi here”); tap it again to remove it. <b>Double-tap</b> to place a corgi. Drag across cells to paw-mark lots at once.</p>
+    <p>Tap for a 🐾 paw mark (“no corgi here”); tap it again to remove it. <b>Double-tap</b> to place a corgi. Drag to paw-mark lots of cells; start a drag on a paw to erase instead.</p>
+    <p>Pick a paw color under the board to brainstorm "what if" ideas in different colors.</p>
     <p>Want more challenge? Switch to <b>🔥 Hard</b> on the home screen.</p>
     <p>A wrong corgi costs a treat. Stuck? Tap <b>Sniff</b> and Cheddar will help.</p>
     <button class="cta" id="gotit">Let's go!</button>`);
