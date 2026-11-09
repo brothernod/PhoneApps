@@ -3,12 +3,13 @@ import { cheddarHead, cheddarLoaf, partyHat, paw, treat } from './art.js';
 
 // ---------- constants ----------
 const NAME = 'Halina';
-const VERSION = '1.8'; // bump with CACHE in sw.js on every release
+const VERSION = '1.9'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
 const EMPTY = 0, PAW = 1, AUTO = 2, CORGI = 3, NOPE = 4; // NOPE = a wrong guess, shown as a red paw
 // Brainstorm paw colors. Index 0 is the normal paw (PAW); 1-4 are stored as cell values 5-8.
 const PAW_COLORS = [null, '#1F5FE0', '#13924A', '#F07C00', '#B0179A'];
+const PAW_NAMES = ['plum', 'blue', 'green', 'orange', 'magenta'];
 const isPaw = (v) => v === PAW || v >= 5;
 const pawValue = () => (db.settings.pawColor ? 4 + db.settings.pawColor : PAW);
 const STORE = 'corgidoku:v1';
@@ -205,9 +206,23 @@ function play(pid) {
   $('play').querySelector('.back').onclick = () => { stopClock(); P.kind === 'c' ? renderClimb() : renderHome(); };
   $('restart').onclick = () => confirmSheet('Start this puzzle over?', 'Your corgis and paw marks will be cleared.', () => { snapshot(); G.cells.fill(EMPTY); G.treats = 3; G.solved = false; persist(); drawBoard(); drawTreats(); say(''); startClock(); });
   $('undo').onclick = undo;
+  // Tap a color to paint with it; double-tap a color to clear that color's paws.
+  let lastSw = { k: -1, t: 0 };
   document.querySelectorAll('#swatches .sw').forEach((b) => (b.onclick = () => {
-    db.settings.pawColor = Number(b.dataset.k); save();
+    const k = Number(b.dataset.k), now = performance.now();
+    db.settings.pawColor = k; save();
     document.querySelectorAll('#swatches .sw').forEach((x) => x.classList.toggle('on', x === b));
+    if (lastSw.k === k && now - lastSw.t < 380 && !G.solved) {
+      lastSw = { k: -1, t: 0 };
+      const val = k ? 4 + k : PAW;
+      if (!G.cells.includes(val)) return say(`No ${PAW_NAMES[k]} paws to clear.`);
+      snapshot();
+      G.cells = G.cells.map((v) => (v === val ? EMPTY : v));
+      persist(); drawBoard();
+      say(`Cleared the ${PAW_NAMES[k]} paws. Undo brings them back.`);
+      return;
+    }
+    lastSw = { k, t: now };
   }));
   $('hint').onclick = hint;
   $('clearpaws').onclick = () => { snapshot(); G.cells = G.cells.map((v) => (v === CORGI || v === NOPE ? v : EMPTY)); persist(); drawBoard(); };
@@ -543,7 +558,7 @@ function help() {
       <li>Corgis never touch, <b>not even diagonally</b></li>
     </ol>
     <p>Tap for a 🐾 paw mark (“no corgi here”); tap it again to remove it. <b>Double-tap</b> to place a corgi. Drag to paw-mark lots of cells; start a drag on a paw to erase instead.</p>
-    <p>Pick a paw color under the board to brainstorm "what if" ideas in different colors.</p>
+    <p>Pick a paw color under the board to brainstorm "what if" ideas in different colors. Double-tap a color to clear just those paws.</p>
     <p>Want more challenge? Switch to <b>🔥 Hard</b> on the home screen.</p>
     <p>A wrong corgi costs a treat. Stuck? Tap <b>Sniff</b> and Cheddar will help.</p>
     <button class="cta" id="gotit">Let's go!</button>`);
