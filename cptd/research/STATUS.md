@@ -15,6 +15,7 @@ B1 does step 2 only, then updates this file and stops so B2 starts fresh:
 - Log each agent's reported tokens in the spend log.
 
 Shards done in step 2 (first pass / gap fill): see `scope.md` for the shard list; record progress here as `shard: first pass ✓ / gap fill ✓`.
+- B1 in progress (branch `cptd-d3`, ownership map in `research/d3/OWNERSHIP.md`): change ✓/✓, od ✓/running, perf ✓/running, strategy ✓/running, biz ✓/–, market ✓/–, data ✓/–.
 
 ## Domain 2: Developing Professional Capability (conversation A)
 
