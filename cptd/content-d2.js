@@ -40,7 +40,7 @@ window.CPTD_PARTS.push({
 
   exam: {
     facts: [
-      ['This domain', 'About 40 questions’ worth (45% of the exam), drawn from 18 statements: 2.1.1, 2.1.3, 2.2.4, 2.2.6, 2.2.11, 2.2.12, 2.3.3, 2.4.1, 2.4.4, 2.5.3, 2.5.7, 2.6.6, 2.6.8, 2.7.2, 2.7.3, 2.8.1, 2.8.3, and 2.8.4.'],
+      ['This domain', 'About 68 questions’ worth (45% of the exam), drawn from 18 statements: 2.1.1, 2.1.3, 2.2.4, 2.2.6, 2.2.11, 2.2.12, 2.3.3, 2.4.1, 2.4.4, 2.5.3, 2.5.7, 2.6.6, 2.6.8, 2.7.2, 2.7.3, 2.8.1, 2.8.3, and 2.8.4.'],
     ],
     tips: [
       'This is the biggest domain. Adult learning theories (2.1.3) and evaluation models (2.8.1) carry the most named models: learn who each one comes from and its levels or steps in order.',
