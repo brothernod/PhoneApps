@@ -591,10 +591,10 @@ Statement 2.5.3 (Designing and implementing knowledge management strategy)
 
 In Harold Jarche’s usage, what does PKM stand for?
 
-- A. Personal knowledge management
+- A. Personal knowledge modeling
 - B. Peer knowledge mentoring
 - C. Professional knowledge mapping
-- D. Personal Knowledge Mastery
+- D. Personal knowledge mastery
 
 ### q-techkm-craap-auth
 
@@ -649,7 +649,7 @@ Leaders ask you to “capture what the retiring technicians know.” Much of it 
 
 #### case-techkm-retiring.step-2
 
-Most field work is repetitive: the same repairs recur across hundreds of sites. You must choose the primary KM strategy. Which choices fit Hansen, Nohria, and Tierney?
+Most field work is repetitive: the same repairs recur across hundreds of sites, and the standard fixes can be written down step by step. You must choose the primary KM strategy. Which choices fit Hansen, Nohria, and Tierney?
 
 1. Keep personalization in a supporting role, such as an expert directory for unusual cases
 2. Reward technicians for using and contributing to the fix database

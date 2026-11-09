@@ -28,7 +28,7 @@ case-id.step-2 | 2 | two: 2,4 | option 4 is arguable
 
 Statement 2.7.3 (Coaching supervisors and managers on methods and approaches for supporting employee development)
 
-A manager using the Seven Cs from Everyday Coaching has just helped an employee generate several ways to handle a difficult client. Which C comes next?
+In Everyday Coaching, chapter 5 covers Create Options together with which other C?
 
 - A. Clarify Purpose
 - B. Commit to Action
@@ -226,7 +226,7 @@ According to the ATD blog on high-quality IDPs, how should supervisors use its f
 
 Statement 2.7.2 (Helping individuals or teams identify goals, develop realistic action plans, seek development opportunities, and monitor progress and accountability)
 
-A coach uses a well-timed silence and a metaphor to help a client see her situation in a new way. Which ICF core competency is this?
+A coach uses a powerful question and a metaphor to help a client see her situation in a new way. Which ICF core competency is this?
 
 - A. Establishes and Maintains Agreements
 - B. Maintains Presence
@@ -435,7 +435,7 @@ A leader struggles to get better at inspiring and motivating others, so his coac
 
 Statement 2.6.8 (Sourcing, designing, building, and evaluating leadership development experiences)
 
-A leader already has a clear strength in Interpersonal Skills. Under Zenger and Folkman’s cross-training finding, which next strength would add the most?
+A leader already has a clear strength in Interpersonal Skills. Under Zenger and Folkman’s finding on combinations of strengths, which next strength would add the most?
 
 - A. Removing every minor weakness before building more
 - B. A strength in Focus on Results, a different cluster

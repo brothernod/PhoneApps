@@ -193,12 +193,12 @@ A CFO asks whether a program’s monetary benefits exceeded its fully loaded cos
 
 Statement 2.8.1 (Models and methods to evaluate the impact of learning and talent development solutions)
 
-In the ROI Institute’s fold-out model, what is the full name of Phillips’s Level 1?
+In the ROI Institute’s fold-out model, Phillips’s Level 1 is “Reaction and ___.” What fills the blank?
 
-- A. Reaction and Engagement
-- B. Reaction and Planned Action
-- C. Reaction and Satisfaction
-- D. Reaction and Relevance
+- A. Engagement
+- B. Planned Action
+- C. Confidence
+- D. Relevance
 
 ### q-eval-phil-l3name
 

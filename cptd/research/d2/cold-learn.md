@@ -591,21 +591,21 @@ Statement 2.3.3 (Facilitation methods and techniques)
 
 Preparing for a virtual session, a facilitator lists everything she might worry about. Which item does ATD advise her not to focus on, because she can’t control it?
 
-- A. Her own knowledge gaps on the topic
-- B. The visuals and learning guides
-- C. Whether the virtual platform works
+- A. Closing her own knowledge gaps on the topic
+- B. Preparing the visuals and learning guides
+- C. Testing the virtual platform beforehand
 - D. Whether learners complete the pre-work
 
 ### q-learn-fac-tools
 
 Statement 2.3.3 (Facilitation methods and techniques)
 
-A TD lead wants a facilitation tool that brings in fresh ideas by mixing people with different experiences. Which tool does ATD point to?
+A TD lead wants to address a team’s skills gap by bringing together people with different experiences so they trade new ideas. Which of ATD’s common facilitation tools fits this need?
 
 - A. Group discussions
 - B. Online learning
 - C. Development programs
-- D. Team-building exercises
+- D. Performance appraisals
 
 ### q-learn-fac-plan
 
@@ -633,7 +633,7 @@ In a facilitated session, which method most directly supports the Active Experim
 
 Statement 2.3.3 (Facilitation methods and techniques)
 
-A facilitator pairs new analysts with experts who model the work and coach them on real cases. Which learning theory is this method tied to?
+A facilitator pairs new analysts with experts who model the work and coach them on real cases, a method Ertmer & Newby call cognitive apprenticeship. Under which learning perspective do Ertmer & Newby list it?
 
 - A. Behaviorism
 - B. Constructivism

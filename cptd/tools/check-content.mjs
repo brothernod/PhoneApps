@@ -1,7 +1,8 @@
 // Checks the study content for structural problems that would produce wrong or
 // ambiguous quiz questions. Loads every content*.js file that index.html lists, the
 // way the app does, and checks each domain and all domains together (ids must be
-// unique everywhere; "which model?" stems are compared across all models).
+// unique everywhere; "which model?" items must be unique within their own domain, and
+// decoys from another domain must not share a stem with the item).
 // Run from the repo root:
 //   node cptd/tools/check-content.mjs            everything
 //   node cptd/tools/check-content.mjs d2         one domain
@@ -22,16 +23,24 @@ const warns = [];
 const inScope = (d, a) => !filter || filter === d || filter === a || (!d && !a);
 const err = (m, d, a) => { if (inScope(d, a)) errors.push(m); };
 const warn = (m, d, a) => { if (inScope(d, a)) warns.push(m); };
+const pl = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
 
 // Same normalization the app uses to keep "which model?" questions unambiguous.
 // Two names "clash" if they share any meaningful word stem, e.g. "Commitment" and
 // "Lack of commitment", or "Collaboration" and "Collaborating". Kept identical to app.js.
-const norm = (s) => s.toLowerCase().replace(/\(.*?\)/g, '').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+const NORMS = new Map(); const STEMS = new Map(); // caches, as in app.js
+const norm = (s) => {
+  let n = NORMS.get(s);
+  if (n === undefined) { n = s.toLowerCase().replace(/\(.*?\)/g, '').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim(); NORMS.set(s, n); }
+  return n;
+};
 const STOP = new Set(['self', 'with', 'from', 'your', 'that', 'this', 'their', 'them', 'what', 'when', 'each', 'into', 'than']);
 const stems = (s) => {
+  if (STEMS.has(s)) return STEMS.get(s);
   const n = norm(s);
   const out = new Set([n]);
   for (const w of n.split(' ')) if (w.length >= 4 && !STOP.has(w)) out.add(w.slice(0, 6));
+  STEMS.set(s, out);
   return out;
 };
 const clash = (a, b) => { const sb = stems(b); for (const k of stems(a)) if (sb.has(k)) return true; return false; };
@@ -119,23 +128,31 @@ for (const g of C.kin) {
   for (const id of list) if (!ids.has(id)) err(`kin: unknown model ${id}`, first && first.domain, first && first.area);
 }
 
-// Items that share a word stem with another model's items (in any domain) are left out
-// of "which model?" drills so those questions can't be ambiguous.
+// "Which model?" items, mirroring app.js (UNIQUE, near, decoyOk). An item is left out if it
+// shares a word stem with another model's items in its OWN domain. Decoys skip kin, models with
+// an item that shares a stem with it (only possible across domains), and models whose name,
+// note or descriptions overlap it. An item needs 3 eligible decoys.
 const member = (o, t) => o.items.some((j) => clash(j.t, t)) || (o.groups || []).some((g) => g.m.some((x) => clash(x, t)));
+const KIN = new Set();
+for (const g of C.kin) {
+  const add = (a, b) => { KIN.add(a + '|' + b); KIN.add(b + '|' + a); };
+  if (g.hub) (g.with || []).forEach((x) => add(g.hub, x));
+  if (g.all) g.all.forEach((a) => g.all.forEach((b) => { if (a !== b) add(a, b); }));
+}
+const near = (o, t) => clash(o.name, t) || clash(o.short || '', t) || clash(o.note || '', t)
+  || norm(o.name).includes(norm(t)) || norm(o.note || '').includes(norm(t))
+  || o.items.some((j) => norm(j.t).slice(0, 4) === norm(t).slice(0, 4) || norm(j.d || '').includes(norm(t)));
+const decoyOk = (o, m, t) => o.id !== m.id && !KIN.has(o.id + '|' + m.id) && !near(o, t) && !member(o, t);
 const unique = {};
-for (const m of C.models) unique[m.id] = m.items.filter((i) => !C.models.some((o) => o.id !== m.id && member(o, i.t))).map((i) => i.t);
-// Stems shared with another domain's items also take an item out of "which model?".
-// Only report it when a model loses its last usable item that way, because its
-// "which model?" card then disappears (saved progress on it stays, but goes unused).
-let crossLost = 0;
+let fewDecoys = 0;
 for (const m of C.models) {
-  const within = m.items.filter((i) => !C.models.some((o) => o.id !== m.id && o.domain === m.domain && member(o, i.t)));
-  const lost = within.filter((i) => !unique[m.id].includes(i.t));
-  if (!filter || m.domain === filter || m.area === filter) crossLost += lost.length;
-  if (within.length && !unique[m.id].length) {
-    const by = [...new Set(lost.flatMap((i) => C.models.filter((o) => o.domain !== m.domain && member(o, i.t)).map((o) => o.id)))];
-    warn(`${m.id}: loses its "which model?" card; its items share stems with ${by.join(', ')} in another domain`, m.domain, m.area);
-  }
+  const own = m.items.filter((i) => !C.models.some((o) => o.id !== m.id && o.domain === m.domain && member(o, i.t)));
+  unique[m.id] = own.filter((i) => C.models.filter((o) => decoyOk(o, m, i.t)).length >= 3).map((i) => i.t);
+  if (!filter || m.domain === filter || m.area === filter) fewDecoys += own.length - unique[m.id].length;
+}
+for (const d of C.domains) {
+  const none = C.models.filter((m) => m.domain === d.id && !unique[m.id].length).map((m) => m.id);
+  if (none.length) warn(`${d.id}: ${pl(none.length, 'model')} with no "which model?" item: ${none.join(', ')}`, d.id);
 }
 
 /* ---------- questions and cases ---------- */
@@ -180,7 +197,6 @@ for (const c of C.cases) {
 /* ---------- report ---------- */
 const where = (x, d, a) => x.filter((o) => (!d || o.domain === d) && (!a || o.area === a));
 const qArea = (q) => STMT_AREA[q.stmt];
-const pl = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
 console.log(`files: ${files.join(', ')}`);
 console.log(`all: ${C.models.length} models, ${C.questions.length} questions, ${C.cases.length} cases`);
 for (const d of C.domains) {
@@ -197,7 +213,7 @@ for (const d of C.domains) {
 }
 const scoped = C.models.filter((m) => !filter || m.domain === filter || m.area === filter);
 const eligible = scoped.reduce((n, m) => n + unique[m.id].length, 0);
-console.log(`items usable in "which model?" drills: ${eligible} of ${scoped.reduce((n, m) => n + m.items.length, 0)}; models with none: ${scoped.filter((m) => !unique[m.id].length).length}; items left out only because of another domain: ${crossLost}`);
+console.log(`items usable in "which model?" drills: ${eligible} of ${scoped.reduce((n, m) => n + m.items.length, 0)}; models with none: ${scoped.filter((m) => !unique[m.id].length).length}; items left out for too few decoys: ${fewDecoys}`);
 if (warns.length) { console.log(`\nwarnings (${warns.length}):`); for (const w of warns) console.log('  ' + w); }
 if (errors.length) { console.log(`\nERRORS (${errors.length}):`); for (const e of errors) console.log('  ' + e); process.exit(1); }
 console.log('\nOK');

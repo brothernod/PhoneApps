@@ -1,0 +1,59 @@
+q-techkm-lms-first | D | ok
+q-techkm-rfi-rfp | A | ok
+q-techkm-req-need | D | ok
+q-techkm-vetting | D | ok
+q-techkm-scorecard | A | ok
+q-techkm-migrate | A | ok | relies on the book pairing integration and migration in one chapter; fine if the source says so
+q-techkm-govern | B | ok
+q-techkm-lms-order | C | ok
+q-techkm-lxp | C | ok
+q-techkm-lms-assign | A | ok
+q-techkm-blur | D | ok
+q-techkm-xapi-stmt | B | ok
+q-techkm-lrs | D | ok
+q-techkm-cmi5 | D | ok
+q-techkm-scorm | C | ok
+q-techkm-mle-base | D | ok
+q-techkm-mle-first | D | ok
+q-techkm-mle-push | B | ok
+q-techkm-mle-reinf | B | ok
+q-techkm-samr-aug | B | ok
+q-techkm-samr-sub | A | ok
+q-techkm-samr-redef | D | ok
+q-techkm-tacit | A | ok
+q-techkm-explicit | B | ok
+q-techkm-seci-ext | C | ok
+q-techkm-seci-soc | C | ok
+q-techkm-seci-comb | C | ok
+q-techkm-seci-int | B | ok
+q-techkm-seci-spiral | A | ok
+q-techkm-ba-pair | B | ok
+q-techkm-ba-virtual | B | ok
+q-techkm-codify | A | ok
+q-techkm-personal | D | ok
+q-techkm-8020 | A | ok
+q-techkm-hr | A | ok
+q-techkm-atwood-first | B | ok
+q-techkm-atwood-last | A | ok
+q-techkm-atwood-role | B | ok
+q-techkm-cop-def | B | ok
+q-techkm-cop-practice | B | ok
+q-techkm-cop-domain | C | ok
+q-techkm-aar-first | C | ok
+q-techkm-aar-principle | B | ok
+q-techkm-cur-eval | B | ok | license check is arguably selection, but accuracy/currency checks make it evaluating
+q-techkm-cur-assemble | B | ok
+q-techkm-cur-value | A | ok
+q-techkm-bh-chron | D | ok
+q-techkm-bh-distill | C | ok
+q-techkm-bh-elev | A | ok
+q-techkm-sss-sense | C | ok
+q-techkm-sss-seek | C | ok
+q-techkm-sss-pkm | D | two: A,D | Jarche now says "Personal Knowledge Mastery", but his earlier writing (about 2010-2013) used "personal knowledge management", which is also the common expansion; also only D is capitalized, which gives the answer away
+q-techkm-craap-auth | B | ok
+q-techkm-craap-purp | A | ok
+q-techkm-craap-curr | B | ok
+case-techkm-retiring.step-1 | 1,2,3 | ok | 1 is Atwood's first step; 2 is externalization; 3 is socialization
+case-techkm-retiring.step-2 | 1,2,5 | ok
+case-techkm-retiring.step-3 | 2,3,4 | ok
+case-techkm-retiring.step-4 | 1,2,4,5 | ok | 4 is not a CRAAP criterion but fits the 2.5.7 evaluating step

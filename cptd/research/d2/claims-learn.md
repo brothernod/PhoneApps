@@ -320,7 +320,7 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 310. [gagne-events.exam] How Gagné’s Nine Events of Instruction (outline: “Nine Levels of Learning”) shows up on the exam: The exam outline calls this “Gagné’s Nine Levels of Learning”; the usual name is the Nine Events of Instruction. They are the same model, and its “levels” are steps in a lesson, not Bloom-style levels. Expect sequence questions (“after gaining attention, what comes next?”) and scenarios asking which event a trainer is using. Each event pairs with an internal process, such as informing learners of the objective with expectancy.
 311. [gagne-events.note] Worth knowing about Gagné’s Nine Events of Instruction (outline: “Nine Levels of Learning”): Retrieval pairs with two events (stimulate recall and assess performance). Event names vary a little by edition, for example “Presenting the stimulus” for event 4. Mager’s CRI draws on these events.
 312. [knowles.name] The model with id knowles is called “Knowles’ Adult Learning Theory (andragogy): six core principles” (short name “Knowles’ andragogy”).
-313. [knowles.who] Knowles’ Adult Learning Theory (andragogy): six core principles comes from Malcolm Knowles; Knowles, Holton & Swanson, The Adult Learner.
+313. [knowles.who] Knowles’ Adult Learning Theory (andragogy): six core principles comes from Malcolm Knowles; Knowles, Holton & Swanson, The Adult Learner (1998). The 10th edition on ATD’s list (2025) is by Knowles, Holton, Robinson & Caraccioli..
 314. [knowles.tag] Knowles’ Adult Learning Theory (andragogy): six core principles is labeled “On ATD’s reading list”.
 315. [knowles.src] The source for Knowles’ Adult Learning Theory (andragogy): six core principles is: Swanson & Holton, Foundations of Human Resource Development (2001), Fig. 2.3 “Andragogy in Practice” (credited to Knowles, Holton & Swanson, 1998); ATD Certification Resources List 2025
 316. [knowles.stmt.1] Knowles’ Adult Learning Theory (andragogy): six core principles belongs under exam statement 2.1.3 (Theories and models of adult learning, such as Knowles’ Adult Learning Theory, Bloom’s Taxonomy, Gagne’s Nine Levels of Learning, Mager’s Criterion-Referenced Instruction Approach, social and collaborative learning, and experiential learning).
@@ -385,7 +385,7 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 375. [kolb-cycle.decoys.2] “Guided Instruction” is NOT one of the stages of Kolb’s Experiential Learning Cycle.
 376. [kolb-cycle.decoys.3] “Summative Testing” is NOT one of the stages of Kolb’s Experiential Learning Cycle.
 377. [kolb-cycle.hook] Memory hook for Kolb’s Experiential Learning Cycle: Do it, review it, conclude from it, try it out: CE → RO → AC → AE.
-378. [kolb-cycle.exam] How Kolb’s Experiential Learning Cycle shows up on the exam: Kolb defines learning as “the process whereby knowledge is created through the transformation of experience.” Learners can enter the cycle at any point, and an ideal learner “touches all the bases.” A session that runs an activity, debriefs it, draws a rule from it and then tries the rule out is walking the cycle.
+378. [kolb-cycle.exam] How Kolb’s Experiential Learning Cycle shows up on the exam: Kolb defines learning as “the process whereby knowledge is created through the transformation of experience.” An ideal learner “touches all the bases”: experiencing, reflecting, thinking and acting. A session that runs an activity, debriefs it, draws a rule from it and then tries the rule out is walking the cycle.
 379. [kolb-cycle.note] Worth knowing about Kolb’s Experiential Learning Cycle: CE and AC are the two ways of grasping experience; RO and AE are the two ways of transforming it. Honey & Mumford’s styles (Activist, Reflector, Theorist, Pragmatist) map onto the same cycle.
 380. [kolb-styles.name] The model with id kolb-styles is called “Kolb’s four learning styles” (short name “Kolb’s styles”).
 381. [kolb-styles.who] Kolb’s four learning styles comes from David A. Kolb, Learning Style Inventory; Kolb & Kolb (2005).
@@ -1043,19 +1043,19 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 1033. [q-learn-fac-impact.key] The one defensible answer to q-learn-fac-impact is D: “Start with impact”.
 1034. [q-learn-fac-impact.why] Explanation for q-learn-fac-impact: “Start with impact” means getting learners excited, empowered and involved from the beginning. “Keep learners interested” is about sustaining that later with questions, role plays, practice and peer sharing.
 1035. [q-learn-fac-prep.stem] Question q-learn-fac-prep (statement 2.3.3, model prep-areas) asks: Preparing for a virtual session, a facilitator lists everything she might worry about. Which item does ATD advise her not to focus on, because she can’t control it?
-1036. [q-learn-fac-prep.A] Option A of q-learn-fac-prep: Whether the virtual platform works
+1036. [q-learn-fac-prep.A] Option A of q-learn-fac-prep: Testing the virtual platform beforehand
 1037. [q-learn-fac-prep.B] Option B of q-learn-fac-prep: Whether learners complete the pre-work
-1038. [q-learn-fac-prep.C] Option C of q-learn-fac-prep: Her own knowledge gaps on the topic
-1039. [q-learn-fac-prep.D] Option D of q-learn-fac-prep: The visuals and learning guides
+1038. [q-learn-fac-prep.C] Option C of q-learn-fac-prep: Closing her own knowledge gaps on the topic
+1039. [q-learn-fac-prep.D] Option D of q-learn-fac-prep: Preparing the visuals and learning guides
 1040. [q-learn-fac-prep.key] The one defensible answer to q-learn-fac-prep is B: “Whether learners complete the pre-work”.
-1041. [q-learn-fac-prep.why] Explanation for q-learn-fac-prep: ATD’s Facilitator Team advises focusing preparation on what you can control, and gives learners’ pre-work completion as an example of what you can’t. Technology, materials and yourself are all preparation areas.
-1042. [q-learn-fac-tools.stem] Question q-learn-fac-tools (statement 2.3.3, model facil-tools) asks: A TD lead wants a facilitation tool that brings in fresh ideas by mixing people with different experiences. Which tool does ATD point to?
-1043. [q-learn-fac-tools.A] Option A of q-learn-fac-tools: Team-building exercises
+1041. [q-learn-fac-prep.why] Explanation for q-learn-fac-prep: ATD’s Facilitator Team advises focusing preparation on what you can control, and gives learners’ pre-work completion as an example of what you can’t. Testing the platform (technology), preparing materials and closing your own knowledge gaps (yourself) are all preparation areas she controls.
+1042. [q-learn-fac-tools.stem] Question q-learn-fac-tools (statement 2.3.3, model facil-tools) asks: A TD lead wants to address a team’s skills gap by bringing together people with different experiences so they trade new ideas. Which of ATD’s common facilitation tools fits this need?
+1043. [q-learn-fac-tools.A] Option A of q-learn-fac-tools: Performance appraisals
 1044. [q-learn-fac-tools.B] Option B of q-learn-fac-tools: Development programs
 1045. [q-learn-fac-tools.C] Option C of q-learn-fac-tools: Online learning
 1046. [q-learn-fac-tools.D] Option D of q-learn-fac-tools: Group discussions
 1047. [q-learn-fac-tools.key] The one defensible answer to q-learn-fac-tools is D: “Group discussions”.
-1048. [q-learn-fac-tools.why] Explanation for q-learn-fac-tools: ATD notes that group discussions mixing people with different experiences bring in new ideas. Team-building exercises build culture and a comfortable learning space, and suit small groups.
+1048. [q-learn-fac-tools.why] Explanation for q-learn-fac-tools: ATD says group discussions are useful for addressing skills gaps, and mixing people with different experiences brings in new ideas. Development programs spread learning over a set period to help recall; performance appraisals aren’t a facilitation tool at all.
 1049. [q-learn-fac-plan.stem] Question q-learn-fac-plan (statement 2.3.3, model facil-plan) asks: According to 10 Steps to Successful Facilitation, which three parts, in order, make up a facilitation plan?
 1050. [q-learn-fac-plan.A] Option A of q-learn-fac-plan: Analysis, design, delivery
 1051. [q-learn-fac-plan.B] Option B of q-learn-fac-plan: Opening, tasks to be completed, closing
@@ -1070,13 +1070,13 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 1060. [q-learn-fac-kolb-ae.D] Option D of q-learn-fac-kolb-ae: A quiz on the key definitions
 1061. [q-learn-fac-kolb-ae.key] The one defensible answer to q-learn-fac-kolb-ae is A: “A role play applying the new approach”.
 1062. [q-learn-fac-kolb-ae.why] Explanation for q-learn-fac-kolb-ae: Active Experimentation means testing ideas through hands-on tasks such as role plays or internships. A lecture on theory at most supports conceptualization, not experimentation.
-1063. [q-learn-fac-apprentice.stem] Question q-learn-fac-apprentice (statement 2.3.3, model constructivism) asks: A facilitator pairs new analysts with experts who model the work and coach them on real cases. Which learning theory is this method tied to?
+1063. [q-learn-fac-apprentice.stem] Question q-learn-fac-apprentice (statement 2.3.3, model constructivism) asks: A facilitator pairs new analysts with experts who model the work and coach them on real cases, a method Ertmer & Newby call cognitive apprenticeship. Under which learning perspective do Ertmer & Newby list it?
 1064. [q-learn-fac-apprentice.A] Option A of q-learn-fac-apprentice: Constructivism
 1065. [q-learn-fac-apprentice.B] Option B of q-learn-fac-apprentice: Behaviorism
 1066. [q-learn-fac-apprentice.C] Option C of q-learn-fac-apprentice: Cognitivism
 1067. [q-learn-fac-apprentice.D] Option D of q-learn-fac-apprentice: Andragogy
 1068. [q-learn-fac-apprentice.key] The one defensible answer to q-learn-fac-apprentice is A: “Constructivism”.
-1069. [q-learn-fac-apprentice.why] Explanation for q-learn-fac-apprentice: Cognitive apprenticeship (modeling and coaching) in real contexts is a constructivist method in Ertmer & Newby’s account. Despite the name, it isn’t from cognitivism, whose methods are things like advance organizers and mnemonics.
+1069. [q-learn-fac-apprentice.why] Explanation for q-learn-fac-apprentice: Cognitive apprenticeship (modeling and coaching toward expert performance in real contexts) is one of Ertmer & Newby’s constructivist strategies. Despite the name, it isn’t on their cognitivist list, whose methods are things like advance organizers and mnemonics.
 1070. [case-learn-adjusters.setup] Case case-learn-adjusters (“A workshop for experienced adjusters”, statements 2.1.3, 2.3.3) setup: You are a TD manager at an insurer. Forty experienced claims adjusters must learn a new fraud-review procedure, and you will design and facilitate a one-day workshop.
 1071. [case-learn-adjusters.step-1.text] Step 1 of case-learn-adjusters asks: Several adjusters say they’ve “seen it all” and resent another mandatory course. Which design choices fit Knowles’ adult learning principles?
 1072. [case-learn-adjusters.step-1.opt-1] In step 1 of case-learn-adjusters, “Open by explaining why the procedure matters and what it changes for them” is a RIGHT pick.

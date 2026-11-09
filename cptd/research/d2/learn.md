@@ -238,7 +238,7 @@ Sources added:
 - Unverified: all definitions and "motor skills" as the fifth item; only the deck shows four of the names.
 
 ### Knowles' Adult Learning Theory (andragogy): core assumptions/principles
-- Origin: Malcolm Knowles; andragogy popularized in the 1970s (The Modern Practice of Adult Education, 1970/1980); current form in Knowles, Holton & Swanson, The Adult Learner (10th ed., Routledge 2025, on the ATD list [S1]).
+- Origin: Malcolm Knowles; andragogy popularized in the 1970s (The Modern Practice of Adult Education, 1970/1980); current form in The Adult Learner: Knowles, Holton & Swanson (1998 ed., to which [S10]'s figure is credited); the 10th ed. (Routledge 2025, on the ATD list [S1]) is by Knowles, Holton, Robinson & Caraccioli.
 - Tie to the exam: named in 2.1.3 ("Knowles' Adult Learning Theory"); The Adult Learner is on ATD's 2.1 reading list [S1].
 - Suggested tag: reflist
 - Kind: set (numbered 1–6 in the order below in [S10], but not a sequence)
@@ -272,7 +272,7 @@ Sources added:
 - Origin: David A. Kolb, Experiential Learning: Experience as the Source of Learning and Development, 1984 (builds on Dewey, Lewin, Piaget). [S6] names Kolb; book details are general knowledge.
 - Tie to the exam: 2.1.3 names "experiential learning"; Kolb is the standard model for it. Not on the ATD list by name.
 - Suggested tag: named (the statement names experiential learning; Kolb is the model for it)
-- Kind: ordered cycle, CE → RO → AC → AE (confirmed in the gap fill by [S11]: concrete experiences "are the basis for observations and reflections," which are distilled into abstract concepts and then actively tested). Learners can enter at any point.
+- Kind: ordered cycle, CE → RO → AC → AE (confirmed in the gap fill by [S11]: concrete experiences "are the basis for observations and reflections," which are distilled into abstract concepts and then actively tested). Unverified: the common claim that learners can enter at any point; Kolb & Kolb 2005 [S11] don't say it, so don't use it.
 - Kolb's definition of learning (gap fill): "the process whereby knowledge is created through the transformation of experience." [S11]
 - Items:
   1. Concrete Experience (CE): having a direct experience. [S6] [S11]

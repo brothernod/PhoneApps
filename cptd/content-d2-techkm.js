@@ -36,7 +36,7 @@ window.CPTD_PARTS.push({
       ],
       orderNote: 'first to last (the book’s chapter order, Chapters 6–10)',
       decoys: ['Retiring the LMS', 'Building custom courses'],
-      hook: 'Select, set up, connect, launch, run: the Part 2 chapters follow the verbs in statement 2.4.1.',
+      hook: 'Select, set up, connect, launch, run: the Part 2 chapters run in the order you’d do the work.',
       exam: 'Migrating legacy learning data belongs with integration (Chapter 8), before testing and go-live. Running a live LMS is “Operating Your LMS With Standards and Governance” (Chapter 10).',
       note: 'This is the book’s chapter order, not a named model. Part 1 covers what an LMS does (corporate, academic, and LCMS-LMS features, and technology standards); Chapter 12 covers the LMS’s role in the learning and performance ecosystem.',
       src: 'Foreman, The LMS Guidebook (ATD Press, 2017), table of contents; on ATD’s 2025 reading list',
@@ -56,7 +56,7 @@ window.CPTD_PARTS.push({
     },
     {
       id: 'elearn-standards', area: 'techkm', stmts: ['2.4.1'], tag: 'extra',
-      name: 'E-learning interoperability standards', short: 'SCORM, xAPI, cmi5', who: 'ADL Initiative and Rustici Software (Miller, Rutherford, Pack & Johnson, 2021)', kind: 'set', unit: 'standards',
+      name: 'E-learning interoperability standards', short: 'SCORM, xAPI, cmi5', who: 'ADL Initiative, the standards’ owner, as described by Miller, Rutherford & Pack (Rustici Software) and Johnson (ADL), 2021', kind: 'set', unit: 'standards',
       items: [
         { t: 'SCORM', d: 'Rules telling developers how to apply the standards so courseware is interoperable, helping an LMS handle and play content from many sources. ADL supports versions 1.2, 2004 3rd Edition, and 2004 4th Edition.' },
         { t: 'xAPI (Experience API)', d: 'A specification for capturing and sharing data on learning experiences and performance, as statements with an actor, verb, and object, sent to a learning record store (LRS).' },
@@ -108,7 +108,7 @@ window.CPTD_PARTS.push({
     /* ----- 2.5.3 knowledge management strategy ----- */
     {
       id: 'tacit-explicit', area: 'techkm', stmts: ['2.5.3'], tag: 'extra',
-      name: 'Tacit vs explicit knowledge', short: 'Tacit vs explicit', who: 'Ikujiro Nonaka & Hirotaka Takeuchi (1995); Nonaka, Toyama & Konno (2000)', kind: 'set', unit: 'knowledge types',
+      name: 'Tacit vs explicit knowledge', short: 'Tacit vs explicit', who: 'Michael Polanyi (tacit knowledge: Personal Knowledge, 1958; The Tacit Dimension, 1966); applied to organizational knowledge by Ikujiro Nonaka & Hirotaka Takeuchi (1995) and Nonaka, Toyama & Konno (2000)', kind: 'set', unit: 'knowledge types',
       items: [
         { t: 'Explicit knowledge', d: 'Can be put into words, numbers, and formal systems and shared as data, formulas, or manuals; easy to process, transmit, and store.' },
         { t: 'Tacit knowledge', d: 'Personal know-how rooted in action, routines, commitment, values, and emotions; highly personal and hard to formalize or pass on.' },
@@ -159,10 +159,10 @@ window.CPTD_PARTS.push({
       ],
       groups: [
         { t: 'Codification', m: ['Reuse economics', 'People-to-documents', 'Heavy reliance on IT', 'Hires new college graduates', 'Group and computer-based distance learning', 'Rewards using and contributing to document databases'] },
-        { t: 'Personalization', m: ['Expert economics', 'Expert directories', 'IT much less important', 'Hires MBAs who like problem solving', 'One-on-one mentoring', 'Rewards people for sharing directly with others'] },
+        { t: 'Personalization', m: ['Expert economics', 'Person-to-person', 'Expert directories', 'IT much less important', 'Hires MBAs who like problem solving', 'One-on-one mentoring', 'Rewards people for sharing directly with others'] },
       ],
       decoys: ['Centralization', 'Standardization'],
-      hook: 'Codify: people-to-documents, invest once and reuse many times. Personalize: people with people, charge for expert solutions.',
+      hook: 'Codify: people-to-documents, invest once and reuse many times. Personalize: person-to-person, charge for expert solutions.',
       exam: 'Don’t split effort evenly. Effective firms put about 80% into one strategy and use the other in a supporting role (an 80-20 split). Codification fits reuse economics; personalization fits expert economics.',
       note: 'The article’s examples: Andersen Consulting and Ernst & Young codify; McKinsey and Bain personalize. Codification goes naturally with explicit knowledge and personalization with tacit, but they are strategies, not knowledge types.',
       src: 'Hansen, Nohria & Tierney, “What’s Your Strategy for Managing Knowledge?” Harvard Business Review (March–April 1999)',
@@ -181,7 +181,7 @@ window.CPTD_PARTS.push({
       decoys: ['Calculate return on investment', 'Certify expert contributors'],
       hook: 'Needs, sources, systems, spread, upkeep. Like most TD processes, it starts with needs.',
       exam: 'The book frames KM as something the learning professional leads or supports. Don’t mix up its “compiling, confirming, and circulating” chapter with the 2.5.7 curation steps.',
-      note: 'This is the publisher’s description of the book’s process, not a named model. Chapters 3–7 are Determining Your Organization’s KM Goals and Needs; Locating Information Sources in Your Organization; Creating Your KM Blueprint; Compiling, Confirming, and Circulating the Knowledge; and Maintaining the KM System.',
+      note: 'This is the publisher’s description of the book’s process, not a named model. Chapters 3–7 are Determining Your Organization’s KM Goals and Needs; Locating Information Sources in Your Organization; Creating Your KM Blueprint; Compiling, Confirming, and Circulating the Knowledge; and Maintaining the KM System. ATD’s own product page calls it a five-step process and words it: determine your organization’s needs; locate knowledge sources; choose systems to gather and house information; compile, confirm, and circulate knowledge; maintain the knowledge system. Before these it lists defining your role and preparing to lead the effort.',
       src: 'Atwood, Knowledge Management Basics (ASTD Press, 2009), publisher description and contents; on ATD’s 2025 reading list',
     },
     {
@@ -230,7 +230,7 @@ window.CPTD_PARTS.push({
       hook: 'Research, evaluate, select, assemble: find it, judge it, choose it, arrange it.',
       exam: 'Curation filters abundant content of uneven quality for a specific audience. Check licensing before reusing public content; copyright and Creative Commons are Domain 1 topics.',
       note: 'What each verb covers is this app’s paraphrase, not ATD’s. ATD’s reading-list book Ready, Set, Curate (Betts & Anderson) frames the curator’s job as picking out the most important content and connecting it to the learning audience.',
-      src: 'CPTD content outline, statement 2.5.7; Betts & Anderson, Ready, Set, Curate (ATD Press; on ATD’s 2025 reading list)',
+      src: 'CPTD content outline, statement 2.5.7 (the four verbs); the curator’s role from the publisher’s description of Betts & Anderson, Ready, Set, Curate (ATD Press; on ATD’s 2025 reading list)',
     },
     {
       id: 'bhargava', area: 'techkm', stmts: ['2.5.7'], tag: 'extra',
@@ -259,7 +259,7 @@ window.CPTD_PARTS.push({
       orderNote: 'first to last (a continuous process that then repeats)',
       decoys: ['Synthesize', 'Store', 'Filter'],
       hook: 'Find it, make it yours, pass it on.',
-      exam: 'The middle step is Sense, not “make sense” or “synthesize.” In Jarche’s usage PKM is Personal Knowledge Mastery, not personal knowledge management.',
+      exam: 'The middle step is Sense, not “make sense” or “synthesize.” Jarche now calls PKM Personal Knowledge Mastery; he has also written “personal knowledge management/mastery,” and management is the usual meaning elsewhere.',
       note: 'Jarche describes ideas coming from social networks, being filtered through communities of practice, made sense of by doing, and then shared with the work team and wider networks.',
       src: 'Jarche, “The Seek > Sense > Share Framework” (jarche.com, 2014)',
     },
@@ -471,8 +471,8 @@ window.CPTD_PARTS.push({
       o: ['Building a network to pull from and trusted sources that push to you', 'Writing summaries of what you have learned for your whole team', 'Trying out new ideas in your own work and reflecting on them', 'Deciding what to pass on, when, and to whom'],
       a: 0, why: 'Seeking is finding things out and keeping up to date: building a network you can pull information from and having trusted sources push it to you. Deciding what to pass on, when, and to whom is part of sharing.' },
     { id: 'q-techkm-sss-pkm', stmt: '2.5.3', model: 'seek-sense-share', q: 'In Harold Jarche’s usage, what does PKM stand for?',
-      o: ['Personal knowledge management', 'Professional knowledge mapping', 'Peer knowledge mentoring', 'Personal Knowledge Mastery'],
-      a: 3, why: 'Jarche’s term is Personal Knowledge Mastery. Elsewhere PKM usually means personal knowledge management, which makes it the likeliest wrong pick.' },
+      o: ['Personal knowledge modeling', 'Professional knowledge mapping', 'Peer knowledge mentoring', 'Personal knowledge mastery'],
+      a: 3, why: 'Jarche’s term is Personal Knowledge Mastery. The other options aren’t terms he uses for PKM.' },
 
     /* ----- 2.5.7 CRAAP ----- */
     { id: 'q-techkm-craap-auth', stmt: '2.5.7', model: 'craap', q: 'A curator checks who wrote an online course, who publishes it, and what credentials they hold. Which CRAAP criterion is this?',
@@ -500,7 +500,7 @@ window.CPTD_PARTS.push({
             ['Treat the know-how as explicit knowledge, since experienced staff already have it', false],
           ],
           why: 'Atwood’s process starts with organizational needs, not a tool purchase. Tacit know-how is personal and hard to formalize, so it moves through shared experience (socialization) or by working with the expert to put it into words or models (externalization). Knowledge that lives in people and resists words is tacit, not explicit.' },
-        { text: 'Most field work is repetitive: the same repairs recur across hundreds of sites. You must choose the primary KM strategy. Which choices fit Hansen, Nohria, and Tierney?',
+        { text: 'Most field work is repetitive: the same repairs recur across hundreds of sites, and the standard fixes can be written down step by step. You must choose the primary KM strategy. Which choices fit Hansen, Nohria, and Tierney?',
           options: [
             ['Make codification primary, so documented fixes can be reused many times', true],
             ['Keep personalization in a supporting role, such as an expert directory for unusual cases', true],
@@ -509,7 +509,7 @@ window.CPTD_PARTS.push({
             ['Make personalization primary, because recurring repairs call for expert economics', false],
             ['Drop all expert contact once the database is live', false],
           ],
-          why: 'Recurring problems suit reuse economics (invest once, reuse many times), which is codification, and codification firms reward people for using and contributing to document databases. Effective firms put about 80% into one strategy and use the other in support, so neither an even split nor dropping personalization fits.' },
+          why: 'Recurring problems suit reuse economics (invest once, reuse many times), which is codification, and codification firms reward people for using and contributing to document databases. Effective firms put about 80% into one strategy and use the other in support, so neither an even split nor dropping personalization fits. Hansen et al. also ask whether people rely on explicit or tacit knowledge. Here the recurring fixes are explicit, so people-to-documents fits, and the rarer tacit cases go to the supporting expert directory.' },
         { text: 'Technicians at different sites want to learn from each other about one troublesome equipment line. You decide to support a community of practice. Which steps fit Wenger-Trayner’s three elements?',
           options: [
             ['Center it on a shared domain: troubleshooting that equipment line', true],

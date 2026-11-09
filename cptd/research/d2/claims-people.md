@@ -74,11 +74,11 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 64. [haneberg.decoys.3] “Create Options” is NOT one of the parts of Haneberg’s coaching model.
 65. [haneberg.hook] Memory hook for Haneberg’s coaching model: Haneberg calls the person being coached the “performer.”
 66. [haneberg.exam] How Haneberg’s coaching model shows up on the exam: Know the vocabulary that marks this book: performer, coachability, microcoaching, coaching by walking around, and breakthrough catalysts and inhibitors.
-67. [haneberg.note] Worth knowing about Haneberg’s coaching model: The ten parts are chapter 2’s sub-headings in the book’s table of contents; the model draws on a survey of about 40 experienced coaches. Opportunity and Offer and Request for Coaching look like two alternative starting points, so this app doesn’t drill the order.
+67. [haneberg.note] Worth knowing about Haneberg’s coaching model: The ten parts are chapter 2’s sub-headings in the book’s table of contents, running roughly from the start to the end of an engagement; the model draws on a survey of about 40 experienced coaches. Opportunity and Offer and Request for Coaching look like two alternative starting points, so this app doesn’t drill the order. The descriptions are inferred from the headings; the book’s own definitions weren’t available.
 68. [sbi.name] The model with id sbi is called “SBI feedback (Situation-Behavior-Impact)” (short name “SBI”).
-69. [sbi.who] SBI feedback (Situation-Behavior-Impact) comes from Situation-Behavior-Impact, as used in University of Minnesota HR’s Everyday Coaching guidance for supervisors.
+69. [sbi.who] SBI feedback (Situation-Behavior-Impact) comes from Center for Creative Leadership (CCL); as used in University of Minnesota HR’s Everyday Coaching guidance for supervisors.
 70. [sbi.tag] SBI feedback (Situation-Behavior-Impact) is labeled “Good to know”.
-71. [sbi.src] The source for SBI feedback (Situation-Behavior-Impact) is: University of Minnesota Office of Human Resources, “Everyday Coaching” (supervisor guidance)
+71. [sbi.src] The source for SBI feedback (Situation-Behavior-Impact) is: Center for Creative Leadership, “Improve Talent Development With Our SBI Feedback Model” (2025); University of Minnesota Office of Human Resources, “Everyday Coaching” (supervisor guidance)
 72. [sbi.stmt.1] SBI feedback (Situation-Behavior-Impact) belongs under exam statement 2.7.3 (Coaching supervisors and managers on methods and approaches for supporting employee development).
 73. [sbi.kind] SBI feedback (Situation-Behavior-Impact) has 3 parts in a fixed order, first to last.
 74. [sbi.items.1.name] “Situation” is one of the parts of SBI feedback (Situation-Behavior-Impact).
@@ -94,7 +94,7 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 84. [sbi.decoys.2] “Goal” is NOT one of the parts of SBI feedback (Situation-Behavior-Impact).
 85. [sbi.hook] Memory hook for SBI feedback (Situation-Behavior-Impact): Where and when, what they did, what it caused. Then ask what they’ll do differently or keep doing.
 86. [sbi.exam] How SBI feedback (Situation-Behavior-Impact) shows up on the exam: Behavior means an observable action, not a judgment about the person. After the impact, ask what the employee will do differently or keep doing.
-87. [sbi.note] Worth knowing about SBI feedback (Situation-Behavior-Impact): SBI is widely credited to the Center for Creative Leadership; that attribution wasn’t confirmed in this app’s sources.
+87. [sbi.note] Worth knowing about SBI feedback (Situation-Behavior-Impact): CCL calls it “our SBI™ feedback model.” CCL suggests following it with an inquiry about intent; UMN’s guidance asks what the employee will do differently or keep doing.
 88. [grow.name] The model with id grow is called “GROW model” (short name “GROW”).
 89. [grow.who] GROW model comes from Sir John Whitmore and peers (Fine’s firm names Fine, Alexander, and Whitmore as co-creators); popularized in Whitmore’s Coaching for Performance.
 90. [grow.tag] GROW model is labeled “Good to know”.
@@ -326,12 +326,12 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 316. [zf-strengths.items.2.desc] In Strengths-based leadership development findings, “Number of strengths” means: One strength put leaders near the 60th percentile, three near the 80th, and five in the 90th.
 317. [zf-strengths.items.3.name] “Fatal flaws” is one of the findings of Strengths-based leadership development findings.
 318. [zf-strengths.items.3.desc] In Strengths-based leadership development findings, “Fatal flaws” means: Serious weaknesses, such as character flaws, lack of accountability, or rejecting new ideas, must be fixed.
-319. [zf-strengths.items.4.name] “Cross-training” is one of the findings of Strengths-based leadership development findings.
-320. [zf-strengths.items.4.desc] In Strengths-based leadership development findings, “Cross-training” means: Strengths in different clusters multiply: strong interpersonal skills plus focus on results raised the chance of being seen as a great leader to 66%.
+319. [zf-strengths.items.4.name] “Strength combinations” is one of the findings of Strengths-based leadership development findings.
+320. [zf-strengths.items.4.desc] In Strengths-based leadership development findings, “Strength combinations” means: Strengths in different clusters multiply: strong interpersonal skills plus focus on results raised the chance of being seen as a great leader to 66%.
 321. [zf-strengths.items.5.name] “Competency companions” is one of the findings of Strengths-based leadership development findings.
-322. [zf-strengths.items.5.desc] In Strengths-based leadership development findings, “Competency companions” means: Behaviors that rise and fall with a competency; working on the companion helps move a hard competency.
+322. [zf-strengths.items.5.desc] In Strengths-based leadership development findings, “Competency companions” means: Behaviors that rise and fall with a competency; working on the companion helps move a hard competency (Zenger and Folkman’s “cross-training effect”).
 323. [zf-strengths.items.6.name] “Weakness-only focus” is one of the findings of Strengths-based leadership development findings.
-324. [zf-strengths.items.6.desc] In Strengths-based leadership development findings, “Weakness-only focus” means: Working only on weaknesses produced only a third of the progress of working on strengths.
+324. [zf-strengths.items.6.desc] In Strengths-based leadership development findings, “Weakness-only focus” means: Working only on weaknesses produced only a third of the progress of working on strengths, or on strengths and weaknesses together.
 325. [zf-strengths.items.7.name] “Organizational ceiling” is one of the findings of Strengths-based leadership development findings.
 326. [zf-strengths.items.7.desc] In Strengths-based leadership development findings, “Organizational ceiling” means: Leaders’ scores rarely exceeded those of the most senior leader.
 327. [zf-strengths.items.8.name] “Leaders are made” is one of the findings of Strengths-based leadership development findings.
@@ -472,13 +472,13 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 462. [action-learning.hook] Memory hook for Six components of action learning: Real people, real problems, real time: a problem, a group, questions and reflection, action, a commitment to learning, and a coach.
 463. [action-learning.exam] How Six components of action learning shows up on the exam: The action learning coach focuses on the group’s learning, not on solving the problem. Groups that only make recommendations lose energy and commitment, so members need the power to act or the assurance that their recommendations will be carried out.
 464. [action-learning.note] Worth knowing about Six components of action learning: Reg Revans first introduced action learning in the coal mines of Wales and England in the 1940s; many variations have developed since. Marquardt cites programs at Boeing, Novartis, Deutsche Bank, and Fairfax County Public Schools.
-465. [q-people-7cs-next.stem] Question q-people-7cs-next (statement 2.7.3, model everyday-7cs) asks: A manager using the Seven Cs from Everyday Coaching has just helped an employee generate several ways to handle a difficult client. Which C comes next?
+465. [q-people-7cs-next.stem] Question q-people-7cs-next (statement 2.7.3, model everyday-7cs) asks: In Everyday Coaching, chapter 5 covers Create Options together with which other C?
 466. [q-people-7cs-next.A] Option A of q-people-7cs-next: Commit to Action
 467. [q-people-7cs-next.B] Option B of q-people-7cs-next: Construct a Plan
 468. [q-people-7cs-next.C] Option C of q-people-7cs-next: Clarify Purpose
 469. [q-people-7cs-next.D] Option D of q-people-7cs-next: Celebrate Success
 470. [q-people-7cs-next.key] The one defensible answer to q-people-7cs-next is B: “Construct a Plan”.
-471. [q-people-7cs-next.why] Explanation for q-people-7cs-next: In the book’s order, Create Options is followed by Construct a Plan (both in chapter 5). Commit to Action comes after the plan exists, so it’s one step too far.
+471. [q-people-7cs-next.why] Explanation for q-people-7cs-next: Chapter 5 is titled “Create Options and Construct a Plan.” Commit to Action is in chapter 6, paired with Celebrate Success; Clarify Purpose is in chapter 3, with Capture Context.
 472. [q-people-7cs-not.stem] Question q-people-7cs-not (statement 2.7.3, model everyday-7cs) asks: Which of these is NOT one of the Seven Cs in Bianco-Mathis and Nabors’s Everyday Coaching?
 473. [q-people-7cs-not.A] Option A of q-people-7cs-not: Collect and Feed Back Data
 474. [q-people-7cs-not.B] Option B of q-people-7cs-not: Celebrate Success
@@ -598,7 +598,7 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 588. [q-people-idp-super.D] Option D of q-people-idp-super: To set the department’s training budget
 589. [q-people-idp-super.key] The one defensible answer to q-people-idp-super is A: “To guide IDP discussions and review employees’ plans”.
 590. [q-people-idp-super.why] Explanation for q-people-idp-super: Supervisors use the checklist to guide IDP discussions and review plans; employees use it to check their own. Writing the plan for the employee isn’t its purpose, since employees create their IDPs.
-591. [q-people-icf-evokes.stem] Question q-people-icf-evokes (statement 2.7.2, model icf-2025) asks: A coach uses a well-timed silence and a metaphor to help a client see her situation in a new way. Which ICF core competency is this?
+591. [q-people-icf-evokes.stem] Question q-people-icf-evokes (statement 2.7.2, model icf-2025) asks: A coach uses a powerful question and a metaphor to help a client see her situation in a new way. Which ICF core competency is this?
 592. [q-people-icf-evokes.A] Option A of q-people-icf-evokes: Facilitates Client Growth
 593. [q-people-icf-evokes.B] Option B of q-people-icf-evokes: Evokes Awareness
 594. [q-people-icf-evokes.C] Option C of q-people-icf-evokes: Maintains Presence
@@ -611,7 +611,7 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 601. [q-people-icf-growth.C] Option C of q-people-icf-growth: Facilitates Client Growth
 602. [q-people-icf-growth.D] Option D of q-people-icf-growth: Listens Actively
 603. [q-people-icf-growth.key] The one defensible answer to q-people-icf-growth is C: “Facilitates Client Growth”.
-604. [q-people-icf-growth.why] Explanation for q-people-icf-growth: Facilitates Client Growth partners with the client to transform learning and insight into action, promoting autonomy. Evokes Awareness produces the insight; it doesn’t turn it into action.
+604. [q-people-icf-growth.why] Explanation for q-people-icf-growth: Facilitates Client Growth partners with the client to transform learning and insight into action, promoting autonomy. Evokes Awareness is about producing the insight in the first place.
 605. [q-people-icf-agree.stem] Question q-people-icf-agree (statement 2.7.2, model icf-2025) asks: At the start of the engagement and again in each session, a coach and client agree on the process, plans, and goals. Which ICF core competency is this?
 606. [q-people-icf-agree.A] Option A of q-people-icf-agree: Cultivates Trust and Safety
 607. [q-people-icf-agree.B] Option B of q-people-icf-agree: Demonstrates Ethical Practice
@@ -731,7 +731,7 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 721. [q-people-zfs-companion.D] Option D of q-people-zfs-companion: Breakthrough catalysts
 722. [q-people-zfs-companion.key] The one defensible answer to q-people-zfs-companion is C: “Competency companions”.
 723. [q-people-zfs-companion.why] Explanation for q-people-zfs-companion: Competency companions are behaviors that rise and fall with a competency; working on one helps move a hard competency. Breakthrough catalysts is a term from Haneberg’s Coaching Basics.
-724. [q-people-zfs-cross.stem] Question q-people-zfs-cross (statement 2.6.8, model zf-strengths) asks: A leader already has a clear strength in Interpersonal Skills. Under Zenger and Folkman’s cross-training finding, which next strength would add the most?
+724. [q-people-zfs-cross.stem] Question q-people-zfs-cross (statement 2.6.8, model zf-strengths) asks: A leader already has a clear strength in Interpersonal Skills. Under Zenger and Folkman’s finding on combinations of strengths, which next strength would add the most?
 725. [q-people-zfs-cross.A] Option A of q-people-zfs-cross: A strength in Focus on Results, a different cluster
 726. [q-people-zfs-cross.B] Option B of q-people-zfs-cross: Another strength inside Interpersonal Skills
 727. [q-people-zfs-cross.C] Option C of q-people-zfs-cross: None: one strength is enough to be seen as great

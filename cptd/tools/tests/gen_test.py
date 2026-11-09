@@ -12,6 +12,13 @@ JS = r"""
   const { CARDS, makeQ } = window.__cptd;
   const C = window.__cptd.C;
   const MBY = Object.fromEntries(C.models.map(m => [m.id, m]));
+  // Strict word-stem clash, same as app.js. "Which model?" items are unique within their own
+  // domain; a decoy from any domain must not have an item that clashes with the asked item.
+  const norm = (s) => s.toLowerCase().replace(/\(.*?\)/g, '').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+  const STOP = new Set(['self', 'with', 'from', 'your', 'that', 'this', 'their', 'them', 'what', 'when', 'each', 'into', 'than']);
+  const stems = (s) => { const n = norm(s); const out = new Set([n]); n.split(' ').forEach(w => { if (w.length >= 4 && !STOP.has(w)) out.add(w.slice(0, 6)); }); return out; };
+  const clash = (a, b) => { const sb = stems(b); for (const k of stems(a)) if (sb.has(k)) return true; return false; };
+  const member = (o, t) => o.items.some(i => clash(i.t, t)) || (o.groups || []).some(g => g.m.some(x => clash(x, t)));
   const problems = []; const counts = {};
   for (const card of CARDS) {
     for (let k = 0; k < 20; k++) {
@@ -28,11 +35,14 @@ JS = r"""
           // the item must not appear (by name) in any other offered model
           const item = Q.prompt.replace(/[“”]/g, '');
           if (Q.opts.length < 4) problems.push(`${card.key}: only ${Q.opts.length} options`);
+          const own = MBY[card.model];
+          for (const o of C.models) if (o.id !== own.id && o.domain === own.domain && member(o, item)) problems.push(`${card.key}: "${item}" clashes with ${o.id} in its own domain`);
           for (const o of Q.opts) { if (o.ok) continue; const mm = C.models.find(x => x.name === o.t); const il = item.toLowerCase(); if (mm.name.toLowerCase().includes(il) || (mm.note || '').toLowerCase().includes(il) || mm.items.some(i => i.d.toLowerCase().includes(il))) problems.push(`${card.key}: "${item}" appears in distractor ${mm.id}`); }
           for (const o of Q.opts) {
             if (o.ok) continue;
             const m = C.models.find(x => x.name === o.t);
             if (m.items.some(i => i.t.toLowerCase() === item.toLowerCase())) problems.push(`${card.key}: "${item}" also in ${m.id}`);
+            if (member(m, item)) problems.push(`${card.key}: decoy ${m.id} (${m.domain}) has an item that clashes with "${item}"`);
           }
         }
       } else if (Q.kind === 'multi') {

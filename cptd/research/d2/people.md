@@ -28,6 +28,7 @@ Sources used (numbered, so entries can cite [S1] and so on):
 - [S17] Registered Apprenticeship Program (employer page), U.S. Department of Labor, apprenticeship.gov, n.d., https://apprenticeship.gov/employers/registered-apprenticeship-program. Tier: 3 owner (gap fill)
 - [S18] 2025 ICF Core Competencies, International Coaching Federation, September 2025 (rev. 09.08.25), https://coachingfederation.org/wp-content/uploads/2025/09/icf-cs-core-competencies-2025.pdf. Tier: 3 owner (gap fill)
 - [S19] Alan Fine: Developing the GROW Model, The Inner Game (Alan Fine's firm; no individual author), n.d., https://theinnergame.com/alan-fine-developing-the-grow-model/. Tier: 3 (a co-creator's own firm) (gap fill)
+- [S21] Improve Talent Development With Our SBI Feedback Model, Center for Creative Leadership, February 24, 2025, https://www.ccl.org/?p=48910. Calls it "our SBI™ feedback model" and suggests following it with "an inquiry about intent". Tier: 3 owner (added from the Pass A check, 2026-11-09)
 - [S20] Everyday Coaching (product page), ATD, https://td.org/product/111719. Confirms publication August 2017, 168 pages, ISBN 9781562869939; no Seven Cs content. Also tried: O'Reilly's chapter 1 preview, https://oreilly.com/library/view/everyday-coaching-using/9781562866877/OEBPS/c01.htm, which only says the chapter's examples "illustrate the seven Cs". Tier: 3 publisher page (gap fill)
 
 Wording check: the 2025 handbook prints 2.7.A in full as "Skill in helping individuals or teams identify goals, develop realistic action plans, seek development opportunities, and monitor progress and accountability." (fetched 2026-11-08 in two quoted segments; nothing omitted between them). [S2]
@@ -83,13 +84,13 @@ The two 2.7 reading-list books serve both 2.7 statements. Everyday Coaching is e
 - Unverified: whether all ten headings are steps of the model or some are supporting sections; their exact descriptions. Treat this model as low-confidence for ordering; safest uses are "which book/author uses the term performer, coachability, microcoaching".
 
 ### SBI feedback (Situation-Behavior-Impact), as a manager-coaching tool
-- Origin: Center for Creative Leadership (CCL). The UMN HR page describing "everyday coaching" for supervisors uses SBI but doesn't credit it. [S5]
+- Origin: Center for Creative Leadership (CCL), which calls it "our SBI™ feedback model" [S21]. The UMN HR page describing "everyday coaching" for supervisors uses SBI but doesn't credit it. [S5]
 - Tie to the exam: general knowledge for 2.7.3 (a method managers use to support development). Not seen on the reading list or in a TDBoK excerpt.
 - Suggested tag: extra
 - Kind: ordered (describe situation, then behavior, then impact)
 - Items: 1. Situation: when and where it happened. 2. Behavior: the observable action. 3. Impact: the effect it had. Then ask what the employee will do differently or keep doing. [S5]
 - Confusables: Domain 1 feedback models (the app may already have SBI in Domain 1; check `kin`/duplicates before adding).
-- Unverified: CCL attribution was not fetched this session (general knowledge). Check against Domain 1's source file if SBI already exists there.
+- Unverified: none for the attribution (confirmed on CCL's page in the Pass A check [S21]). CCL suggests following SBI with an inquiry about intent, which turns feedback into a two-way dialogue (paraphrase). [S21]
 
 ### Manager practices for everyday development coaching (UMN HR)
 - Origin: University of Minnesota Office of Human Resources, "Everyday Coaching" (supervisor guidance). Uses David Peterson's definition of coaching: "equipping people with the tools, knowledge, and opportunities" to develop. [S5]
@@ -298,9 +299,9 @@ No ATD reading-list title covers this, and the TDBoK chapter wasn't available. T
   1. Strengths, not absence of weakness: great leaders are defined by "the presence of clear strengths". [S9]
   2. Number of strengths: one strength put leaders at about the 60th percentile, three at the 80th; "Five strengths catapulted them into the 90th percentile." [S9]
   3. Fatal flaws: "FATAL FLAWS MUST BE FIXED"; examples are character flaws, not learning from mistakes, poor interpersonal skills, rejecting new ideas, lack of accountability, lack of initiative. [S9]
-  4. Combinations/cross-training: strengths in different clusters multiply; strong Interpersonal Skills plus Focus on Results raised the chance of being seen as a great leader to 66 percent. [S9]
-  5. Competency companions: behaviors that rise and fall with a competency (e.g. "communicating clear expectations" tracks with inspiring and motivating others); work on the companion to move a hard competency. [S9]
-  6. Working only on weaknesses produced "only a third of the progress" of working on strengths. [S9]
+  4. Strength combinations: strengths in different clusters multiply; strong Interpersonal Skills plus Focus on Results raised the chance of being seen as a great leader to 66 percent (Insight 12). This is not what Zenger and Folkman call cross-training; see item 5. [S9]
+  5. Competency companions: behaviors that rise and fall with a competency (e.g. "communicating clear expectations" tracks with inspiring and motivating others); work on the companion to move a hard competency. Zenger and Folkman call this the "cross-training effect": "Becoming good at one competency appears to make people better at another" (Insight 8). [S9]
+  6. Working only on weaknesses produced "only a third of the progress" of those who worked on strengths or on a combination of strengths and weaknesses (Insight 11). [S9]
   7. Organizational ceiling: leaders' scores "rarely exceeded the scores of the most senior leader." [S9]
   8. "We attest that leaders are made." [S9]
 - Confusables: Gallup/Clifton strengths (different, not ATD-listed); the 70-20-10 guideline (a different "how leaders develop" claim).

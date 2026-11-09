@@ -1,5 +1,6 @@
 """Multi-domain checks. Serves tests/fixtures/content-d2-learn-stub.js in place of the
-real content-d2-learn.js, so it works while Domain 2's area files are still empty:
+real content-d2-learn.js and empties the other Domain 2 area files, so Domain 2 is just
+the stub whatever Domain 2 content exists:
 the Home picker, a Domain 2 sprint, the Learn filter, per-domain progress, and that a
 Domain 1 card keeps its saved box after switching domains and reloading.
 Then, with the real files, checks that a domain with no content stays hidden."""
@@ -36,6 +37,8 @@ async def answer_current(page):
 async def stub_page(b, w, h):
     ctx = await b.new_context(viewport={'width': w, 'height': h}, device_scale_factor=2, is_mobile=True, has_touch=True)
     await ctx.route('**/content-d2-learn.js', lambda r: r.fulfill(status=200, content_type='application/javascript', body=STUB))
+    for a in ('design', 'techkm', 'people', 'eval'):  # the stub is Domain 2's only content
+        await ctx.route(f'**/content-d2-{a}.js', lambda r: r.fulfill(status=200, content_type='application/javascript', body='/* emptied by domain_test */'))
     await ctx.add_init_script(SEED_JS)
     page = await ctx.new_page()
     errs = []

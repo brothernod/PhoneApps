@@ -18,7 +18,7 @@ window.CPTD_PARTS.push({
         { t: 'Results', d: 'The degree to which targeted outcomes occur because of the training and the follow-up reinforcement.' },
       ],
       orderNote: 'Level 1 to Level 4, from immediate reaction to organizational results',
-      decoys: ['Attendance', 'Transfer', 'Return on investment'],
+      decoys: ['Attendance', 'Inputs', 'Return on investment'],
       hook: 'Did they like it, learn it, use it, and did it matter? Plan it upside down: Level 4 first, then 3, 2 and 1.',
       exam: 'Classify a measure by level: a post-course form is Level 1, a test is Level 2, on-the-job observation is Level 3, organizational outcomes are Level 4. Kirkpatrick’s Level 4 is “Results”; “Impact” is Phillips’s word. Kirkpatrick has no Level 5 and no ROI level.',
       note: 'Donald Kirkpatrick built the model for his University of Wisconsin PhD dissertation in the 1950s and published it as a series of four articles in 1959. The original Level 1 measured only customer satisfaction; the New World Kirkpatrick Model keeps the four level names and adds components to each.',
@@ -43,7 +43,7 @@ window.CPTD_PARTS.push({
         { t: 'Desired results', d: 'The targeted Level 4 outcomes the program exists to bring about.' },
       ],
       groups: [
-        { t: 'Level 1 Reaction', m: ['Engagement', 'Relevance'] },
+        { t: 'Level 1 Reaction', m: ['Customer satisfaction', 'Engagement', 'Relevance'] },
         { t: 'Level 2 Learning', m: ['Knowledge', 'Skill', 'Attitude', 'Confidence', 'Commitment'] },
         { t: 'Level 3 Behavior', m: ['Critical behaviors', 'Required drivers', 'On-the-job learning'] },
         { t: 'Level 4 Results', m: ['Leading indicators', 'Desired results'] },
@@ -92,19 +92,19 @@ window.CPTD_PARTS.push({
       id: 'phillips-levels', area: 'eval', stmts: ['2.8.1'], tag: 'reflist',
       name: 'Phillips ROI Methodology levels', short: 'Phillips levels', who: 'Jack J. Phillips & Patti P. Phillips, ROI Institute', kind: 'ordered', unit: 'levels',
       items: [
-        { t: 'Inputs', d: 'Level 0, as numbered in Patti Phillips’s 2022 materials; some ROI Institute overviews start at Level 1.' },
-        { t: 'Reaction and Planned Action', d: 'Level 1: participants’ reaction to the program.' },
+        { t: 'Inputs', d: 'Level 0: the input into the program in terms of scope, volume, efficiencies and costs, such as participants, hours, costs and timing. Numbered in Patti Phillips’s 2022 and 2024 materials; some ROI Institute overviews start at Level 1.' },
+        { t: 'Reaction and Planned Action', d: 'Level 1: participants’ reaction to the program and their planned action (what they intend to do with what they learned).' },
         { t: 'Learning', d: 'Level 2: acquiring what is necessary to make the program successful.' },
         { t: 'Application and Implementation', d: 'Level 3: using on the job what is necessary to make the program successful.' },
         { t: 'Impact', d: 'Level 4: the effect of that on-the-job use on business measures.' },
         { t: 'ROI', d: 'Level 5: return on investment, expressed as a benefit-cost ratio and a percent.' },
       ],
-      orderNote: 'Level 0 to Level 5, lowest to highest',
+      orderNote: 'Level 0 to Level 5, lowest to highest, counting Level 0 Inputs; some ROI Institute sources show only Levels 1–5',
       decoys: ['Behavior', 'Results', 'Return on expectations'],
-      hook: 'Reaction and Planned Action, Learning, Application and Implementation, Impact, ROI. Each level builds on the one below; higher levels matter more to executives and cost more to measure.',
+      hook: 'Inputs (Level 0), Reaction and Planned Action, Learning, Application and Implementation, Impact, ROI. Each level builds on the one below; higher levels matter more to executives and cost more to measure.',
       exam: 'Phillips says Impact at Level 4 (Kirkpatrick: Results) and Application at Level 3 (Kirkpatrick: Behavior), and only Phillips has Level 5, ROI. Use the long names “Reaction and Planned Action” and “Application and Implementation.” ROI Institute’s best-practice minimums for the share of programs evaluated: Level 1 90–100%, Level 2 60–90%, Level 3 30–40%, Level 4 10–20%, Level 5 5–10%.',
       note: 'Patti Phillips’s 2022 deck numbers a Level 0, Inputs; ROI Institute’s 2019 fold-out and 2021 overview show Levels 1–5. Don’t rely on an exact count of levels. ROI Institute presents the ROI Methodology as its own methodology, not as a Kirkpatrick add-on.',
-      src: 'ROI Institute, Introduction to the ROI Methodology (2021) and ROI Methodology Fold-Out Model (2019); P. P. Phillips, Demonstrating the Impact and ROI of Learning & Talent Development (2022)',
+      src: 'ROI Institute, Introduction to the ROI Methodology (2021) and ROI Methodology Fold-Out Model (2019); P. P. Phillips, Demonstrating the Impact and ROI of Learning & Talent Development (2022); P. P. Phillips, ROI Institute presentation (2024)',
     },
     {
       id: 'roi-phases', area: 'eval', stmts: ['2.8.1'], tag: 'reflist',
@@ -245,7 +245,7 @@ window.CPTD_PARTS.push({
         { t: 'Creating an impact model', d: 'Define what success should look like.' },
         { t: 'Designing and implementing a survey', d: 'Search participants for the best and worst cases.' },
         { t: 'Interviewing and documenting success cases', d: 'Talk with the identified cases to confirm and record real successes.' },
-        { t: 'Communicating findings, conclusions, and recommendations', d: 'Report what the study found; Brinkerhoff’s chapter calls it drawing compelling conclusions.' },
+        { t: 'Communicating findings, conclusions, and recommendations', d: 'Report the study’s findings, conclusions and recommendations.' },
       ],
       orderNote: 'first to last',
       decoys: ['Calculating ROI', 'Isolating effects with control groups', 'Averaging results across all participants'],
@@ -276,7 +276,7 @@ window.CPTD_PARTS.push({
     },
     {
       id: 'formative-summative', area: 'eval', stmts: ['2.8.1'], tag: 'extra',
-      name: 'Formative and summative evaluation', short: 'Formative vs summative', who: 'ATD’s Training & Development Journal evaluation supplement (1990)', kind: 'set', unit: 'types',
+      name: 'Formative and summative evaluation', short: 'Formative vs summative', who: 'Michael Scriven (1967) is usually credited with the terms; definitions here from ASTD’s Training & Development Journal evaluation supplement (1990)', kind: 'set', unit: 'types',
       items: [
         { t: 'Formative', d: 'Improvement-oriented evaluation, before and during a program’s first run, to decide whether to modify it.' },
         { t: 'Summative', d: 'Evaluation after a program has run at least once, to decide whether to maintain, expand, contract out or eliminate it.' },
@@ -290,7 +290,7 @@ window.CPTD_PARTS.push({
     /* ----- Outcome metrics (2.8.3) ----- */
     {
       id: 'tdrp-measures', area: 'eval', stmts: ['2.8.3'], tag: 'extra',
-      name: 'TDRp types of measures', short: 'TDRp measures', who: 'David Vance & Peggy Parskey, Measurement Demystified (2021)', kind: 'set', unit: 'types',
+      name: 'TDRp types of measures', short: 'TDRp measures', who: 'Talent Development Reporting principles (TDRp), begun in 2010 by L&D leaders including Kent Barnett and Dave Vance (Center for Talent Reporting since 2012); as explained in Vance & Parskey, Measurement Demystified (2021)', kind: 'set', unit: 'types',
       items: [
         { t: 'Efficiency measures', d: 'Answer “How much?”, such as number of participants or program costs.' },
         { t: 'Effectiveness measures', d: 'Answer “How well?”, such as participant reaction or application of learning.' },
@@ -318,7 +318,7 @@ window.CPTD_PARTS.push({
     },
     {
       id: 'tdrp-mgmt-reports', area: 'eval', stmts: ['2.8.3'], tag: 'extra',
-      name: 'TDRp management reports', short: 'Management reports', who: 'David Vance & Peggy Parskey, Measurement Demystified (2021)', kind: 'set', unit: 'reports',
+      name: 'TDRp management reports', short: 'Management reports', who: 'Talent Development Reporting principles (TDRp), begun in 2010 by L&D leaders including Kent Barnett and Dave Vance (Center for Talent Reporting since 2012); as explained in Vance & Parskey, Measurement Demystified (2021)', kind: 'set', unit: 'reports',
       items: [
         { t: 'Program report', d: 'Covers programs that support one organizational goal, such as increasing sales.' },
         { t: 'Operations report', d: 'Aggregates measures across all courses that the CLO is managing to improve.' },
@@ -369,7 +369,7 @@ window.CPTD_PARTS.push({
     },
     {
       id: 'instr-quality', area: 'eval', stmts: ['2.8.4'], tag: 'extra',
-      name: 'Instrument quality: reliability and validity', short: 'Reliability & validity', who: 'J. H. Maher Jr. & C. E. Kur, “Constructing Good Questionnaires” (1983)', kind: 'set', unit: 'criteria',
+      name: 'Instrument quality: reliability and validity', short: 'Reliability & validity', who: 'Definitions from J. H. Maher Jr. & C. E. Kur, “Constructing Good Questionnaires” (1983); the concepts are standard measurement terms', kind: 'set', unit: 'criteria',
       items: [
         { t: 'Reliability', d: 'The degree to which an instrument consistently measures what it measures.' },
         { t: 'Validity', d: 'Whether the instrument actually measures what it is intended to measure.' },
@@ -439,9 +439,9 @@ window.CPTD_PARTS.push({
     { id: 'q-eval-phil-l5', stmt: '2.8.1', model: 'phillips-levels', q: 'A CFO asks whether a program’s monetary benefits exceeded its fully loaded costs. Which evaluation level answers that?',
       o: ['Kirkpatrick Level 4: Results', 'Phillips Level 5: ROI', 'Phillips Level 4: Impact', 'Kirkpatrick Level 3: Behavior'],
       a: 1, why: 'Only Phillips has Level 5, ROI, which compares monetary benefits with program costs. Level 4 Impact measures the business effect but doesn’t weigh its money value against costs, and Kirkpatrick’s model stops at Level 4.' },
-    { id: 'q-eval-phil-l1name', stmt: '2.8.1', model: 'phillips-levels', q: 'In the ROI Institute’s fold-out model, what is the full name of Phillips’s Level 1?',
-      o: ['Reaction and Engagement', 'Reaction and Relevance', 'Reaction and Satisfaction', 'Reaction and Planned Action'],
-      a: 3, why: 'ROI Institute’s fold-out and Patti Phillips’s 2022 materials call Level 1 “Reaction and Planned Action.” Engagement and relevance are New World Kirkpatrick Level 1 components, not part of Phillips’s level name.' },
+    { id: 'q-eval-phil-l1name', stmt: '2.8.1', model: 'phillips-levels', q: 'In the ROI Institute’s fold-out model, Phillips’s Level 1 is “Reaction and ___.” What fills the blank?',
+      o: ['Engagement', 'Relevance', 'Confidence', 'Planned Action'],
+      a: 3, why: 'ROI Institute’s fold-out and Patti Phillips’s 2022 materials call Level 1 “Reaction and Planned Action”: what participants intend to do with what they learned. Engagement and relevance are New World Kirkpatrick Level 1 components, and confidence is a New World Level 2 component.' },
     { id: 'q-eval-phil-l3name', stmt: '2.8.1', model: 'phillips-levels', q: 'What is Phillips’s name for Level 3 in the ROI Methodology?',
       o: ['Behavior and Performance', 'Application and Implementation', 'Assisted Transfer', 'Critical Behaviors and Drivers'],
       a: 1, why: 'Phillips calls Level 3 “Application and Implementation” (often shortened to Application). Behavior is Kirkpatrick’s Level 3 name, Assisted Transfer is an LTEM Tier 7 sub-level, and critical behaviors and required drivers are New World Kirkpatrick Level 3 components.' },

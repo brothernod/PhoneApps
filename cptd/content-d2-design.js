@@ -23,7 +23,7 @@ window.CPTD_PARTS.push({
     },
     {
       id: 'abcd', area: 'design', stmts: ['2.2.4'], tag: 'reflist',
-      name: 'ABCD objectives', short: 'ABCD', who: 'Heinich, Molenda, Russell & Smaldino, Instructional Media and Technologies for Learning, 7th ed. (2002)', kind: 'ordered', unit: 'parts',
+      name: 'ABCD objectives', short: 'ABCD', who: 'Heinich, Molenda, Russell & Smaldino, Instructional Media and Technologies for Learning (cited from the 7th ed., 2002)', kind: 'ordered', unit: 'parts',
       items: [
         { t: 'Audience', d: 'The group of learners the objective is written for.' },
         { t: 'Behavior', d: 'The verb for what the learner will be able to do after the instruction.' },
@@ -57,7 +57,7 @@ window.CPTD_PARTS.push({
     },
     {
       id: 'outcome-types', area: 'design', stmts: ['2.2.4'], tag: 'named',
-      name: 'Learning vs application (behavioral) objectives', short: 'Learning vs behavioral outcomes', who: 'Phillips & Phillips, Beyond Learning Objectives (2008)', kind: 'set', unit: 'types',
+      name: 'Learning vs application (behavioral) objectives', short: 'Learning vs behavioral outcomes', who: 'General ID usage; the learning vs application terms are from Phillips & Phillips, Beyond Learning Objectives (2008)', kind: 'set', unit: 'types',
       items: [
         { t: 'Learning objectives', d: 'What participants will know or be able to do by the end of the learning event: skills, knowledge, and confidence (Level 2).' },
         { t: 'Application objectives', d: 'What participants will do on the job afterward: the transfer of learning to work (Level 3). These are behavioral outcomes.' },
@@ -96,7 +96,7 @@ window.CPTD_PARTS.push({
       ],
       decoys: ['Budget', 'Project schedule'],
       hook: '“The storyboard is your blueprint”: content, assets, instruction, and navigation in one place.',
-      exam: 'ATD calls a storyboard a written outline or script of the whole e-learning course; a rapid prototype is a rough working version. Storyboard when stakeholders are new to e-learning or content will change a lot; prototype when stakeholders know the process or you must test branching.',
+      exam: 'An ATD Blog post calls a storyboard a written outline or script of the whole e-learning course; a rapid prototype is a rough working version. Storyboard when stakeholders are new to e-learning or content will change a lot; prototype when stakeholders know the process or you must test branching.',
       note: 'Keep at least two documents, one for instructional design and one for visual design. A quick start is sketching the course flow on graph paper from the learner’s point of view. The storyboard is also a record for later maintenance. Neither storyboard nor prototype is always best.',
       src: 'ATD Blog, “The Art of Storyboarding” (2015); ATD Blog, “Ask a Trainer: Is Storyboarding or Rapid Prototypes a Better E-Learning Approach?” (2019)',
     },
@@ -179,7 +179,7 @@ window.CPTD_PARTS.push({
         { t: 'Keep it brief', d: 'Keywords and fragments, nouns, concrete language.' },
         { t: 'Design for the learner', d: 'A clear heading, familiar terms, and examples from the user’s own job.' },
         { t: 'Make it visual', d: 'Icons, charts, white space, and a visual hierarchy.' },
-        { t: 'Chunk (the content)', d: 'Separate blocks, guided by numbers, arrows, or boxes.' },
+        { t: 'Chunk the content', d: 'Separate blocks, guided by numbers, arrows, or boxes.' },
         { t: 'Eliminate irrelevancies', d: 'Cut any text or image that doesn’t serve the task.' },
         { t: 'Make it accessible', d: 'High contrast, shapes or bold rather than color alone, alt text, captions, and audio description.' },
       ],
@@ -230,38 +230,10 @@ window.CPTD_PARTS.push({
       ],
       decoys: ['Storyboard', 'Design document'],
       hook: 'Learners get the content and room to work; facilitators get the plan, timing, and cues.',
-      exam: 'Build the outline from the task analysis. Choose images by learning objective, use process diagrams for procedures and decisions, and “present the words in brief segments to manage cognitive load.”',
+      exam: 'Build the outline from the task analysis. Choose images by learning objective, use process diagrams for procedures and decisions, and chunk the content with headings and lean text to manage cognitive load.',
       note: '2.2.12 says “training manuals”; ATD’s tool covers participant and facilitator guides but doesn’t use that phrase. It places job aids in the participant guide’s appendix. Decide support materials with the delivery method in mind.',
       src: 'ATD tool, “Creating a Participant/Facilitator Guide”',
     },
-    {
-      id: 'fg-cues', area: 'design', stmts: ['2.2.12'], tag: 'extra',
-      name: 'Facilitator guide scripted cues', short: 'Script cues', who: 'ATD tool, “Creating a Participant/Facilitator Guide”', kind: 'set', unit: 'cues',
-      items: [
-        { t: 'SAY', d: 'What the facilitator tells the group.' },
-        { t: 'DISCUSS', d: 'A point for group conversation.' },
-        { t: 'ASK', d: 'Questions to put to learners, including polls and knowledge checks.' },
-        { t: 'DO', d: 'Demonstrations and exercises.' },
-      ],
-      decoys: ['GRADE', 'SKIP'],
-      hook: 'Say it, discuss it, ask it, do it.',
-      exam: 'Polls and knowledge checks are ASK; demonstrations and exercises are DO.',
-      src: 'ATD tool, “Creating a Participant/Facilitator Guide”',
-    },
-    {
-      id: 'content-sequencing', area: 'design', stmts: ['2.2.12'], tag: 'extra',
-      name: 'Ways to sequence guide content', short: 'Sequencing options', who: 'ATD tool, “Creating a Participant/Facilitator Guide”', kind: 'set', unit: 'options',
-      items: [
-        { t: 'By job performance', d: 'Following how the work is done on the job.' },
-        { t: 'By topic', d: 'Grouped by subject.' },
-        { t: 'By task or feature', d: 'A section for each task, or for each feature of a product or system.' },
-      ],
-      decoys: ['Alphabetically', 'By slide count'],
-      hook: 'Job, topic, or task/feature, all built from the task analysis.',
-      exam: 'The guide’s outline comes from the task analysis; then sequence it by job performance, by topic, or by task or feature.',
-      src: 'ATD tool, “Creating a Participant/Facilitator Guide”',
-    },
-
     /* ----- process context (all four statements) ----- */
     {
       id: 'addie', area: 'design', stmts: ['2.2.4', '2.2.6', '2.2.11', '2.2.12'], tag: 'reflist',
@@ -319,7 +291,6 @@ window.CPTD_PARTS.push({
     { hub: 'sam', with: ['sam-releases'] },
     { all: ['sync-async', 'blended-components'] },
     { hub: 'role-play-types', with: ['role-play-techniques'] },
-    { hub: 'guides', with: ['fg-cues', 'content-sequencing'] },
   ],
 
   questions: [
@@ -420,8 +391,8 @@ window.CPTD_PARTS.push({
       o: ['Course Content', 'Practice', 'Assessment', 'Interaction'],
       a: 1, why: 'Practice is about applying skills, through live hands-on work, role play, virtual labs, simulations, and branched scenarios. Assessment measures learning and performance, such as tests and graded assignments.' },
     { id: 'q-design-blend-ps', stmt: '2.2.11', model: 'blended-components', q: 'After a blended program ends, each participant meets a peer mentor for three months to reinforce the skills on the job. Which component is this?',
-      o: ['Resources', 'Interaction', 'Performance Support', 'Course Content'],
-      a: 2, why: 'Performance Support reinforces learning on the job, through a coach, mentor, or peer mentor. Interaction covers exchanges among participants, instructors, and coaches during the program, not on-the-job reinforcement after it.' },
+      o: ['Resources', 'Assessment', 'Performance Support', 'Course Content'],
+      a: 2, why: 'Performance Support reinforces learning on the job through a coach, mentor, or peer mentor. Resources are job aids and quick references, not people. (Interaction also lists coaches and mentors, but as exchanges by chat, discussion, email, or phone, so it isn’t offered here.)' },
     { id: 'q-design-blend-self', stmt: '2.2.11', model: 'blended-components', q: 'In a blended program, the self-directed pieces often go undone. What does the ATD Blog recommend?',
       o: ['Drop the self-directed pieces and move all content into the live sessions', 'Remind participants by email and trust them to finish', 'Build in a way to make sure the work gets done, such as a workbook, coach review, or test', 'Make the live sessions optional so people have time'],
       a: 2, why: 'The article says to make sure self-directed work gets done, for example with workbooks, coach review, or a test. Moving everything live gives up what a blend offers rather than fixing the follow-through.' },
@@ -468,31 +439,22 @@ window.CPTD_PARTS.push({
       o: ['Role rotation', 'Multiple enactments', 'Role reversal', 'Auxiliary ego'],
       a: 2, why: 'Role reversal has the same players swap parts. Role rotation brings different players into the same part in successive replays.' },
     { id: 'q-design-rpt-rot', stmt: '2.2.12', model: 'role-play-techniques', q: 'To compare approaches, a trainer has three different participants each take the manager’s part in turn while the scene is replayed. Which technique is this?',
-      o: ['Role rotation', 'Role reversal', 'Observer sheets', 'Multiple enactments'],
-      a: 0, why: 'Role rotation puts different players in the same part in successive replays to compare approaches. Multiple enactments run the same case in several groups at once, not one part replayed in turn.' },
+      o: ['Role rotation', 'Role reversal', 'Observer sheets', 'Auxiliary ego'],
+      a: 0, why: 'Role rotation puts different players in the same part in successive replays to compare approaches. Role reversal keeps the same players and has them swap parts.' },
     { id: 'q-design-rpt-obs', stmt: '2.2.12', model: 'role-play-techniques', q: 'Before a role play, a trainer gives the non-players a form listing behaviors to record, such as interruptions and who spoke most. What is this technique called?',
       o: ['Auxiliary ego', 'Observer sheets', 'Role rotation', 'Sociodrama'],
       a: 1, why: 'Observer sheets tell observers which behaviors to record. An auxiliary ego is a person who speaks for a player to bring out unspoken feelings.' },
 
-    /* ----- guides and cues ----- */
+    /* ----- guides ----- */
     { id: 'q-design-guide-fg', stmt: '2.2.12', model: 'guides', q: 'Which content belongs in a facilitator guide rather than a participant guide?',
       o: ['Space for learners’ notes', 'Exercises for learners to complete', 'Slide thumbnails, timing, and scripted cues', 'Reference material for use back on the job'],
       a: 2, why: 'A facilitator guide gives instructors a plan: agenda and timing, module notes, slide indicators and thumbnails, and scripted cues. Reference material for the job belongs in the participant guide, which doubles as an on-the-job reference.' },
     { id: 'q-design-guide-outline', stmt: '2.2.12', model: 'guides', q: 'According to ATD’s guide-building tool, what should a participant or facilitator guide’s outline be built from?',
       o: ['The task analysis', 'The slide deck', 'The SME’s preferred topic order', 'The previous course’s table of contents'],
-      a: 0, why: 'The tool says to build the outline from the task analysis, then sequence it by job performance, topic, or task or feature. The slides follow the design; they don’t drive it.' },
+      a: 0, why: 'The tool says to build the outline from the task analysis. The slides follow the design; they don’t drive it.' },
     { id: 'q-design-guide-pg', stmt: '2.2.12', model: 'guides', q: 'What two purposes does a participant guide serve, according to ATD’s tool?',
       o: ['It scripts the session for the facilitator and sets each module’s timing', 'It supports learners in the session and serves as an on-the-job reference', 'It records attendance and holds the final test for certification', 'It replaces the facilitator so that learners can work fully self-paced'],
       a: 1, why: 'The participant guide supports learners during the session and later works as an on-the-job reference. Scripting and timing are the facilitator guide’s job.' },
-    { id: 'q-design-cue-ask', stmt: '2.2.12', model: 'fg-cues', q: 'A facilitator guide marks the point where the facilitator runs a quick poll and a knowledge check. Which scripted cue fits?',
-      o: ['SAY', 'DISCUSS', 'DO', 'ASK'],
-      a: 3, why: 'ASK marks questions to put to learners, including polls and knowledge checks. DISCUSS marks a group discussion point, not a poll or check.' },
-    { id: 'q-design-cue-do', stmt: '2.2.12', model: 'fg-cues', q: 'Which scripted cue in a facilitator guide marks a demonstration or exercise?',
-      o: ['DO', 'SAY', 'ASK', 'DISCUSS'],
-      a: 0, why: 'DO marks demonstrations and exercises. SAY marks what the facilitator says.' },
-    { id: 'q-design-seq', stmt: '2.2.12', model: 'content-sequencing', q: 'ATD’s guide-building tool gives three ways to sequence course content. Which set is it?',
-      o: ['By Bloom level, by audience, or by budget', 'By job performance, by topic, or by task or feature', 'By module length, by author, or by slide count', 'By delivery method, by vendor, or by date'],
-      a: 1, why: 'The tool lists sequencing by job performance, by topic, or by task or feature, built from the task analysis. The other sets aren’t in the tool.' },
 
     /* ----- ADDIE ----- */
     { id: 'q-design-addie-design', stmt: '2.2.4', model: 'addie', q: 'In ADDIE, during which phase are learning objectives written and delivery options and media chosen?',
@@ -546,13 +508,12 @@ window.CPTD_PARTS.push({
         { text: 'You plan the asynchronous module. The stakeholders are new to e-learning, and the legal team expects to change much of the wording. How should you plan it?',
           options: [
             ['Write a storyboard first, since written content is easier to revise', true],
-            ['Keep separate documents for the instructional design and the visual design', true],
-            ['Make the storyboard blend content, assets, instruction, and navigation', true],
+            ['Keep at least two documents: one for the instructional design, one for the visual design', true],
             ['Show the stakeholders a rapid prototype full of placeholder images and ask them to approve the content', false],
             ['Skip planning documents and build the refined digital version right away', false],
             ['Write the storyboard after development, as a record of what was built', false],
           ],
-          why: 'The ATD Blog suggests a storyboard when stakeholders are new to e-learning (they comment on placeholder images) or many content edits are expected, with at least two documents, blending content, assets, instruction, and navigation. The storyboard is the blueprint, so it comes before building, not after.' },
+          why: 'The ATD Blog suggests a storyboard when stakeholders are new to e-learning (they comment on placeholder images) or many content edits are expected, and advises keeping at least two documents, one for instructional design and one for visual design. The storyboard is the blueprint, so it comes before building, not after.' },
         { text: 'Now you design the learning assets. Which choices fit the sources?',
           options: [
             ['Create a job aid, such as a checklist, for filing the report, since the task is rare, complex, and high-consequence', true],

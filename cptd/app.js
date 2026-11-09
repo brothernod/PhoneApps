@@ -27,9 +27,19 @@
 
   // Two names "clash" if they share a meaningful word stem ("Commitment" vs. "Lack of commitment").
   // Clashing items are kept out of "which model?" questions so those can never be ambiguous.
-  const norm = (s) => s.toLowerCase().replace(/\(.*?\)/g, '').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+  const NORMS = new Map(); // norm and stems are cached: the "which model?" index compares every item with every model
+  const norm = (s) => {
+    let n = NORMS.get(s);
+    if (n === undefined) { n = s.toLowerCase().replace(/\(.*?\)/g, '').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim(); NORMS.set(s, n); }
+    return n;
+  };
   const STOP = new Set(['self', 'with', 'from', 'your', 'that', 'this', 'their', 'them', 'what', 'when', 'each', 'into', 'than']);
-  const stems = (s) => { const n = norm(s); const out = new Set([n]); n.split(' ').forEach((w) => { if (w.length >= 4 && !STOP.has(w)) out.add(w.slice(0, 6)); }); return out; };
+  const STEMS = new Map();
+  const stems = (s) => {
+    if (STEMS.has(s)) return STEMS.get(s);
+    const n = norm(s); const out = new Set([n]); n.split(' ').forEach((w) => { if (w.length >= 4 && !STOP.has(w)) out.add(w.slice(0, 6)); });
+    STEMS.set(s, out); return out;
+  };
   const clash = (a, b) => { const sb = stems(b); for (const k of stems(a)) if (sb.has(k)) return true; return false; };
 
   const pad = (n) => String(n).padStart(2, '0');
@@ -113,8 +123,24 @@
     if (g.all) g.all.forEach((a) => g.all.forEach((b) => { if (a !== b) addKin(a, b); }));
   });
   const isKin = (a, b) => KIN.has(a + '|' + b);
-  const UNIQUE = {};
-  MODELS.forEach((m) => { UNIQUE[m.id] = m.items.filter((i) => !MODELS.some((o) => o.id !== m.id && memberClash(o, i.t))); });
+  // "Which model?" items. An item qualifies if no other model in its OWN domain has an item that
+  // strict-clashes with it (so a new domain can't take cards away from an older one). Decoys skip
+  // kin, models with an item that strict-clashes with the item (`memberClash`; this only bites for
+  // decoys from another domain, since same-domain models can't clash with a qualifying item), and
+  // models whose name, note, or descriptions overlap it (`near`, e.g. "GDPR" vs. "GDPR principles").
+  // So the answer is unambiguous whichever domains the decoys come from. An item with fewer than
+  // 3 eligible decoys is left out; a model with no item left has no "which model?" card.
+  const near = (o, t) => clash(o.name, t) || clash(o.short, t) || clash(o.note || '', t)
+    || norm(o.name).includes(norm(t)) || norm(o.note || '').includes(norm(t))
+    || o.items.some((j) => norm(j.t).slice(0, 4) === norm(t).slice(0, 4) || norm(j.d).includes(norm(t)));
+  const decoyOk = (o, m, t) => o.id !== m.id && !isKin(o.id, m.id) && !near(o, t) && !memberClash(o, t);
+  const UNIQUE = {}; // model id -> [{ it, pool }], pool = eligible decoy models
+  MODELS.forEach((m) => {
+    UNIQUE[m.id] = m.items
+      .filter((i) => !MODELS.some((o) => o.id !== m.id && o.domain === m.domain && memberClash(o, i.t)))
+      .map((it) => ({ it, pool: MODELS.filter((o) => decoyOk(o, m, it.t)) }))
+      .filter((x) => x.pool.length >= 3);
+  });
 
   // A "card" is one thing the spaced-repetition schedule tracks.
   const CARDS = [];
@@ -426,12 +452,7 @@
       });
     }
     if (card.type === 'which') {
-      const it = pickOne(UNIQUE[m.id]);
-      // Also skip models whose name, note, or descriptions overlap the item (e.g. "GDPR" vs. "GDPR principles").
-      const near = (o, t) => clash(o.name, t) || clash(o.short, t) || clash(o.note || '', t)
-        || norm(o.name).includes(norm(t)) || norm(o.note || '').includes(norm(t))
-        || o.items.some((j) => norm(j.t).slice(0, 4) === norm(t).slice(0, 4) || norm(j.d).includes(norm(t)));
-      const pool = MODELS.filter((o) => o.id !== m.id && !isKin(o.id, m.id) && !memberClash(o, it.t) && !near(o, it.t));
+      const { it, pool } = pickOne(UNIQUE[m.id]); // decoy rules: see UNIQUE
       const others = shuffle(pool.filter((o) => o.area === m.area))
         .concat(shuffle(pool.filter((o) => o.area !== m.area && o.domain === m.domain)), shuffle(pool.filter((o) => o.domain !== m.domain))).slice(0, 3);
       return Object.assign(base, {
