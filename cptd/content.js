@@ -1932,7 +1932,7 @@ window.CPTD = (function () {
   // Domain 1's own exam facts and study tips.
   const exam = {
     facts: [
-      ['This domain', 'About 30 questions’ worth, drawn from 11 statements: 1.1.3, 1.1.5, 1.1.6, 1.2.1, 1.3.1, 1.3.5, 1.3.10, 1.4.6, 1.5.3, 1.5.6, and 1.6.3. Lifelong learning (1.7) is not on the CPTD outline for this domain.'],
+      ['This domain', 'About 18 of the 90 multiple-choice questions (20% of the exam), plus a matching share of case steps, drawn from 11 statements: 1.1.3, 1.1.5, 1.1.6, 1.2.1, 1.3.1, 1.3.5, 1.3.10, 1.4.6, 1.5.3, 1.5.6, and 1.6.3. Lifelong learning (1.7) is not on the CPTD outline for this domain.'],
     ],
     tips: [
       'ATD’s sample questions are mostly applied: “What should the TD professional do?” Learn each model well enough to recognize it in a scenario.',

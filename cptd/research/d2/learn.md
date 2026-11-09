@@ -99,7 +99,7 @@ Sources added in the gap fill (2026-11-08):
   4. Transfer: through authentic tasks anchored in meaningful contexts; decontextualized learning rarely transfers. [S2]
   5. Learning best explained: advanced knowledge acquisition in ill-structured domains; Jonassen's stages (introductory, advanced, expert) suggest objectivist approaches for introductory learning and constructivist ones as learners advance. [S2]
   6. ID principles: anchor in the real-world context where skills will be used; learner control and manipulation of information; present information in varied ways and from multiple perspectives; support problem solving that goes "beyond the information given"; assess transfer with new problems. [S2]
-  7. Structuring instruction: situated learning, cognitive apprenticeship (modeling and coaching), multiple perspectives, social negotiation, reflective awareness. [S2]
+  7. Structuring instruction: situated learning, cognitive apprenticeship (modeling and coaching; [S2] “modeling and coaching a student toward expert performance”), multiple perspectives, social negotiation, reflective awareness. [S2]
 - Confusables: experiential learning (Kolb, 2.1.3) and social/collaborative learning overlap heavily with constructivist practice; questions should name the theory, not just "learning by doing."
 - Variants or contested points: Ertmer & Newby treat constructivism as a branch of cognitivism; others treat it as a separate paradigm. [S2]
 - Unverified: Vygotsky (zone of proximal development, scaffolding) as a constructivist source is standard but not in [S2]'s list as fetched; not confirmed here.

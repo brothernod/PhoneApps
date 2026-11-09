@@ -15,3 +15,23 @@ Inputs: `check-techkm.md` (Pass A, 9 findings) and `answers-techkm.md` (Pass B: 
 | 9 | `curation-steps.src` | MINOR: listing Ready, Set, Curate implies the book presents the four steps | fixed (checker's exact text) | `src`: "CPTD content outline, statement 2.5.7 (the four verbs); the curator’s role from the publisher’s description of Betts & Anderson, Ready, Set, Curate (ATD Press; on ATD’s 2025 reading list)" |
 
 Pass B had no key disagreements; its only flag is row 3.
+
+## Round 2 (recheck.md, 2026-11-09)
+
+The content was fine; the recheck said the source file lagged. The checker’s evidence is now in techkm.md as new sources [S21]–[S24] (Wikipedia "Tacit knowledge"; Jarche 2015; the Berkeley copy of the HBR article; ATD’s *Knowledge Management Basics* product page), each with a short quote.
+
+| Recheck row | Action in techkm.md |
+|---|---|
+| `tacit-explicit.who` | Origin (old L169) now gives *Personal Knowledge* (1958) [S21] with check-techkm #1’s quote. |
+| `seek-sense-share.exam` | Acronym line (old L349) adds [S22] "personal knowledge management/mastery" (https://jarche.com/?p=14382). |
+| `codify-personalize.hook`, `groups.2` | Exhibit row 3 (old L234) cites [S23] "PERSON-TO-PERSON". "person-to-person" was deleted from the Unverified line (old L241) and from the open item (old L377), which now says it’s confirmed. |
+| `atwood-km.note` | Atwood entry adds ATD’s wording [S24]: the five-step process with "Define your role…" first. |
+| `case-techkm-retiring.step-2.why` | Hansen entry adds [S23] "Do your people rely on explicit or tacit knowledge to solve problems?" and the follow-on tacit sentence from check-techkm #4. |
+
+No content change, so `claims-techkm.md` (793 claims) and `cold-techkm.md` (59 items) were regenerated only for the statement labels below.
+
+Shared rows (content-d2.js and content.js, recheck.md task b and the "and/or" row): the Domain 2 "This domain" fact now reads "About 40 of the 90 multiple-choice questions (45% of the exam), plus a matching share of case steps, drawn from 18 statements: …" and Domain 1's (content.js) "About 18 of the 90 multiple-choice questions (20% of the exam), plus a matching share of case steps, drawn from 11 statements: …"; the rest of each fact is unchanged. `tips[0]` begins "This is the most heavily weighted domain (45%)." Labels 2.4.1, 2.4.4, 2.5.7 and 2.8.3 now say "and/or" as in scope.md.
+
+Not applied word for word: the recheck's fact text ("About 68 of the exam’s 150 measurement opportunities (45%): roughly 40 of the 90 multiple-choice questions …", and Domain 1's "About 30 of the 150 measurement opportunities …"). The task said to count multiple-choice questions, not scoring points, so the 68/30 lead was dropped. "(20% of the exam)" was added to Domain 1's fact to match Domain 2's.
+
+Checks: `node cptd/tools/check-content.mjs` OK, 0 errors, same 6 warnings as HEAD. `bash cptd/tools/tests/run_all.sh` all green.

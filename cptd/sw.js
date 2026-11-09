@@ -1,6 +1,6 @@
 // Offline support. Network first, so a fresh push shows up right away;
 // the cache is only used when there's no connection.
-const CACHE = 'cptd-study-v3';
+const CACHE = 'cptd-study-v4';
 const FILES = [
   './', 'index.html', 'app.js', 'content.js', 'content-merge.js', 'manifest.webmanifest',
   // Domain 2: metadata, then one file per area.

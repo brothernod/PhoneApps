@@ -222,10 +222,10 @@ window.CPTD_PARTS.push({
       name: 'Participant guide vs facilitator guide', short: 'Training guides', who: 'ATD tool, “Creating a Participant/Facilitator Guide”', kind: 'set', unit: 'guides',
       items: [
         { t: 'Participant guide', d: 'Supports learners in the session and serves as an on-the-job reference.' },
-        { t: 'Facilitator guide', d: 'Gives instructors a plan for the learning experience; also called a leader guide.' },
+        { t: 'Facilitator guide', d: 'Gives instructors a plan for the learning experience.' },
       ],
       groups: [
-        { t: 'Participant guide', m: ['Exercises and annotated images', 'Reference material and job aids', 'Space for notes'] },
+        { t: 'Participant guide', m: ['Exercises and annotated illustrations', 'Reference material and job aids', 'Space for notes'] },
         { t: 'Facilitator guide', m: ['Agenda, timing, and supplies list', 'Module purpose statements and key points', 'Slide indicators and thumbnails', 'Scripted cues'] },
       ],
       decoys: ['Storyboard', 'Design document'],
@@ -392,7 +392,7 @@ window.CPTD_PARTS.push({
       a: 1, why: 'Practice is about applying skills, through live hands-on work, role play, virtual labs, simulations, and branched scenarios. Assessment measures learning and performance, such as tests and graded assignments.' },
     { id: 'q-design-blend-ps', stmt: '2.2.11', model: 'blended-components', q: 'After a blended program ends, each participant meets a peer mentor for three months to reinforce the skills on the job. Which component is this?',
       o: ['Resources', 'Assessment', 'Performance Support', 'Course Content'],
-      a: 2, why: 'Performance Support reinforces learning on the job through a coach, mentor, or peer mentor. Resources are job aids and quick references, not people. (Interaction also lists coaches and mentors, but as exchanges by chat, discussion, email, or phone, so it isn’t offered here.)' },
+      a: 2, why: 'Performance Support reinforces learning on the job through a coach, mentor, or peer mentor. Resources are job aids and quick references, not people. (Interaction also involves coaches and mentors, in person or by chat, discussion, email, or phone, so it isn’t offered here.)' },
     { id: 'q-design-blend-self', stmt: '2.2.11', model: 'blended-components', q: 'In a blended program, the self-directed pieces often go undone. What does the ATD Blog recommend?',
       o: ['Drop the self-directed pieces and move all content into the live sessions', 'Remind participants by email and trust them to finish', 'Build in a way to make sure the work gets done, such as a workbook, coach review, or test', 'Make the live sessions optional so people have time'],
       a: 2, why: 'The article says to make sure self-directed work gets done, for example with workbooks, coach review, or a test. Moving everything live gives up what a blend offers rather than fixing the follow-through.' },

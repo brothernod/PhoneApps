@@ -136,3 +136,16 @@ For every case step:
 - Jonathan tested on an iPhone in Safari, and his friend uses Android. Test at 390×664 (an iPhone with Safari's toolbars showing) as well as 412×915.
 - The next step must always be on screen. A button below a long answer list can sit under the browser toolbar and leave someone stuck with the timer running. That's why the bottom action bar exists.
 - A just-missed card must not open the next sprint (`RECENT_MS`).
+
+## Process lessons from Domain 2 (conversation A)
+
+- **Briefs live in files.** `BRIEF-sources.md`, `BRIEF-gaps.md`, `BRIEF-author.md`, `BRIEF-check.md` and `BRIEF-fix.md` are domain-agnostic. Agent prompts just name the brief, the area and any area-specific warnings (ownership of shared models, items to skip). Conversation B reuses them with dN = d3.
+- **Two research passes per shard.** The first pass left about a third of the testable items unsourced. A targeted gap-fill pass (`BRIEF-gaps.md`, ~15 web calls) fixed most of them before authoring. It's cheaper than having checkers find the gaps.
+- **Tell authors who owns shared models** (70-20-10 in `people`, ADDIE and SAM in `design`, communities of practice in `techkm`), and which Domain 1 models to reference by id rather than duplicate (`smart`, `zenger-folkman`).
+- **The cold pass and the claims pass find different things.** Claims passes found misattributions and unsourced wording. Cold passes found two-defensible questions and giveaways (one option in a different case). Run both, with separate agents. Pass B goes first or in parallel, never after the same agent has seen the source.
+- **Re-check after fixing.** The fresh re-check found 13 issues in about 55 changed rows, including two new giveaways introduced by the fixes. Ask fixers to apply exact text, and re-check anyway.
+- **Unchecked content stays off `main`.** It's on the `cptd-d2` branch until step 6 passes, because pushing `main` deploys to GitHub Pages, where the friend studies.
+- **WebFetch accepts only URLs that appeared in that agent's own search results.** URLs in files (like the TDBoK sample chapter above) must be found by search first. The fetch tool won't quote long passages; ask for the core wording plus every named element instead.
+- **Usage limits.** Running 5–7 agents at once at xhigh hit the 5-hour limit twice in Domain 2. Agents stopped by the limit keep their work: resume them with SendMessage after the reset rather than starting new ones. Keep it to about 3 agents at once.
+- **`spend.py` finds no transcript in a cloud session.** Log the `subagent_tokens` each agent reports when it completes, instead.
+- **The "This domain" fact counts multiple-choice questions** (90 in all), not the 150 scoring points.

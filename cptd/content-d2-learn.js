@@ -679,7 +679,7 @@ window.CPTD_PARTS.push({
       o: ['Define success ahead of time', 'Prepare relentlessly', 'Keep learners interested', 'Start with impact'], a: 3,
       why: '“Start with impact” means getting learners excited, empowered and involved from the beginning. “Keep learners interested” is about sustaining that later with questions, role plays, practice and peer sharing.' },
     { id: 'q-learn-fac-prep', stmt: '2.3.3', model: 'prep-areas', q: 'Preparing for a virtual session, a facilitator lists everything she might worry about. Which item does ATD advise her not to focus on, because she can’t control it?',
-      o: ['Testing the virtual platform beforehand', 'Whether learners complete the pre-work', 'Closing her own knowledge gaps on the topic', 'Preparing the visuals and learning guides'], a: 1,
+      o: ['Testing the virtual platform beforehand', 'Getting every learner to complete the pre-work', 'Closing her own knowledge gaps on the topic', 'Preparing the visuals and learning guides'], a: 1,
       why: 'ATD’s Facilitator Team advises focusing preparation on what you can control, and gives learners’ pre-work completion as an example of what you can’t. Testing the platform (technology), preparing materials and closing your own knowledge gaps (yourself) are all preparation areas she controls.' },
     { id: 'q-learn-fac-tools', stmt: '2.3.3', model: 'facil-tools', q: 'A TD lead wants to address a team’s skills gap by bringing together people with different experiences so they trade new ideas. Which of ATD’s common facilitation tools fits this need?',
       o: ['Performance appraisals', 'Development programs', 'Online learning', 'Group discussions'], a: 3,

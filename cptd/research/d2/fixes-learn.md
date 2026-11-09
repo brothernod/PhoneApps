@@ -12,3 +12,18 @@ Inputs: `check-learn.md` (Pass A, 4 findings) and `answers-learn.md` (Pass B: 1 
 | 6 | `knowles.who` (+ learn.md L241) | Pass A MINOR: 10th ed. (2025) is not by Knowles, Holton & Swanson | fixed (checker's exact fix) in content and in learn.md L241 | who: "Malcolm Knowles; Knowles, Holton & Swanson, The Adult Learner (1998). The 10th edition on ATD’s list (2025) is by Knowles, Holton, Robinson & Caraccioli."; learn.md L241: "current form in The Adult Learner: Knowles, Holton & Swanson (1998 ed., to which [S10]'s figure is credited); the 10th ed. (Routledge 2025, on the ATD list [S1]) is by Knowles, Holton, Robinson & Caraccioli." |
 
 Checks: `node cptd/tools/check-content.mjs` OK, no learn-specific warnings (the d2 "no which-model item" list is pre-existing and unchanged for learn). `claims-learn.md` (1,100 claims) and `cold-learn.md` (60 items) regenerated.
+
+## Round 2 (recheck.md, 2026-11-09)
+
+| Recheck row | Action |
+|---|---|
+| `q-learn-fac-prep` NEW GIVEAWAY | applied exact fix: `o[1]` "Getting every learner to complete the pre-work"; `why` unchanged. All four options are now gerund actions of 5–8 words (the key is 7, not the longest), and only the key is something ATD says she can’t control. |
+| `q-learn-fac-apprentice.why` SOURCE LAG | applied exact fix in learn.md item 7 (constructivism, “Structuring instruction”): "cognitive apprenticeship (modeling and coaching; [S2] “modeling and coaching a student toward expert performance”)". The quote is from [S2], already listed, so no new source number. |
+
+`claims-learn.md` (1,100 claims) and `cold-learn.md` (60 items) regenerated.
+
+Shared rows (content-d2.js and content.js, recheck.md task b and the "and/or" row): the Domain 2 "This domain" fact now reads "About 40 of the 90 multiple-choice questions (45% of the exam), plus a matching share of case steps, drawn from 18 statements: …" and Domain 1's (content.js) "About 18 of the 90 multiple-choice questions (20% of the exam), plus a matching share of case steps, drawn from 11 statements: …"; the rest of each fact is unchanged. `tips[0]` begins "This is the most heavily weighted domain (45%)." Labels 2.4.1, 2.4.4, 2.5.7 and 2.8.3 now say "and/or" as in scope.md.
+
+Not applied word for word: the recheck's fact text ("About 68 of the exam’s 150 measurement opportunities (45%): roughly 40 of the 90 multiple-choice questions …", and Domain 1's "About 30 of the 150 measurement opportunities …"). The task said to count multiple-choice questions, not scoring points, so the 68/30 lead was dropped. "(20% of the exam)" was added to Domain 1's fact to match Domain 2's.
+
+Checks: `node cptd/tools/check-content.mjs` OK, 0 errors, same 6 warnings as HEAD. `bash cptd/tools/tests/run_all.sh` all green.

@@ -93,7 +93,7 @@ window.CPTD_PARTS.push({
       name: 'Phillips ROI Methodology levels', short: 'Phillips levels', who: 'Jack J. Phillips & Patti P. Phillips, ROI Institute', kind: 'ordered', unit: 'levels',
       items: [
         { t: 'Inputs', d: 'Level 0: the input into the program in terms of scope, volume, efficiencies and costs, such as participants, hours, costs and timing. Numbered in Patti Phillips’s 2022 and 2024 materials; some ROI Institute overviews start at Level 1.' },
-        { t: 'Reaction and Planned Action', d: 'Level 1: participants’ reaction to the program and their planned action (what they intend to do with what they learned).' },
+        { t: 'Reaction and Planned Action', d: 'Level 1: participants’ reaction to the program and their planned action.' },
         { t: 'Learning', d: 'Level 2: acquiring what is necessary to make the program successful.' },
         { t: 'Application and Implementation', d: 'Level 3: using on the job what is necessary to make the program successful.' },
         { t: 'Impact', d: 'Level 4: the effect of that on-the-job use on business measures.' },
@@ -290,7 +290,7 @@ window.CPTD_PARTS.push({
     /* ----- Outcome metrics (2.8.3) ----- */
     {
       id: 'tdrp-measures', area: 'eval', stmts: ['2.8.3'], tag: 'extra',
-      name: 'TDRp types of measures', short: 'TDRp measures', who: 'Talent Development Reporting principles (TDRp), begun in 2010 by L&D leaders including Kent Barnett and Dave Vance (Center for Talent Reporting since 2012); as explained in Vance & Parskey, Measurement Demystified (2021)', kind: 'set', unit: 'types',
+      name: 'TDRp types of measures', short: 'TDRp measures', who: 'Talent Development Reporting principles (TDRp), begun in 2010 by Tamar Elkeles and Kent Barnett, with a 2011 white paper by Barnett & David Vance (Center for Talent Reporting since 2012); as explained in Vance & Parskey, Measurement Demystified (2021)', kind: 'set', unit: 'types',
       items: [
         { t: 'Efficiency measures', d: 'Answer “How much?”, such as number of participants or program costs.' },
         { t: 'Effectiveness measures', d: 'Answer “How well?”, such as participant reaction or application of learning.' },
@@ -318,7 +318,7 @@ window.CPTD_PARTS.push({
     },
     {
       id: 'tdrp-mgmt-reports', area: 'eval', stmts: ['2.8.3'], tag: 'extra',
-      name: 'TDRp management reports', short: 'Management reports', who: 'Talent Development Reporting principles (TDRp), begun in 2010 by L&D leaders including Kent Barnett and Dave Vance (Center for Talent Reporting since 2012); as explained in Vance & Parskey, Measurement Demystified (2021)', kind: 'set', unit: 'reports',
+      name: 'TDRp management reports', short: 'Management reports', who: 'Talent Development Reporting principles (TDRp), begun in 2010 by Tamar Elkeles and Kent Barnett, with a 2011 white paper by Barnett & David Vance (Center for Talent Reporting since 2012); as explained in Vance & Parskey, Measurement Demystified (2021)', kind: 'set', unit: 'reports',
       items: [
         { t: 'Program report', d: 'Covers programs that support one organizational goal, such as increasing sales.' },
         { t: 'Operations report', d: 'Aggregates measures across all courses that the CLO is managing to improve.' },
@@ -440,8 +440,8 @@ window.CPTD_PARTS.push({
       o: ['Kirkpatrick Level 4: Results', 'Phillips Level 5: ROI', 'Phillips Level 4: Impact', 'Kirkpatrick Level 3: Behavior'],
       a: 1, why: 'Only Phillips has Level 5, ROI, which compares monetary benefits with program costs. Level 4 Impact measures the business effect but doesn’t weigh its money value against costs, and Kirkpatrick’s model stops at Level 4.' },
     { id: 'q-eval-phil-l1name', stmt: '2.8.1', model: 'phillips-levels', q: 'In the ROI Institute’s fold-out model, Phillips’s Level 1 is “Reaction and ___.” What fills the blank?',
-      o: ['Engagement', 'Relevance', 'Confidence', 'Planned Action'],
-      a: 3, why: 'ROI Institute’s fold-out and Patti Phillips’s 2022 materials call Level 1 “Reaction and Planned Action”: what participants intend to do with what they learned. Engagement and relevance are New World Kirkpatrick Level 1 components, and confidence is a New World Level 2 component.' },
+      o: ['Engagement', 'Relevance', 'Critical Behaviors', 'Planned Action'],
+      a: 3, why: 'ROI Institute’s fold-out and Patti Phillips’s 2022 materials call Level 1 “Reaction and Planned Action”. Engagement and relevance are New World Kirkpatrick Level 1 components, and critical behaviors are a New World Level 3 component.' },
     { id: 'q-eval-phil-l3name', stmt: '2.8.1', model: 'phillips-levels', q: 'What is Phillips’s name for Level 3 in the ROI Methodology?',
       o: ['Behavior and Performance', 'Application and Implementation', 'Assisted Transfer', 'Critical Behaviors and Drivers'],
       a: 1, why: 'Phillips calls Level 3 “Application and Implementation” (often shortened to Application). Behavior is Kirkpatrick’s Level 3 name, Assisted Transfer is an LTEM Tier 7 sub-level, and critical behaviors and required drivers are New World Kirkpatrick Level 3 components.' },

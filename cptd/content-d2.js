@@ -25,26 +25,27 @@ window.CPTD_PARTS.push({
     '2.2.11': 'Selecting and aligning delivery options and media for training and/or learning events to the desired learning or behavioral outcomes',
     '2.2.12': 'Designing and/or developing learning assets, such as role plays, self-assessments, training manuals, job aids, and visual aids, that align to a desired learning or behavioral outcome',
     '2.3.3': 'Facilitation methods and techniques',
-    '2.4.1': 'Selecting, integrating, managing, and maintaining learning platforms, such as learning management, knowledge management, and performance management systems',
-    '2.4.4': 'Identifying, selecting, and implementing learning technologies, such as using evaluative criteria and identifying appropriate applications in an instructional environment',
+    '2.4.1': 'Selecting, integrating, managing, and/or maintaining learning platforms, such as learning management, knowledge management, and performance management systems',
+    '2.4.4': 'Identifying, selecting, and/or implementing learning technologies, such as using evaluative criteria and identifying appropriate applications in an instructional environment',
     '2.5.3': 'Designing and implementing knowledge management strategy',
-    '2.5.7': 'Curating instructional content, tools, and resources, such as researching, evaluating, selecting, and assembling publicly available online courseware',
+    '2.5.7': 'Curating instructional content, tools, and resources, such as researching, evaluating, selecting, and/or assembling publicly available online courseware',
     '2.6.6': 'Developing and implementing qualification programs',
     '2.6.8': 'Sourcing, designing, building, and evaluating leadership development experiences',
     '2.7.2': 'Helping individuals or teams identify goals, develop realistic action plans, seek development opportunities, and monitor progress and accountability',
     '2.7.3': 'Coaching supervisors and managers on methods and approaches for supporting employee development',
     '2.8.1': 'Models and methods to evaluate the impact of learning and talent development solutions',
-    '2.8.3': 'Identifying and defining individual and organizational outcome metrics based on evaluation strategy and business objectives',
+    '2.8.3': 'Identifying and defining individual and/or organizational outcome metrics based on evaluation strategy and business objectives',
     '2.8.4': 'Creating data collection tools, such as questionnaires, surveys, and structured interviews',
   },
 
   exam: {
     facts: [
-      ['This domain', 'About 68 questions’ worth (45% of the exam), drawn from 18 statements: 2.1.1, 2.1.3, 2.2.4, 2.2.6, 2.2.11, 2.2.12, 2.3.3, 2.4.1, 2.4.4, 2.5.3, 2.5.7, 2.6.6, 2.6.8, 2.7.2, 2.7.3, 2.8.1, 2.8.3, and 2.8.4.'],
+      ['This domain', 'About 40 of the 90 multiple-choice questions (45% of the exam), plus a matching share of case steps, drawn from 18 statements: 2.1.1, 2.1.3, 2.2.4, 2.2.6, 2.2.11, 2.2.12, 2.3.3, 2.4.1, 2.4.4, 2.5.3, 2.5.7, 2.6.6, 2.6.8, 2.7.2, 2.7.3, 2.8.1, 2.8.3, and 2.8.4.'],
     ],
     tips: [
-      'This is the biggest domain. Adult learning theories (2.1.3) and evaluation models (2.8.1) carry the most named models: learn who each one comes from and its levels or steps in order.',
+      'This is the most heavily weighted domain (45%). Adult learning theories (2.1.3) and evaluation models (2.8.1) carry the most named models: learn who each one comes from and its levels or steps in order.',
       'Expect applied questions: which theory, design choice, technology, or evaluation level fits the scenario.',
     ],
   },
+  version: '2026-11-09',
 });

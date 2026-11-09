@@ -31,4 +31,22 @@ After: 17 models, 53 questions, 1 case. `check-content.mjs` OK, with no new warn
 
 ## Not resolved
 
-- [S12] itself is still unseen. The remaining `guides` content (guide purposes, facilitator-guide contents, outline from the task analysis, job aids in the appendix) also came from its fetch summary, but no checker flagged it.
+- None for [S12]. Round 2 (recheck.md task a) opened the PDF and confirmed the `guides` model and `q-design-guide-fg`, `-outline` and `-pg`, except two rows: "leader guide" isn't in the tool (removed), and the participant guide has "annotated illustrations", not images (fixed). Also confirmed: the guide purposes, the facilitator-guide parts (Course Pointers, High-Level Module Notes, Directions Throughout Module, Scripted cues), building the outline from the task analysis, lean text and brief segments, images chosen by learning objective, process diagrams, job aids in the appendix, choosing by delivery method, and that "Training manual" isn't in the document. The four cue descriptions are confirmed. The tool’s "Sequencing Options" are "Focus on the Job", "By Topic" and "By Tasks or Features", so removing `content-sequencing` was right. "Space for notes" is only partly supported but acceptable.
+
+## Round 2 (recheck.md, 2026-11-09)
+
+| Recheck row | Action |
+|---|---|
+| `statements['2.2.11']`, `['2.2.6']` SOURCE LAG | applied: design.md L9 and scope.md row 2.2.A now end "to the desired learning or behavioral outcomes", citing the 2020 Test Content Outline (added to design.md as [S21] with check-design #1's quote). design.md L8 "mock-ups". Deleted the recheck sentence at the end of design.md L5 and the last "Unverified" bullet (old L373). In scope.md the old note "*(possible tail paraphrased; no named examples)*" became the citation plus "no named examples". scope.md’s 2.2.C "mockups" was left as is (not in the fix). |
+| `q-design-blend-ps.why` MISLEADING | applied exact text. |
+| `guides.items[1].d` UNSUPPORTED | applied: "Gives instructors a plan for the learning experience." Removed "leader" at design.md old L267, L272 and L286; L272 now notes that [S12] doesn’t use "leader guide". |
+| `guides.groups[0].m[0]` WORDING DRIFT | applied: "Exercises and annotated illustrations". Also changed "annotated images" to "annotated illustrations" in design.md’s participant-guide item (not in the fix; keeps the source consistent with the content). |
+| `guides` task (a) result | design.md: participant/facilitator-guide items, design tips and the scripted-cue items are marked verified against the PDF on 2026-11-09, with the recheck’s quotes. The sequencing section was rewritten to "Focus on the Job", "By Topic", "By Tasks or Features". The final "Rechecked verbatim" bullet now says cues and sequencing are verified. "Not resolved" above was replaced with the result. The [S12] entry already said "ATD Member-Only Tools", so no change. Optional `fg-cues` restore: not done. No count question was written. |
+
+`claims-design.md` (776 claims) and `cold-design.md` (57 items) regenerated.
+
+Shared rows (content-d2.js and content.js, recheck.md task b and the "and/or" row): the Domain 2 "This domain" fact now reads "About 40 of the 90 multiple-choice questions (45% of the exam), plus a matching share of case steps, drawn from 18 statements: …" and Domain 1's (content.js) "About 18 of the 90 multiple-choice questions (20% of the exam), plus a matching share of case steps, drawn from 11 statements: …"; the rest of each fact is unchanged. `tips[0]` begins "This is the most heavily weighted domain (45%)." Labels 2.4.1, 2.4.4, 2.5.7 and 2.8.3 now say "and/or" as in scope.md.
+
+Not applied word for word: the recheck's fact text ("About 68 of the exam’s 150 measurement opportunities (45%): roughly 40 of the 90 multiple-choice questions …", and Domain 1's "About 30 of the 150 measurement opportunities …"). The task said to count multiple-choice questions, not scoring points, so the 68/30 lead was dropped. "(20% of the exam)" was added to Domain 1's fact to match Domain 2's.
+
+Checks: `node cptd/tools/check-content.mjs` OK, 0 errors, same 6 warnings as HEAD. `bash cptd/tools/tests/run_all.sh` all green.

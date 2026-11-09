@@ -2,11 +2,11 @@
 
 Gap fill: 2026-11-08, 18 web calls, resolved 9 of 16 (3 more partly). Resolved: Mager's own three terms; the ATD Mager tool's example labels (the tool really does print them swapped); ABCD letter meanings; ABCD origin; *Beyond Learning Objectives* authors and date (2008, not 2016); Phillips level labels; job-aid tool headings [S10]; SAM phase of the Savvy Start and the two cycles; ATD's storyboard definition. Partly: terminal vs enabling (ATD says to use both, but gives no definition); Rossett job-aid types (book named, types not seen); wireframe (ATD uses the word, no definition). Open: mockup; Harless; exact wording in [S8] and [S12] (not rechecked).
 
-Statement wording is taken from `cptd/research/scope.md` (ATD CI CPTD Certification Handbook 2025, pp. 14–17). 2.2.11's tail may be paraphrased there; recheck it against the handbook before using it as a label.
+Statement wording is taken from `cptd/research/scope.md` (ATD CI CPTD Certification Handbook 2025, pp. 14–17).
 
 - 2.2.4 (2.2.B): Skill in developing learning and behavioral outcome statements.
-- 2.2.6 (2.2.C): Skill in designing blueprints, schematics, and/or other visual representations of learning and development solutions (for example, wireframes, storyboards, mockups).
-- 2.2.11 (2.2.A): Skill in selecting and aligning delivery options and media for training and/or learning events.
+- 2.2.6 (2.2.C): Skill in designing blueprints, schematics, and/or other visual representations of learning and development solutions (for example, wireframes, storyboards, mock-ups).
+- 2.2.11 (2.2.A): Skill in selecting and aligning delivery options and media for training and/or learning events to the desired learning or behavioral outcomes. [S21]
 - 2.2.12 (2.2.D): Skill in designing and/or developing learning assets (for example, role plays, self-assessments, training manuals, job aids, visual aids) that align to a desired learning or behavioral outcome.
 
 Sources used (numbered, so entries can cite [S1] and so on):
@@ -40,6 +40,9 @@ Added in the gap fill (2026-11-08):
 - [S18] "Navigate Your Way to Writing the Right Objectives", TD Magazine, td.org, Jan 31, 2020 (no byline shown), https://www.td.org/content/td-magazine/navigate-your-way-to-writing-the-right-objectives. Tier: other (ATD magazine).
 - [S19] "Ask a Trainer: Is Storyboarding or Rapid Prototypes a Better E-Learning Approach?", ATD Blog, td.org, Dec 17, 2019 (no byline; signed "Tim"), https://www.td.org/content/atd-blog/ask-a-trainer-is-storyboarding-or-rapid-prototypes-a-better-e-learning-approach. Tier: other (ATD blog).
 - [S20] Susan Russell, "Effective Job Aids", *Info-line* (ASTD/ATD, the predecessor of TD at Work), November 1997, section "Types of Job Aids" on O'Reilly, https://www.oreilly.com/library/view/effective-job-aidsinstructional/759711/759711_ch01lev1sec2.html. Tier: other (ATD-published periodical). Only part of the section was visible.
+
+Added in the round-2 fixes (2026-11-09):
+- [S21] CPTD Test Content Outline, ATD Certification Institute, 2020, https://assets.td.org/m/1e2439158d3738ad/original/ATD-CI-2020-CPTD-Test-Content-Outline.pdf. Tier: 2 ATD CI. Used only for 2.2.11's full wording (via check-design.md #1): 2.2.A "Skill in selecting and aligning delivery options and media for training and/or learning events" + "to the desired learning or behavioral outcomes."
 
 Note on the TDBoK: the only public TDBoK chapter (sample PDF) covers part of Domain 1, so no model in this shard can be shown to be "in the TDBoK" from a tier 1 source. Tags below are therefore `reflist`, `named` or `extra`.
 
@@ -264,16 +267,16 @@ Statement's named examples: role plays, self-assessments, training manuals, job 
 
 ### Participant guide vs facilitator guide (training manuals)
 - Origin: ATD tool. [S12]
-- Tie to the exam: 2.2.12 names "training manuals". [S12] doesn't use that phrase; participant and facilitator (leader) guides are the training-manual set it covers.
+- Tie to the exam: 2.2.12 names "training manuals". [S12] doesn't use that phrase; participant and facilitator guides are the training-manual set it covers.
 - Suggested tag: named
 - Kind: set (two guides).
-- Items [S12]:
-  1. Participant guide: supports learners in the session and serves as an on-the-job reference. Contents: modules, lessons and topics with headings and lean text; exercises, process diagrams and annotated images; reference material; job aids; title pages, table of contents, index, appendix; space for notes.
-  2. Facilitator guide (leader guide): [S12] "gives instructors a plan for the learning experience." Contents: course pointers (agenda and timing, overall plan, milestones, supplies list); module notes (preparation, timing, purpose statement, key points); directions through each module (timing, checkpoints, demonstrations, slide indicators and thumbnails); scripted cues.
+- Items [S12] (verified against the PDF on 2026-11-09, recheck.md task a; quotes via two WebFetch passes):
+  1. Participant guide: supports learners in the session and serves as an on-the-job reference. [S12] supports learners "during the learning experience and offers reference material on the job". Contents: modules, lessons and topics with headings and lean text; exercises, process diagrams and annotated illustrations ([S12] "text", "illustrations", "exercises"; "annotated illustrations of situations learners will experience on the job"); reference material; job aids ([S12] "an appendix with references and job aids"); title pages, table of contents, index, appendix; space for notes (partly supported: [S12] "tables reserved for learners to document notes", "an editable pdf for learners’ notetaking"; not in a contents list).
+  2. Facilitator guide: [S12] "The facilitator guide gives instructors a plan for the learning experience." Contents: Course Pointers (agenda and timing, overall plan, milestones, supplies list); High-Level Module Notes (preparation, timing, [S12] "Purpose statement", key points); Directions Throughout Module (timing, checkpoints, demonstrations, slide indicators and [S12] "Provide thumbnail sketches"); Scripted cues. [S12] doesn't use "leader guide".
 - Facilitator-guide scripted cues, in the source's terms [S12]: SAY, DISCUSS, ASK (polls and knowledge checks), DO (demonstrations and exercises).
-- Design tips [S12]: decide support materials and job aids with the delivery method in mind; build the outline from the task analysis; sequence by job performance, by topic, or by task or feature; chunk content with headings and lean text ([S12] "Present the words in brief segments to manage cognitive load"); choose images by learning objective; use process diagrams for procedures and decisions; use templates, confirm branding, get stakeholder approval; confirm hard copy or electronic delivery.
+- Design tips [S12] (verified 2026-11-09): decide support materials and job aids with the delivery method in mind ([S12] "Confirm the delivery method, as interactive digital job aids may provide quick access"); build the outline from the task analysis ([S12] "Use the results of your task analysis to support a structure of modules, lessons, and topics"; "Outline relevant headings"); sequence with the tool's Sequencing Options: Focus on the Job, By Topic, By Tasks or Features; chunk content with headings and lean text ([S12] "Present the words in brief segments to manage cognitive load"); choose images by learning objective ([S12] "Use learning objectives to determine images"); use process diagrams for procedures and decisions ([S12] "Process diagrams can illustrate steps as well as decisions"); use lean text ([S12] "Use lean text"); use templates, confirm branding, get stakeholder approval; confirm hard copy or electronic delivery.
 - Confusables: job aid (reference at the point of work, not a course book; [S12] puts job aids inside the participant guide's appendix). Workbook (not a term [S12] uses).
-- Unverified: "training manual" as ATD defines it, and whether the TDBoK lists the same guide contents. The four cue words came through a fetch summary; check their exact form.
+- Unverified: "training manual" as ATD defines it ([S12]: "Training manual" is not in the document), and whether the TDBoK lists the same guide contents.
 
 ### Self-assessments and visual aids (thin)
 - Tie to the exam: both named in 2.2.12.
@@ -283,28 +286,28 @@ Statement's named examples: role plays, self-assessments, training manuals, job 
 
 ### Facilitator guide scripted cues
 - Origin: ATD tool. [S12]
-- Tie to the exam: 2.2.12 (training manuals: the facilitator or leader guide).
+- Tie to the exam: 2.2.12 (training manuals: the facilitator guide).
 - Suggested tag: extra
 - Kind: set
-- Items, in the source's terms [S12]:
-  1. SAY: what the facilitator says.
-  2. DISCUSS: a group discussion point.
-  3. ASK: questions to put to learners, including polls and knowledge checks.
-  4. DO: demonstrations and exercises.
+- Items, in the source's terms [S12] (verified against the PDF on 2026-11-09, recheck.md task a):
+  1. SAY: [S12] "provide text to communicate to learners".
+  2. DISCUSS: [S12] "illustrate concepts to support an exchange with learners".
+  3. ASK: [S12] "list questions such as opening polls and knowledge checks".
+  4. DO: [S12] "outline instructions for actions such as demonstrations and exercises".
 - Confusables: Gagné's events (a lesson sequence, not script cues; shard `learn`).
-- Unverified: exact capitalization and whether other cue words exist in the full tool (read through a fetch summary). Gap fill: not rechecked.
+- Variants or contested points: the tool doesn't call the four a closed set, so don't write a count question.
 
 ### Ways to sequence course content
 - Origin: ATD tool, under building the outline from the task analysis. [S12]
 - Tie to the exam: 2.2.12 (designing training manuals and guides); also part of design (2.2.6 blueprints).
 - Suggested tag: extra
 - Kind: set (three options).
-- Items, in the source's terms [S12]:
-  1. By job performance
-  2. By topic
-  3. By task or feature
+- Items, the tool's "Sequencing Options" headings [S12] (verified against the PDF on 2026-11-09, recheck.md task a):
+  1. Focus on the Job
+  2. By Topic
+  3. By Tasks or Features
 - Confusables: Reigeluth or Gagné sequencing theories (not sourced here). Simple-to-complex and chronological sequencing (general knowledge, not in [S12]).
-- Unverified: exact wording of the three options (fetch summary). Gap fill: not rechecked.
+- Note: the earlier wording ("By job performance", "By task or feature") was from a fetch summary and was wrong; the `content-sequencing` model was removed.
 
 ### Role-play techniques
 - Origin: Wohlking and Weiner, 1971. [S11]
@@ -369,5 +372,4 @@ Statement's named examples: role plays, self-assessments, training manuals, job 
 - Self-assessments and visual aids (named in 2.2.12) have no sourced definitions or type lists.
 - "Training manuals": the ATD tool [S12] covers participant and facilitator guides but never says "training manual". Don't claim ATD equates them.
 - Job-aid types from Rossett (and Gautier-Downes or Schafer) and Harless's criteria: still unsourced. [S20] confirms the Rossett and Gautier-Downes book and the "reference job aid" type only. [S10]'s format list differs from Rossett's types.
-- Rechecked verbatim in the gap fill: job-aid headings, formats and task traits [S10] (one fix: "List of tips"); Phillips level labels [S16]. Not rechecked, so still from fetch summaries: blended components [S8], facilitator cues [S12], sequencing options [S12]. Recheck those before quoting.
-- Statement 2.2.11's tail may be paraphrased in scope.md; recheck against the handbook.
+- Rechecked verbatim in the gap fill: job-aid headings, formats and task traits [S10] (one fix: "List of tips"); Phillips level labels [S16]. Not rechecked, so still from fetch summaries: blended components [S8]. Recheck those before quoting. Facilitator cues and sequencing options [S12] were verified against the PDF on 2026-11-09 (recheck.md task a).

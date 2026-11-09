@@ -24,7 +24,7 @@ The fetch tool would only quote statements under about 125 characters word for w
 |---|---|---|
 | 2.1.A | 2.1.3 | Knowledge of theories and models of adult learning (for example, Knowles' Adult Learning Theory, Bloom's Taxonomy, Gagne's Nine Levels of Learning, Mager's Criterion-Referenced Instruction Approach, social and collaborative learning, experiential learning). *Examples in printed order; note the outline's own term "Nine Levels of Learning".* |
 | 2.1.B | 2.1.1 | Knowledge of the foundational learning theories of behaviorism, cognitivism, and constructivism. |
-| 2.2.A | 2.2.11 | Skill in selecting and aligning delivery options and media for training and/or learning events. *(possible tail paraphrased; no named examples)* |
+| 2.2.A | 2.2.11 | Skill in selecting and aligning delivery options and media for training and/or learning events to the desired learning or behavioral outcomes. *(tail from the 2020 Test Content Outline, https://assets.td.org/m/1e2439158d3738ad/original/ATD-CI-2020-CPTD-Test-Content-Outline.pdf; no named examples)* |
 | 2.2.B | 2.2.4 | Skill in developing learning and behavioral outcome statements. |
 | 2.2.C | 2.2.6 | Skill in designing blueprints, schematics, and/or other visual representations of learning and development solutions (for example, wireframes, storyboards, mockups). |
 | 2.2.D | 2.2.12 | Skill in designing and/or developing learning assets (for example, role plays, self-assessments, training manuals, job aids, visual aids) that align to a desired learning or behavioral outcome. |

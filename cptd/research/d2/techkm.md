@@ -29,6 +29,12 @@ Sources used (numbered, so entries can cite [S1] and so on):
 - [S19] U.S. Army training manual, Appendix G "After Action Reviews," GlobalSecurity.org mirror, https://www.globalsecurity.org/military/library/policy/army/fm/25-101/fm251_13.htm. The URL path indicates FM 25-101; the fetched text did not show the FM number, title or date. Tier: 3 by proxy (the Army's own doctrine, via a third-party mirror).
 - [S20] Puentedura, R. R., "SAMR: Two Questions," hippasus.com, PDF filed under 2011/11/23 (no date in the text), https://www.hippasus.com/rrpweblog/archives/2011/11/23/SAMR_TwoQuestions.pdf. Tier: 3 original author.
 
+Added in the round-2 fixes (2026-11-09), from the evidence in check-techkm.md:
+- [S21] "Tacit knowledge," Wikipedia (IPFS mirror), https://ipfs.ssi.eecc.de/ipns/en.wikipedia-on-ipfs.org/wiki/Tacit_knowledge. Tier: other (encyclopedia). Via check-techkm.md #1: "attributed to Michael Polanyi in 1958 in Personal Knowledge".
+- [S22] Jarche, H., jarche.com, 2015, https://jarche.com/?p=14382. Tier: 3 original author. Via check-techkm.md #2: "models for personal knowledge management/mastery".
+- [S23] Hansen, Nohria & Tierney, "What's Your Strategy for Managing Knowledge?" (the HBR article of [S15]), Berkeley course copy, https://blogs.ischool.berkeley.edu/i225f14/files/2014/08/Whats-your-strat-art.pdf. Tier: 3 original authors. Via check-techkm.md #4 and #5: exhibit label "PERSON-TO-PERSON"; "Do your people rely on explicit or tacit knowledge to solve problems?"; "When people use tacit knowledge most often to solve problems, the person-to-person approach works best."
+- [S24] *Knowledge Management Basics*, ATD product page, https://www.td.org/product/book--knowledge-management-basics/110911. Tier: 2 by proxy (exam owner's store page for a reading-list book). Via check-techkm.md #6: "presents a five-step process that will enable you, the learning professional, to:" then "Define your role in a knowledge management initiative and prepare to lead that effort", "Determine your organization's needs", "Locate knowledge sources", "Choose systems to gather and house information ...", "Compile, confirm, and circulate knowledge", "Maintain the knowledge system".
+
 ## 2.4.1: Selecting, integrating, managing, and maintaining learning platforms
 
 Statement examples to cover: learning management systems, knowledge management systems, performance management systems.
@@ -166,7 +172,7 @@ These three are common answers to "how do I judge whether a learning technology 
 ## 2.5.3: Knowledge management strategy
 
 ### Tacit vs explicit knowledge
-- Origin: The tacit idea is Michael Polanyi's (*The Tacit Dimension*, 1966; general knowledge, not fetched). The KM form used in TD comes from Nonaka & Takeuchi (*The Knowledge-Creating Company*, 1995) and Nonaka, Toyama & Konno (2000). [S2]
+- Origin: The tacit idea is Michael Polanyi's (*Personal Knowledge*, 1958 [S21] "attributed to Michael Polanyi in 1958 in Personal Knowledge"; *The Tacit Dimension*, 1966, general knowledge, not fetched). The KM form used in TD comes from Nonaka & Takeuchi (*The Knowledge-Creating Company*, 1995) and Nonaka, Toyama & Konno (2000). [S2]
 - Tie to the exam: 2.5.3 (KM strategy). It's the base distinction behind every KM strategy and behind SECI. It is in the scope plan's expected model load. Not shown on the reading list by name (the list gives titles only). The TDBoK text isn't available, so the TDBoK tie can't be shown.
 - Suggested tag: extra (raise to reflist only if an author can show it in Atwood's *Knowledge Management Basics* [S1])
 - Kind: set (two types)
@@ -227,18 +233,19 @@ These three are common answers to "how do I judge whether a learning technology 
 - Items, in the source's own terms:
   1. Codification strategy: knowledge is carefully codified and stored in databases, where anyone in the firm can find and reuse it. The approach is "people-to-documents". Examples: Andersen Consulting, Ernst & Young. It relies on electronic repositories and staff who codify and manage content (E&Y had a 250-person Center for Business Knowledge). [S3][S15] "people-to-documents"
   2. Personalization strategy: knowledge is closely tied to the person who developed it and is shared mainly through direct contact. IT is used to find who knows what (expert directories), not to store knowledge objects. Examples in the article's exhibit: McKinsey & Company and Bain & Company [S15]. ([S3] was earlier read as also naming BCG; the exhibit names only McKinsey and Bain, so use those two.) It relies on people networks, transfers between offices, and returning colleagues' calls quickly. [S3][S15]
+- Choosing the primary strategy [S23]: "Do your people rely on explicit or tacit knowledge to solve problems?" "When people use tacit knowledge most often to solve problems, the person-to-person approach works best."
 - Key principle (80/20): Don't split effort evenly. Effective firms focus on one strategy and use the other in a supporting role. [S3] The authors call this an 80-20 split. [S15] "80% of their knowledge sharing follows one strategy, 20% the other"
 - Exhibit "How Consulting Firms Manage Their Knowledge": five comparison rows, in this order [S15]:
   1. Competitive Strategy.
   2. Economic Model: codification = Reuse economics, which means investing once in a knowledge asset and reusing it many times. [S15] "Invest once in a knowledge asset; reuse it many times." Personalization = Expert economics, which means charging high fees for highly customized solutions to unique problems. [S15]
-  3. Knowledge Management Strategy: codification is people-to-documents [S3]; personalization is person-to-person (the second label is general knowledge, not quoted in the fetch).
+  3. Knowledge Management Strategy: codification is people-to-documents [S3]; personalization is person-to-person [S23] "PERSON-TO-PERSON".
   4. Information Technology: heavy IT support is critical for codification and much less important for personalization. [S15]
   5. Human Resources: codification hires new college graduates suited to reusing knowledge and trains people in groups and through computer-based distance learning. Personalization hires MBAs who like problem solving and can tolerate ambiguity and trains people through one-on-one mentoring. [S15]
 - Incentives (row not shown in the fetch): codification rewards people for using and contributing to document databases; personalization rewards people for directly sharing knowledge with others. [S15] At Bain, direct help given to colleagues can count for up to a quarter of a partner's annual pay. [S15]
 - Confusables: Tacit vs explicit. Codification goes with explicit knowledge and personalization with tacit, but they are strategies, not knowledge types. SECI Externalisation (tacit → explicit) is a conversion, not a strategy. People also mix this up with "know-how vs know-who". Trap pairs from the exhibit: reuse vs expert economics, group/distance training vs one-on-one mentoring, new graduates vs MBAs.
 - Variants or contested points: The 80/20 split is now confirmed in the full article [S15]; the HBS excerpt [S3] gives no ratio. KMWorld (search result, not fetched) calls the pair a "false dichotomy", which is a criticism, not ATD's position.
 - Changed: 80/20, reuse/expert economics, the incentive differences, and the IT and HR differences moved from Unverified to confirmed [S15]. The personalization examples were cut to McKinsey and Bain (the exhibit's two). Byline and issue confirmed.
-- Unverified: which exhibit row the incentives sit in (the fetch quoted the reward lines but not their row), and the exact "person-to-person" label. Quotes come from an OCR copy that the fetch tool corrected, so recheck punctuation before any verbatim use.
+- Unverified: which exhibit row the incentives sit in (the fetch quoted the reward lines but not their row). Quotes come from an OCR copy that the fetch tool corrected, so recheck punctuation before any verbatim use.
 
 ### Building a KM system: Atwood's process (reading-list book)
 - Origin: Christee Gabour Atwood, *Knowledge Management Basics*, ASTD (now ATD) Press, 2009. [S4]
@@ -254,6 +261,7 @@ These three are common answers to "how do I judge whether a learning technology 
 - Chapter list, in order (exact titles) [S4]: 1 What Is Knowledge Management? 2 How Organizations Are Using KM. 3 Determining Your Organization's KM Goals and Needs. 4 Locating Information Sources in Your Organization. 5 Creating Your KM Blueprint. 6 Compiling, Confirming, and Circulating the Knowledge. 7 Maintaining the KM System. 8 KM Resources and Tools. 9 Best Practices in KM. 10 The Future of KM.
 - Key principle: the book frames KM as something the learning professional leads or supports [S4]. That is why KM sits in the TD body of knowledge.
 - Confusables: The ADDIE phases (also needs → design → develop → implement → maintain). Foreman's LMS selection steps, which also start with needs analysis. The "three Cs" in Ch. 6 (compiling, confirming, circulating) could be mixed up with the curation steps (2.5.7).
+- ATD's own wording [S24]: ATD's product page calls it "a five-step process" and lists, first, "Define your role in a knowledge management initiative and prepare to lead that effort", then "Determine your organization's needs", "Locate knowledge sources", "Choose systems to gather and house information ...", "Compile, confirm, and circulate knowledge", "Maintain the knowledge system". So ATD words step 4 as the Ch. 6 "compile, confirm, circulate" and puts defining your role before the needs step.
 - Variants or contested points: The five-step list is the publisher's blurb paired with the chapter titles. It is not a named model. Don't present it as "Atwood's Five-Step KM Model" or similar.
 - Unverified: the book's actual content (definitions, any tacit/explicit or SECI coverage, its KM tools list). The pairing of each step with a chapter is my reading of the order, not a statement in the source.
 
@@ -346,7 +354,7 @@ Statement examples to cover: researching, evaluating, selecting, and/or assembli
   1. Seek: finding things out and keeping current, by building a network you can "pull" information from and by having trusted sources "push" it to you. [S8] "Seeking is finding things out and keeping up to date."
   2. Sense: making information personal and using it, through reflection, putting it into practice and experimenting. [S8] "Sensing is how we personalize information and use it."
   3. Share: exchanging resources, ideas and experiences with your networks and colleagues, and judging what to share, when and with whom. [S8]
-- Acronym: PKM = Personal Knowledge Mastery in Jarche's usage. [S8] Elsewhere PKM usually means "personal knowledge management". Jarche's own term is "mastery".
+- Acronym: PKM = Personal Knowledge Mastery in Jarche's usage. [S8] Elsewhere PKM usually means "personal knowledge management". Jarche's own term is now "mastery"; he has also written [S22] "personal knowledge management/mastery".
 - Process: Jarche calls PKM a continuous process. Ideas come from social networks, are filtered through communities of practice, are made sense of by doing, and are shared with the work team and then wider networks. [S8]
 - Confusables: Bhargava's five models (types, not steps). The SECI modes. Curation "find, filter, share" lists in study decks. Note Jarche's link to communities of practice.
 - Variants or contested points: Jarche's post uses "Sense" and "sense-making". The step is "Sense", not "Make sense" or "Synthesize". Jarche cites Dave Snowden's maxim that we always know more than we can say [S8]. That is Snowden, not Polanyi, though it echoes Polanyi's tacit-knowledge idea.
@@ -374,7 +382,7 @@ Statement examples to cover: researching, evaluating, selecting, and/or assembli
 - *Ready, Set, Curate* year (2015 on the list and the ATD page vs 2016 in some catalogs) and contents (any named curation model or steps, the eight contributors). Unknown. Don't attribute Bhargava or Jarche to this book.
 - Foreman's five steps come from his 2013 article, not the 2017 book. Whether the book's Ch. 6 uses the same steps or names is unknown.
 - MLE layer names: The 2022 ATD release names (Shared knowledge, Performance support, Reinforcement, Coaching, Pull training, Push training) differ from the 2017 blog (Continued reinforcement, Management support, On-demand training, Formal training). Use the 2022 names. "Bottom to top, start at layer 1" is confirmed only for the 2017 version.
-- Hansen, Nohria & Tierney: resolved in the gap fill. The 80/20 split, reuse vs expert economics, incentives, IT and HR differences are confirmed in the full HBR article [S15]. Still open: which exhibit row holds the incentives, and the exact "person-to-person" label.
+- Hansen, Nohria & Tierney: resolved in the gap fill. The 80/20 split, reuse vs expert economics, incentives, IT and HR differences are confirmed in the full HBR article [S15]. Still open: which exhibit row holds the incentives. The "person-to-person" label is confirmed [S23].
 - Gap fill status (2026-11-08) for the models that were from memory only:
   - Now sourced: SAMR [S20]; CRAAP criteria [S16]; CoP definition and three elements [S17]; SCORM, xAPI and cmi5 [S14]; LMS and LXP definitions [S13].
   - Partly sourced: AAR (content areas and definition [S18][S19], not the exact four-question wording); AICC (name only [S14]).

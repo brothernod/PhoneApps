@@ -19,3 +19,20 @@ Inputs: `check-eval.md` (Pass A, 11 findings) and `answers-eval.md` (Pass B: 0 d
 | 12 | `q-eval-phil-l1name` | Pass B two defensible (Planned Action, Satisfaction): older Phillips texts call Level 1 "Reaction and Satisfaction" | reworded so the answer rests on the distinctive part only, and dropped Satisfaction: the stem asks for the word after "Reaction and", with Kirkpatrick-component distractors (Engagement, Relevance: New World Level 1; Confidence: New World Level 2). The older "Reaction, Satisfaction, and Planned Action" still keys Planned Action. Key unchanged (Planned Action; eval.md L127) | q: "In the ROI Institute’s fold-out model, Phillips’s Level 1 is “Reaction and ___.” What fills the blank?"; o: ["Engagement", "Relevance", "Confidence", "Planned Action"]; why: "ROI Institute’s fold-out and Patti Phillips’s 2022 materials call Level 1 “Reaction and Planned Action”: what participants intend to do with what they learned. Engagement and relevance are New World Kirkpatrick Level 1 components, and confidence is a New World Level 2 component." |
 
 Checker: `node cptd/tools/check-content.mjs` OK; eval has no errors and no new warnings (`kirk-levels` and `phillips-levels` were already on the "no which model? item" list). `claims-eval.md` (989 claims) and `cold-eval.md` (63 items) regenerated.
+
+## Round 2 (recheck.md, 2026-11-09)
+
+| Recheck row | Action |
+|---|---|
+| `phillips-levels` Level 0 SOURCE LAG | added Patti Phillips’s 2024 deck to eval.md as [S20] with "The input into the project in terms of scope, volume, efficiencies, costs". Updated old L119 (Level 0 item), L129 (Unverified) and L430 (open item) so what Level 0 contains is no longer marked unsourced. |
+| planned-action gloss | took the "cut it" option: `items[1].d` "Level 1: participants’ reaction to the program and their planned action."; `q-eval-phil-l1name.why` dropped ": what participants intend to do with what they learned". |
+| `tdrp-measures.who`, `tdrp-mgmt-reports.who` UNSUPPORTED | applied exact text to both. Added the TDRp white paper to eval.md as [S21] with the "initiated the effort" quote, cited at the TDRp Origin line (old L325), which now names Elkeles and Barnett. |
+| `q-eval-phil-l1name` NEW GIVEAWAY | applied: `o[2]` "Critical Behaviors"; the `why`’s last clause is now "…and critical behaviors are a New World Level 3 component." Options: Engagement, Relevance, Critical Behaviors, Planned Action, so two are one word and two are two words, in matching style. Only Planned Action completes Phillips’s Level 1 name; the other three are Kirkpatrick components (eval.md L59–71). |
+
+`claims-eval.md` (989 claims) and `cold-eval.md` (63 items) regenerated.
+
+Shared rows (content-d2.js and content.js, recheck.md task b and the "and/or" row): the Domain 2 "This domain" fact now reads "About 40 of the 90 multiple-choice questions (45% of the exam), plus a matching share of case steps, drawn from 18 statements: …" and Domain 1's (content.js) "About 18 of the 90 multiple-choice questions (20% of the exam), plus a matching share of case steps, drawn from 11 statements: …"; the rest of each fact is unchanged. `tips[0]` begins "This is the most heavily weighted domain (45%)." Labels 2.4.1, 2.4.4, 2.5.7 and 2.8.3 now say "and/or" as in scope.md.
+
+Not applied word for word: the recheck's fact text ("About 68 of the exam’s 150 measurement opportunities (45%): roughly 40 of the 90 multiple-choice questions …", and Domain 1's "About 30 of the 150 measurement opportunities …"). The task said to count multiple-choice questions, not scoring points, so the 68/30 lead was dropped. "(20% of the exam)" was added to Domain 1's fact to match Domain 2's.
+
+Checks: `node cptd/tools/check-content.mjs` OK, 0 errors, same 6 warnings as HEAD. `bash cptd/tools/tests/run_all.sh` all green.
