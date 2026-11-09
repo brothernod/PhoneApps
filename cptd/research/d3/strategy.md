@@ -1,5 +1,7 @@
 # Talent strategy & management (3.4.3, 3.4.4, 3.4.5, 3.4.16)
 
+Gap fill: 2026-11-09, 15 web calls, resolved 6 of 18 (2 more partly: Rothwell's seven steps, TD alignment steps). Headings marked "(UNSOURCED, do not author)" have no tier 1–3 support after both passes.
+
 Written 2026-11-09 (step 2, shard `strategy`), about 23 web calls (one refused by the allowlist, one hit a login wall). 19 model entries. Stopped at the budget; see the "Stopped at" line before Open questions for what's still unsourced. Many entries here are thin (general knowledge only) and are marked so.
 
 ## Statement wording (confirmed from the handbook)
@@ -30,6 +32,11 @@ Sources used (numbered, so entries can cite [S1] and so on):
 - [S8] Ryan Panchadsaram, "What is an OKR? Definition and Examples", What Matters (John Doerr's OKR site), whatmatters.com, undated (page copyright 2025), https://www.whatmatters.com/faqs/okr-meaning-definition-example. Tier: 3 (the site of John Doerr, who popularized OKRs; author of *Measure What Matters*, 2018).
 - [S9] James R. Martin, summary of Kaplan, R. S. and D. P. Norton, "The balanced scorecard: Measures that drive performance", *Harvard Business Review* (January–February 1992): 71–79, Management And Accounting Web, https://maaw.info/ArticleSummaries/ArtSumKaplanNorton92.htm. Tier: other (academic summary of the original article; the questions come from the article's p. 72 illustration). The HBR page itself was refused by the allowlist and a university PDF copy required a login.
 - [S10] "Effective Succession Planning (First Edition) book summary", Capacity Building Solutions, capacity-building.com, dated Feb 26, 2025, https://capacity-building.com/summaries/effective-succession-planning-first-edition-book-summary/. Tier: other (consultancy's summary of Rothwell's book). Does **not** mention the seven-pointed star or the nine-box grid.
+- [S11] "Role of Goal Setting in Performance Management", ATD Blog, td.org, May 21, 2025, byline blank, https://www.td.org/content/atd-blog/role-of-goal-setting-in-performance-management. Tier: other (ATD's own blog), but it **quotes the TDBoK Guide's definition** of performance management: "Performance management, as defined by the TDBoK™ Guide, is the ongoing communication process". It lists the same four components as the glossary [S7]. It does not mention OKRs, MBO, SMART, Drucker or Doerr, and doesn't call the components a cycle. (The /atd-blog/ URL without /content/ failed.)
+- [S12] "The Growing Interest in a Strong Succession Planning Program", AMA Staff (an interview with William J. Rothwell), American Management Association, amanet.org, published Jan 24, 2019 (modified Mar 24, 2020), https://www.amanet.org/articles/the-growing-interest-in-a-strong-succession-planning-program/. Tier: 3 (Rothwell's own words; AMA's press, AMACOM, published *Effective Succession Planning*). Gives seven numbered **questions** leaders should ask when starting a succession effort; it does **not** name the seven-pointed star, the nine-box grid, or define succession vs replacement planning.
+- [S13] "SCALE: Aligning Talent Development Solutions to Strategic Objectives", ATD Blog, td.org, July 29, 2015, byline blank, https://www.td.org/content/atd-blog/scale-aligning-talent-development-solutions-to-strategic-objectives. Tier: other (ATD's editor's excerpt from the June 2015 *TD at Work* issue "Turning Trainers Into Strategic Business Partners"; the issue's author isn't shown). Gives the SCALE alignment process (three phases, three steps each). It doesn't expand the letters S-C-A-L-E.
+- [S14] "Chapter 3.4 - Talent Strategy & Management Flashcards", Brainscape (user deck, TDBoK-chapter-keyed), undated, https://www.brainscape.com/flashcards/10245369/packs/18039541. Tier: 4 (study deck; **corroboration only**, never sole support for a `tdbok` tag, per LESSONS.md). The fetch tool returned short card excerpts without saying which were correct answers and which were distractor explanations, so read every [S14] point as "a deck says", not as fact. No nine-box, OKR, Rothwell or high-potential cards.
+- Gap-fill re-fetch of [S7] (2026-11-09): with a prompt asking for every named element, the fetch tool quoted each list item in quotation marks (it still wouldn't quote whole entries). Results are folded into the entries below and change three item names.
 
 ## 3.4.16: Performance management strategy
 
@@ -54,23 +61,24 @@ What the reading-list source covers [S6]: the sample names no cycle, rating scal
   4. Rating: periodically summarize performance. [S5] "Rate periodically to summarize performance"
   5. Rewarding: recognize good performance. [S5] "Reward good performance"
 - Confusables: the many vendor four-stage versions (for example plan, monitor/coach, review, reward), which drop or merge Developing; ADDIE (`addie`) and the PM phases (`pm-phases`), which are also step lists; Kirkpatrick/Phillips evaluation levels; the HPI model and gap analysis (owned by `perf`), which diagnose performance problems rather than run the yearly cycle.
-- Variants or contested points: stage names and counts differ widely between HR vendors (three to six stages). OPM's five verbs (Plan, Monitor, Develop, Rate, Reward) are the most widely cited primary version. Which version, if any, the TDBoK uses is unknown.
-- Unverified: the TDBoK's treatment of the cycle; whether the exam uses OPM's five names.
+- Variants or contested points: stage names and counts differ widely between HR vendors (three to six stages). OPM's five verbs (Plan, Monitor, Develop, Rate, Reward) are the most widely cited primary version. The TDBoK's definition (next entry, via [S11]) uses four components instead (clarifying expectations, setting objectives, providing feedback and coaching, reviewing results), so if a question needs "the TDBoK's" stages, use those, not OPM's.
+- Unverified: whether the TDBoK also prints a staged cycle anywhere. Gap fill tried an ATD-site search for a performance management cycle: results were ATD blog posts and vendor pages; the one ATD post fetched [S11] gives the four-component definition, not a cycle.
 
-### ATD's definition of performance management (four elements)
-- Origin: ATD, "Talent Development Glossary Terms", td.org (undated, no author). [S7]
-- Tie to the exam: 3.4.16. ATD's own definition of the term in the statement. The glossary is not the TDBoK, but it is ATD's published vocabulary.
-- Suggested tag: named (the statement names performance management; the definition is ATD's own)
-- Kind: set (the glossary lists what it "includes"; the order below is the glossary's)
-- Definition: performance management is "the ongoing communication process between supervisors and employees to establish expectations", expectations that support the organization's strategic objectives. [S7] Key ideas: **ongoing** (not a once-a-year event), **communication**, between **supervisors and employees**, tied to **strategic objectives**.
-- Items (paraphrase of the glossary; the fetch tool would not quote the tail):
-  1. Clarifying expectations. [S7]
-  2. Setting goals (objectives). [S7]
-  3. Providing feedback and coaching. [S7]
-  4. Reviewing results. [S7]
-- Confusables: the OPM five-phase cycle above (Planning, Monitoring, Developing, Rating, Rewarding), which overlaps but uses different names; performance appraisal (one event inside performance management; the glossary separates a development discussion from "a performance appraisal discussion" in its IDP entry [S7]); human performance improvement (HPI, owned by `perf`).
-- Variants or contested points: the exact glossary wording of the four elements was summarized, not quoted, by the fetch tool. Recheck before using any of the four as an answer option.
-- Unverified: exact wording of items 1–4.
+### TDBoK/ATD definition of performance management (four components)
+- Origin: the **TDBoK Guide's** definition, as quoted by ATD's blog [S11] ("as defined by the TDBoK™ Guide"); the ATD glossary carries the same wording [S7].
+- Tie to the exam: 3.4.16. The TDBoK's own definition of the term in the statement. **This is the best-sourced performance management content in the file; prefer it over the OPM cycle.**
+- Suggested tag: tdbok (shown via an ATD page that attributes the definition to the TDBoK Guide; the TDBoK chapter itself wasn't seen. If checkers require the TDBoK text itself, fall back to `named`.)
+- Kind: set, printed in this order in both sources (the blog calls them components of a process, not a cycle [S11])
+- Definition: performance management is "the ongoing communication process between supervisors and employees to establish expectations" [S7] [S11], expectations that support the organization's strategic objectives (paraphrase of the tail). Key ideas: **ongoing** (not a once-a-year event), **communication**, between **supervisors and employees**, tied to **strategic objectives**.
+- Items, quoted element by element [S7] [S11]:
+  1. "clarifying expectations"
+  2. "setting objectives"
+  3. "providing feedback and coaching"
+  4. "reviewing results"
+- Changed in gap fill: item 2 was "Setting goals (objectives)" from a summary; both sources quote **"setting objectives"**. Use that.
+- Confusables: the OPM five-phase cycle above (Planning, Monitoring, Developing, Rating, Rewarding), which overlaps but uses different names; ATD's strategic planning elements ("defining goals and objectives", below), which sound alike; performance appraisal (one event inside performance management; the glossary separates a development discussion from "a performance appraisal discussion" in its IDP entry [S7]); human performance improvement (HPI, owned by `perf`).
+- Variants or contested points: none between [S7] and [S11]. Neither calls the four a "cycle" or numbers them, so don't key a question on "the first/last stage".
+- Deck corroboration [S14] (tier 4, framing only): a 3.4 deck has cards on the start and end of the performance period: at the start the manager should "provide and clarify the expectations and responsibilities of the role"; at the end the manager evaluates "the entire performance period" and gives constructive feedback. It also says performance management processes "can be integrated with talent management processes". This fits the four components (clarify first, review last) but is not itself a source for a stage list.
 
 ### 360-degree feedback (a performance management tool)
 - Origin: ATD glossary [S7]; used as a feedback source in the reading-list issue [S6].
@@ -83,7 +91,7 @@ What the reading-list source covers [S6]: the sample names no cycle, rating scal
   3. Peers. [S7]
   4. Internal and external customers. [S7]
 - Confusables: self-assessment (often added in practice, but not in the glossary's list); upward feedback (direct reports only); 180-degree feedback (manager plus self, general knowledge).
-- Unverified: whether the glossary also counts a self-rating (the fetched quote lists only the four groups).
+- Unverified: whether the glossary also counts a self-rating. The gap-fill re-fetch again returned exactly four named groups and no self-rating, so treat the glossary's list as four; just don't use "self" as a wrong answer.
 
 ### OKRs (Objectives and Key Results)
 - Origin: Andy Grove at Intel (1970s), who taught it to John Doerr; Doerr introduced it to Google's founders in 1999 and popularized it in *Measure What Matters* (2018). [S8] "created by Andy Grove at Intel and taught to John Doerr" (Grove's 1970s date and the book's year are general knowledge.)
@@ -101,7 +109,7 @@ What the reading-list source covers [S6]: the sample names no cycle, rating scal
 - Variants or contested points: OKRs are usually set quarterly, are often public across the company, are partly bottom-up, and are kept separate from compensation (general knowledge, not on the fetched page). The 0.7 sweet spot is Google lore, unconfirmed here.
 - Unverified: quarterly cadence; separation from pay; 0.7 target.
 
-### MBO (Management by Objectives)
+### MBO (Management by Objectives) (steps UNSOURCED, do not author the steps; Drucker origin is sourced [S8])
 - Origin: Peter Drucker, *The Practice of Management* (1954). [S8] says MBOs were "the brainchild of Peter Drucker" and the basis Grove built OKRs on. (The 1954 book is general knowledge.)
 - Tie to the exam: 3.4.16 (goal-based appraisal inside performance management). Not named in the statements, the reading list, or the ATD glossary [S7]. General knowledge only.
 - Suggested tag: extra
@@ -114,13 +122,15 @@ What the reading-list source covers [S6]: the sample names no cycle, rating scal
   5. Give feedback and reward, then set the next period's objectives.
 - Key ideas: objectives are **set jointly** (participative) by manager and employee, and appraisal is **against the agreed objectives**, not against traits. Drucker paired it with "self-control" ("management by objectives and self-control", general knowledge).
 - Confusables: OKRs (MBO's descendant: OKRs are typically more frequent, more public, include stretch goals and are decoupled from pay, while MBO goals are typically annual, private and tied to compensation; contrast is general knowledge); SMART (`smart`); BARS and other appraisal methods.
-- Unverified: every step above; the "self-control" phrase; the OKR/MBO contrast.
+- Deck corroboration [S14] (tier 4 only): a 3.4 deck calls management by objective(s) "a performance management tool that focuses on the achievement of organizational goals". Supports filing MBO under 3.4.16 as an appraisal tool, nothing more.
+- Unverified: every step above; the "self-control" phrase; the OKR/MBO contrast. Gap fill didn't reach a Drucker or ATD step list. Safe to author only: MBO is Drucker's [S8], OKRs grew from it [S8], and it is a goal-based performance management tool [S14, deck].
 
-### Performance appraisal methods and rater errors (pointer, thin)
+### Performance appraisal methods and rater errors (UNSOURCED, do not author)
 - Tie to the exam: 3.4.16 (choosing appraisal methods is part of designing a performance management strategy). Nothing on these was found in the reading-list sample [S6] (it mentions only "potential bias") or the ATD glossary [S7]. Not researched further for budget reasons.
 - Suggested tag: extra
 - Common content an author might want (general knowledge only, all unverified): methods such as graphic rating scales, BARS (behaviorally anchored rating scales), MBO, 360-degree feedback, forced ranking/forced distribution, critical incidents, continuous check-ins; rater errors such as halo, horns, recency, leniency, severity (strictness), central tendency, similar-to-me and contrast effects; calibration sessions to even out ratings across managers.
-- Unverified: all of it. Don't write questions from this entry without a source.
+- Deck corroboration [S14] (tier 4 only): a 3.4 deck calls the **critical incident** method "a performance management tool" that lists specific employee behaviors, and describes management by objective(s) as a performance management tool "that focuses on the achievement of organizational goals". Both show the TDBoK chapter likely covers appraisal tools, but neither is a tier 1–3 source.
+- Unverified: all of it, apart from the deck hints above. Don't write questions from this entry without a source. (UNSOURCED for rater errors; gap fill did not reach them.)
 
 ## 3.4.3: Talent strategy aligned to organizational strategy
 
@@ -129,17 +139,16 @@ What the reading-list source covers [S6]: the sample names no cycle, rating scal
 - Tie to the exam: 3.4.3 (and the capability 3.4 title). ATD's own definition of the statement's key term.
 - Suggested tag: named
 - Kind: set
-- Talent strategy and management (glossary): the practices used to build an organization's "culture, engagement, capability, and capacity" [S7], by integrating these talent processes, aligned to organizational goals (paraphrase):
-  1. Talent acquisition. [S7]
-  2. Development. [S7]
-  3. Retention. [S7]
-  4. Deployment. [S7]
+- Talent strategy and management (glossary): "the practices used to build an organization's culture" [S7], engagement, capability and capacity, by integrating these talent processes, "all aligned to organizational goals" (gap-fill fetch wording). Items, quoted element by element [S7]:
+  1. "talent acquisition"
+  2. "employee development" (changed in gap fill: the first pass had "Development")
+  3. "retention"
+  4. "deployment processes" (the glossary appends "processes" to the last item, i.e. acquisition, development, retention and deployment processes)
 - The four outcomes it builds: culture, engagement, capability, capacity. [S7] "culture, engagement, capability, and capacity"
 - Talent management (glossary): "the strategic practice of acquiring, onboarding, developing, retaining, and transitioning employees" [S7], also called human capital management (paraphrase). Five verbs:
   1. Acquiring. 2. Onboarding. 3. Developing. 4. Retaining. 5. Transitioning. [S7]
 - Confusables: the two lists above (four processes vs five verbs) and the ATD CI 3.4.1 list below (five functions) overlap but are not the same list. A question asking "which is part of talent management" should use a term that is in all of them (development) or quote one specific list. Talent development (one part of talent management) vs talent management (the whole).
-- Variants or contested points: the fetch tool summarized the "talent strategy and management" entry's tail rather than quoting it; the four process names (acquisition, development, retention, deployment) are its summary. Recheck before using them as answer options.
-- Unverified: exact wording of the four processes.
+- Variants or contested points: resolved in gap fill. The four process names are now quoted item by item [S7]; the entry name is "Talent Strategy and Management" (capitalized as in the capability title). Talent management's five verbs were also re-quoted and are unchanged.
 
 ### Talent management functions (ATD CI list, APTD statement 3.4.1)
 - Origin: ATD CI, APTD statement 3.4.1 in the 2023 comparative outlines. [S2]
@@ -164,10 +173,33 @@ What the reading-list source covers [S6]: the sample names no cycle, rating scal
   2. A systems approach to building and reinforcing organizational capability. [S4] "a systems approach to build and reinforce organizational capability"
   3. Starting with outcomes in mind when building an executive dashboard. [S4]
 - The product page also says TD shows its effect on the bottom line through "critical conversations with business-line leaders and other executives." [S4]
-- Unverified: the alignment steps themselves (not public). Don't invent a numbered list from this entry.
+- Unverified: the alignment steps themselves (not public). Don't invent a numbered list from this entry. Gap fill found a likely candidate, SCALE (next entry), whose title matches the product page's wording; whether the 2019 guide reprints it is unconfirmed.
 
-### Workforce planning (pointer, thin)
-- Tie to the exam: 3.4.3 (talent strategy). Named in ATD CI's talent management functions list (APTD 3.4.1) [S2]; no ATD glossary entry [S7].
+### SCALE alignment process (TD at Work, 2015)
+- Origin: *TD at Work*, "Turning Trainers Into Strategic Business Partners" (ATD Press, June 2015), via ATD's excerpt [S13]. Author not shown on the excerpt.
+- Tie to the exam: 3.4.3 (aligning TD to organizational strategy) and 3.4.4. ATD Press content. The reading-list guide [S3] [S4] promises "the steps to align TD solutions to strategic objectives", which matches this excerpt's title ("Aligning Talent Development Solutions to Strategic Objectives") almost word for word, but the guide's contents list wasn't seen.
+- Suggested tag: extra (ATD Press, but not shown to be in the reading-list guide or the TDBoK; upgrade to `reflist` only if someone confirms the guide includes this issue)
+- Kind: ordered (three phases, in order, each with three ordered steps) [S13]: "a structured, yet flexible, process"
+- Items, in the source's own terms [S13]:
+  - Phase 1, "Understand Stakeholders' Perceptions of Needs":
+    1. "discover issues from requestor's perspective"
+    2. "discover issues from perspectives of others"
+    3. "align stakeholder perspectives to decide alignment level"
+  - Phase 2, "Design Alignment":
+    4. "discover gaps in performance results in chosen alignment level"
+    5. "select solutions aligned to gaps and root causes"
+    6. "implementation planning and execution"
+  - Phase 3, "Track and Confirm Alignment Results":
+    7. "discover accomplishments to date"
+    8. "determine achieved alignment to date"
+    9. "make continuous improvement decisions, as required"
+- Key ideas: alignment starts from **stakeholders' perceptions**, not from a training request; solutions follow **gaps and root causes** (the same logic as gap analysis, owned by `perf`); alignment is **tracked and confirmed** after implementation, not assumed.
+- Confusables: `perf`'s gap analysis and HPI models (Phase 2 borrows their logic); `biz`'s consulting phases (Block etc.: also start with understanding the client); ADDIE (`addie`); the 70-20-10 or build-buy decisions (`ccl-70-20-10`, `build-buy`), which are solution choices, not an alignment process.
+- Unverified: what the letters S-C-A-L-E stand for (the excerpt doesn't say; don't invent an expansion); the issue's author; whether the "alignment level" means a named level set (e.g. organization, process, job/performer, as in Rummler's levels, owned by `perf`). Don't write questions about the acronym's letters.
+
+### Workforce planning (steps UNSOURCED, do not author the steps)
+- Tie to the exam: 3.4.3 (talent strategy). Named in ATD CI's talent management functions list (APTD 3.4.1) [S2]; no ATD glossary entry [S7] (gap-fill re-fetch confirmed "not present"). A 3.4 deck [S14] (tier 4) calls strategic workforce planning "a talent management process", which supports filing it under talent management, but the card's tail (that it "produces job descriptions and competencies") may be a distractor explanation, so don't use it.
+- Gap fill: an OPM search found the classic OPM model (archived page headed "STEP 1: SET STRATEGIC DIRECTION", webharvest.gov, 2004) and OPM's 2022 *Workforce Planning Guide* (chcoc.gov link redirects to https://www.opm.gov/chcoc/transmittals/2022/workforce-planning-guide_508.pdf). The archive fetch hit a rate limit and the guide's redirect wasn't followed (budget). A follow-up should fetch the opm.gov PDF for the step names. Only "Set strategic direction" as step 1 is seen, and only as a search-result title.
 - Suggested tag: extra
 - Kind: ordered (as commonly given)
 - Items (general knowledge, unverified; versions vary): 1. Set strategic direction (link to the organization's strategy); 2. Analyze current workforce supply (supply analysis); 3. Forecast future demand (demand analysis); 4. Identify gaps (gap analysis); 5. Develop and implement action plans to close gaps (build, buy, borrow, bind or bounce); 6. Monitor, evaluate and revise. OPM's federal workforce planning model is one common primary version; not fetched.
@@ -179,14 +211,24 @@ What the reading-list source covers [S6]: the sample names no cycle, rating scal
 - Tie to the exam: 3.4.3 (talent strategy), with workforce planning. No CPTD statement names it; ATD defines it [S7].
 - Suggested tag: extra (ATD glossary definition only)
 - Kind: set (the glossary's three actions, in its order)
-- Definition (ATD glossary): "the systematic process of identifying, evaluating, and developing personnel" [S7] who could fill leadership or mission-critical roles when the incumbent leaves or moves (paraphrase of the tail).
+- Definition (ATD glossary): "the systematic process of identifying, evaluating, and developing personnel who have the potential" [S7] to fill leadership or mission-critical roles when the incumbent leaves or moves (paraphrase of the tail).
   1. Identifying. 2. Evaluating. 3. Developing. [S7]
+- Vacancy triggers the glossary names (gap fill, quoted element by element) [S7]: "resignation," "termination," "transfer," "promotion," or "death of an incumbent". Five triggers; useful for "which is NOT a trigger" questions only if the distractor is clearly outside the list (e.g. a reorganization isn't named, but avoid it as a distractor since it plausibly causes a transfer).
 - Key ideas: focuses on **key positions** (leadership or mission-critical), not all jobs [S7]; it is ongoing and **systematic**. Related terms (general knowledge): succession management (broader, ongoing pipeline development), replacement planning (naming backups for specific jobs only), talent pools, bench strength, readiness ratings (ready now, ready in 1–2 years).
-- Rothwell's **seven-pointed star model** for systematic succession planning and management: a search turned up the book but no page listing the seven steps. As commonly cited (general knowledge, unverified): 1. Make the commitment; 2. Assess present work/people requirements; 3. Appraise individual performance; 4. Assess future work/people requirements; 5. Assess future individual potential; 6. Close the developmental gap; 7. Evaluate the succession planning program. Don't use without a source.
+- Rothwell's **seven-pointed star model** for systematic succession planning and management. **Gap fill: the sequence is now sourced, the step labels are not.** In a 2019 AMA interview [S12], Rothwell gives seven ordered questions to ask when starting a succession effort, introduced as "What questions should leaders consider when instituting a succession planning effort?". They line up one-for-one with the commonly cited star labels. Labels below are general knowledge (UNSOURCED); the paraphrase of each question is [S12]:
+  1. Make the commitment (UNSOURCED label). [S12]: what business needs the program meets and how success will be measured.
+  2. Assess present work/people requirements (UNSOURCED label). [S12] "What kind of people do we have now, and what do they do?"
+  3. Appraise individual performance (UNSOURCED label). [S12] "How do we measure people's performance now?"
+  4. Assess future work/people requirements (UNSOURCED label). [S12]: what kind of people are needed in the future, aligned to strategic objectives.
+  5. Assess future individual potential (UNSOURCED label). [S12]: how to know whether individuals are ready to advance.
+  6. Close the developmental gap (UNSOURCED label). [S12]: pinpoint gaps between where people are and what higher responsibility requires.
+  7. Evaluate the succession program (UNSOURCED label). [S12] "How do we measure results against the needs established in the first step?"
+  - Kind: ordered (Rothwell numbers the questions and question 7 refers back to "the first step" [S12]).
+  - Author guidance: questions that test the **order or content** of the seven (e.g. "after appraising current performance, what comes next?", or "performance is assessed now; potential is assessed for the future") are sourced via [S12]. Questions that hinge on the **exact step labels** or the name "seven-pointed star" are not; [S12] never uses that name. A search for the name plus "make the commitment" found no tier 1–3 page listing the labels.
 - Confusables: workforce planning (whole workforce); replacement planning; high-potential identification (APTD 3.4.12 [S2]); the nine-box grid (a tool used inside succession planning).
-- Unverified: Rothwell's step names and order; edition dates.
+- Unverified: Rothwell's step **labels** and the "seven-pointed star" name (the order and content are now sourced via [S12]); edition dates.
 
-### Nine-box grid (9-box talent review)
+### Nine-box grid (9-box talent review) (UNSOURCED beyond its two axes; author only "performance × potential")
 - Tie to the exam: 3.4.3 (talent reviews inside a talent strategy) and APTD 3.4.12 (identifying high-potential talent) [S2]. Not in the ATD glossary [S7], the statements, or the reading list. General knowledge only.
 - Suggested tag: extra
 - Kind: set (a 3 × 3 matrix)
@@ -196,7 +238,7 @@ What the reading-list source covers [S6]: the sample names no cycle, rating scal
   The top-right box (high performance, high potential) is the "star" or "future leader"; the bottom-left (low, low) is the "talent risk". Box labels vary by vendor.
 - Variants or contested points: the **axes are swapped** in some versions (performance on the y-axis), so never key a question on which axis is horizontal. Box names and numbering (1–9) vary widely. The grid is commonly said to be adapted from the McKinsey–GE business-portfolio matrix of the 1970s (industry attractiveness × business-unit strength); search results repeat this, but no primary source was fetched. Some vendors substitute "behaviors/values" or "readiness" for one axis.
 - Confusables: the GE–McKinsey matrix (business units, not people); the Boston Consulting Group growth-share matrix (2 × 2: stars, cash cows, question marks, dogs); SWOT (2 × 2, internal/external).
-- Unverified: everything above except that the grid rates performance and potential (a summary of Rothwell's book mentions classifying people "based on their current performance and future potential" [S10]).
+- Unverified: everything above except that the grid rates performance and potential (a summary of Rothwell's book mentions classifying people "based on their current performance and future potential" [S10]). Gap fill: a td.org-targeted search returned only vendor and HR-glossary pages (no ATD page); the one university result fetched (UNMC Moodle page) was an empty "course unavailable" notice. The 3.4 deck [S14] has no nine-box card either. Rothwell's own framing [S12] (performance measured now, readiness to advance judged for the future) supports the two-axis idea but doesn't mention the grid.
 
 ## 3.4.4: Strategic plans for TD projects, programs and functions
 
@@ -206,15 +248,15 @@ What the reading-list source covers [S6]: the sample names no cycle, rating scal
 - Suggested tag: named
 - Kind: ordered (the glossary lists them in planning order; it says no single process exists)
 - Definition: strategic planning is "the process an organization uses to identify its direction for the future" [S7]. The glossary says there is no one standard process (paraphrase), but it usually involves:
-  1. Envisioning the future. [S7]
-  2. Setting goals and objectives. [S7]
-  3. Aligning structure and resources. [S7]
-  4. Implementing the plan. [S7]
+  Quoted element by element in the gap-fill fetch [S7]:
+  1. "envisioning the future"
+  2. "defining goals and objectives" (changed in gap fill: the first pass had "Setting goals and objectives")
+  3. "aligning structure and resources"
+  4. "implementing the plan"
 - Confusables: the generic step list below; project-management phases (`pm-phases`) and the project charter (`charter`), which plan one project rather than a function's direction; the balanced scorecard (the glossary calls it a strategic planning **and management system**, i.e. a tool for executing and tracking strategy) [S7].
-- Variants or contested points: items 1–4 were summarized, not quoted, by the fetch tool. Recheck the exact words before using them as answer options.
-- Unverified: exact item wording.
+- Variants or contested points: resolved in gap fill; items now quoted. Note the near-twin wording: strategic planning says "**defining** goals and objectives", performance management says "**setting** objectives" [S7] [S11]. Don't build a question whose only difference between options is that verb.
 
-### Strategic planning steps (generic sequence, thin)
+### Strategic planning steps (generic sequence) (UNSOURCED, do not author; use ATD's four elements above instead)
 - Tie to the exam: 3.4.4 ("designing and implementing strategic plans"). No ATD or TDBoK step list was found; the reading-list book promises "steps to align TD solutions to strategic objectives" but they aren't public [S4].
 - Suggested tag: extra
 - Kind: ordered (as commonly taught)
@@ -224,7 +266,8 @@ What the reading-list source covers [S6]: the sample names no cycle, rating scal
 - Confusables: ATD's four elements above; ADDIE (`addie`) is a design process, not a strategic plan.
 - Unverified: all steps; mission/vision/values definitions.
 
-### SWOT analysis
+### SWOT analysis (UNSOURCED, do not author)
+- Gap fill: not attempted (lower priority than the statement-named and reading-list items). No tier 1–3 source in either pass. If a follow-up sources it, the internal (S, W) vs external (O, T) split is the point to test.
 - Origin: contested. Usually credited to Albert Humphrey and colleagues at the Stanford Research Institute (1960s), or traced to Harvard Business School's business-policy group (Learned, Christensen, Andrews and Guth, *Business Policy: Text and Cases*, 1965). General knowledge; no primary source fetched.
 - Tie to the exam: 3.4.4 (assessing the current state while building a strategic plan) and 3.4.5 (weaknesses and threats are anticipated constraints). Not in the statements, the reading list, or the ATD glossary [S7]. General knowledge only.
 - Suggested tag: extra
@@ -274,7 +317,13 @@ No ATD or TDBoK list of constraint types was found within budget (the ATD glossa
   2. Lack of support: missing sponsorship or buy-in from leaders, managers or other stakeholders (paraphrase).
 - Confusables: organizational barriers (owned by `biz`, statement 3.2.8 "identifying, minimizing, and overcoming organizational barriers"); resistance to change (owned by `change`); risks (`risk-responses`). A constraint is a known limit to plan around; a risk is an uncertain event; a barrier is an obstacle to implementation. That three-way distinction is general knowledge, not ATD wording, so avoid "which term" questions on it.
 
-### Common constraint categories for TD initiatives (thin)
+### Constraints analysis (deck term only)
+- Origin: a TDBoK-chapter-keyed deck [S14] (tier 4): "Constraints analysis identifies the projects limiting factors, including possible risk." No tier 1–3 source seen.
+- Tie to the exam: 3.4.5 ("identifying anticipated constraints or problems"). Suggests the TDBoK may use the term "constraints analysis" and lump possible risks in with constraints, which cuts against the constraint/risk/barrier split in the entry above.
+- Suggested tag: none yet (deck only). Don't author until a tier 1–3 source confirms the term.
+- Unverified: that the TDBoK uses "constraints analysis"; its steps, if any.
+
+### Common constraint categories for TD initiatives (UNSOURCED, do not author)
 - Tie to the exam: 3.4.5 (what "anticipated constraints or problems" means in practice).
 - Suggested tag: extra
 - Kind: set
@@ -285,7 +334,7 @@ No ATD or TDBoK list of constraint types was found within budget (the ATD glossa
 - Ways to anticipate them (general knowledge): SWOT (weaknesses, threats) during planning; stakeholder analysis (see `biz`); force field analysis (see `change`: restraining forces); risk register and responses (`risk-responses`); a project charter's assumptions and constraints section (`charter`).
 - Unverified: all categories. No ATD list was seen.
 
-### Triple constraint (project management triangle)
+### Triple constraint (project management triangle) (UNSOURCED, do not author)
 - Origin: project-management tradition, often credited to Martin Barnes (1969, "iron triangle"); general knowledge, no source fetched.
 - Tie to the exam: 3.4.5 (constraints on TD projects; 3.4.4 also says "projects"). Not in the statements, reading list or glossary [S7]. General knowledge only.
 - Suggested tag: extra
@@ -297,14 +346,17 @@ No ATD or TDBoK list of constraint types was found within budget (the ATD glossa
 
 Stopped at: web budget (about 23 calls). Not sourced and worth a follow-up if budget allows: OPM's workforce planning model; Rothwell's seven-pointed star (the O'Reilly "List of Exhibits" page for *Effective Succession Planning*, ISBN 9780814449165, appeared in search and may name it); a primary source for the nine-box grid; an ATD source on MBO, SWOT or rater errors; the TD at Work alignment steps.
 
+Stopped at (gap fill, 2026-11-09, 15 web calls, budget reached): resolved the glossary tails, the TDBoK's performance management components, Rothwell's seven-step sequence (labels still open) and a candidate alignment process (SCALE). Still open, in priority order: (1) OPM workforce planning step names: fetch https://www.opm.gov/chcoc/transmittals/2022/workforce-planning-guide_508.pdf (redirect target of a search result; one call); (2) Rothwell's star labels and the "seven-pointed star" name (O'Reilly exhibits page, above); (3) whether the 2019 guide *A Strategic Approach to Talent Development* reprints the 2015 SCALE issue, and what SCALE stands for; (4) a tier 1–3 nine-box source (no ATD page in search); (5) an ATD or TDBoK source for "constraints analysis" (3.4.5); (6) MBO steps (Drucker or ATD); (7) rater errors and appraisal methods. Not attempted: SWOT/TOWS origins, triple constraint, OKR cadence/0.7, balanced scorecard 1996 names.
+
 ## Open questions
 
 - **3.4.3's column.** The comparative outlines' text layer shows "3.4.3" once, in the APTD column, worded "aligns with"; the handbook's CPTD 3.4.B has the same statement with "aligns to". Treat it as a CPTD statement (handbook wins) and use "aligns to"; nobody has seen the PDF layout itself.
-- **Glossary tails.** The fetch tool summarized, rather than quoted, the tails of the ATD glossary entries for performance management (four elements), talent strategy and management (four processes), succession planning (who it targets) and strategic planning (four elements). Short quotes for the start of each are verbatim. Recheck the exact item words before using them as answer options.
-- **Performance management cycle.** The TDBoK's own cycle (names and number of stages) is unknown. OPM's five phases are a primary source but not ATD's. Don't key a question on a stage count unless it names OPM.
+- **Glossary tails (resolved in gap fill).** Each list item is now quoted. Three names changed from the first pass: performance management "setting objectives" (not "setting goals"), talent strategy and management "employee development" (not "development"), strategic planning "defining goals and objectives" (not "setting"). Succession planning's five vacancy triggers were added. The tails between the items are still paraphrase.
+- **Performance management cycle (largely resolved).** An ATD post [S11] attributes the four-component definition (clarifying expectations, setting objectives, providing feedback and coaching, reviewing results) to the TDBoK Guide. Use those as "the TDBoK's" performance management elements. No staged, numbered TDBoK cycle was seen, so don't key on "first/last stage" or a stage count unless the question names OPM's five phases.
+- **Rothwell's seven steps (partly resolved).** The order and content are sourced from Rothwell's own interview [S12]; the step labels and the name "seven-pointed star" are not. Test content and order, not labels.
+- **SCALE (new, ATD Press 2015).** Phases and steps quoted [S13]; the letters' meaning and the author are unknown; it isn't confirmed to be in the 2019 reading-list guide. Tag `extra`.
 - **Balanced scorecard.** Use ATD's names (Customer, Learning and growth, Internal business processes, Financial). Don't test the order, or "innovation and learning" vs "learning and growth" as if they were different perspectives.
 - **Nine-box grid.** Axes are performance and potential, but which is horizontal varies. Box labels vary. Origin in the McKinsey–GE matrix is unsourced.
-- **Rothwell's seven-pointed star.** Step names unsourced. Leave out of questions until sourced.
-- **MBO, SWOT, TOWS, triple constraint, workforce planning steps, rater errors, appraisal methods, strategic planning steps, constraint categories:** general knowledge only, no tier 1–3 source fetched. Tag `extra`, and keep questions to uncontested points (MBO = Drucker 1954, jointly set objectives; SWOT internal vs external; scope–time–cost).
+- **MBO steps, SWOT, TOWS, triple constraint, workforce planning steps, rater errors, appraisal methods, generic strategic planning steps, constraint categories:** still general knowledge only after the gap fill; their headings are now marked UNSOURCED. Authors must not write questions from them unless a later pass sources them. (The first pass suggested authoring "uncontested points" from these; that is withdrawn under the brief's rule.) The deck [S14] hints that the TDBoK covers critical incidents, MBO and "constraints analysis", but a deck can't carry a question on its own.
 - **Reading-list content.** Both 3.4 reading-list titles are 2019 TD at Work collections. Only one sample (Locwin's feedback issue) was readable, and it ends mid-article. The alignment steps in *A Strategic Approach to Talent Development* were not visible.
 - **Owned by other shards:** HPI, gap analysis, performance support (`perf`); PESTLE and force field analysis (`change`); business cases, budgets, stakeholder analysis, organizational barriers (`biz`). Already in the app: `smart`, `risk-responses`, `charter`, `build-buy`, `pm-phases`, `raci`, `sbi`, `grow`.
