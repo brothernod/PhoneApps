@@ -146,7 +146,7 @@ window.CPTD_PARTS.push({
     },
     {
       id: 'scale-align', area: 'strategy', stmts: ['3.4.3', '3.4.4'], tag: 'extra',
-      name: 'SCALE: aligning TD solutions to strategic objectives', short: 'SCALE alignment', who: 'TD at Work, “Turning Trainers Into Strategic Business Partners” (ATD Press, June 2015), via an ATD Blog excerpt', kind: 'ordered', unit: 'steps',
+      name: 'SCALE: aligning TD solutions to strategic objectives', short: 'SCALE alignment', who: 'I. Guerra-López & K. Hicks, “Turning Trainers Into Strategic Business Partners” (TD at Work, ATD Press, June 2015)', kind: 'ordered', unit: 'steps',
       items: [
         { t: 'Discover issues from requestor’s perspective', d: 'Start with how the person asking sees the need.' },
         { t: 'Discover issues from perspectives of others', d: 'Hear how other stakeholders see it.' },
@@ -167,7 +167,7 @@ window.CPTD_PARTS.push({
       decoys: ['Benchmark competitor academies', 'Storyboard the e-learning modules', 'Negotiate facilitator fees'],
       hook: 'Understand, design, track and confirm. Each phase starts by discovering something.',
       exam: 'Alignment starts with how the requestor and other stakeholders see the need; solutions are chosen to fit gaps and root causes; and alignment is tracked and confirmed after implementation, not assumed.',
-      note: 'ATD’s excerpt calls SCALE “a structured, yet flexible, process.” The excerpt doesn’t expand the letters S-C-A-L-E.',
+      note: 'ATD’s excerpt calls SCALE “a structured, yet flexible, process.” The excerpt doesn’t expand the letters S-C-A-L-E. The same issue’s four partner skills are the biz model scale-skills; the authors are named in the issue itself (see research/d3/biz.md).',
       src: 'ATD Blog, “SCALE: Aligning Talent Development Solutions to Strategic Objectives” (2015), excerpting TD at Work (June 2015)',
     },
     {
@@ -275,6 +275,7 @@ window.CPTD_PARTS.push({
     { hub: 'tm-functions', with: ['perfmgmt-tdbok', 'opm-pm-cycle'] },
     { all: ['succession-triggers', 'rothwell-succession', 'nine-box'] },
     { all: ['strat-plan-elements', 'bsc'] },
+    { all: ['scale-align', 'scale-skills'] },
   ],
 
   questions: [
