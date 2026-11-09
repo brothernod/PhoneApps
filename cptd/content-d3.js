@@ -54,6 +54,29 @@ window.CPTD_PARTS.push({
     '3.8.3': 'Techniques to promote, support, and/or generate innovation and creativity, such as design thinking, brainstorming, and ideation',
   },
 
+  // Related models across Domain 3's areas and the earlier domains (overlapping steps or items,
+  // or one list inside another). "Which model?" never offers a kin model as a wrong answer.
+  kin: [
+    { all: ['od-phases', 'block-phases', 'sb-phases', 'perf-consulting-process'] },
+    { hub: 'action-research', with: ['od-phases', 'lewin-change', 'data-analysis-steps'] },
+    { all: ['french-raven', 'mendelow-grid'] },
+    { all: ['open-systems', 'hpi-systems-view', 'rummler-levels'] },
+    { all: ['q12-levels', 'maslow'] },
+    { all: ['td-factors', 'data-int-ext'] },
+    { all: ['atd-hpi-model', 'addie'] },
+    { hub: 'perf-support-examples', with: ['job-aid-candidates', 'job-aid-formats'] },
+    { all: ['five-moments', 'mle'] },
+    { hub: 'td-barriers', with: ['gilbert-bem', 'constraints-named'] },
+    { all: ['invest-metrics', 'roi-formulas'] },
+    { all: ['scale-align', 'perf-gap-analysis'] },
+    { all: ['stakeholder-steps', 'mendelow-grid', 'data-stakeholder-segments', 'data-framing', 'labin-audiences'] },
+    { all: ['corr-causation', 'roi-isolate'] },
+    { all: ['data-qual-quant', 'phillips-hard-data'] },
+    { all: ['data-prim-sec', 'data-int-ext'] },
+    { all: ['data-cleaning', 'data-practices'] },
+    { all: ['interpret-pitfalls', 'biases'] },
+  ],
+
   exam: {
     facts: [
       ['This domain', 'About 32 of the 90 multiple-choice questions (35% of the exam), plus a matching share of case steps, drawn from 32 statements across eight capabilities: Business Insight (3.1), Consulting & Business Partnering (3.2), Organization Development & Culture (3.3), Talent Strategy & Management (3.4), Performance Improvement (3.5), Change Management (3.6), Data & Analytics (3.7), and Future Readiness (3.8).'],

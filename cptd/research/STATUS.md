@@ -4,15 +4,20 @@ Update this at the end of every step: tick the step, log the spend, and rewrite 
 
 ## Next action
 
-Step 2 is done (chat B1, 2026-11-09).
+Steps 3 and 4 are done (chat B2, 2026-11-09). Domain 3 is on branch `cptd-d3`, not on `main`.
 
-**Start chat B2 (Domain 3, steps 3–4).** Jonathan opens a new chat at **high** effort and says: *"Continue the CPTD build from cptd/research/PLAN.md in brothernod/PhoneApps."*
-- Branch `cptd-d3`. Statements, confirmed wording and TDBoK numbers are in `scope.md` (Domain 3 table); shard ownership in `research/d3/OWNERSHIP.md`. Tell each author which shard owns a shared model and which existing ids to reference (that file lists them).
-- 7 authors on `BRIEF-author.md` with dN = d3, `effort: "high"`, waves of at most 3 (2 if the window is past half used). Write `content-d3.js` (domain block, 7 areas, 32 statement labels, exam facts and tips) first, then `content-d3-<area>.js`; add the script tags to `index.html` and the files to `sw.js` (bump the cache name).
-- Authors must skip headings marked UNSOURCED / do not author, and treat study-deck-only items as `extra` at most. Model headings per file (do-not-author in brackets): biz 18 [1], change 19 [2], data 25 [2], market 22 [2], od 27 [13], perf 22 [5], strategy 21 [8]; about 120 authorable, some of them pointers to other shards.
-- Then step 4: `node cptd/tools/check-content.mjs d3` to 0 errors and `run_all.sh` green, commit, update this file, stop for B3.
+**Start chat B3 (Domain 3, steps 5–6).** Jonathan opens a new chat at **high** effort and says: *"Continue the CPTD build from cptd/research/PLAN.md in brothernod/PhoneApps."*
+- Branch `cptd-d3`. Use `BRIEF-check.md` (claims pass and cold pass, `effort: "xhigh"`), then `BRIEF-fix.md` (fixers, `effort: "high"`) and one fresh re-check agent (`xhigh`). 14 check agents for 7 areas, in waves of at most 3 (2 if the window is past half used). Cold passes go first or alongside claims passes, never after the same agent has seen the source.
+- Then merge `cptd-d3` into `main` (that deploys to the friend), log spend, update this file and `LESSONS.md`, and send Jonathan the final report.
 
-Step 2 progress (first pass / gap fill): change ✓/✓, od ✓/✓, perf ✓/✓, strategy ✓/✓, biz ✓/✓✓, market ✓/✓✓, data ✓/✓✓ (second gap fill after the usage-limit cut-off). Each file's last "Stopped at" line lists what is still open; authors skip it, they don't research it.
+Points the authors flagged for the checkers. Add each to that area's check prompt:
+- **perf:** the descriptions in `perf-basics-analyses` (six analysis types) and `perf-support-examples` (the five 3.5.6 examples) are paraphrases; the source file gives only the names. HPI principle labels are the app's own (the note says so).
+- **strategy:** `perfmgmt-tdbok` is tagged `tdbok` only through an ATD blog quoting the TDBoK (maybe `named`). `rothwell-succession` item names are the author's short paraphrases of Rothwell's questions. `scale-align` now credits Guerra-López and Hicks (from `biz.md` [S16], the issue itself) and is kin with `scale-skills`; tag left `extra`.
+- **biz:** `sb-phases` has 7 of the 8 phases ATD mentions (only 7 chapter titles found). `budget-keys` glosses only spell out the words. `block-resistance` keeps 7 of 14 faces, from their headings only.
+- **market:** `hrd-target-markets` has 4 of 6 meanings from standard marketing usage, not the 1987 source (questions test only mass marketing and selective specialization). `mkt-six-step` descriptions restate the step names. All `extra` except `ll-capability` (`named`).
+- **data:** two questions rely on the study deck's thin line between segmenting stakeholders by Function and by Decision-making authority; the cold pass should look hard at them. Questions avoid the three-vs-four analytics types count.
+- **change:** Kübler-Ross questions stick to facts true for both the seven-area curve (`kr-curve`) and the five grief stages (`kr-grief`); appreciative inquiry questions avoid counting phases (4-D vs 5-D).
+- **od:** French and Raven questions say "the original 1959 five"; action research's step 8 is "Data gathering after action" (a university page prints "Data gathering and action"; the note says so). Q12 items are a set; Q12 levels are ordered.
 
 ## Domain 2: Developing Professional Capability (conversation A)
 
@@ -28,8 +33,8 @@ Step 2 progress (first pass / gap fill): change ✓/✓, od ✓/✓, perf ✓/�
 ## Domain 3: Impacting Organizational Capability (conversation B)
 
 - [x] 2. Source files `research/d3/*.md` (chat B1, xhigh agents): 7 first passes, 7 gap fills, plus a second gap fill for biz, market, data (2026-11-09). TDBoK numbers and full wording confirmed in `scope.md`
-- [ ] 3. `content-d3.js` plus `content-d3-<area>.js` (chat B2, high authors)
-- [ ] 4. Machine checks pass (chat B2)
+- [x] 3. `content-d3.js` (metadata, 7 areas, 32 statement labels, cross-area kin) plus `content-d3-<area>.js` (7 author agents, high): 114 models, 391 questions, 7 cases
+- [x] 4. Machine checks pass (checker 0 errors; `run_all.sh` all green). Order cards now need 3+ items (Argyris's two loops); `gen_test.py` matches whole words and no longer flags “null hypothesis”; `domain_test.py` empties Domain 3 in its stub run and checks all three domains with the real files
 - [ ] 5. Claims pass and cold-answer pass (chat B3, xhigh)
 - [ ] 6. Fixes (high), re-check (xhigh), merge to `main`, spend logged, final report (chat B3)
 
@@ -41,6 +46,7 @@ Step 2 progress (first pass / gap fill): change ✓/✓, od ✓/✓, perf ✓/�
 | 2026-11-08 to 11-09 | Domain 2, conversation A (steps 0–6) | not available (`spend.py` finds no transcript in a cloud session) | agents reported about 4.75M tokens over 34 runs; main conversation stayed under about 200k history | about 225k (one agent) | Hit the 5-hour usage limit twice, with 5–7 agents running at once. All agents resumed with their work intact. |
 | 2026-11-09 | Domain 3 step 2 (chat B1): 7 first-pass + 7 gap-fill agents | not available | agents reported about 1.76M tokens over 14 runs (first passes 115–154k each, gap fills 102–140k) | about 154k (one agent) | 2–3 agents at once. The fetch tool hit the 5-hour limit near the end of the last wave (biz, market, data gap fills stopped early). Agents overran their web-call budget (up to 27 vs 15–20). |
 | 2026-11-09 | Domain 3 step 2, second gap fill for biz, market, data (chat B1) | not available | about 341k over 3 runs (107–121k each) | about 121k | No limit errors; 13–14 web calls each. Step 2 total about 2.1M over 17 runs. |
+| 2026-11-09 | Domain 3 steps 3–4 (chat B2): 7 author agents (high), machine checks | not available | about 1.29M over 7 runs (165–201k each) | about 201k (one agent); main chat well under 100k | 3 agents at once, no limit errors. Authors ran 15–29 tool calls each. Domain 3 so far about 3.4M over 24 runs. |
 
 ## Couldn't verify (carry into the final report)
 

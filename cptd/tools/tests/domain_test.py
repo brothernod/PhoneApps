@@ -3,7 +3,8 @@ real content-d2-learn.js and empties the other Domain 2 area files, so Domain 2 
 the stub whatever Domain 2 content exists:
 the Home picker, a Domain 2 sprint, the Learn filter, per-domain progress, and that a
 Domain 1 card keeps its saved box after switching domains and reloading.
-Then, with the real files, checks that a domain with no content stays hidden."""
+Domain 3's area files are emptied too, so it must stay hidden. Then, with the real files,
+checks that a domain with no content stays hidden, or that all three domains show."""
 import asyncio, json, os
 from playwright.async_api import async_playwright
 # Run from anywhere: serve the repo root first, e.g.  python3 -m http.server 8765 --bind 127.0.0.1
@@ -39,6 +40,8 @@ async def stub_page(b, w, h):
     await ctx.route('**/content-d2-learn.js', lambda r: r.fulfill(status=200, content_type='application/javascript', body=STUB))
     for a in ('design', 'techkm', 'people', 'eval'):  # the stub is Domain 2's only content
         await ctx.route(f'**/content-d2-{a}.js', lambda r: r.fulfill(status=200, content_type='application/javascript', body='/* emptied by domain_test */'))
+    for a in ('biz', 'od', 'strategy', 'market', 'perf', 'data', 'change'):  # Domain 3 stays empty, so hidden
+        await ctx.route(f'**/content-d3-{a}.js', lambda r: r.fulfill(status=200, content_type='application/javascript', body='/* emptied by domain_test */'))
     await ctx.add_init_script(SEED_JS)
     page = await ctx.new_page()
     errs = []
@@ -144,6 +147,17 @@ async def main():
                 texts.append(await page.locator('#app').inner_text())
             joined = '\n'.join(texts)
             check('empty Domain 2 stays hidden', 'Domain 2' not in joined and 'Learning sciences' not in joined and 'Instructional design' not in joined and not await page.locator('.dompick').count())
+        elif live == ['d1', 'd2', 'd3']:
+            chips = await page.locator('.dompick .chip').all_text_contents()
+            check('real files: picker lists all three domains', chips == ['All domains', '1 Personal', '2 Professional', '3 Organizational'], chips)
+            check('real files: three domain rows', await page.locator('.domrow').count() == 3)
+            await page.screenshot(path=OUT + '46-home-three-domains-412.png')
+            await page.goto(URL + '#/learn'); await page.wait_for_timeout(300)
+            heads = await page.locator('.domlabel').all_text_contents()
+            check('real files: Learn shows a Domain 3 heading', any('Domain 3' in h for h in heads), heads[:6])
+            await page.goto(URL + '#/settings'); await page.wait_for_timeout(300)
+            about = await page.locator('.about-doms').inner_text()
+            check('real files: About has all three domains with content', about.count('Domain ') == 3 and 'not in the app yet' not in about, about)
         else:
             print('real files: live domains', live, '(hidden-domain check skipped)')
         await ctx.close()
