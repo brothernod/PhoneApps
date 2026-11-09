@@ -1,11 +1,12 @@
-/* CPTD study app: Building Personal Capability.
- * Plain JavaScript, no build step. Study content lives in content.js.
+/* CPTD study app, for all three domains of the CPTD exam.
+ * Plain JavaScript, no build step. Study content lives in content*.js files;
+ * content-merge.js combines them into window.CPTD_ALL before this file runs.
  * Progress is saved in this browser only (localStorage); Settings has backup and restore.
  */
 (() => {
   'use strict';
 
-  const C = window.CPTD;
+  const C = window.CPTD_ALL;
   const app = document.getElementById('app');
   if (!C) { app.innerHTML = '<p class="empty">The study content didn’t load. Reload the page to try again.</p>'; return; }
 
@@ -52,7 +53,7 @@
   /* ================= saved state ================= */
   const fresh = () => ({
     v: 1, created: Date.now(),
-    settings: { goal: 10, sprint: 5, previews: true, haptics: true, sound: false, theme: 'auto', rate: 1, desc: false, examDate: '' },
+    settings: { goal: 10, sprint: 5, previews: true, haptics: true, sound: false, theme: 'auto', rate: 1, desc: false, examDate: '', domain: 'all' },
     time: { total: 0, days: {} },
     xp: 0, xpTime: 0,
     cards: {}, seen: {}, goalDays: {}, badges: {},
@@ -92,9 +93,16 @@
   const MBY = Object.fromEntries(MODELS.map((m) => [m.id, m]));
   const AREAS = C.areas;
   const ABY = Object.fromEntries(AREAS.map((a) => [a.id, a]));
-  const STMTS = Object.keys(C.statements);
   const STMT_AREA = {};
   AREAS.forEach((a) => a.stmts.forEach((s) => { STMT_AREA[s] = a.id; }));
+  // Domains. Only domains with content show anywhere; a domain whose area files are empty stays hidden.
+  const DOMAINS = C.domains;
+  const DBY = Object.fromEntries(DOMAINS.map((d) => [d.id, d]));
+  const LIVE = DOMAINS.filter((d) => d.live);
+  const MULTI = LIVE.length > 1;
+  const STMT_DOM = Object.fromEntries(Object.keys(STMT_AREA).map((s) => [s, ABY[STMT_AREA[s]].domain]));
+  const STMTS = Object.keys(C.statements).filter((s) => DBY[STMT_DOM[s]] && DBY[STMT_DOM[s]].live);
+  const domName = (d) => `Domain ${d.num}: ${d.name}`;
 
   const memberClash = (o, t) => o.items.some((j) => clash(j.t, t)) || (o.groups || []).some((g) => g.m.some((x) => clash(x, t)));
   // Related models (one contains or overlaps the other) are never decoys for each other.
@@ -111,18 +119,24 @@
   // A "card" is one thing the spaced-repetition schedule tracks.
   const CARDS = [];
   MODELS.forEach((m) => {
-    const base = { model: m.id, area: m.area, stmts: m.stmts };
+    const base = { model: m.id, area: m.area, domain: m.domain, stmts: m.stmts };
     if (m.decoys && m.decoys.length >= 2) CARDS.push(Object.assign({}, base, { key: `m:${m.id}:pick`, type: 'pick' }));
     if (m.kind === 'ordered') CARDS.push(Object.assign({}, base, { key: `m:${m.id}:order`, type: 'order' }));
     if (m.items.length >= 3) CARDS.push(Object.assign({}, base, { key: `m:${m.id}:match`, type: 'match' }));
     if (m.groups) CARDS.push(Object.assign({}, base, { key: `m:${m.id}:group`, type: 'group' }));
     if (UNIQUE[m.id].length) CARDS.push(Object.assign({}, base, { key: `m:${m.id}:which`, type: 'which' }));
   });
-  C.questions.forEach((q) => CARDS.push({ key: `q:${q.id}`, type: 'q', q, model: q.model || null, area: STMT_AREA[q.stmt], stmts: [q.stmt] }));
+  C.questions.forEach((q) => CARDS.push({ key: `q:${q.id}`, type: 'q', q, model: q.model || null, area: STMT_AREA[q.stmt], domain: q.domain, stmts: [q.stmt] }));
   const CBY = Object.fromEntries(CARDS.map((c) => [c.key, c]));
   const cardsWhere = (pred) => CARDS.filter(pred);
   const AREA_CARDS = Object.fromEntries(AREAS.map((a) => [a.id, cardsWhere((c) => c.area === a.id)]));
   const STMT_CARDS = Object.fromEntries(STMTS.map((s) => [s, cardsWhere((c) => c.stmts.includes(s))]));
+  const DOM_CARDS = Object.fromEntries(DOMAINS.map((d) => [d.id, cardsWhere((c) => c.domain === d.id)]));
+  const SHOWN = AREAS.filter((a) => AREA_CARDS[a.id].length); // areas that have something to study
+  // The domain picked on Home ('all' or a domain id). Falls back to 'all' if that domain has no content.
+  const curDom = () => { const d = S.settings.domain; return MULTI && DBY[d] && DBY[d].live ? d : 'all'; };
+  const inDom = (dom) => (c) => dom === 'all' || c.domain === dom;
+  const domAreas = (dom) => SHOWN.filter((a) => dom === 'all' || a.domain === dom);
 
   /* ================= spaced repetition ================= */
   const INTERVAL = [0, 1, 3, 7, 14, 30]; // days until a card comes back, by box
@@ -198,7 +212,7 @@
     { id: 'h1', icon: '⏱️', name: 'First hour', desc: 'Study 1 hour in all' },
     { id: 'h5', icon: '📚', name: 'Five hours', desc: 'Study 5 hours in all' },
     { id: 'h10', icon: '🗂️', name: 'Ten hours', desc: 'Study 10 hours in all' },
-    { id: 'h16', icon: '🎯', name: 'On ATD’s pace', desc: 'Reach the 16 hours ATD suggests for this domain' },
+    { id: 'h16', icon: '🎯', name: 'On ATD’s pace', desc: 'Reach the 16 hours ATD suggests for Domain 1' },
     { id: 's3', icon: '🔥', name: 'Three days', desc: 'Hit your daily goal 3 days running' },
     { id: 's7', icon: '📅', name: 'Full week', desc: 'Reach a 7-day streak' },
     { id: 's14', icon: '🏅', name: 'Two weeks', desc: 'Reach a 14-day streak' },
@@ -208,10 +222,10 @@
     { id: 'owl', icon: '🦉', name: 'Night owl', desc: 'Study after 9 p.m.' },
     { id: 'early', icon: '🌅', name: 'Early bird', desc: 'Study before 7 a.m.' },
     { id: 'deck', icon: '🗃️', name: 'Full deck', desc: 'Open every model in Learn' },
-    { id: 'cases', icon: '🧩', name: 'Case closed', desc: 'Finish all three practice cases' },
+    { id: 'cases', icon: '🧩', name: 'Case closed', desc: `Finish all ${C.cases.length === 3 ? 'three' : C.cases.length} practice cases` },
     { id: 'ears', icon: '🎧', name: 'Ears on', desc: 'Listen for 10 minutes' },
     { id: 'back', icon: '👋', name: 'Welcome back', desc: 'Come back after 3 or more days away' },
-  ].concat(AREAS.map((a) => ({ id: 'm-' + a.id, icon: AREA_ICON[a.id], name: `${a.name}, mastered`, desc: `Reach 80% mastery in ${a.name.toLowerCase()}` })));
+  ].concat(SHOWN.map((a) => ({ id: 'm-' + a.id, icon: a.icon || AREA_ICON[a.id] || '🏁', name: `${a.name}, mastered`, desc: `Reach 80% mastery in ${a.name.toLowerCase()}` })));
 
   function award(id) {
     if (S.badges[id]) return;
@@ -240,7 +254,7 @@
     if (MODELS.every((m) => S.seen[m.id])) award('deck');
     if (C.cases.every((c) => st.cases[c.id] != null)) award('cases');
     if (st.listen >= 600) award('ears');
-    AREAS.forEach((a) => { if (mastery(AREA_CARDS[a.id]) >= 0.8) award('m-' + a.id); });
+    SHOWN.forEach((a) => { if (mastery(AREA_CARDS[a.id]) >= 0.8) award('m-' + a.id); });
   }
 
   function addXP(n) {
@@ -418,7 +432,8 @@
         || norm(o.name).includes(norm(t)) || norm(o.note || '').includes(norm(t))
         || o.items.some((j) => norm(j.t).slice(0, 4) === norm(t).slice(0, 4) || norm(j.d).includes(norm(t)));
       const pool = MODELS.filter((o) => o.id !== m.id && !isKin(o.id, m.id) && !memberClash(o, it.t) && !near(o, it.t));
-      const others = shuffle(pool.filter((o) => o.area === m.area)).concat(shuffle(pool.filter((o) => o.area !== m.area))).slice(0, 3);
+      const others = shuffle(pool.filter((o) => o.area === m.area))
+        .concat(shuffle(pool.filter((o) => o.area !== m.area && o.domain === m.domain)), shuffle(pool.filter((o) => o.domain !== m.domain))).slice(0, 3);
       return Object.assign(base, {
         kind: 'single', ctx: 'Which model?', prompt: `“${it.t}”`, hint: 'This belongs to which model?',
         opts: shuffle([m].concat(others)).map((o) => ({ t: o.name, ok: o === m })),
@@ -470,12 +485,12 @@
   }
 
   const SPECS = {
-    mixed: () => ({ title: 'Mixed sprint', pred: () => true }),
+    mixed: (dom) => (dom && dom !== 'all' ? { title: `Domain ${DBY[dom].num} sprint`, pred: inDom(dom) } : { title: 'Mixed sprint', pred: () => true }),
     area: (id) => ({ title: ABY[id].name, pred: (c) => c.area === id }),
     stmt: (s) => ({ title: `${s} ${C.statements[s]}`, pred: (c) => c.stmts.includes(s) }),
     model: (id) => ({ title: MBY[id].name, pred: (c) => c.model === id }),
-    scen: () => ({ title: 'Exam-style questions', pred: (c) => c.type === 'q' }),
-    weak: () => ({ title: 'Weak spots', pred: (c) => { const st = S.cards[c.key]; return !!st && st.w > 0 && st.b <= 2; } }),
+    scen: (dom) => ({ title: dom && dom !== 'all' ? `Domain ${DBY[dom].num} exam-style questions` : 'Exam-style questions', pred: (c) => c.type === 'q' && inDom(dom || 'all')(c) }),
+    weak: (dom) => ({ title: dom && dom !== 'all' ? `Domain ${DBY[dom].num} weak spots` : 'Weak spots', pred: (c) => { const st = S.cards[c.key]; return inDom(dom || 'all')(c) && !!st && st.w > 0 && st.b <= 2; } }),
     keys: (keys) => { const set = new Set(keys); return { title: 'Review your misses', pred: (c) => set.has(c.key) }; },
   };
 
@@ -851,16 +866,40 @@
     return ` Exam in ${plural(days, 'day')}.`;
   }
 
+  // Domain picker chips (shown only when more than one domain has content).
+  function domainPicker(act, cur, label) {
+    if (!MULTI) return '';
+    return `<div class="chips dompick" role="group" aria-label="${esc(label)}">${[{ id: 'all', label: 'All domains' }].concat(LIVE.map((d) => ({ id: d.id, label: `${d.num} ${d.short}` })))
+      .map((o) => `<button class="chip" data-act="${act}" data-v="${o.id}" aria-pressed="${o.id === cur}">${esc(o.label)}</button>`).join('')}</div>`;
+  }
+  // Area rows; with every domain showing, each domain's areas get a small heading.
+  function areaRowsHTML(dom) {
+    let last = null;
+    return domAreas(dom).map((a) => {
+      const m = mastery(AREA_CARDS[a.id]);
+      const head = MULTI && dom === 'all' && a.domain !== last ? `<p class="domlabel">${esc(domName(DBY[a.domain]))}</p>` : '';
+      last = a.domain;
+      return `${head}<button class="arearow" style="--tab:${a.tab}" data-act="sprint" data-mode="area" data-arg="${a.id}"><span class="dot"></span><span><span class="name">${esc(a.name)}</span><div class="bar"><i style="width:${pct(m)}%"></i></div></span><span class="pct num">${pct(m)}%</span></button>`;
+    }).join('');
+  }
+  function domainRowsHTML(cur) {
+    return LIVE.map((d) => {
+      const cs = DOM_CARDS[d.id]; const m = mastery(cs);
+      return `<button class="arearow domrow" data-act="set-domain" data-v="${d.id}" aria-pressed="${d.id === cur}"><span class="dot"></span><span><span class="name">Domain ${d.num}: ${esc(d.short)}</span><div class="bar"><i style="width:${pct(m)}%"></i></div><span class="sub">${pct(touched(cs))}% seen, ${cs.filter(isDue).length} due, ${d.weight}% of the exam</span></span><span class="pct num">${pct(m)}%</span></button>`;
+    }).join('');
+  }
+
   function viewHome() {
     setTab('home');
     const li = levelInfo(); const sn = streakNow();
     const t = liveToday(); const goal = S.settings.goal * 60;
-    const dueN = CARDS.filter(isDue).length;
-    const freshN = CARDS.filter((c) => !S.cards[c.key]).length;
-    const next = buildQueue(() => true, 1)[0];
+    const dom = curDom(); const pred = inDom(dom); const dcards = CARDS.filter(pred);
+    const dueN = dcards.filter(isDue).length;
+    const freshN = dcards.filter((c) => !S.cards[c.key]).length;
+    const next = buildQueue(pred, 1)[0];
     const nextM = next && next.model ? MBY[next.model] : null;
     const isNew = next && !S.cards[next.key];
-    const area = next ? ABY[next.area] : AREAS[0];
+    const area = next ? ABY[next.area] : (domAreas(dom)[0] || AREAS[0]);
     const upTitle = nextM ? nextM.name : next ? `${next.stmts[0]} ${C.statements[next.stmts[0]]}` : 'You’re all caught up';
     const meta = [dueN ? `${plural(dueN, 'review')} due` : 'No reviews due', freshN ? `${freshN} new cards to go` : 'every card seen'].join(', ') + '.' + examCountdown();
     const mins = S.settings.sprint;
@@ -868,9 +907,11 @@
     if (sn.count && sn.done) streakSub = 'Today counted';
     else if (sn.count && sn.needPasses) streakSub = `Hit today’s goal; ${plural(sn.needPasses, 'pass')} will cover the gap`;
     else if (sn.count) streakSub = 'Hit today’s goal to keep it';
-    const weakN = CARDS.filter(SPECS.weak().pred).length;
-    paint(`<div class="topline"><span class="brand">CPTD study: Building Personal Capability</span><a class="iconbtn" href="#/settings" aria-label="Settings"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></a></div>
-      <div class="stackcards"><div class="card hero" style="--tab:${area.tab}"><span class="tab">${isNew ? 'Up next: new to you' : 'Up next'}</span>
+    const weakN = CARDS.filter(SPECS.weak(dom).pred).length;
+    const areasN = domAreas(dom).length;
+    paint(`<div class="topline"><span class="brand">CPTD study</span><a class="iconbtn" href="#/settings" aria-label="Settings"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></a></div>
+      ${domainPicker('set-domain', dom, 'Domain to study')}
+      <div class="stackcards"><div class="card hero" style="--tab:${area.tab}"><span class="tab">${isNew ? 'Up next: new to you' : 'Up next'}${dom !== 'all' ? ` in Domain ${DBY[dom].num}` : ''}</span>
         <h1>${esc(upTitle)}</h1>
         <p class="meta">${esc(meta)}</p>
         <button class="btn" data-act="sprint" data-mode="mixed">Start a ${mins}-minute sprint</button>
@@ -884,43 +925,53 @@
       <div class="totals">
         <div><b class="num" data-live="total">${fmtDur(S.time.total)}</b><span>studied in all</span></div>
         <div><b>Level ${li.l}</b><span>${esc(li.title)}</span></div>
-        <div><b class="num">${pct(mastery(CARDS))}%</b><span>domain mastery</span></div>
+        <div><b class="num">${pct(mastery(dcards))}%</b><span>${!MULTI ? 'domain mastery' : dom === 'all' ? 'overall mastery' : `Domain ${DBY[dom].num} mastery`}</span></div>
       </div>
       <section class="section"><h2>This week</h2>${weekHTML()}</section>
-      <section class="section"><h2>Your six areas</h2><p class="small muted">Tap one for a focused sprint.</p>
-        <div class="arealist">${AREAS.map((a) => { const m = mastery(AREA_CARDS[a.id]); return `<button class="arearow" style="--tab:${a.tab}" data-act="sprint" data-mode="area" data-arg="${a.id}"><span class="dot"></span><span><span class="name">${esc(a.name)}</span><div class="bar"><i style="width:${pct(m)}%"></i></div></span><span class="pct num">${pct(m)}%</span></button>`; }).join('')}</div>
+      ${MULTI ? `<section class="section"><h2>Your domains</h2><p class="small muted">Tap one to study only that domain.</p><div class="arealist">${domainRowsHTML(dom)}</div></section>` : ''}
+      <section class="section"><h2>Your ${areasN === 6 ? 'six' : areasN} areas${dom !== 'all' ? ` in Domain ${DBY[dom].num}` : ''}</h2><p class="small muted">Tap one for a focused sprint.</p>
+        <div class="arealist">${areaRowsHTML(dom)}</div>
       </section>
       <section class="section"><h2>Other ways to study</h2><div class="quick">
         <button class="tile" data-act="sprint" data-mode="weak"><b>Weak spots</b><span>${weakN ? plural(weakN, 'card') + ' to fix' : 'Nothing yet'}</span></button>
-        <button class="tile" data-act="sprint" data-mode="scen"><b>Exam-style</b><span>${C.questions.length} questions</span></button>
+        <button class="tile" data-act="sprint" data-mode="scen"><b>Exam-style</b><span>${dcards.filter((c) => c.type === 'q').length} questions</span></button>
         <a class="tile" href="#/practice"><b>Case practice</b><span>The exam’s second section</span></a>
         <a class="tile" href="#/listen"><b>Listen</b><span>Hands-free review</span></a>
       </div></section>`);
   }
 
   /* ================= learn ================= */
-  let LEARN = { filter: 'all', q: '' };
+  // LEARN.dom is the domain filter; null means "follow the domain picked on Home".
+  let LEARN = { filter: 'all', q: '', dom: null };
+  const learnDom = () => { const d = LEARN.dom || curDom(); return d === 'all' || (DBY[d] && DBY[d].live) ? d : 'all'; };
   function modelMatches(m) {
+    const dom = learnDom();
+    if (dom !== 'all' && m.domain !== dom) return false;
     if (LEARN.filter === 'tdbok' && m.tag !== 'tdbok') return false;
     if (!LEARN.q) return true;
     const q = LEARN.q.toLowerCase();
     return [m.name, m.short, m.who].concat(m.items.map((i) => i.t)).some((s) => s.toLowerCase().includes(q));
   }
   function learnListHTML() {
-    let any = false;
+    let any = false; let last = null;
     const html = AREAS.map((a) => {
       const ms = MODELS.filter((m) => m.area === a.id && modelMatches(m));
       if (!ms.length) return '';
       any = true;
-      return `<section class="section"><h2>${esc(a.name)}</h2><p class="small muted">Exam statements ${a.stmts.join(', ')}</p><div class="modellist">${ms.map((m) => `<a class="modelrow" href="#/learn/${m.id}"><b>${esc(m.name)}</b><span class="${S.seen[m.id] ? 'seen-dot' : 'unseen-dot'}" aria-label="${S.seen[m.id] ? 'Opened' : 'Not opened yet'}"></span><span class="who">${m.who === 'TDBoK Guide' ? '' : esc(m.who) + ' '}<span class="badge-tag ${m.tag}">${esc(C.tags[m.tag])}</span></span></a>`).join('')}</div></section>`;
+      const head = MULTI && learnDom() === 'all' && a.domain !== last ? `<p class="domlabel section">${esc(domName(DBY[a.domain]))}</p>` : '';
+      last = a.domain;
+      return `${head}<section class="section"><h2>${esc(a.name)}</h2><p class="small muted">Exam statements ${a.stmts.join(', ')}</p><div class="modellist">${ms.map((m) => `<a class="modelrow" href="#/learn/${m.id}"><b>${esc(m.name)}</b><span class="${S.seen[m.id] ? 'seen-dot' : 'unseen-dot'}" aria-label="${S.seen[m.id] ? 'Opened' : 'Not opened yet'}"></span><span class="who">${m.who === 'TDBoK Guide' ? '' : esc(m.who) + ' '}<span class="badge-tag ${m.tag}">${esc(C.tags[m.tag])}</span></span></a>`).join('')}</div></section>`;
     }).join('');
     return any ? html : '<p class="empty">No models match that search.</p>';
   }
   function viewLearn() {
     setTab('learn');
-    const seenN = MODELS.filter((m) => S.seen[m.id]).length;
+    const dom = learnDom();
+    const list = MODELS.filter((m) => dom === 'all' || m.domain === dom);
+    const seenN = list.filter((m) => S.seen[m.id]).length;
     paint(`<h1>Learn the models</h1>
-      <p class="muted">${seenN} of ${MODELS.length} opened. Each one is written in plain words with its source, a memory hook, and how it tends to show up on the exam.</p>
+      <p class="muted">${seenN} of ${list.length} opened${dom !== 'all' ? ` in Domain ${DBY[dom].num}` : ''}. Each one is written in plain words with its source, a memory hook, and how it tends to show up on the exam.</p>
+      ${domainPicker('learn-domain', dom, 'Domain').replace('chips dompick', 'chips dompick filter-row')}
       <input class="search" type="search" placeholder="Search models, authors, or terms" aria-label="Search models" value="${esc(LEARN.q)}" id="learnq">
       <div class="chips filter-row" role="group" aria-label="Filter">
         <button class="chip" data-act="learn-filter" data-v="all" aria-pressed="${LEARN.filter === 'all'}">All models</button>
@@ -937,9 +988,10 @@
     const area = ABY[m.area];
     const tag = m.kind === 'ordered' ? 'ol' : 'ul';
     const mine = CARDS.filter((c) => c.model === id);
-    const i = MODELS.indexOf(m); const prev = MODELS[i - 1]; const nxt = MODELS[i + 1];
+    const same = MODELS.filter((x) => x.domain === m.domain); // prev/next stay inside the model's domain
+    const i = same.indexOf(m); const prev = same[i - 1]; const nxt = same[i + 1];
     paint(`<a class="back" href="#/learn">‹ All models</a>
-      <div class="card plain model" style="--tab:${area.tab}"><span class="tab">${esc(area.name)}</span>
+      <div class="card plain model" style="--tab:${area.tab}"><span class="tab">${MULTI ? `D${DBY[m.domain].num} · ` : ''}${esc(area.name)}</span>
         <h1>${esc(m.name)}</h1>
         <p class="who">${esc(m.who)}</p>
         <div class="tags"><span class="badge-tag ${m.tag}">${esc(C.tags[m.tag])}</span>${m.stmts.map((s) => `<span class="badge-tag">${s}</span>`).join('')}</div>
@@ -963,28 +1015,35 @@
   }
 
   /* ================= practice ================= */
+  // Groups rows by live domain, with a small heading per domain when more than one has content.
+  function byDomainHTML(items, domOf, row) {
+    if (!MULTI) return items.map(row).join('');
+    return LIVE.map((d) => { const mine = items.filter((x) => domOf(x) === d.id); return mine.length ? `<p class="domlabel">${esc(domName(d))}</p>${mine.map(row).join('')}` : ''; }).join('');
+  }
   function viewPractice() {
     setTab('practice');
-    const weakN = CARDS.filter(SPECS.weak().pred).length;
+    const dom = curDom(); const pred = inDom(dom);
+    const weakN = CARDS.filter(SPECS.weak(dom).pred).length;
+    const qN = CARDS.filter((c) => c.type === 'q' && pred(c)).length;
     paint(`<h1>Practice</h1>
-      <p class="muted">Every sprint mixes reviews that are due with new material. Wrong answers come back a few cards later.</p>
-      <div class="answer-actions"><button class="btn" data-act="sprint" data-mode="mixed">Mixed ${S.settings.sprint}-minute sprint</button></div>
+      <p class="muted">Every sprint mixes reviews that are due with new material. Wrong answers come back a few cards later.${MULTI ? ` Sprints below follow the domain picked on Home: ${dom === 'all' ? 'all domains' : `Domain ${DBY[dom].num}`}.` : ''}</p>
+      <div class="answer-actions"><button class="btn" data-act="sprint" data-mode="mixed">${dom === 'all' ? 'Mixed' : `Domain ${DBY[dom].num}`} ${S.settings.sprint}-minute sprint</button></div>
       <section class="section"><h2>Focus</h2><div class="list">
-        <button class="listrow" data-act="sprint" data-mode="scen"><b>Exam-style questions only</b><span class="right num">${C.questions.length}</span><span class="sub">Scenario questions written in the exam’s four-option format</span></button>
+        <button class="listrow" data-act="sprint" data-mode="scen"><b>Exam-style questions only</b><span class="right num">${qN}</span><span class="sub">Scenario questions written in the exam’s four-option format</span></button>
         <button class="listrow" data-act="sprint" data-mode="weak"><b>Weak spots</b><span class="right num">${weakN}</span><span class="sub">Cards you’ve missed that aren’t solid yet</span></button>
       </div></section>
       <section class="section"><h2>Case practice</h2><p class="small muted">Section 2 of the exam: a scenario unfolds over several steps. Select every option that fits. Right picks earn a point, wrong picks cost one.</p><div class="list">
-        ${C.cases.map((c) => { const best = S.stats.cases[c.id]; const max = c.steps.reduce((n, st) => n + st.options.filter((o) => o[1]).length, 0); return `<a class="listrow" href="#/case/${c.id}"><b>${esc(c.title)}</b><span class="right num">${best != null ? `${best}/${max}` : 'New'}</span><span class="sub">${plural(c.steps.length, 'step')}, statements ${c.stmts.join(', ')}</span></a>`; }).join('')}
+        ${byDomainHTML(C.cases, (c) => c.domain, (c) => { const best = S.stats.cases[c.id]; const max = caseMax(c); return `<a class="listrow" href="#/case/${c.id}"><b>${esc(c.title)}</b><span class="right num">${best != null ? `${best}/${max}` : 'New'}</span><span class="sub">${plural(c.steps.length, 'step')}, statements ${c.stmts.join(', ')}</span></a>`; })}
       </div></section>
       <section class="section"><h2>By area</h2><div class="list">
-        ${AREAS.map((a) => `<button class="listrow" data-act="sprint" data-mode="area" data-arg="${a.id}"><b>${esc(a.name)}</b><span class="right num">${pct(mastery(AREA_CARDS[a.id]))}%</span><span class="sub">${plural(AREA_CARDS[a.id].filter(isDue).length, 'review')} due, ${AREA_CARDS[a.id].filter((c) => !S.cards[c.key]).length} new</span></button>`).join('')}
+        ${byDomainHTML(SHOWN, (a) => a.domain, (a) => `<button class="listrow" data-act="sprint" data-mode="area" data-arg="${a.id}"><b>${esc(a.name)}</b><span class="right num">${pct(mastery(AREA_CARDS[a.id]))}%</span><span class="sub">${plural(AREA_CARDS[a.id].filter(isDue).length, 'review')} due, ${AREA_CARDS[a.id].filter((c) => !S.cards[c.key]).length} new</span></button>`)}
       </div></section>
       <section class="section"><h2>By exam statement</h2><div class="list">
-        ${STMTS.map((s) => `<button class="listrow" data-act="sprint" data-mode="stmt" data-arg="${s}"><b>${s}</b><span class="right num">${pct(mastery(STMT_CARDS[s]))}%</span><span class="sub">${esc(C.statements[s])}</span></button>`).join('')}
+        ${byDomainHTML(STMTS, (s) => STMT_DOM[s], (s) => `<button class="listrow" data-act="sprint" data-mode="stmt" data-arg="${s}"><b>${s}</b><span class="right num">${pct(mastery(STMT_CARDS[s]))}%</span><span class="sub">${esc(C.statements[s])}</span></button>`)}
       </div></section>
       <section class="section"><h2>More</h2><div class="list">
         <a class="listrow" href="#/listen"><b>Listen</b><span class="right">›</span><span class="sub">Models read aloud for driving, dishes, or bedtime routines</span></a>
-        <a class="listrow" href="#/exam"><b>About the exam</b><span class="right">›</span><span class="sub">Format, scoring, and how this domain is tested</span></a>
+        <a class="listrow" href="#/exam"><b>About the exam</b><span class="right">›</span><span class="sub">Format, scoring, and how ${MULTI ? 'each domain' : 'this domain'} is tested</span></a>
       </div></section>`);
   }
 
@@ -1016,8 +1075,9 @@
       </section>
       <section class="section"><h2>Last six weeks</h2><div class="heat" role="img" aria-label="Calendar of study minutes">${cells.join('')}</div>
         <p class="small muted" style="margin-top:6px">Full yellow means you hit your daily goal.</p></section>
+      ${MULTI ? `<section class="section"><h2>Mastery by domain</h2>${LIVE.map((d) => { const cs = DOM_CARDS[d.id]; return `<div class="stmtrow"><div class="spread"><b>Domain ${d.num}: ${esc(d.short)}</b><span class="num">${pct(mastery(cs))}%</span></div><p class="small muted">${esc(d.name)}, ${d.weight}% of the exam. ${pct(touched(cs))}% of cards seen.</p><div class="bar thin"><i style="width:${pct(mastery(cs))}%"></i></div></div>`; }).join('')}</section>` : ''}
       <section class="section"><h2>Mastery by exam statement</h2>
-        ${STMTS.map((s) => { const cs = STMT_CARDS[s]; return `<div class="stmtrow"><div class="spread"><b>${s}</b><span class="num">${pct(mastery(cs))}%</span></div><p class="small muted">${esc(C.statements[s])}. ${pct(touched(cs))}% of cards seen.</p><div class="bar thin"><i style="width:${pct(mastery(cs))}%"></i></div></div>`; }).join('')}
+        ${byDomainHTML(STMTS, (s) => STMT_DOM[s], (s) => { const cs = STMT_CARDS[s]; return `<div class="stmtrow"><div class="spread"><b>${s}</b><span class="num">${pct(mastery(cs))}%</span></div><p class="small muted">${esc(C.statements[s])}. ${pct(touched(cs))}% of cards seen.</p><div class="bar thin"><i style="width:${pct(mastery(cs))}%"></i></div></div>`; })}
         <p class="small muted" style="margin-top:10px">Mastery climbs as cards move up the review schedule: 1, 3, 7, 14, then 30 days between reviews.</p>
       </section>
       <section class="section"><h2>Answers</h2><p>${S.stats.answered} answered, ${acc}% right on the first try, ${plural(S.stats.sprints, 'sprint')} finished.</p></section>
@@ -1052,7 +1112,9 @@
       <div class="setting"><h3>Back up your progress</h3><p class="small muted">Progress lives in this browser only. Save a backup file now and then, especially before clearing browser data or switching phones.</p>
         <div class="btn-row"><button class="btn ghost small" data-act="export">Save backup</button><button class="btn ghost small" data-act="import">Restore backup</button></div></div>
       <div class="setting"><h3>About the content</h3>
-        <p class="small">Built around the 11 Building Personal Capability statements on the CPTD content outline (effective July 1, 2020, and still the outline in ATD’s 2025 CPTD handbook). Models come from the TDBoK Guide, books on ATD’s certification reading list, and the original authors. Everything is written in plain words, not copied.</p>
+        <p class="small">CPTD study covers the three domains of the CPTD content outline (effective July 1, 2020, and still the outline in ATD’s 2025 CPTD handbook):</p>
+        <ul class="small about-doms">${DOMAINS.map((d) => { const n = Object.keys(C.statements).filter((x) => STMT_DOM[x] === d.id).length; return `<li><b>Domain ${d.num}, ${esc(d.name)}</b> (${d.weight}% of the exam): ${d.live ? `${n ? plural(n, 'statement') + ', ' : ''}${plural(d.counts.models, 'model')}, ${plural(d.counts.questions, 'exam-style question')}, ${plural(d.counts.cases, 'case')}.` : 'not in the app yet.'}</li>`; }).join('')}</ul>
+        <p class="small">Models come from the TDBoK Guide, books on ATD’s certification reading list, and the original authors. Everything is written in plain words, not copied.</p>
         <p class="small">Labels on each model: <b>In the TDBoK</b> means the TDBoK Guide covers it. <b>On ATD’s reading list</b> means it comes from a book ATD lists for exam prep. <b>Named in the exam outline</b> means the outline names that theory. <b>Good to know</b> means it’s widely used but not confirmed in the TDBoK.</p>
         <p class="small">If anything here disagrees with your TDBoK, trust the TDBoK.</p>
         <p class="small muted">Content version ${esc(C.version)}.</p></div>
@@ -1067,8 +1129,10 @@
     paint(`<a class="back" href="#/practice">‹ Practice</a><h1>About the exam</h1>
       <p class="muted">From ATD Certification Institute’s CPTD handbook and study planning guide.</p>
       <div class="facts section">${C.exam.facts.map((f) => `<div><b>${esc(f[0])}</b><span class="small">${esc(f[1])}</span></div>`).join('')}</div>
-      <section class="section"><h2>Study tips for this domain</h2><ol class="tips small">${C.exam.tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ol></section>
-      <section class="section"><h2>The 11 statements tested</h2><div class="list">${STMTS.map((s) => `<button class="listrow" data-act="sprint" data-mode="stmt" data-arg="${s}"><b>${s}</b><span class="right">›</span><span class="sub">${esc(C.statements[s])}</span></button>`).join('')}</div></section>`);
+      ${LIVE.map((d) => { const ss = STMTS.filter((x) => STMT_DOM[x] === d.id); return `${MULTI ? `<h2 class="section">${esc(domName(d))}</h2>` : ''}
+      ${d.exam.facts.length ? `<div class="facts section">${d.exam.facts.map((f) => `<div><b>${esc(f[0])}</b><span class="small">${esc(f[1])}</span></div>`).join('')}</div>` : ''}
+      ${d.exam.tips.length ? `<section class="section"><h2>Study tips for ${MULTI ? `Domain ${d.num}` : 'this domain'}</h2><ol class="tips small">${d.exam.tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ol></section>` : ''}
+      <section class="section"><h2>The ${ss.length} ${MULTI ? `Domain ${d.num} ` : ''}statements tested</h2><div class="list">${ss.map((s) => `<button class="listrow" data-act="sprint" data-mode="stmt" data-arg="${s}"><b>${s}</b><span class="right">›</span><span class="sub">${esc(C.statements[s])}</span></button>`).join('')}</div></section>`; }).join('')}`);
   }
 
   /* ================= case practice ================= */
@@ -1174,7 +1238,7 @@
     u.onerror = u.onend;
     speechSynthesis.speak(u);
   }
-  const listenModels = () => MODELS.filter((m) => LISTEN.area === 'all' || m.area === LISTEN.area);
+  const listenModels = () => MODELS.filter((m) => (LISTEN.area === 'all' ? curDom() === 'all' || m.domain === curDom() : m.area === LISTEN.area));
   function listenStep() {
     if (!LISTEN.on) return;
     const list = listenModels();
@@ -1230,7 +1294,7 @@
     if (LISTEN.i >= list.length) LISTEN.i = 0;
     paint(`<a class="back" href="#/practice">‹ Practice</a><h1>Listen</h1>
       <p class="muted">Each model is read aloud with its memory hook. Time counts while it plays, and the screen stays on.</p>
-      <div class="chips filter-row scroll-row" role="group" aria-label="Area">${[{ id: 'all', name: 'All areas' }].concat(AREAS).map((a) => `<button class="chip" data-act="listen-area" data-v="${a.id}" aria-pressed="${LISTEN.area === a.id}">${esc(a.name)}</button>`).join('')}</div>
+      <div class="chips filter-row scroll-row" role="group" aria-label="Area">${[{ id: 'all', name: curDom() === 'all' ? 'All areas' : `All of Domain ${DBY[curDom()].num}` }].concat(domAreas(curDom()).filter((a) => MODELS.some((m) => m.area === a.id))).map((a) => `<button class="chip" data-act="listen-area" data-v="${a.id}" aria-pressed="${LISTEN.area === a.id}">${esc(a.name)}</button>`).join('')}</div>
       <div class="card qcard listen-now" id="listennow" style="margin-top:28px"></div>
       <div class="player">
         <button class="btn ghost" data-act="listen-skip" data-v="-1" aria-label="Previous model">‹ Back</button>
@@ -1294,10 +1358,12 @@
     'sprint': (el) => {
       const mode = el.dataset.mode; const arg = el.dataset.arg;
       const minutes = +(el.dataset.min || S.settings.sprint);
-      const spec = mode === 'area' ? SPECS.area(arg) : mode === 'stmt' ? SPECS.stmt(arg) : mode === 'model' ? SPECS.model(arg) : mode === 'scen' ? SPECS.scen() : mode === 'weak' ? SPECS.weak() : SPECS.mixed();
+      const dom = curDom();
+      const spec = mode === 'area' ? SPECS.area(arg) : mode === 'stmt' ? SPECS.stmt(arg) : mode === 'model' ? SPECS.model(arg) : mode === 'scen' ? SPECS.scen(dom) : mode === 'weak' ? SPECS.weak(dom) : SPECS.mixed(dom);
       startRun(spec, minutes);
     },
     'sprint-len': (el) => { S.settings.sprint = +el.dataset.n; save(); viewHome(); },
+    'set-domain': (el) => { S.settings.domain = el.dataset.v; LEARN.dom = null; LISTEN.area = 'all'; save(); viewHome(); },
     'opt': (el) => {
       const Q = CUR; if (!Q || Q.done) return;
       const i = +el.dataset.i;
@@ -1322,6 +1388,7 @@
     'again': () => { if (RUN) startRun(RUN.spec, RUN.minutes); },
     'review-misses': () => { if (RUN) startRun(SPECS.keys(RUN.missed), RUN.minutes); },
     'learn-filter': (el) => { LEARN.filter = el.dataset.v; viewLearn(); },
+    'learn-domain': (el) => { LEARN.dom = el.dataset.v; viewLearn(); },
     'speak-model': (el) => speakModel(el.dataset.arg),
     'set-goal': (el) => { S.settings.goal = +el.dataset.v; const k = todayKey(); if (!S.goalDays[k] && (S.time.days[k] || 0) >= S.settings.goal * 60) goalMet(k); save(); viewSettings(); },
     'set-sprint': (el) => { S.settings.sprint = +el.dataset.v; save(); viewSettings(); },
@@ -1374,5 +1441,5 @@
   })();
   if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(() => { /* offline support is optional */ });
   route();
-  window.__cptd = { get state() { return S; }, get cur() { return CUR; }, CARDS, makeQ, buildQueue, version: C.version };
+  window.__cptd = { get state() { return S; }, get cur() { return CUR; }, C, CARDS, makeQ, buildQueue, version: C.version };
 })();

@@ -1,7 +1,7 @@
 {
-  "name": "CPTD Study: Personal Capability",
-  "short_name": "CPTD Study",
-  "description": "Short, game-like study sprints for the Building Personal Capability domain of the CPTD exam.",
+  "name": "CPTD study",
+  "short_name": "CPTD study",
+  "description": "Short, game-like study sprints for all three domains of the CPTD exam.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

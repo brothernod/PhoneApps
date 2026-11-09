@@ -15,7 +15,7 @@ async def main():
         page = await b.new_page()
         await page.goto(URL); await page.wait_for_timeout(400)
         res = await page.evaluate("""() => {
-          const C = window.CPTD, A = window.__cptd;
+          const A = window.__cptd, C = A.C;
           const norm = (s) => s.toLowerCase().replace(/\\(.*?\\)/g, '').replace(/[^a-z0-9 ]/g, ' ').replace(/\\s+/g, ' ').trim();
           const byName = Object.fromEntries(C.models.map(m => [m.name, m]));
           const kin = new Set();

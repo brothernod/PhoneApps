@@ -15,6 +15,9 @@
  *   unit (plural noun for items), items [{t, d}], groups [{t, m:[...]}] (optional),
  *   decoys (plausible wrong items for "pick all"), orderNote, hook, exam, note, src, tag.
  * Question fields: id, stmt, model (optional), q, o (4 options), a (index of the right option), why.
+ *
+ * This is Domain 1's part. `shared` holds the tags and general exam facts every domain uses;
+ * content-merge.js combines this with the other domains' files (see research/LESSONS.md).
  */
 window.CPTD = (function () {
   'use strict';
@@ -1914,15 +1917,22 @@ window.CPTD = (function () {
     },
   ];
 
-  const exam = {
+  // Exam facts that hold for every domain. Shown once, above each domain's own facts.
+  const general = {
     facts: [
       ['Length', '3 hours: 105 minutes for multiple choice, an optional 10-minute break, then 65 minutes for case scenarios. Sections are timed separately, unused time doesn’t carry over, you can’t return to Section 1, and break time over 10 minutes comes out of Section 2.'],
       ['Format', '90 four-option multiple-choice questions, then 10 case management scenarios of 3 or 4 steps each.'],
       ['Domain weights', 'Building Personal Capability 20%, Developing Professional Capability 45%, Impacting Organizational Capability 35%.'],
-      ['This domain', 'About 30 questions’ worth, drawn from 11 statements: 1.1.3, 1.1.5, 1.1.6, 1.2.1, 1.3.1, 1.3.5, 1.3.10, 1.4.6, 1.5.3, 1.5.6, and 1.6.3. Lifelong learning (1.7) is not on the CPTD outline for this domain.'],
       ['Scoring', 'Scaled from 200 to 800; 500 passes. Wrong multiple-choice answers cost nothing, and the handbook scores unanswered questions as incorrect, so answer every question.'],
       ['Case steps', 'Select one or more options per step; you must pick at least one to move on. Each right pick earns a point and each wrong pick loses one. ATD’s study guide says some options are “optional” and score zero, and options you leave unselected never cost points. You can’t go back to earlier steps.'],
       ['Outline', 'The content outline has been in effect since July 1, 2020, and it is still the one in the 2025 CPTD handbook. The handbook labels statements with letters (for example 1.4.A, 1.5.A, 1.5.B, 1.6.A); this app uses the TDBoK numbers from ATD’s APTD vs. CPTD comparison (1.4.6, 1.5.3, 1.5.6, 1.6.3).'],
+    ],
+  };
+
+  // Domain 1's own exam facts and study tips.
+  const exam = {
+    facts: [
+      ['This domain', 'About 30 questions’ worth, drawn from 11 statements: 1.1.3, 1.1.5, 1.1.6, 1.2.1, 1.3.1, 1.3.5, 1.3.10, 1.4.6, 1.5.3, 1.5.6, and 1.6.3. Lifelong learning (1.7) is not on the CPTD outline for this domain.'],
     ],
     tips: [
       'ATD’s sample questions are mostly applied: “What should the TD professional do?” Learn each model well enough to recognize it in a scenario.',
@@ -1933,5 +1943,7 @@ window.CPTD = (function () {
     ],
   };
 
-  return { areas, statements, tags, models, kin, questions, cases, exam, version: '2026-11-04' };
+  const domain = { id: 'd1', num: 1, name: 'Building Personal Capability', short: 'Personal', weight: 20 };
+
+  return { domain, areas, statements, models, kin, questions, cases, exam, shared: { tags, exam: general }, version: '2026-11-04' };
 })();

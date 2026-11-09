@@ -10,7 +10,7 @@ LAUNCH = dict(executable_path=_CHROME, args=['--no-sandbox']) if _CHROME else di
 JS = r"""
 () => {
   const { CARDS, makeQ } = window.__cptd;
-  const C = window.CPTD;
+  const C = window.__cptd.C;
   const MBY = Object.fromEntries(C.models.map(m => [m.id, m]));
   const problems = []; const counts = {};
   for (const card of CARDS) {

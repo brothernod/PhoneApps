@@ -4,30 +4,47 @@ What a new conversation needs to know about the app, the content format and Doma
 
 ## The app in brief
 
-Vanilla JS, no build step, served by GitHub Pages from `cptd/`. Works offline.
+Vanilla JS, no build step, served by GitHub Pages from `cptd/`. Works offline. The app is called "CPTD study" and covers all three domains; a domain shows up only once its area files have content.
 
 | File | What's in it |
 |---|---|
-| `index.html` (~390 lines) | Markup and all CSS: color tokens, light/dark, index-card look, `.opt` highlighter, bottom `.actbar`, `#tabs`, `#toast`, `#idle`. |
-| `app.js` (~1,380 lines) | Everything else (see below). |
-| `content.js` (~1,940 lines) | Domain 1 content, as `window.CPTD`. |
-| `sw.js` | Network-first service worker. **Bump the cache name** (`cptd-study-vN`) when shipping. |
+| `index.html` (~405 lines) | Markup and all CSS: color tokens, light/dark, index-card look, `.opt` highlighter, bottom `.actbar`, `#tabs`, `#toast`, `#idle`, domain picker (`.dompick`, `.domrow`, `.domlabel`). Loads the content files in order, then `content-merge.js`, then `app.js`. |
+| `app.js` (~1,450 lines) | Everything else (see below). Reads only `window.CPTD_ALL`. |
+| `content.js` (~1,950 lines) | Domain 1 content, as `window.CPTD`, plus `shared` (tags and general exam facts). |
+| `content-d2.js` | Domain 2 metadata: domain block, five areas, 18 statement labels, Domain 2 exam facts and tips. |
+| `content-d2-<area>.js` | One per area (`learn`, `design`, `techkm`, `people`, `eval`), filled in by authors. Empty stubs until then. |
+| `content-merge.js` | Merges every part into `window.CPTD_ALL`. The Node tools run this same file. |
+| `sw.js` | Network-first service worker. **Bump the cache name** (`cptd-study-vN`, now v3) and list every new content file when shipping. |
 | `manifest.webmanifest`, icons, `fonts/` | Install and offline support; font is Atkinson Hyperlegible Next (OFL). |
-| `tools/check-content.mjs` | Content linter. Run from the repo root: `node cptd/tools/check-content.mjs`. |
-| `tools/tests/` | Playwright tests. `run_all.sh` runs everything and prints only pass/fail lines. |
+| `tools/check-content.mjs` | Content linter. Run from the repo root: `node cptd/tools/check-content.mjs [domain or area]`, e.g. `d2` or `learn`. Loads every `content*.js` that `index.html` lists (via `tools/load-content.mjs`), checks each domain and all of them together, and reports counts per domain and area. |
+| `tools/claims.mjs` | Fact-check files for one area (see "Checker tools" below). |
+| `tools/tests/` | Playwright tests. `run_all.sh` runs everything and prints only pass/fail lines. `domain_test.py` serves `tests/fixtures/content-d2-learn-stub.js` in place of the real `content-d2-learn.js` to test the multi-domain UI. |
 | `tools/spend.py` | Token spend report for checkpoints. |
 
 Inside `app.js`, roughly top to bottom:
-- **State.** `localStorage` key `cptd-bpc-v1`. Don't rename it, or everyone's progress is lost; extend through `upgrade()`. Holds settings (goal 10 min, sprint 5 min, previews, haptics, sound, theme, speech rate, examDate), cards, time, streak, XP and stickers.
+- **State.** `localStorage` key `cptd-bpc-v1`. Don't rename it, or everyone's progress is lost; extend through `upgrade()`. Holds settings (goal 10 min, sprint 5 min, previews, haptics, sound, theme, speech rate, examDate, `domain`: `'all'` or a domain id, the Home pick), cards, time, streak, XP and stickers. Card keys don't name the domain, so Domain 1 progress needed no migration.
+- **Domains.** `DOMAINS` (all three), `LIVE` (those with content), `MULTI` (more than one live). With one live domain the UI looks as it did before domains existed: no picker, no domain headings. `curDom()` is the Home pick (falls back to `'all'`), `inDom(dom)` filters cards, `SHOWN` is the areas that have cards. Home has the picker chips, "Your domains" rows (mastery, % seen, due, weight; tapping one picks it) and the chosen domain's areas; the hero sprint, Exam-style and Weak spots follow the pick. Learn has its own domain chips (`LEARN.dom`, following Home until changed) and groups areas under domain headings. Practice, Progress and the Exam page group by domain. Settings' About lists all three domains and which have content. Exam countdown, settings and streaks are shared.
 - **Cards** are built from content: `pick` (a model with 2+ `decoys`), `order` (`kind: 'ordered'`), `match` (3+ items), `group` (has `groups`), `which` ("which model is this item from?", only for items whose word stems don't clash with any other model's items), and `q` (each exam-style question). Keys are `m:<modelId>:<type>` and `q:<questionId>`.
 - **Scheduling.** Leitner boxes with intervals `[0, 1, 3, 7, 14, 30]` days. `buildQueue` mixes due, new and later cards. Cards tried in the last 10 minutes (`RECENT_MS`) are held back a few places. A missed card is re-asked about 3 cards later in the same sprint.
-- **"Which model?" decoys** (`makeQ`) skip models whose items or name clash with the item (`near`, `memberClash`), and skip **kin** models (`content.kin`).
+- **"Which model?" decoys** (`makeQ`) skip models whose items or name clash with the item (`near`, `memberClash`), and skip **kin** models (`content.kin`). They come from the same area first, then the same domain, then other domains. Item uniqueness (`UNIQUE`) is checked across all domains, so a new domain's items can take an older model's item out of "which model?"; the checker warns when a model loses its last one (its card would disappear).
 - **Time tracking** counts only active, visible time: `IDLE_SEC` 120, `GRACE_SEC` 20. XP, levels, stickers (`BADGES`), streaks with busy-day passes (one earned per 5 streak days), and an exam countdown.
 - **Sprint runner** (`renderRun`). Bottom action bar via `ACTBAR`, `setBar`, `runBar`, `caseBar`; it always holds the next step. "Show answer" counts as a miss.
 - **Listen mode** reads models aloud (speechSynthesis plus a wake lock).
-- **Test hook:** `window.__cptd` = `{ state, cur, CARDS, makeQ, buildQueue, version }`.
+- **Test hook:** `window.__cptd` = `{ state, cur, C, CARDS, makeQ, buildQueue, version }` (`C` is the merged content).
 
-## Content format (`window.CPTD`)
+## Content format
+
+Content comes in parts, merged by `content-merge.js` into `window.CPTD_ALL`:
+
+- `content.js` sets `window.CPTD` = Domain 1's part: `{ domain: { id: 'd1', num: 1, name, short: 'Personal', weight: 20 }, areas, statements, models, kin, questions, cases, exam, shared: { tags, exam: { facts } }, version }`. `shared` holds what every domain uses: the tags and the general exam facts (length, format, weights, scoring, case steps, outline).
+- Every other file pushes onto `window.CPTD_PARTS = window.CPTD_PARTS || []`:
+  - `content-dN.js`: `{ domain: { id, num, name, short, weight }, areas, statements, exam: { facts, tips } }`.
+  - `content-dN-<area>.js`: `{ domain: 'dN', models, kin, questions, cases }` (optional `version`).
+- A part's `exam` always belongs to its domain ("This domain" fact and study tips). The merge stamps `domain` onto every area, model, question and case, concatenates lists in any number of parts, sorts by domain, and records `problems` (missing domain, a statement defined twice) for the checker. Merged: `{ domains: [{ id, num, name, short, weight, exam, areas, meta, counts, live }], areas, statements, tags, exam, models, kin, questions, cases, version, problems }`.
+- **Adding a domain** (Domain 3): write `content-d3.js` and `content-d3-<area>.js` files, add their `<script>` tags to `index.html` before `content-merge.js`, and add them to `sw.js` (and bump its cache name). No app or tool changes. Area `icon` (an emoji, for the mastery sticker) and `tab` (a hex color) go in the area entry.
+- Ids (areas, models, questions, cases) must be unique across all domains; the checker enforces it. A question or case must use statements of its own domain, and a model's area must be in its domain.
+
+Fields:
 
 ```
 areas:      [{ id, name, stmts: ['1.1.3', ...], tab: '#hex' }]
@@ -39,9 +56,22 @@ models:     [{ id, area, stmts: [], tag, name, short, who, kind: 'set' | 'ordere
 kin:        [{ hub: 'id', with: ['id', ...] } | { all: ['id', ...] }]
 questions:  [{ id, stmt, model?, q, o: [4 options], a: index, why }]
 cases:      [{ id, title, stmts: [], setup, steps: [{ text, options: [[text, true|false]], why }] }]
-exam:       { facts: [[label, text]], tips: [...] }
+exam:       { facts: [[label, text]], tips: [...] }      (the part's own domain)
 version:    'YYYY-MM-DD'
+areas[].icon: optional emoji for the area's mastery sticker
 ```
+
+A case belongs to the area of its first statement (for the checker's counts and `claims.mjs`).
+
+### Checker tools
+
+`node cptd/tools/claims.mjs <area>` writes `research/<dN>/claims-<area>.md`: a numbered list of atomic claims, each with a stable id naming its source. Models give `<id>.name`, `.who`, `.tag`, `.src`, `.stmt.N`, `.kind` (count, and the order note if ordered), `.items.N.name`, `.items.N.order`, `.items.N.desc`, `.groups.G.N`, `.decoys.N` ("X is NOT one of …"), `.hook`, `.exam`, `.note`. Questions give `<qid>.stem`, `.A`–`.D`, `.key`, `.why`. Cases give `<cid>.setup`, `.step-N.text`, `.step-N.opt-K` (RIGHT or WRONG pick), `.step-N.why`.
+
+`--cold` writes `research/<dN>/cold-<area>.md`: the area's questions and case steps with no keys, flags or `why`, the answer format at the top. Options appear in a fixed shuffled order per item (authors tend to key option A), so cold letters differ from the stored order.
+
+`--compare <answers.md>` prints only disagreements and "two defensible" flags, keyed answer next to the agent's (in the cold test's letters, with option text), then a count line and any unanswered or unknown ids. Answer lines: `q-id | B | ok`, `q-id | B | two: B,C | note`, `case-id.step-1 | 1,3 | ok`.
+
+`--out <dir>` writes somewhere other than `research/<dN>/` (useful for trying it out).
 
 Example model: `bad-news`, "Structure of a bad-news message", tag `tdbok`, kind `ordered`, items Neutral opening → Reasons → The bad news → Alternatives → Positive close, with `orderNote: 'first to last'`.
 

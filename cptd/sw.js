@@ -1,8 +1,10 @@
 // Offline support. Network first, so a fresh push shows up right away;
 // the cache is only used when there's no connection.
-const CACHE = 'cptd-study-v2';
+const CACHE = 'cptd-study-v3';
 const FILES = [
-  './', 'index.html', 'app.js', 'content.js', 'manifest.webmanifest',
+  './', 'index.html', 'app.js', 'content.js', 'content-merge.js', 'manifest.webmanifest',
+  // Domain 2: metadata, then one file per area.
+  'content-d2.js', 'content-d2-learn.js', 'content-d2-design.js', 'content-d2-techkm.js', 'content-d2-people.js', 'content-d2-eval.js',
   'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'apple-touch-icon.png',
   'fonts/atkinson-hyperlegible-next-latin-400-normal.woff2',
   'fonts/atkinson-hyperlegible-next-latin-400-italic.woff2',

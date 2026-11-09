@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>CPTD Study: Personal Capability</title>
+<title>CPTD study</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Short, game-like study sprints for the Building Personal Capability domain of the CPTD exam.">
+<meta name="description" content="Short, game-like study sprints for all three domains of the CPTD exam.">
 <meta name="theme-color" content="#E8EDF4" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0E1530" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -178,6 +178,15 @@
   .arearow .name { font-weight: 700; }
   .arearow .bar { margin-top: 6px; height: 8px; }
   .arearow .pct { font-weight: 800; font-size: 15px; min-width: 3.2em; text-align: right; }
+  /* domains: picker chips, per-domain rows, small headings between domains */
+  .dompick { margin-top: 10px; }
+  .dompick.filter-row { margin-bottom: 12px; }
+  .dompick .chip { min-height: 38px; padding: 5px 12px; font-size: 14.5px; }
+  .domlabel { margin: 14px 0 2px; font-size: 13px; font-weight: 800; letter-spacing: .02em; text-transform: uppercase; color: var(--ink-2); }
+  .domrow .dot { background: var(--rule); }
+  .domrow[aria-pressed="true"] .dot { background: var(--hl); }
+  .domrow .sub { display: block; margin-top: 4px; font-size: 13px; color: var(--ink-2); }
+  .about-doms { padding-left: 20px; display: grid; gap: 4px; }
   .quick { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .tile {
     display: block; padding: 14px; border-radius: 10px; border: 0; text-align: left; text-decoration: none;
@@ -383,7 +392,15 @@
 </nav>
 <div id="toast" role="status" aria-live="polite"></div>
 <div id="idle" hidden>Paused while you were away. Tap anywhere to keep the clock running.</div>
+<!-- Content parts: Domain 1, then each domain's metadata and its area files. content-merge.js combines them. -->
 <script src="content.js"></script>
+<script src="content-d2.js"></script>
+<script src="content-d2-learn.js"></script>
+<script src="content-d2-design.js"></script>
+<script src="content-d2-techkm.js"></script>
+<script src="content-d2-people.js"></script>
+<script src="content-d2-eval.js"></script>
+<script src="content-merge.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

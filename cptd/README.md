@@ -1,6 +1,6 @@
-# CPTD Study: Building Personal Capability
+# CPTD study
 
-A phone-first study app for Domain 1 of ATD's CPTD exam (Building Personal Capability, 20% of the exam). It turns the memorization into short, timed sprints and tracks every minute of real study time.
+A phone-first study app for ATD's CPTD exam. It is built for all three domains; Domain 1 (Building Personal Capability, 20% of the exam) has content now, and Domains 2 and 3 are on the way. It turns the memorization into short, timed sprints and tracks every minute of real study time.
 
 Open it at `https://brothernod.github.io/PhoneApps/cptd/`. On Android, open it in Chrome, then use the ⋮ menu and choose **Add to home screen** (or **Install app**). It runs full screen and works offline.
 
@@ -27,15 +27,18 @@ Each model is labeled with how we know it matters: **In the TDBoK**, **On ATD's 
 
 - `index.html`: markup and styles
 - `app.js`: the app (scheduling, sprints, time tracking, game mechanics)
-- `content.js`: all study content (models, questions, cases, exam facts)
+- `content.js`: Domain 1 content, plus the tags and exam facts every domain shares
+- `content-d2.js`, `content-d2-<area>.js`: Domain 2's metadata and one content file per area (empty until written)
+- `content-merge.js`: combines the content files into one object for the app
 - `sw.js`, `manifest.webmanifest`, icons: offline support and home-screen install
 - `fonts/`: Atkinson Hyperlegible Next (SIL Open Font License, see `fonts/OFL.txt`)
 - `tools/check-content.mjs`: checks the content for broken or ambiguous questions
+- `tools/claims.mjs`: turns an area into atomic claims and a cold test for fact-checkers
 - `tools/tests/`: browser tests (Playwright); `run_all.sh` runs them all
 - `tools/spend.py`: token spend report used at build checkpoints
 - `research/`: the plan for adding Domains 2 and 3 (`PLAN.md`), where it stands (`STATUS.md`), and Domain 1's lessons and reference (`LESSONS.md`)
 
-After editing `content.js`, run this from the repo root (needs Node):
+After editing any content file, run this from the repo root (needs Node):
 
 ```
 node cptd/tools/check-content.mjs
