@@ -42,14 +42,31 @@ There was also rework: two review rounds rewrote content after it was written (4
 2. **Research once, into files.** Each group of tested statements gets a source file. It lists every model's exact components or steps, with source links and short quotes. Authoring and checking work from those files. They go back to the web only for a claim the file can't support.
 3. **Check claims, not "everything."** A script turns content into a numbered list of atomic claims ("Kirkpatrick has four levels, in this order", "q-x's answer is B because …"). Checkers verify each claim against the source file and return only discrepancies, in a fixed table.
 4. **Write it right the first time.** The authoring checklist in `LESSONS.md` and `tools/check-content.mjs` enforce Domain 1's lessons while writing, instead of in review rounds afterwards.
-5. **No stalls.** Agents run back to back, sized to finish in one go, and write results to their file as they go. If a usage limit interrupts an agent with a large history, start a fresh agent from its file instead of resuming it, because resuming reloads its whole history.
+5. **No stalls.** Agents run in waves of **at most 3 at once** (2 if the 5-hour window is already past half used when a wave starts), sized to finish in one go, and write results to their file as they go. Commit after every wave. If a usage limit interrupts an agent, resume it with SendMessage after the reset if its history is under about 100k tokens; above that, start a fresh agent from its file, because resuming reloads its whole history.
+6. **Cap each agent's history.** Briefs tell agents to stop near their web-call budget, append what they have, and note where they stopped, so a follow-up agent carries on from the file. Domain 2's largest agent reached about 225k; the target is about 100k.
 
 Not used, because they'd risk accuracy: a smaller model or lower reasoning effort for checking.
+
+## Effort per step (from Domain 3 on)
+
+Agreed with Jonathan on 2026-11-09. Agents only get a non-default effort when the brief says so, so the main conversation must pass `effort` explicitly on every Agent call.
+
+| Work | Effort | Why |
+|---|---|---|
+| Main conversation | high | It hands out work and reads short summaries; extra-high buys little there and its thinking stays in the history. Jonathan sets this when he opens the chat. |
+| Step 2 source research, first pass and gap fill | xhigh | Quality going in early sets the ceiling for everything after it. |
+| Step 3 authoring | high | Works only from the source files, and is checked twice afterwards. Was high in Domain 2 with no wrong keys found. |
+| Step 5 claims pass and cold-answer pass | xhigh | This is where accuracy is protected. |
+| Step 6 fixers | high | They apply listed fixes word for word. |
+| Step 6 re-check | xhigh | It found 13 issues after Domain 2's fixes, including new giveaways. |
 
 ## How the work is split
 
 - **Conversation A: Domain 2.** Steps 0–6 below, then **stop at the checkpoint** and report to Jonathan. He reviews before Domain 3 starts.
-- **Conversation B: Domain 3.** Steps 2–6 again, reusing everything from A (step 0 already covered both domains; step 1 is done once).
+- **Conversation B: Domain 3.** Steps 2–6 again, reusing everything from A (step 0 already covered both domains; step 1 is done once). Domain 3 is about 1.8× Domain 2 (32 statements, 7 shards), and Domain 2's single main conversation reached about 200k history, so B is split into three chats, each picking up from `STATUS.md`:
+  - **B1:** step 2 (first pass and gap fill for all 7 shards, about 14 agent runs).
+  - **B2:** steps 3–4 (7 authors, then machine checks).
+  - **B3:** steps 5–6 (claims and cold passes, fixes, re-check, merge to `main`, final report).
 
 To start a conversation, Jonathan says: *"Continue the CPTD build from cptd/research/PLAN.md in brothernod/PhoneApps."* The new conversation adds and clones the repo, reads `PLAN.md`, `STATUS.md` and `LESSONS.md`, and picks up at "Next action" in `STATUS.md`.
 

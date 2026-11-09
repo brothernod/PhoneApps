@@ -20,6 +20,8 @@ A first research pass wrote `cptd/research/<dN>/<shard>.md`, but some testable i
 
 Don't edit any other file, and don't commit.
 
+- **Keep your history small.** Use targeted fetch prompts (the core wording plus every named element), never whole documents. Append to your file after every few calls. If you reach your web-call budget, or your history is getting long, stop: append what you have plus a line `Stopped at: <what's left>`, and return, so a follow-up agent can continue from the file.
+
 ## Return
 
 A summary of 200 words or fewer: what you resolved, what changed, and what's still open.

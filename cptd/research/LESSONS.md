@@ -146,6 +146,8 @@ For every case step:
 - **Re-check after fixing.** The fresh re-check found 13 issues in about 55 changed rows, including two new giveaways introduced by the fixes. Ask fixers to apply exact text, and re-check anyway.
 - **Unchecked content stays off `main`.** It's on the `cptd-d2` branch until step 6 passes, because pushing `main` deploys to GitHub Pages, where the friend studies.
 - **WebFetch accepts only URLs that appeared in that agent's own search results.** URLs in files (like the TDBoK sample chapter above) must be found by search first. The fetch tool won't quote long passages; ask for the core wording plus every named element instead.
-- **Usage limits.** Running 5–7 agents at once at xhigh hit the 5-hour limit twice in Domain 2. Agents stopped by the limit keep their work: resume them with SendMessage after the reset rather than starting new ones. Keep it to about 3 agents at once.
+- **Usage limits.** Running 5–7 agents at once at xhigh hit the 5-hour limit twice in Domain 2. Agents stopped by the limit keep their work: resume them with SendMessage after the reset rather than starting new ones. Keep it to about 3 agents at once (2 when the window is past half used), and commit after every wave. Resume with SendMessage only if the agent's history is under about 100k; otherwise start fresh from its file.
+- **One chat per domain was too much.** Domain 2's main conversation reached about 200k history against a 100k target, so Domain 3 is split into chats B1–B3 (see `PLAN.md`).
+- **Effort is set per Agent call.** Agents run at their default unless the call passes `effort`; see the table in `PLAN.md`.
 - **`spend.py` finds no transcript in a cloud session.** Log the `subagent_tokens` each agent reports when it completes, instead.
 - **The "This domain" fact counts multiple-choice questions** (90 in all), not the 150 scoring points.

@@ -51,6 +51,10 @@ Sources used (numbered, so entries can cite [S1] and so on):
 
 End the file with `## Open questions`: anything an author must not guess at.
 
+- **Keep your history small.** Use targeted fetch prompts (the core wording plus every named element), never whole documents. Append to your file after every few calls. If you reach your web-call budget, or your history is getting long, stop: append what you have plus a line `Stopped at: <what's left>`, and return, so a follow-up agent can continue from the file.
+
+- **Domain 3 only:** at the top of your file, confirm each of your statements' TDBoK number and full wording from the current handbook (some are unconfirmed or cut off in `scope.md`).
+
 ## Return
 
 A summary of **300 words or fewer**: number of models, the sources you relied on most, and the unverified or contested points. Don't paste the file into your reply.
