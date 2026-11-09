@@ -4,18 +4,15 @@ Update this at the end of every step: tick the step, log the spend, and rewrite 
 
 ## Next action
 
-**Start chat B1 (Domain 3, step 2).** Jonathan opens a new chat at **high** effort and says: *"Continue the CPTD build from cptd/research/PLAN.md in brothernod/PhoneApps."*
+**Chat B1 is finishing step 2: a second gap fill for `biz`, `market` and `data`** after the usage-limit reset at 4:20 PM ET on 2026-11-09 (their first gap fill was cut short when the fetch tool hit the 5-hour limit after 10–14 calls). B1 has a scheduled check-in to run them; if that chat is gone, the next chat does it: one xhigh agent per shard on `BRIEF-gaps.md`, starting from each file's latest "Stopped at" line, wave of 3, commit, then go to B2.
 
-B1 does step 2 only, then updates this file and stops so B2 starts fresh:
-- Read `PLAN.md` "Effort per step" and rule 5. Pass `effort: "xhigh"` on every source and gap-fill agent.
-- Work on branch `cptd-d3` (unchecked content stays off `main`).
-- Don't do web research in the main chat. Each source agent also confirms its own statements' TDBoK numbers (3.1.A and 3.1.B are unconfirmed in `scope.md`) and refetches any truncated statement tails, and records both at the top of its file. The main chat copies them into `scope.md` afterwards.
-- Reuse `BRIEF-sources.md` and `BRIEF-gaps.md` with dN = d3. Order: first pass for all 7 shards in waves, then gap fill in waves.
-- **Jonathan's 5-hour window was about half used when B1 started**, so the first wave is 2 agents; later waves are 3. Commit after every wave and tick the shard below.
-- Log each agent's reported tokens in the spend log.
+**Then chat B2 (Domain 3, steps 3–4).** Jonathan opens a new chat at **high** effort and says: *"Continue the CPTD build from cptd/research/PLAN.md in brothernod/PhoneApps."*
+- Branch `cptd-d3`. Statements, confirmed wording and TDBoK numbers are in `scope.md` (Domain 3 table); shard ownership in `research/d3/OWNERSHIP.md`. Tell each author which shard owns a shared model and which existing ids to reference (that file lists them).
+- 7 authors on `BRIEF-author.md` with dN = d3, `effort: "high"`, waves of at most 3 (2 if the window is past half used). Write `content-d3.js` (domain block, 7 areas, 32 statement labels, exam facts and tips) first, then `content-d3-<area>.js`; add the script tags to `index.html` and the files to `sw.js` (bump the cache name).
+- Authors must skip headings marked UNSOURCED / do not author, and treat study-deck-only items as `extra` at most. Model headings per file (do-not-author in brackets): biz 16 [1], change 19 [2], data 25 [2], market 19 [2], od 27 [13], perf 22 [5], strategy 21 [8]; about 115 authorable, some of them pointers to other shards.
+- Then step 4: `node cptd/tools/check-content.mjs d3` to 0 errors and `run_all.sh` green, commit, update this file, stop for B3.
 
-Shards done in step 2 (first pass / gap fill): see `scope.md` for the shard list; record progress here as `shard: first pass ✓ / gap fill ✓`.
-- B1 in progress (branch `cptd-d3`, ownership map in `research/d3/OWNERSHIP.md`): change ✓/✓, od ✓/✓, perf ✓/✓, strategy ✓/✓, biz ✓/running, market ✓/running, data ✓/running.
+Step 2 progress (first pass / gap fill): change ✓/✓, od ✓/✓, perf ✓/✓, strategy ✓/✓, biz ✓/partial, market ✓/partial, data ✓/partial.
 
 ## Domain 2: Developing Professional Capability (conversation A)
 
@@ -30,7 +27,7 @@ Shards done in step 2 (first pass / gap fill): see `scope.md` for the shard list
 
 ## Domain 3: Impacting Organizational Capability (conversation B)
 
-- [ ] 2. Source files `research/d3/*.md` (chat B1, xhigh agents)
+- [ ] 2. Source files `research/d3/*.md` (chat B1, xhigh agents): 7 first passes and 7 gap fills done 2026-11-09; second gap fill for biz, market, data pending. TDBoK numbers and full wording confirmed in `scope.md`
 - [ ] 3. `content-d3.js` plus `content-d3-<area>.js` (chat B2, high authors)
 - [ ] 4. Machine checks pass (chat B2)
 - [ ] 5. Claims pass and cold-answer pass (chat B3, xhigh)
@@ -42,6 +39,7 @@ Shards done in step 2 (first pass / gap fill): see `scope.md` for the shard list
 |---|---|---|---|---|---|
 | 2026-11-04 to 11-08 | Domain 1, whole project (build, two audit rounds, UI fixes, reports) | about $82 | about 27M (whole project) | about 780k | Baseline. Hit the usage limit 3 times. |
 | 2026-11-08 to 11-09 | Domain 2, conversation A (steps 0–6) | not available (`spend.py` finds no transcript in a cloud session) | agents reported about 4.75M tokens over 34 runs; main conversation stayed under about 200k history | about 225k (one agent) | Hit the 5-hour usage limit twice, with 5–7 agents running at once. All agents resumed with their work intact. |
+| 2026-11-09 | Domain 3 step 2 (chat B1): 7 first-pass + 7 gap-fill agents | not available | agents reported about 1.76M tokens over 14 runs (first passes 115–154k each, gap fills 102–140k) | about 154k (one agent) | 2–3 agents at once. The fetch tool hit the 5-hour limit near the end of the last wave (biz, market, data gap fills stopped early). Agents overran their web-call budget (up to 27 vs 15–20). |
 
 ## Couldn't verify (carry into the final report)
 

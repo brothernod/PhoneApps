@@ -1,6 +1,8 @@
 # Marketing & communicating TD (3.4.6, 3.4.7, 3.4.8, 3.4.9)
 
-Written 2026-11-09 (step 2, shard `market`), about 25 web calls (one redirect, one refused by the allowlist). 19 model entries plus cross-references. No reading-list title and no TDBoK text covers these statements, so every entry is tagged `extra`; several are thin and say so. See the "Stopped at" line before the end for what's still unsourced.
+Gap fill: 2026-11-09, 14 web calls (8 searches, 3 fetches, 3 fetches refused by a usage limit), resolved 2 of 7 (Capability Model definition of lifelong learning; ATD/i4cp study figures and practices, partly). Still open: 1987 excerpt authorship, an ATD marketing source to confirm the 1987 lists, communication-plan components, branding, 3.4.8 framing. Leads for each are in "Stopped at".
+
+Written 2026-11-09 (step 2, shard `market`), about 25 web calls (one redirect, one refused by the allowlist). 19 model entries plus cross-references. No reading-list title and no TDBoK text covers these statements, so every entry is tagged `extra` (gap fill: except capability 1.7 Lifelong Learning, now `named`); several are thin and say so. See the "Stopped at" line before the end for what's still unsourced.
 
 ## Statement wording (confirmed from the handbook)
 
@@ -36,6 +38,9 @@ Sources used (numbered, so entries can cite [S1] and so on):
 - [S13] "May I Have Your Attention, Please?", *CTDO* magazine (ATD), Summer 2017, dated June 15, 2017, https://www.td.org/magazines/ctdo/may-i-have-your-attention-please. Tier: other. Sign-in wall after the opening; no author visible.
 - [S14] Press release, "New Research by ATD: Lifelong Learning Leads to Heightened Engagement Levels for Individuals and Organizations", PRWeb, September 25, 2018, https://www.prweb.com/releases/new_research_by_atd_lifelong_learning_leads_to_heightened_engagement_levels_for_individuals_and_organizations/prweb15781484.htm. Tier: other (ATD's own press release about its research report *Lifelong Learning: The Path to Personal and Organizational Performance*, ATD with i4cp, 2018, sponsored by OpenSesame; full report at td.org/lifelonglearning, not fetched).
 - [S15] "Use Lifelong Learning to Your Organization's Advantage", ATD Insights, td.org, June 11, 2015, no author, https://www.td.org/insights/use-lifelong-learning-to-your-organizations-advantage. Tier: other (vendor-flavored piece citing a Blackboard eBook). Weak; used only for three benefit phrases.
+- [S16] "Capability Areas and Knowledge and Skill Statements" (file name: TD Capability Model Definitions and KSA Statements), ATD, © 2019–2025, no version number, https://assets.td.org/asset/7dd8fa44-ebf5-4c7d-8f87-a536f0c2b1de/TD-Capability-Model-Definitions-and-KSA-Statements.pdf. Tier: 3 (ATD is the owner of the Capability Model, on which the CPTD outline is built). Used for capability 1.7 Lifelong Learning and for a numbering check of 3.4. (Also found in search, not fetched: "ATD Capability Model Definitions Nov2024", https://assets.td.org/m/6c9087bc07156878/original/ATD-Capability-Model-Definitions-Nov2024.pdf.)
+- [S17] *Lifelong Learning: The Path to Personal and Organizational Performance*, ATD Research with i4cp, August 2018, ISBN 9781949036091, product code 191811; ATD's report page https://www.td.org/research-reports/lifelong-learning. Tier: 3 (the author's own page). The page is a summary only; the full report (paperback/PDF/whitepaper) is sold and was **not** read. No individual authors named on the page.
+- [S18] Carol Morrison (senior research analyst, i4cp), "Next practices L&D leaders apply to turn employees into continuous learners", i4cp Productivity Blog, undated, https://www.i4cp.com/productivity-blog/next-practices-l-d-leaders-apply-to-turn-employees-into-continuous-learners. Tier: 3 (i4cp co-produced the 2018 study; the post reports its figures). Used for the practices list and the high-performer comparisons.
 
 ## 3.4.6: Marketing strategy to promote TD
 
@@ -192,7 +197,8 @@ What ATD material ties to it: the reading list has nothing [S3]. ATD's own marke
 - Confusables: the communication plan (below); 70-20-10 (`ccl-70-20-10`); spaced repetition. The same article's "three techniques" (Write for Impact; Create Emotional Connections; Build Learning Campaigns) are about designing and promoting training, not a marketing-mix model.
 - Unverified: the book's campaign steps and its funnel stage names (chapters not in the sample).
 
-### Branding the TD function
+### Branding the TD function (UNSOURCED, do not author)
+- Gap fill 2026-11-09: still no source read. A search found ATD pages that look relevant ("Branding the Learning Function", *TD* magazine; "Rebranding Learning and Development", ATD newsletter; "The Importance of Branding in Learning Design", ATD video), but the fetch limit was hit before any could be read. URLs are in "Stopped at".
 - Origin: no ATD source read names a branding model. The brief lists branding as part of this shard's scope.
 - Tie to the exam: 3.4.6, general knowledge only.
 - Suggested tag: extra
@@ -234,7 +240,8 @@ What ATD material ties to it: a TD at Work "Communications Strategy Template" (F
 - Confusables: the generic communication plan components (next entry); stakeholder analysis (`biz`); the communication process model (`comm-process`); change-management communication (owned by `change`).
 - Variants or contested points: the template is for a change initiative, not specifically for talent management objectives.
 
-### Communication plan components (general practice)
+### Communication plan components (general practice) (UNSOURCED, do not author)
+- Gap fill 2026-11-09: no sourced list found. A td.org search turned up the same template [S12] plus two unread ATD pages ("Communicating Effectively Through Repetition and Channels", ATD blog; "Thinking About Communication With Stakeholders", ATD Insights); the fetch limit was hit before they could be read. **Authors: write 3.4.7 questions from the ATD template [S12] above, not from this list.** The list stays only as context for checkers.
 - Origin: general communications-planning practice (project management and change management texts). **No ATD source read gives a numbered component list.** [S12] covers the same ground as questions (audience/stakeholders, need to know, goal, tools, follow-up, messenger, tone).
 - Tie to the exam: 3.4.7. General knowledge plus [S12].
 - Suggested tag: extra
@@ -282,30 +289,61 @@ What ATD material ties to it: no ATD source read gives a named model for this sk
   4. Report in the stakeholder's terms (business metrics and money, not training activity counts). General knowledge; consistent with TDRP's split between efficiency, effectiveness and outcome measures (`tdrp-measures`).
 - Confusables: evaluation (measuring results; Domain 2) vs communicating results (this statement); TDRP's three report types (`tdrp-mgmt-reports`) vs its three measure types (`tdrp-measures`).
 - Unverified: item 4's wording; any TDBoK list for this statement.
+- Gap fill 2026-11-09: not resolved. A search found ATD's own research report on exactly this skill, *Communicating the Value of TD* (ATD Research, product code 792602), with an ATD press release ("ATD Research: Communicating the Value of TD Helps L&D Remain Relevant") and a secondary headline saying TD communicates with the C-suite quarterly. None of it was read (fetch limit). That report is the best lead for 3.4.8 and could replace items 3–4 above; don't use the "quarterly" claim until it's read.
 
 ## 3.4.9: Communicating the value of lifelong learning and professional development
 
+Numbering note (gap fill): ATD's own Capability Model KSA document [S16] numbers this area differently from the exam documents. As the fetch tool read it, [S16] gives **3.4.9** as "Knowledge of succession planning and talent review processes…" and **3.4.10** as "Skill in communicating the value of learning and professional development" (no word "lifelong"). The handbook [S1] and comparative outlines [S2] give 3.4.9 / 3.4.H with "lifelong learning". **The handbook wording stands for the app**; don't quote [S16]'s numbering or wording as the exam statement.
+
+### Lifelong Learning, capability 1.7 of the ATD Capability Model (definition)
+- Origin: ATD Talent Development Capability Model, capability **1.7 Lifelong Learning**, in the **Developing Personal Capability** domain (the fetch tool's domain name; the old entry here said "Building Personal Capability", which was general knowledge and is replaced). [S16]
+- Tie to the exam: 3.4.9 names "lifelong learning", and this is ATD's own definition of it. Domain 1 of the app may already cover capability 1.7; check before adding a duplicate model.
+- Suggested tag: named (the statement names the concept; the definition comes from the model's owner, tier 3 [S16]). Not `tdbok`: TDBoK text not seen.
+- Kind: set (definition plus four statements)
+- Definition, in the source's terms [S16]:
+  - Other names: "continuous learning, agile learning, or learning drive". [S16]
+  - Traits (three): **self-motivation, insatiable curiosity, intelligent risk-taking**. [S16] "self-motivation, insatiable curiosity, and intelligent risk-taking"
+  - TD professionals should **model** the value of lifelong learning, pursuing knowledge for personal and professional reasons. [S16] "should model the value of lifelong learning"
+  - Owning your own development signals to others that they can and should do the same. [S16]
+- Knowledge and skill statements under 1.7 [S16]:
+  1. 1.7.1 Knowledge of how a desire to learn expands and develops knowledge and skills over time.
+  2. 1.7.2 Knowledge of resources for career exploration and lifelong learning, for self and others.
+  3. 1.7.3 Skill in acquiring new knowledge through professional development activities for oneself; examples: professional conferences, self-directed reading, monitoring industry trends.
+  4. 1.7.4 Skill in developing, maintaining and leveraging networks inside and outside the organization; examples: influential people, learning and performance experts.
+- Confusables: the ATD/i4cp study's definition below (adds formal/informal and intentional/incidental [S14]); "learning agility" (the report page talks of strategies for "greater learning agility" [S17]); self-directed learning (Knowles); 3.4.9 itself (communicating the value to others) vs 1.7 (practising it yourself).
+- Variants or contested points: ATD's report page [S17] repeats the same alternate names ("continuous learning, agile learning, learning drive, or nothing at all") and the same three traits, so the two ATD sources agree.
+- Unverified: whether the CPTD exam outline includes the 1.7 statements under these numbers (the handbook's Domain 1 rows were not rechecked here).
+
 ### ATD/i4cp lifelong learning study (2018)
-- Origin: ATD and Institute for Corporate Productivity (i4cp), *Lifelong Learning: The Path to Personal and Organizational Performance*, September 2018, sponsored by OpenSesame; read via ATD's press release. [S14]
+- Origin: ATD Research and the Institute for Corporate Productivity (i4cp), *Lifelong Learning: The Path to Personal and Organizational Performance*, published **August 2018** per ATD's report page [S17] (press release dated September 25, 2018 [S14]), sponsored by OpenSesame [S14]. Read via ATD's report page [S17], ATD's press release [S14] and an i4cp analyst's post [S18]; the full report was **not** read.
 - Tie to the exam: 3.4.9 (the value of lifelong learning). ATD's own research; not on the reading list [S3]; not TDBoK text.
-- Suggested tag: extra
-- Kind: set (definition, findings and benefits)
+- Suggested tag: extra (the study is not named in the statement; sources are tier 3 but cover only summaries)
+- Kind: set (definition, findings, practices and benefits)
 - Definition: lifelong learning is a "self-motivated, ongoing pursuit of knowledge" for personal or professional reasons; it can be **formal or informal** and **intentional or incidental**. [S14]
-- Findings (numbers as reported in [S14]):
-  1. More than two-thirds of TD leaders named improved **engagement** as the leading expected benefit of encouraging lifelong learning. [S14]
-  2. Only **37%** of organizations actively encourage lifelong learning; **55%** of high-performing organizations do. [S14]
-  3. Fewer than **one in five** companies make lifelong learning an organizational value, tie it to internal mobility or compensation, support it with rewards and recognition, or put it in performance expectations. [S14]
-  4. **50%** of companies are acting to encourage employees to be self-directed learners. [S14]
-  5. Building a learning culture is a high-performance practice linked to better market performance and learning effectiveness. [S14]
+- Findings (numbers as reported; see contested points):
+  1. More than two-thirds of TD leaders said continuous/lifelong learners drive **engagement**, the leading expected benefit. [S14][S18]
+  2. Just over **one-third** of organizations actively encourage lifelong learning: **37%** in the release [S14]; "more than a third" on ATD's page [S17]; "just over one-third" in [S18].
+  3. Nearly **45%** of TD leaders said building a workforce of lifelong learners was a priority. [S17]
+  4. Fewer than **one in five** companies make lifelong learning an organizational value, tie it to internal mobility or compensation, support it with rewards and recognition, or put it in performance expectations. [S14] i4cp's figures [S18] fit that: enterprise-level value 15%, performance management 18%, rewards and recognition 12%, internal mobility 9%, compensation 7%.
+  5. **50%** of companies are acting to encourage employees to be self-directed learners. [S14]
+  6. Building a learning culture is a high-performance practice linked to better market performance and learning effectiveness. [S14]
+- Practices that encourage lifelong learning (i4cp's "next practices", six; set, no order) [S18]:
+  1. Training employees in self-direction and continuous-learning behaviors (one in five do the first; 16% the second; high performers about twice as likely).
+  2. Making continuous learning a formal, enterprise-level **value** (15%).
+  3. **Performance management** systems with self-directed and continuous-learning goals (18%).
+  4. **Rewards and recognition** programs that reinforce it (12%).
+  5. Linking **internal mobility** options to continuous learning (9%).
+  6. **Compensation** programs tied to continuous learning (7%; none of the lower performers do it).
 - Organizational benefits cited [S14]:
   1. Better organizational performance.
   2. Improved talent retention.
   3. Greater ability to respond to changing business needs.
   4. Greater competitive ability.
+- Benefits in i4cp's words [S18]: engagement "and by extension, better individual and organizational performance"; employees who "stay relevant, in demand" and can drive career growth; "competitive success in a fluid business world"; a vibrant learning culture.
 - Self-directed learning, as the release describes it: employees set their own goals, choose how they learn, and evaluate their own progress. [S14]
-- Confusables: Knowles's andragogy (self-directed learner assumption; Domain 2 adult learning, general knowledge); learning culture and learning organization (`senge`); 70-20-10 (`ccl-70-20-10`), which is about where learning happens.
-- Variants or contested points: the fetch tool summarized the findings; only the definition phrase was quoted. Recheck numbers against the full report before using any as an answer.
-- Unverified: sample size and method (not in the release); the report's recommendations (not listed in the release).
+- Confusables: capability 1.7 above [S16]; Knowles's andragogy (self-directed learner assumption; Domain 2 adult learning, general knowledge); learning culture and learning organization (`senge`); 70-20-10 (`ccl-70-20-10`), which is about where learning happens.
+- Variants or contested points: **the 55% figure is contested.** The release, as summarized, says 55% of high-performing organizations actively encourage lifelong learning [S14]; i4cp says "nearly six in 10" high performers actively encourage it and that 55% of top companies make continuous learning an enterprise **priority** [S18]. Don't key a question on 55%. The percentages in [S18] are the fetch tool's summary, not quotes; use the ranges ("about a third", "fewer than one in five"), not exact figures, in any answer key.
+- Unverified: sample size, survey dates and method (not on any page read); the full report's own recommendations list (the report page names only "greater learning agility", moving employees toward lifelong learning, and knowledge sharing as topics, plus company interviews [S17]).
 
 ### Benefits of a workforce that values learning (2015 ATD Insights)
 - Origin: ATD Insights article, June 2015, no author. [S15]
@@ -318,21 +356,26 @@ What ATD material ties to it: no ATD source read gives a named model for this sk
   3. Agility: they "enable your organization to be agile".
 - Confusables: the ATD/i4cp benefits above; future-readiness (owned by `change`).
 
-### Lifelong Learning in the ATD Capability Model (cross-reference)
-- General knowledge, **not fetched in this run**: the ATD Talent Development Capability Model lists Lifelong Learning as one of its Building Personal Capability capabilities. Domain 1 of the app covers the personal domain; check the Domain 1 content for an existing entry before adding one. The handbook number of that capability was not checked here.
-- Suggested tag: extra (until checked)
-- Unverified: all of this entry.
-
 ## Open questions
 
 - **TDBoK text for 3.4.6–3.4.9 was not seen.** No source shows which marketing mix (4 Ps, 7 Ps, 4 Cs) the TDBoK uses, or whether it lists marketing-plan steps, communication-plan components, or lifelong-learning benefits. The only ATD-published HRD source with a mix uses the **four** Ps [S7]. Don't write "the TDBoK says" for anything here.
 - **No reading-list title covers this shard** [S3]. Nothing here can carry `reflist`.
-- **Gilley and Eggland attribution** of [S7] is an inference from the University of Nebraska-Lincoln line and the *Principles of HRD* title; the names are garbled in the scan. Recheck the PDF before naming authors in content.
+- **Gilley and Eggland attribution** of [S7] is an inference from the University of Nebraska-Lincoln line and the *Principles of HRD* title; the names are garbled in the scan. Recheck the PDF before naming authors in content. Gap fill 2026-11-09: search results (titles only, not read) list *Principles of Human Resource Development* under Jerry W. Gilley (ISBNs 9780201090130 and 2nd ed. 9780738206042) and Gilley's *Marketing HRD Within Organizations* (ISBN 9781555424022). That makes the inference stronger but still doesn't show the excerpt's byline. td.org has an HTML page for the excerpt (https://www.td.org/content/td-magazine/hook-line-and-sinker) that probably shows the byline; the fetch was refused by the usage limit. **Still unverified: don't name authors.**
+- **The 1987 lists (planning steps, 4 Ps, promotion, target markets, life cycle) are still confirmed only by [S7].** No newer ATD source to confirm or replace them was read in the gap fill.
+- **Capability Model numbering differs** from the exam documents: [S16] has 3.4.9 as succession planning and 3.4.10 as "communicating the value of learning and professional development". Use the handbook's 3.4.9 / 3.4.H wording [S1].
 - **The six-step ATD process** [S4]: only step names are public. Don't write questions on what happens inside a step.
 - **HRD product life-cycle names** (Exposure, Acceptance, Maturity, Decline) [S7] differ from the standard marketing names (Introduction, Growth, Maturity, Decline). If both appear, a question must not treat one set as wrong.
 - **Branding**: no source at all. Avoid item-level questions.
 - **Communication plan components**: no ATD list with a fixed count. Use the ATD template's questions [S12] and avoid "how many components" questions.
 - **3.4.7 says "talent management objectives"**, not TD objectives. No source read ties a communication strategy specifically to talent management; the ATD template is for change initiatives [S12].
-- **ATD/i4cp 2018 numbers** come from a press release summary [S14]; recheck against the full report (td.org/lifelonglearning) before using any number in a key.
+- **ATD/i4cp 2018 numbers** come from summaries (ATD's press release [S14], ATD's report page [S17], an i4cp post [S18]), never the full report. The **55%** figure means different things in [S14] and [S18]. Use ranges, not exact figures, in a key.
 
-Stopped at: about 25 web calls (one redirect, one refused by the allowlist). Not done: the TDBoK's own treatment of marketing and communication (likely not public); ATD's *Lifelong Learning* full report and its recommendations; td.org's "Lifelong Learning Is a Critical Capability for TD Professionals" (https://www.td.org/insights/lifelong-learning-is-a-critical-capability-for-td-professionals, found in search, not fetched) for the Capability Model definition; a branding source; McCarthy 1960 and Lauterborn 1990 originals (only via the encyclopedia [S11]).
+Stopped at: about 25 web calls (one redirect, one refused by the allowlist). Not done: the TDBoK's own treatment of marketing and communication (likely not public); ATD's *Lifelong Learning* full report and its recommendations; td.org's "Lifelong Learning Is a Critical Capability for TD Professionals" (https://www.td.org/insights/lifelong-learning-is-a-critical-capability-for-td-professionals, found in search, not fetched) for the Capability Model definition (gap fill: done instead from [S16]); a branding source; McCarthy 1960 and Lauterborn 1990 originals (only via the encyclopedia [S11]).
+
+Stopped at (gap fill, 2026-11-09): 14 web calls; WebFetch then returned a usage-limit error three times ("5-hour limit", resets 4:20pm ET), so nothing else could be read. Left, in priority order, with leads from this run's searches (a follow-up agent must search again to get them in its own results before fetching):
+1. 3.4.8: ATD Research, *Communicating the Value of TD* (https://www.td.org/product/research-report--communicating-the-value-of-td/792602) and its press release (https://www.td.org/content/press-release/atd-research-communicating-the-value-of-td-helps-l-and-d-remain-relevant). Also "Five Rules for Communicating Value to Executives" (https://www.td.org/content/newsletter/five-rules-for-communicating-value-to-executives) and "One Message, Three Audiences" (https://www.td.org/content/atd-blog/one-message-three-audiences-crafting-training-communication-for-stakeholders-teams-and-executives).
+2. 1987 excerpt byline: https://www.td.org/content/td-magazine/hook-line-and-sinker. Related ASTD scans that may be Gilley/Eggland too: "Strategic Marketing for HRD" (https://assets.td.org/m/76627e07abff83d7/original/Strategic-Marketing-for-HRD.pdf), "Selling HRD on the Inside" (https://assets.td.org/m/53bf661f7d188877/original/Selling-HRD-on-the-Inside.pdf).
+3. Branding: "Branding the Learning Function" (https://td.org/content/td-magazine/branding-the-learning-function), "Rebranding Learning and Development" (https://www.td.org/content/newsletter/rebranding-learning-and-development).
+4. Communication plan: "Communicating Effectively Through Repetition and Channels" (https://www.td.org/content/atd-blog/communicating-effectively-through-repetition-and-channels), "Thinking About Communication With Stakeholders" (https://www.td.org/insights/thinking-about-communication-with-stakeholders).
+5. Newer ATD marketing source to check the 1987 lists: "Unlocking Top Marketing Secrets for L&D Professionals" (https://www.td.org/content/atd-blog/unlocking-top-marketing-secrets-for-lampd-professionals); the book page for *Think Like a Marketer* (https://www.td.org/product/book--think-like-a-marketer-train-like-an-ld-pro/112507) for its table of contents.
+6. Lifelong learning: the full ATD/i4cp report (sold, ISBN 9781949036091) for sample, method and recommendations; ATD's Nov 2024 Capability Model definitions PDF (in [S16]'s note) to recheck the 3.4.9/3.4.10 numbering.

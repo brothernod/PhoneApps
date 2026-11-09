@@ -43,42 +43,42 @@ The fetch tool would only quote statements under about 125 characters word for w
 
 ## Domain 3: Impacting Organizational Capability (35%), 32 statements
 
-TDBoK numbers marked **?** need confirming in conversation B (the Business Insight rows didn't read cleanly). Statements ending "…" were cut off by the fetch tool; refetch the tail in conversation B.
+Confirmed in chat B1 (2026-11-09) by the step 2 source agents, each against the 2025 handbook (still the newest CPTD edition) and the 2023 comparative outline; details and wording notes are at the top of each `research/d3/<shard>.md`. Full wording, no cut-off tails. The handbook prints the example lists without parentheses, spells "Kubler-Ross" without an umlaut, and heads 3.2 "Consulting & Business Partnering" and 3.7 "Data & Analytics". Note 3.1.A = 3.1.7 and 3.1.B = 3.1.6 (A is the higher number). Where the comparative outline's wording differs (3.3.8, 3.4.3, 3.4.7, 3.4.8), the handbook wins.
 
 | Code | TDBoK no. | Statement |
 |---|---|---|
-| 3.1.A | 3.1.? | Skill in creating business cases for talent development initiatives using economic, financial, and organizational data. |
-| 3.1.B | 3.1.? | Skill in managing budgets and resources. |
-| 3.2.A | 3.2.5 | Skill in synthesizing information to formulate recommendations … *(stakeholder buy-in)* |
+| 3.1.A | 3.1.7 | Skill in creating business cases for talent development initiatives using economic, financial, and organizational data. |
+| 3.1.B | 3.1.6 | Skill in managing budgets and resources. |
+| 3.2.A | 3.2.5 | Skill in synthesizing information to formulate recommendations or a course of action to gain agreement, support, and/or buy-in from stakeholders. |
 | 3.2.B | 3.2.1 | Skill in establishing and managing organizational and/or business partnerships and relationships. |
 | 3.2.C | 3.2.2 | Skill in partnering with other organizational units to provide guidance on departmental or organizational talent requirements. |
-| 3.2.D | 3.2.8 | Skill in identifying, minimizing, and overcoming organizational barriers to implementing talent development solutions … |
+| 3.2.D | 3.2.8 | Skill in identifying, minimizing, and overcoming organizational barriers to implementing talent development solutions and/or strategies. |
 | 3.3.A | 3.3.2 | Skill in designing and implementing organizational development strategy. |
-| 3.3.B | 3.3.3 | Knowledge of theories and frameworks related to the design, interaction, and operation of social, organizational, … *(informational)* systems (for example, systems thinking, open systems theory, chaos and complexity theory, network theory, action research). |
+| 3.3.B | 3.3.3 | Knowledge of theories and frameworks related to the design, interaction, and operation of social, organizational, and informational systems, for example, systems thinking, open systems theory, chaos and complexity theory, network theory, and action research. |
 | 3.3.C | 3.3.4 | Skill in identifying formal and informal relationships, hierarchies, and power dynamics in an organization. |
-| 3.3.D | 3.3.8 | Skill in creating a culture which encourages and/or creates opportunities for dialogue and feedback … (for example, designing collaborative work practices and/or spaces, role-modeling effective feedback techniques). |
+| 3.3.D | 3.3.8 | Skill in creating a culture which encourages and/or creates opportunities for dialogue and feedback between individuals and groups, for example designing collaborative work practices and/or spaces, and role-modeling effective feedback techniques. |
 | 3.3.E | 3.3.11 | Skill in assessing and evaluating employee engagement. |
 | 3.3.F | 3.3.12 | Skill in designing and implementing employee engagement strategy. |
 | 3.4.A | 3.4.16 | Skill in designing and implementing performance management strategy. |
-| 3.4.B | 3.4.3 | Skill in developing a talent strategy that aligns to organizational strategy to influence organizational outcomes … |
+| 3.4.B | 3.4.3 | Skill in developing a talent strategy that aligns to organizational strategy to influence organizational outcomes in a positive direction. |
 | 3.4.C | 3.4.4 | Skill in designing and implementing strategic plans for talent development projects, programs, and/or functions. |
-| 3.4.D | 3.4.5 | Skill in identifying anticipated constraints or problems affecting talent development initiatives … (for example, resource deficiencies, lack of support). |
+| 3.4.D | 3.4.5 | Skill in identifying anticipated constraints or problems affecting talent development initiatives, for example resource deficiencies or lack of support. |
 | 3.4.E | 3.4.6 | Skill in establishing and executing a marketing strategy to promote talent development. |
 | 3.4.F | 3.4.7 | Skill in designing and implementing communication strategy in order to drive talent management objectives. |
-| 3.4.G | 3.4.8 | Skill in communicating how talent development strategies and solutions support the achievement of targeted … *(business results)* |
+| 3.4.G | 3.4.8 | Skill in communicating how talent development strategies and solutions support the achievement of targeted business/organizational results. |
 | 3.4.H | 3.4.9 | Skill in communicating the value of lifelong learning and professional development. |
-| 3.5.A | 3.5.6 | Skill in designing and implementing performance support systems and tools … (for example, instructional resources, data, process models, job aids, expert advice). |
+| 3.5.A | 3.5.6 | Skill in designing and implementing performance support systems and tools, for example instructional resources, data, process models, job aids, and expert advice. |
 | 3.5.B | 3.5.5 | Skill in designing and developing performance improvement solutions to address performance gaps. |
 | 3.5.C | 3.5.4 | Skill in conducting performance analysis to identify goals, gaps, or opportunities. |
-| 3.5.D | 3.5.7 | Skill in conducting analysis of systems to improve human performance … (for example, determining how organizations learn, closing knowledge or skill gaps, addressing human factors issues). |
+| 3.5.D | 3.5.7 | Skill in conducting analysis of systems to improve human performance, for example determining how organizations learn, closing knowledge or skill gaps, and addressing human factors issues. |
 | 3.5.E | 3.5.1 | Knowledge of theories, models, and principles of human performance improvement. |
-| 3.6.A | 3.6.1 | Knowledge of change management theories and models … (for example, Lewin, Kotter, Bridges' transition model, Kubler-Ross change curve, appreciative inquiry). |
-| 3.7.A | 3.7.6 | Skill in selecting and/or using data visualization techniques … (for example, flow charts, graphs, plots, word clouds, heat maps). |
-| 3.7.B | 3.7.3 | Skill in identifying stakeholders' needs, goals, requirements, questions, and objectives … *(to frame data analysis)* |
+| 3.6.A | 3.6.1 | Knowledge of change management theories and models, for example Lewin, Kotter, Bridges' transition model, Kubler-Ross change curve, and appreciative inquiry. |
+| 3.7.A | 3.7.6 | Skill in selecting and/or using data visualization techniques, for example flow charts, graphs, plots, word clouds, and heat maps. |
+| 3.7.B | 3.7.3 | Skill in identifying stakeholders' needs, goals, requirements, questions, and objectives to develop a framework and/or plan for data analysis. |
 | 3.7.C | 3.7.4 | Skill in analyzing and interpreting results of data analyses to identify patterns, trends, and relationships among variables. |
-| 3.7.D | 3.7.2 | Skill in gathering and organizing data from internal and/or external sources … |
-| 3.8.A | 3.8.3 | Knowledge of techniques to promote, support, and/or generate innovation and creativity … (for example, design thinking, brainstorming, ideation). |
-| 3.8.B | 3.8.1 | Knowledge of internal and external factors that influence talent development … (for example, organizational/business strategies, availability of labor, developments in other industries, societal trends, technological advances). |
+| 3.7.D | 3.7.2 | Skill in gathering and organizing data from internal and/or external sources in logical and/or practical ways to support retrieval and manipulation. |
+| 3.8.A | 3.8.3 | Knowledge of techniques to promote, support, and/or generate innovation and creativity, for example design thinking, brainstorming, and ideation. |
+| 3.8.B | 3.8.1 | Knowledge of internal and external factors that influence talent development, for example organizational/business strategies, availability of labor, developments in other industries, societal trends, and technological advances. |
 
 ## Shards
 
@@ -98,7 +98,7 @@ Shards follow capability lines. Domain 2's are 3–4 statements, because two of 
 
 | Shard | Statements | Area name |
 |---|---|---|
-| `biz` | 3.1.A, 3.1.B, 3.2.1, 3.2.2, 3.2.5, 3.2.8 | Business insight & consulting |
+| `biz` | 3.1.6, 3.1.7, 3.2.1, 3.2.2, 3.2.5, 3.2.8 | Business insight & consulting |
 | `od` | 3.3.2, 3.3.3, 3.3.4, 3.3.8, 3.3.11, 3.3.12 | Organization development & culture |
 | `strategy` | 3.4.3, 3.4.4, 3.4.5, 3.4.16 | Talent strategy & management |
 | `market` | 3.4.6, 3.4.7, 3.4.8, 3.4.9 | Marketing & communicating TD |

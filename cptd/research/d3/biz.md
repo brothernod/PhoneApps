@@ -1,5 +1,7 @@
 # Business insight & consulting (3.1.6, 3.1.7, 3.2.1, 3.2.2, 3.2.5, 3.2.8)
 
+Gap fill: 2026-11-09, 10 web calls (4 searches, 4 fetches, 2 fetches refused by a usage limit), resolved 2 of 6 priority gaps (3.2 reading-list entry; a sourced partnering model). Added 2 reading-list models (now 15 entries). Stopped early: the fetch tool hit a usage limit (see "Stopped at" at the end).
+
 Researched 2026-11-09 (step 2, Domain 3).
 
 ## Statement check (current handbook)
@@ -31,6 +33,7 @@ Sources used (numbered, so entries can cite [S1] and so on):
 - [S3] Certification Resources List 2025, ATD CI, 2025, https://assets.td.org/m/2049c52a0b8e8c7c/original/Certification-Resources-List-2025.pdf. Tier: 2 ATD CI. As read by the fetch tool:
   - **3.1 Business Insight:** *Aligning Instructional Design with Business Goals* (2023, Newbauer, K., ATD Press); *TD at Work: Preparing & Defending Your Training Budget* (2017, Oliver, L., ATD Press); *10 Steps to Successful Budgeting* (2019, Oliver, L. and Nin, E., ATD Press); *L&D's Playbook for the Digital Age* (2021, Carson, B., ATD Press).
   - **3.2 Consulting & Business Partnering:** *TD at Work Guide: A Strategic Approach to Talent Development* (2019, ATD Press); *Needs Assessment on a Shoestring* (2023, Jones, K. and Lumsden, J., ATD Press); an entry the tool read as "TD at Work Guide Turning Trainers into Trusted Business Partners Consulting on the Inside (2011) Scott & Barnes" (probably two titles run together by the two-column layout; see Open questions).
+  - **Gap-fill recheck (2026-11-09):** a second targeted read of the same PDF again returned it as one line, "TD at Work Guide Turning Trainers into Trusted Business Partners Consulting on the Inside (2011), Scott & Barnes, ATD Press", listed only under 3.2. The fetch tool can't show the column layout (a direct download was blocked). Evidence that it is **two titles run together**: ATD sells a separate TD at Work issue, *Turning Trainers into Strategic Business Partners* (June 2015, product 251506), labelled "TD at Work Guide" on its product page [S16][S17], while *Consulting on the Inside* is a 2011 ASTD Press book by Scott and Barnes [S13]. Note the word mismatch: the list says "Trusted", the issue's own title says "**Strategic**". Treat both as reading-list titles under 3.2, cite the issue by its real title, and don't test the list's exact wording.
   - Elsewhere: *Performance Consulting* (2015, Robinson, D. and Phillips, P., Berrett-Koehler) is under 3.5, not 3.2.
   - The list has **no** title on business cases or stakeholder analysis, and does **not** list Block's *Flawless Consulting*. So Block, stakeholder grids and financial-metric definitions can be tagged `reflist` only if they appear in one of the listed books; otherwise `extra`.
 - [S4] TD.org product page, *10 Steps for Successful Budgeting*, L. Oliver and E. A. Nin, ATD Press, January 2019, ISBN 9781947308862, https://www.td.org/product/book--10-steps-for-successful-budgeting/111822. Tier: 2-ish (ATD publisher page for a reading-list book; the book itself was not read)
@@ -44,6 +47,10 @@ Sources used (numbered, so entries can cite [S1] and so on):
 - [S12] "Stakeholder Analysis: Winning Support for Your Projects", Mind Tools, n.d., https://prime.mindtools.com/pages/article/newPPM_07.htm. Grid "adapted with permission" from A. L. Mendelow (1981), "Environmental Scanning: The Impact of the Stakeholder Concept", ICIS 1981 Proceedings, 20. Tier: other (secondary source citing the original; the original paper was not read)
 - [S13] B. Scott and B. K. Barnes, *Consulting on the Inside: A Practical Guide for Internal Consultants*, 2nd ed., ASTD Press, March 2011, ISBN 9781562867454, O'Reilly table of contents and description, https://oreilly.com/library/view/consulting-on-the/9781562867454. Tier: 3 (reading-list book under 3.2; headings only, text not read)
 - [S14] "6 Barriers to Performance That Learning Does Not Address", ATD Blog (td.org Insights), no author shown, June 13, 2018, https://www.td.org/insights/6-barriers-to-performance-that-learning-does-not-address. Tier: other (ATD article)
+- [S15] Certification Resources List 2025 [S3], re-read 2026-11-09 for the 3.2 entry (same URL). Tier: 2 ATD CI
+- [S16] I. Guerra-López and K. Hicks, *Turning Trainers into Strategic Business Partners*, TD at Work vol. 32, issue 1506, June 2015, ATD Press, sample PDF, https://assets.td.org/m/4980ec1965273111/original/samplePDF-251506_undefined.pdf. Tier: 2-ish (ATD Press issue; reading-list title under 3.2, see [S3] note; sample pages only)
+- [S17] TD.org product page for the same issue, product code 251506, ISBN 9781607282891, https://td.org/product/p/251506. Tier: 2-ish. Note: the fetch tool read the page's authors as "Matthew Pierce and Karen Hicks"; the issue's own sample [S16] says Guerra-López and Hicks. Use [S16]; don't test the author.
+- [S18] K. Newbauer, *Aligning Instructional Design with Business Goals*, ATD Press, 2023, sample PDF (contents, introduction, chapter 1), https://assets.td.org/m/7a36b6d769f21eb/original/samplePDF-112304_Aligning-Instructional-Design-With-Business-Goals.pdf. Tier: 2-ish (ATD Press; reading-list title under 3.1 [S3])
 
 ## 3.1.7 (3.1.A): Business cases
 
@@ -67,6 +74,27 @@ No tier 1–3 source read for this shard gives a named list of business-case com
 - Confusables: project charter (`charter`, Domain 1; it authorizes a project already approved, while a business case argues for approval); value proposition (`value-prop`, Domain 1); action plan; annual training plan; budget (a business case includes cost estimates but is not the budget).
 - Variants or contested points: none found; the deck's sequencing ("first create a business case for stakeholders" before talking to employees and IT, card 3) is a deck judgment, not a sourced rule.
 - Unverified: the whole component list (tier 4 only). The TDBoK chapter 3.1 text was not available.
+- Gap fill (2026-11-09): searched td.org and TD at Work for a business-case component list; read the sample of Newbauer's reading-list book [S18], whose Part 1 is titled "Foundations for Making Your Case". It has **no** business-case template or section list [S18]. Its business-case content is the eight-step framework below (start from a business challenge and goal). Status unchanged: component list stays deck-only.
+
+### Newbauer's Eight-Step Evaluation-Focused Instructional Design Framework
+- Origin: K. Newbauer, *Aligning Instructional Design with Business Goals*, ATD Press, 2023, ch. 1 (Part 2 of the book is built on it). [S18]
+- Tie to the exam: 3.1.7 (making the case for a TD initiative from business data); the book is on ATD's reading list under 3.1 Business Insight [S3]. Part 1 is "Foundations for Making Your Case" [S18].
+- Suggested tag: reflist
+- Kind: ordered (first to last)
+- Items, in the source's own terms [S18]:
+  1. Identify a business challenge. [S18] "Identify a business challenge."
+  2. Translate the challenge into a business goal. [S18] "Translate the challenge into a business goal."
+  3. Determine if learning is an appropriate strategy for achieving the business goal. [S18]
+  4. Determine what successful learning looks like using four of the five levels of evaluation. [S18] "using four of the five levels of evaluation"
+  5. Determine what knowledge is needed to achieve the business goal. [S18]
+  6. Determine what skills are needed to achieve the business goal. [S18]
+  7. Use identified knowledge and skills to inform course objectives. [S18]
+  8. For each course objective, design and develop learning activities. [S18]
+- Groups: the book's Part 2 chapters are "Proactively Identify Business Needs", "Define Success", and "Design Curriculum With Evaluation in Mind" [S18]; which steps fall in which chapter was not read.
+- Related, same chapter [S18]: a "reimagined ADDIE" with evaluation inserted three times: Analysis, Evaluation criteria, Design, Evaluation instruments, Develop, Implement, Evaluation execution (A–EC–D–EI–D–I–EE). Five levels of evaluation as named in the book: reaction, learning, behavior or application, results or impact (plus ROI, the fifth, per the index). Part 1 chapters: Talent Development as Business Development; Connect to Your Stakeholders; Position Your TD Function to Produce Results; Develop Your Business Acumen. The book argues TD should be seen as investments, not "expenses—cost centers" [S18].
+- Confusables: `addie` (standard five phases; Newbauer's version adds three evaluation steps); `phillips-levels` (the five levels; step 4 uses four of them, which four was not read); `kirk-levels`; Mager–Pipe and HPI (owner `perf`), which also ask "is training the right solution?" (step 3); Domain 1 `smart`.
+- Variants or contested points: none found.
+- Unverified: which four of the five levels step 4 uses (probably levels 1–4, leaving out ROI, but not confirmed); the Think→Feel→Do framework the chapter mentions was not read in enough detail to author.
 
 
 ### Financial metrics for investment decisions (ROI, BCR, payback period, NPV, IRR, break-even)
@@ -87,7 +115,8 @@ No tier 1–3 source read for this shard gives a named list of business-case com
 - Variants or contested points: **conventions differ outside ATD.** (a) In corporate finance, ROI is often quoted as a ratio or as (gain − cost) ÷ cost without "× 100"; Phillips/ATD always expresses ROI as a percentage of net benefits over fully loaded costs. (b) Some finance texts compute payback from cumulative (or discounted) cash flows year by year; Phillips uses the simple costs ÷ annual benefits form. (c) "Break-even" in accounting is often a unit volume (fixed costs ÷ contribution margin per unit); in Phillips it is BCR 1:1 / ROI 0%. (d) NPV sign convention: positive NPV means the investment earns more than the discount rate; Phillips gives no decision rule. Use Phillips's version on the exam.
 - Unverified: the other rows of Table 1-1 (only PP, NPV and IRR were read beyond ROI and BCR); the edition number of *ROI Basics*.
 
-### Capital vs operating expenses, and cost categories (general knowledge only)
+### Capital vs operating expenses, and cost categories (UNSOURCED, do not author)
+- Gap fill (2026-11-09): marked UNSOURCED because no source of any tier supports it. One ATD lead was found by search but could not be read (fetch refused by a usage limit): the CTDO article "Boost Your Financial IQ" (td.org). A follow-up agent that sources these terms may lift the mark.
 - Origin: general accounting practice; no ATD or original-author source was read for this shard. The budgeting titles' pages [S4][S5][S6] and the deck [S9] do not mention these terms.
 - Tie to the exam: 3.1.6 and 3.1.7 (financial data); named in the shard's ownership brief.
 - Suggested tag: extra
@@ -213,7 +242,22 @@ These serve the whole 3.2 capability ("Consulting & Business Partnering"). The c
 - The consulting-process models above (Scott and Barnes [S13]; Block's phases, roles and definition [S7][S8]) are this statement's main content. The relationship is set up in Contact/Agreement (Scott and Barnes) or Entry and Contracting (Block), and the role choice (expert, pair-of-hands, collaborative) defines the kind of partnership.
 - Stakeholder mapping (Mendelow, below under 3.2.5) is also used to decide which partners to manage closely.
 - See `od`: formal and informal relationships, power dynamics and ONA (3.3.4) for mapping who to partner with.
-- No named partnering or relationship-building model was found in a tier 1–3 source this pass. Candidates an author must **not** use without a source: Robinson and Robinson's strategic business partner model (they wrote *Performance Consulting*, which is on the list under 3.5 and owned by `perf`, and *Strategic Business Partner*, 2005; a partner relationship built on access, credibility and trust is often attributed to them); Maister, Green and Galford's trust equation (*The Trusted Advisor*, 2000: credibility, reliability, intimacy, over self-orientation). See Open questions.
+### Guerra-López and Hicks: SCALE and four skills of a strategic business partner
+- Origin: I. Guerra-López and K. Hicks, *Turning Trainers into Strategic Business Partners*, TD at Work, June 2015 (issue 1506). [S16][S17]
+- Tie to the exam: 3.2.1 and 3.2.2 (business partnering). The issue appears to be the first half of the run-together 3.2 reading-list entry (see [S3] note), so tag `reflist` with that caveat.
+- Suggested tag: reflist (caveat: list prints "Trusted", issue says "Strategic")
+- Kind: one named framework plus a set of four skills (the sample lists them in this order; no ranking claimed)
+- Framework: **SCALE** = "Systems for aligning learning and performance": processes and tools for linking TD solutions to strategic objectives and measuring results. [S16] "a set of processes and tools for measurably aligning LTD solutions to strategic objectives". The product page says the issue covers how to "uncover stakeholder perspectives, optimize strategic alignment, and monitor your training effectiveness" [S17].
+- Skills, in the source's terms [S16]:
+  1. System Thinking: seeing the organization as connected parts (people, processes, structures). [S16] "how people, processes, and structures work together"
+  2. Strategic Thinking: a long-term view of where the organization is heading and how to close the gap. [S16] "a long-term perspective to problem solving and decision making"
+  3. Critical Thinking: analyzing, synthesizing and evaluating information for performance decisions. [S16] "analyze, synthesize, and evaluate information"
+  4. Collaboration: every stakeholder has input; teams communicate and work together. [S16] "ensure all stakeholders have a voice"
+- Confusables: systems thinking and open systems (owner `od`; same idea, different list); Senge's five disciplines (`senge`, which includes systems thinking); Robinson's strategic business partner (unsourced, below); Block's collaborative role.
+- Variants or contested points: author on the product page read as "Matthew Pierce and Karen Hicks" [S17] vs Guerra-López and Hicks in the issue [S16]. Note "System Thinking" (singular) is the issue's spelling.
+- Unverified: SCALE's own steps or phases (the sample stops before them; the product page doesn't list them). Do not invent what the letters stand for beyond the expansion quoted above.
+
+- Apart from Guerra-López and Hicks (above), no named partnering or relationship-building model was found in a tier 1–3 source. Candidates an author must **not** use without a source: Robinson and Robinson's strategic business partner model (they wrote *Performance Consulting*, which is on the list under 3.5 and owned by `perf`, and *Strategic Business Partner*, 2005; a partner relationship built on access, credibility and trust is often attributed to them); Maister, Green and Galford's trust equation (*The Trusted Advisor*, 2000: credibility, reliability, intimacy, over self-orientation). See Open questions.
 
 ## 3.2.2 (3.2.C): Partnering with other units on talent requirements
 
@@ -285,18 +329,22 @@ Statement verbs, in order: identifying, minimizing, and overcoming; object: "org
 
 ## Open questions
 
-- **Reading-list entry under 3.2** [S3]: the tool read "TD at Work Guide Turning Trainers into Trusted Business Partners Consulting on the Inside (2011) Scott & Barnes" as one line. It is probably two titles: a TD at Work issue *Turning Trainers into Trusted Business Partners* (year and author unread) and Scott and Barnes's *Consulting on the Inside* (2011), which O'Reilly confirms as a 2011 ASTD Press book [S13]. Recheck the PDF before citing either as "on the reading list".
-- **Business-case components**: no tier 1–3 list. Everything under 3.1.7 rests on a deck [S9] and general practice. Authors should test only the definition, the three data types the statement names (economic, financial, organizational), and unambiguous points (executive summary first; focus on business impact, not just the implementation plan).
+- **Reading-list entry under 3.2** [S3]: rechecked 2026-11-09 [S15]; the fetch tool still returns one line. Best reading: two titles run together, the TD at Work issue *Turning Trainers into Strategic Business Partners* (Guerra-López and Hicks, June 2015) [S16][S17] and Scott and Barnes's *Consulting on the Inside* (2011) [S13]. Unresolved: the list says "Trusted" where the issue says "Strategic", and the year/author printed belong to Scott and Barnes only. Cite both as 3.2 reading-list titles; don't test the list's wording, year or author for the issue.
+- **Business-case components**: no tier 1–3 list. Gap fill checked Newbauer's 3.1 reading-list book [S18]: no component list there either (it offers the eight-step framework instead). Everything under 3.1.7's component list rests on a deck [S9] and general practice. Authors should test only the definition, the three data types the statement names (economic, financial, organizational), and unambiguous points (executive summary first; focus on business impact, not just the implementation plan).
 - **Budget process stages** (planning; analysis and research; draft and review; approval; budget management): deck only [S9]. Don't tag `tdbok` and don't test the exact stage count.
 - **Oliver and Nin's 10 steps**: not found. Only the five keys and "plan first, budget later" are sourced [S5].
-- **Capex/opex, fixed/variable, direct/indirect**: general knowledge only; no ATD source read.
+- **Capex/opex, fixed/variable, direct/indirect**: general knowledge only; heading now marked UNSOURCED. Lead not read: CTDO article "Boost Your Financial IQ" (td.org).
 - **Financial-metric conventions**: Phillips (ATD Press) uses ROI = net benefits ÷ costs × 100, BCR = benefits ÷ costs, PP = costs ÷ benefits, break-even = BCR 1:1 = ROI 0% [S11]. Corporate-finance texts differ (ROI as a ratio, cumulative or discounted payback, unit-volume break-even). Use Phillips's forms. The other rows of Phillips's Table 1-1 were not read.
 - **Block's phase names** differ by edition (2nd: "Discovery and Dialogue", "Feedback and the Decision to Act"; 4th: "Discovery", "Analysis and the Decision to Act"). 1st-edition wording not checked. Block's role and skill definitions, and his meaning of "flawless", are from general knowledge; only names were confirmed.
 - **Scott and Barnes**: seven phases inferred from chapter titles; their content and whether chapter 9 is one phase are unknown.
-- **Partnering models** (3.2.1, 3.2.2): no sourced model. Robinson's business-partner attributes and the trusted-advisor trust equation need a source before use.
+- **Partnering models** (3.2.1, 3.2.2): one now sourced, Guerra-López and Hicks's SCALE and four skills [S16] (SCALE's own steps unread). Robinson's business-partner attributes and the trusted-advisor trust equation still need a source before use. Unread ATD leads from search: TD at Work Guide *Become a Trusted Partner to Drive Performance* (td.org product 252510); ATD newsletter "Ten Strategies for Building Successful Partnerships"; ATD blog "Elevating Your Approach as a Strategic Business Partner".
 - **Mendelow's date**: 1981 per Mind Tools [S12]; 1991 in many other sources.
 - **Author of the 2018 ATD barriers article** [S14] and its overlap with Robinson's environmental factors (which `perf` may cover).
 
-Web calls used: about 22 (8 searches, 14 fetches).
+Web calls used (first pass): about 22 (8 searches, 14 fetches).
 
-Stopped at: web budget reached with 13 models (target 15–25). Left for gap fill, best first: (1) recheck the 3.2 reading-list entry in [S3] and find *Turning Trainers into Trusted Business Partners* (TD at Work) for a partnering model; (2) a sourced partnering/relationship model for 3.2.1 (Robinson and Robinson's business-partner work, or the trusted-advisor trust equation); (3) Block's forms of client resistance (original text) for 3.2.8; (4) Oliver and Nin's 10 steps (table of contents) and budget approaches (zero-based, incremental, activity-based) for 3.1.6; (5) a tier 1–3 source for capex/opex and fixed/variable/direct/indirect costs; (6) a sourced business-case component list (Newbauer's *Aligning Instructional Design with Business Goals*, 3.1 reading list, may have one); (7) Scott and Barnes phase content; (8) the rest of Phillips's Table 1-1.
+Stopped at (first pass): web budget reached with 13 models.
+
+Gap fill 2026-11-09: 10 web calls (4 searches; 4 fetches read; 2 fetches refused with a usage-limit error, "resets 4:20pm America/New_York"). Direct downloads of td.org and assets.td.org are blocked by the session proxy, so no workaround.
+
+Stopped at: fetch tool usage limit, with 15 entries. Left, best first: (1) Block's phases and roles in his own terms (needs a fresh search to surface a quotable Block or Wiley page; the 4th-ed. sample [S7] cut off inside the Collaborative role); (2) budget cycle and cost categories from ATD: leads "What You Need to Include in Your L&D Budget" (ATD blog) and "Boost Your Financial IQ" (CTDO article), plus Oliver and Nin's 10 step names (a pocketbook.uk listing for ISBN 9781947308879 may show contents); (3) 3.2.8 barriers: Block's forms of resistance from the original, Scott and Barnes ch. 4; (4) SCALE's steps (Guerra-López and Hicks); (5) business-case components from an ATD source (none found in td.org search or in Newbauer [S18]; lead: CTDO "What's the Business Impact of Learning?"); (6) Scott and Barnes phase content; (7) rest of Phillips's Table 1-1. Re-surface every lead by search before fetching (brief rule).
