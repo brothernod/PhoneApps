@@ -145,6 +145,7 @@
   .zoom{position:fixed;left:-160px;top:38%;width:110px;z-index:20;pointer-events:none;animation:zoomies 2.2s cubic-bezier(.45,.05,.55,.95) forwards}
   .zoom::before{content:"";position:absolute;right:70%;top:30%;width:260px;height:40px;border-radius:20px;
     background:linear-gradient(180deg,#FF5FA8 0 16%,#FF9F45 16% 33%,#FFD23C 33% 50%,#3FD98B 50% 66%,#46B3FF 66% 83%,#9B6BFF 83%);opacity:.85}
+  .zoom svg{position:relative;z-index:1;display:block}
   @keyframes zoomies{0%{left:-160px;transform:translateY(0)}20%{transform:translateY(-14px)}40%{transform:translateY(0)}60%{transform:translateY(-14px)}80%{transform:translateY(0)}100%{left:110vw}}
   .heart{position:fixed;top:-30px;font-size:24px;z-index:19;pointer-events:none;animation:fall linear forwards}
   @keyframes fall{to{transform:translateY(110vh) rotate(260deg)}}

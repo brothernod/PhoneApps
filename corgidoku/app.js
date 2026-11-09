@@ -3,7 +3,7 @@ import { cheddarHead, cheddarLoaf, partyHat, paw, treat } from './art.js';
 
 // ---------- constants ----------
 const NAME = 'Halina';
-const VERSION = '1.7'; // bump with CACHE in sw.js on every release
+const VERSION = '1.8'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
 const EMPTY = 0, PAW = 1, AUTO = 2, CORGI = 3, NOPE = 4; // NOPE = a wrong guess, shown as a red paw
