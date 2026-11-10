@@ -40,8 +40,8 @@ window.CPTD_PARTS.push({
       src: 'OPM, “Performance Management Cycle” (opm.gov); Locwin, “A Modern Approach to Performance Feedback,” TD at Work (ATD Press, 2019)',
     },
     {
-      id: 'feedback-360', area: 'strategy', stmts: ['3.4.16'], tag: 'reflist',
-      name: '360-degree feedback: the rater groups', short: '360-degree feedback', who: 'ATD glossary; used in Ben Locwin, “A Modern Approach to Performance Feedback,” TD at Work (ATD Press, 2019)', kind: 'set', unit: 'rater groups',
+      id: 'feedback-360', area: 'strategy', stmts: ['3.4.16'], tag: 'extra',
+      name: '360-degree feedback: the rater groups', short: '360-degree feedback', who: 'ATD glossary (360-degree feedback); mentioned in passing in Ben Locwin, “A Modern Approach to Performance Feedback,” TD at Work (ATD Press, 2019)', kind: 'set', unit: 'rater groups',
       items: [
         { t: 'Superiors', d: 'The people the person reports to.' },
         { t: 'Direct reports', d: 'The people who report to the person.' },
@@ -114,7 +114,7 @@ window.CPTD_PARTS.push({
       src: 'ATD, “Talent Development Glossary Terms” (Talent Strategy and Management)',
     },
     {
-      id: 'tm-verbs', area: 'strategy', stmts: ['3.4.3'], tag: 'named',
+      id: 'tm-verbs', area: 'strategy', stmts: ['3.4.3'], tag: 'extra',
       name: 'Talent management: ATD’s five verbs', short: 'Talent management', who: 'ATD glossary', kind: 'set', unit: 'practices',
       items: [
         { t: 'Acquiring', d: 'Bringing new employees in.' },
@@ -140,12 +140,12 @@ window.CPTD_PARTS.push({
       ],
       decoys: ['Litigation', 'Procurement', 'Facilities management'],
       hook: 'Plan, acquire, develop, manage performance, reward.',
-      exam: 'Development is the one process that appears in all three ATD lists: talent strategy and management, talent management, and these functions.',
+      exam: 'Development and acquisition both appear in all three ATD lists: talent strategy and management, talent management, and these functions. Onboarding, deployment, and workforce planning each appear in only one.',
       note: 'This list is from an APTD statement, not a CPTD one, but it’s ATD CI’s own list of the functions a talent strategy spans.',
       src: 'ATD CI, APTD vs CPTD Comparative Content Outlines (2023), statement 3.4.1',
     },
     {
-      id: 'scale-align', area: 'strategy', stmts: ['3.4.3', '3.4.4'], tag: 'extra',
+      id: 'scale-align', area: 'strategy', stmts: ['3.4.3', '3.4.4'], tag: 'reflist',
       name: 'SCALE: aligning TD solutions to strategic objectives', short: 'SCALE alignment', who: 'I. Guerra-López & K. Hicks, “Turning Trainers Into Strategic Business Partners” (TD at Work, ATD Press, June 2015)', kind: 'ordered', unit: 'steps',
       items: [
         { t: 'Discover issues from requestor’s perspective', d: 'Start with how the person asking sees the need.' },
@@ -167,8 +167,8 @@ window.CPTD_PARTS.push({
       decoys: ['Benchmark competitor academies', 'Storyboard the e-learning modules', 'Negotiate facilitator fees'],
       hook: 'Understand, design, track and confirm. Each phase starts by discovering something.',
       exam: 'Alignment starts with how the requestor and other stakeholders see the need; solutions are chosen to fit gaps and root causes; and alignment is tracked and confirmed after implementation, not assumed.',
-      note: 'ATD’s excerpt calls SCALE “a structured, yet flexible, process.” The excerpt doesn’t expand the letters S-C-A-L-E. The same issue’s four partner skills are the biz model scale-skills; the authors are named in the issue itself (see research/d3/biz.md).',
-      src: 'ATD Blog, “SCALE: Aligning Talent Development Solutions to Strategic Objectives” (2015), excerpting TD at Work (June 2015)',
+      note: 'ATD’s excerpt calls SCALE “a structured, yet flexible, process.” The same TD at Work issue, by Guerra-López and Hicks, also names four skills of a strategic business partner: system thinking, strategic thinking, critical thinking, and collaboration. ATD’s reading list carries the issue under 3.2, where it seems to print the title as “Turning Trainers into Trusted Business Partners.”',
+      src: 'Guerra-López & Hicks, TD at Work issue 1506 (ATD Press, June 2015), sample pages; ATD Blog, “SCALE: Aligning Talent Development Solutions to Strategic Objectives” (2015), excerpting the issue',
     },
     {
       id: 'succession-triggers', area: 'strategy', stmts: ['3.4.3'], tag: 'extra',
@@ -201,7 +201,7 @@ window.CPTD_PARTS.push({
       decoys: ['Vendor selection', 'Salary benchmarking', 'Office layout'],
       hook: 'Why → now (people, performance) → future (needs, potential) → gaps → results. The last question checks back against the first.',
       exam: 'Today’s people and performance come before future needs and individual potential; closing gaps comes after potential is assessed; evaluation measures results against the needs set in the first step. Performance is measured now; readiness to advance is judged for the future.',
-      note: 'These are the questions Rothwell gives in his own interview. His book Effective Succession Planning (AMACOM) is the standard text; its step labels weren’t checked, so learn the content and order rather than exact labels.',
+      note: 'These are the questions Rothwell gives in his own interview; the short names here are paraphrases of them, not his labels. His book Effective Succession Planning (AMACOM) is the standard text and uses its own step labels, which weren’t checked, so learn the content and order rather than exact labels.',
       src: 'AMA, “The Growing Interest in a Strong Succession Planning Program” (interview with William J. Rothwell, 2019)',
     },
     {
@@ -215,7 +215,7 @@ window.CPTD_PARTS.push({
       hook: 'Performance is now; potential is next. Two axes make a 3 × 3 grid.',
       exam: 'Know the two axes: performance and potential. Which axis is horizontal varies between versions, and so do the box labels, so don’t memorize either.',
       note: 'A summary of Rothwell’s Effective Succession Planning describes classifying people by their current performance and future potential.',
-      src: 'Capacity Building Solutions, summary of Rothwell, Effective Succession Planning (2025)',
+      src: 'No tier 1–3 source names the grid; performance-and-potential framing from Capacity Building Solutions, summary of Rothwell, Effective Succession Planning (2025)',
     },
 
     /* ---------- 3.4.4 Strategic plans ---------- */
@@ -246,7 +246,7 @@ window.CPTD_PARTS.push({
       ],
       decoys: ['Supplier', 'Regulatory', 'Media'],
       hook: 'Four questions: how customers see us, whether we keep improving, what we must excel at, how shareholders see us.',
-      exam: 'ATD’s glossary calls it a strategic planning and management system that tracks performance through four perspectives. Don’t key on the order: Kaplan and Norton usually start with financial, ATD’s glossary with customer. “Innovation and learning” and “internal business” are the 1992 names for the same perspectives.',
+      exam: 'ATD’s glossary calls it a strategic planning and management system that tracks performance through four perspectives. Don’t key on the order, which differs between versions. “Innovation and learning” and “internal business” are the 1992 names for the same perspectives.',
       note: 'TD measures usually sit in learning and growth. Not to be confused with Kirkpatrick’s four levels, which evaluate training.',
       src: 'Kaplan & Norton (1992), via James R. Martin’s summary (maaw.info); ATD, “Talent Development Glossary Terms” (Balanced Scorecard)',
     },
@@ -346,11 +346,11 @@ window.CPTD_PARTS.push({
       o: ['Talent strategy and management', 'Succession planning', 'Strategic planning', 'Performance management'],
       a: 0, why: 'ATD defines talent strategy and management as the practices used to build culture, engagement, capability, and capacity. Succession planning is narrower: it identifies, evaluates, and develops people for key roles.' },
     { id: 'q-strategy-tm-verbs', stmt: '3.4.3', model: 'tm-verbs', q: 'ATD’s glossary defines talent management as acquiring, onboarding, developing, retaining, and what else?',
-      o: ['Compensating', 'Transitioning', 'Rating', 'Evaluating'],
-      a: 1, why: 'The five verbs are acquiring, onboarding, developing, retaining, and transitioning employees. Compensation and rewards appears in ATD CI’s list of talent management functions, not in the glossary definition.' },
+      o: ['Auditing', 'Transitioning', 'Rating', 'Evaluating'],
+      a: 1, why: 'The five verbs are acquiring, onboarding, developing, retaining, and transitioning employees. Rating and evaluating people belong to performance management, which ATD CI lists as a separate talent management function, not as a verb in the glossary definition.' },
     { id: 'q-strategy-tm-vs-td', stmt: '3.4.3', model: 'tm-verbs', q: 'How does talent development relate to talent management, as ATD uses the terms?',
       o: ['They are two names for the same practice', 'Talent management is one part of talent development', 'Talent development is one part of talent management', 'They cover separate employees and don’t overlap'],
-      a: 2, why: 'Talent management spans acquiring, onboarding, developing, retaining, and transitioning employees, and developing is one of those. Calling the two terms the same practice ignores everything else talent management covers.' },
+      a: 2, why: 'ATD’s capability model says talent development “should be integrated into all components of talent strategy and management,” and ATD’s glossary lists developing as one of talent management’s five practices. Calling the two terms the same practice ignores everything else talent management covers.' },
     { id: 'q-strategy-tm-common', stmt: '3.4.3', model: 'tm-functions', q: 'Which process appears in all three of ATD’s lists: talent strategy and management, talent management, and ATD CI’s talent management functions?',
       o: ['Onboarding', 'Deployment', 'Workforce planning', 'Development'],
       a: 3, why: 'Development is in all three (employee development, developing, employee development). Onboarding is only in the talent management definition, deployment only in talent strategy and management, and workforce planning only in ATD CI’s functions.' },
@@ -462,7 +462,7 @@ window.CPTD_PARTS.push({
         { text: 'Stakeholders agree the company needs leaders ready to run the new sites. As you draft the talent strategy, which choices fit ATD’s definitions?',
           options: [
             ['Integrate acquisition, development, retention, and deployment', true],
-            ['Align every talent process to the expansion goals', true],
+            ['Align every talent process to the organizational goals behind the expansion', true],
             ['Focus succession planning on site leader and other mission-critical roles', true],
             ['Build leaders through development alone, apart from hiring and deployment', false],
             ['Set talent goals by copying other companies’ programs, whatever the plan', false],
@@ -483,11 +483,11 @@ window.CPTD_PARTS.push({
           options: [
             ['Clarify expectations and set objectives tied to the expansion goals', true],
             ['Give feedback and coaching throughout the year, close to what was observed', true],
-            ['Gather 360-degree input from superiors, direct reports, peers, and customers', true],
+            ['Review results against the agreed objectives at the end of the period', true],
             ['Hold one annual review as the only performance conversation', false],
             ['Save feedback on problems for the year-end rating', false],
           ],
-          why: 'ATD calls performance management an ongoing communication process: clarifying expectations, setting objectives that support strategy, providing feedback and coaching, and reviewing results. Locwin says feedback should be contemporaneous with the behavior and uses 360-degree input. A single annual conversation, or saving feedback for year end, breaks both rules.' },
+          why: 'ATD calls performance management an ongoing communication process: clarifying expectations, setting objectives that support strategy, providing feedback and coaching, and reviewing results. Locwin says feedback should be “contemporaneous with the observed behavior.” A single annual conversation, or saving feedback for year end, breaks both.' },
       ],
     },
   ],

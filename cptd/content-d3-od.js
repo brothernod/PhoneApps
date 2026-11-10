@@ -9,7 +9,7 @@ window.CPTD_PARTS.push({
     /* ----- 3.3.2 OD strategy ----- */
     {
       id: 'od-phases', area: 'od', stmts: ['3.3.2'], tag: 'reflist',
-      name: 'Five phases of an OD strategy', short: 'OD phases', who: 'ATD’s Organization Development Handbook (B. J. Flores, ed., 2023), ch. 1; ATD’s glossary credits Ed Hasan’s chapter', kind: 'ordered', unit: 'phases',
+      name: 'Five phases of an OD strategy', short: 'OD phases', who: 'ATD’s Organization Development Handbook (B. J. Flores, ed., 2023), ch. 1, Figure 1-1; phases described on ATD’s glossary page', kind: 'ordered', unit: 'phases',
       items: [
         { t: 'Entry', d: 'First contact between consultant and client: name the problem or opportunity and agree on the project’s scope and resources.' },
         { t: 'Diagnosis', d: 'Also called assessment: consultant and stakeholders gather and analyze information about the problem together.' },
@@ -26,18 +26,18 @@ window.CPTD_PARTS.push({
     },
     {
       id: 'od-initiatives', area: 'od', stmts: ['3.3.2'], tag: 'reflist',
-      name: 'Four categories of OD initiatives', short: 'OD initiatives', who: 'ATD’s glossary, citing ATD’s Organization Development Handbook (2023); the same four types as Cummings and Worley’s OD interventions', kind: 'set', unit: 'categories',
+      name: 'Four categories of OD initiatives', short: 'OD initiatives', who: 'ATD’s glossary, “What Is Organization Development?” (probably Figure 1-2 of ATD’s Organization Development Handbook, 2023); the same four types as Cummings and Worley’s OD interventions', kind: 'set', unit: 'categories',
       items: [
-        { t: 'Human process initiatives', d: 'Work on people and how they interact, such as team building, process consultation, and conflict resolution.' },
-        { t: 'Techno-structural initiatives', d: 'Change the structure and how work is designed, such as reorganizing or enriching jobs.' },
-        { t: 'Human resource management initiatives', d: 'Use people systems such as performance management, rewards, and talent development.' },
-        { t: 'Strategic initiatives', d: 'Fit the whole organization to its environment, such as culture change or mergers.' },
+        { t: 'Human process initiatives', d: 'Work on people and how they interact, such as team building, group process approaches, and coaching.' },
+        { t: 'Techno-structural initiatives', d: 'Change the structure and how work is designed, such as restructuring, flexible work design, or process improvement such as Six Sigma.' },
+        { t: 'Human resource management initiatives', d: 'Use people systems such as performance management, employee development, succession planning, and engagement.' },
+        { t: 'Strategic initiatives', d: 'Transform the whole organization, such as organization transformation, culture change, or leadership development.' },
       ],
       decoys: ['Marketing campaigns', 'Compliance audits', 'Cost-cutting drives'],
-      hook: 'People, structure, HR systems, strategy: from how people interact up to how the whole organization fits its world.',
-      exam: 'Classify an initiative. Team building or process consultation is human process; redesigning jobs or structure is techno-structural; rewards or performance management systems are HR management; organization–environment fit is strategic.',
+      hook: 'People, structure, HR systems, strategy: from how people work together up to transforming the whole organization.',
+      exam: 'Classify an initiative. Team building or coaching is human process; restructuring or redesigning work is techno-structural; performance management, development, or succession systems are HR management; organization transformation or culture change is strategic. ATD puts mergers and acquisitions under techno-structural.',
       note: 'Cummings and Worley’s OD textbook calls the same four types “interventions” (human process, technostructural, human resource management, strategic change). ATD says “initiatives.” Don’t get stuck on the word.',
-      src: 'ATD Talent Development Glossary, “What Is Organization Development?” (citing ATD’s Organization Development Handbook, 2023)',
+      src: 'ATD Talent Development Glossary, “What Is Organization Development?”; ATD’s Organization Development Handbook (2023), ch. 1, Figure 1-2 title (headings)',
     },
 
     /* ----- 3.3.3 systems theories and action research ----- */
@@ -179,7 +179,7 @@ window.CPTD_PARTS.push({
     },
     {
       id: 'q12-items', area: 'od', stmts: ['3.3.11'], tag: 'extra',
-      name: 'Gallup Q12 survey items', short: 'Q12 items', who: 'Gallup', kind: 'set', unit: 'items',
+      name: 'Gallup Q12 survey items', short: 'Q12 items', who: 'Gallup', kind: 'ordered', unit: 'items',
       items: [
         { t: 'I know what is expected of me at work', d: 'Q01: clear expectations.' },
         { t: 'I have the materials and equipment to do my work right', d: 'Q02: the tools and resources for the job.' },
@@ -194,6 +194,7 @@ window.CPTD_PARTS.push({
         { t: 'In the last six months, someone at work has talked to me about my progress', d: 'Q11: progress conversations.' },
         { t: 'In the last year, I have had opportunities at work to learn and grow', d: 'Q12: chances to learn.' },
       ],
+      orderNote: 'Gallup’s numbering, Q01 to Q12',
       decoys: ['I am paid fairly for what I do', 'How satisfied are you with your company as a place to work?', 'I plan to be here in two years'],
       hook: 'Twelve short statements, rated agree to disagree. They cover expectations, tools, strengths, recognition, care, development, voice, purpose, quality, friendship, progress, and growth; nothing about pay.',
       exam: 'Spot what isn’t a Q12 item: pay, benefits, and the overall satisfaction question are not among the 12. Engagement and satisfaction are different things.',
@@ -216,7 +217,7 @@ window.CPTD_PARTS.push({
     },
     {
       id: 'od-listening-cycle', area: 'od', stmts: ['3.3.12', '3.3.8'], tag: 'reflist',
-      name: 'Cycle of Active Listening (engagement)', short: 'Active listening cycle', who: 'ATD’s Organization Development Handbook (2023), ch. 8, “Fostering Employee Engagement Through OD”', kind: 'ordered', unit: 'steps',
+      name: 'Cycle of Active Listening (engagement)', short: 'Active listening cycle', who: 'Heather R. Younger (The Art of Active Listening, 2023), as presented in ATD’s Organization Development Handbook (2023), ch. 8, “Fostering Employee Engagement Through OD”', kind: 'ordered', unit: 'steps',
       items: [
         { t: 'Recognize the Unsaid', d: 'Notice what employees aren’t saying out loud.' },
         { t: 'Seek to Understand', d: 'Ask and listen to learn what employees really mean.' },
@@ -228,8 +229,8 @@ window.CPTD_PARTS.push({
       decoys: ['Benchmark', 'Escalate', 'Delegate'],
       hook: 'Notice, understand, decode, act, close the loop: listening isn’t finished until people hear what you did with what they said.',
       exam: 'Know the order, and that the cycle ends with Close the Loop: telling employees what happened to their input, as with engagement survey results.',
-      note: 'Only the book’s step headings were available, so these descriptions stay close to the headings.',
-      src: 'ATD’s Organization Development Handbook (2023), ch. 8 (headings, via the University of Pennsylvania library catalog)',
+      note: 'The cycle is Heather Younger’s, from her book The Art of Active Listening, where Close the Loop is the fifth step, after recognizing the unsaid, seeking to understand, decoding, and taking action. Only the step headings were available, so these descriptions stay close to them.',
+      src: 'ATD’s Organization Development Handbook (2023), ch. 8 (headings, via the University of Pennsylvania library catalog); Heather R. Younger, The Art of Active Listening (Berrett-Koehler, 2023), ch. 5, “Close the Loop”',
     },
   ],
   kin: [
@@ -248,8 +249,8 @@ window.CPTD_PARTS.push({
     { id: 'q-od-feedback', stmt: '3.3.2', model: 'od-phases', q: 'After interviewing staff and analyzing survey data, an OD consultant reviews the findings with the client for clarity and accuracy, and together they draft an action plan with success indicators. Which ATD OD phase is this?',
       o: ['Feedback', 'Diagnosis', 'Evaluation', 'Entry'], a: 0,
       why: 'In ATD’s model, Feedback is when the analyzed findings go back to the client to check understanding, clarity, and accuracy, usually producing an action plan with success indicators. Diagnosis is the earlier gathering and analysis itself.' },
-    { id: 'q-od-eval', stmt: '3.3.2', model: 'od-phases', q: 'In ATD’s five-phase OD strategy, when does evaluation take place?',
-      o: ['Only after the solution is fully in place', 'Only during the diagnosis phase', 'Only when the client asks for a final report', 'Throughout, using formative and summative data'], a: 3,
+    { id: 'q-od-eval', stmt: '3.3.2', model: 'od-phases', q: 'In ATD’s five-phase OD strategy, how is evaluation described?',
+      o: ['A final step that starts once the solution is in place', 'A check made during the diagnosis phase', 'A report written when the client asks for one', 'A continuous process using formative and summative data'], a: 3,
       why: 'ATD describes evaluation as a continuous process of collecting formative and summative data to see whether goals and success indicators are met. It usually ends in a report, but it isn’t limited to the end.' },
     { id: 'q-od-solution', stmt: '3.3.2', model: 'od-phases', q: 'A TD leader is mapping ATD’s five OD phases onto a project plan. Where do designing, developing, and rolling out a communication plan and training belong?',
       o: ['Diagnosis', 'Feedback', 'Solution', 'Evaluation'], a: 2,
@@ -257,15 +258,15 @@ window.CPTD_PARTS.push({
     { id: 'q-od-define', stmt: '3.3.2', model: 'od-phases', q: 'Which description matches ATD’s definition of organization development?',
       o: ['A one-time training event to close one team’s skills gap', 'An ongoing, systematic, long-range process of driving organizational effectiveness', 'A quick restructuring led by finance to cut costs this quarter', 'An annual survey of how satisfied employees are with their jobs'], a: 1,
       why: 'ATD’s glossary defines OD as an ongoing, systematic, long-range process of driving organizational effectiveness. A one-time training event is short-term and focused on one group, the opposite of OD’s whole-system, long-range focus.' },
-    { id: 'q-od-init-team', stmt: '3.3.2', model: 'od-initiatives', q: 'An OD practitioner runs team-building sessions and process consultation to improve how a leadership team works together. Which category of OD initiative is this?',
+    { id: 'q-od-init-team', stmt: '3.3.2', model: 'od-initiatives', q: 'An OD practitioner runs team-building sessions and group process work to improve how a leadership team works together. Which category of OD initiative is this?',
       o: ['Techno-structural', 'Human process', 'Strategic', 'Human resource management'], a: 1,
-      why: 'Human process initiatives work on people and how they interact, such as team building and process consultation. Techno-structural initiatives change the structure and work design instead.' },
+      why: 'Human process initiatives work on people and how they interact, such as team building and group process approaches. Techno-structural initiatives change the structure and work design instead.' },
     { id: 'q-od-init-jobs', stmt: '3.3.2', model: 'od-initiatives', q: 'A company redesigns jobs and its reporting structure to cut handoffs between departments. Which category of OD initiative is this?',
       o: ['Human process', 'Strategic', 'Human resource management', 'Techno-structural'], a: 3,
       why: 'Changing structure and how work is designed is a techno-structural initiative. Human process initiatives work on how people interact, not on the structure itself.' },
     { id: 'q-od-init-list', stmt: '3.3.2', model: 'od-initiatives', q: 'Which is NOT one of the four categories of OD initiatives that ATD lists?',
       o: ['Strategic initiatives', 'Marketing initiatives', 'Human process initiatives', 'Human resource management initiatives'], a: 1,
-      why: 'ATD lists human process, techno-structural, human resource management, and strategic initiatives. Marketing isn’t one of them; strategic initiatives are the ones about the whole organization and its environment.' },
+      why: 'ATD lists human process, techno-structural, human resource management, and strategic initiatives. Marketing isn’t one of them; strategic initiatives are whole-organization changes such as transformation and culture change.' },
 
     /* ----- 3.3.3 systems theories and action research ----- */
     { id: 'q-od-ar-feature', stmt: '3.3.3', model: 'action-research', q: 'What most distinguishes action research from a consultant who simply diagnoses a problem and prescribes a fix?',
@@ -284,7 +285,7 @@ window.CPTD_PARTS.push({
       o: ['Peter Senge', 'Edgar Schein', 'Kurt Lewin', 'Mark Granovetter'], a: 2,
       why: 'Kurt Lewin coined “action research” in the 1940s. He is also known for the unfreeze–change–refreeze change model, which is a separate model. Senge wrote about learning organizations and systems thinking.' },
     { id: 'q-od-systems', stmt: '3.3.3', q: 'A TD manager notices that every fix to one department’s backlog creates a new backlog somewhere else. Which approach best helps her understand the problem?',
-      o: ['Fix each department’s backlog separately, but faster', 'Systems thinking: look at the whole and how its parts interact', 'Replace the managers of the slowest departments', 'Run time-management training for everyone'], a: 1,
+      o: ['Fix each department’s backlog separately, but faster', 'Look at the whole process and how the departments affect one another', 'Replace the managers of the slowest departments', 'Run time-management training for everyone'], a: 1,
       why: 'Systems thinking looks at wholes and interrelationships rather than isolated parts, which is what recurring knock-on effects call for. Fixing each department separately treats the parts in isolation, which is why the problem keeps moving.' },
     { id: 'q-od-os-thru', stmt: '3.3.3', model: 'open-systems', q: 'In open systems theory, what is throughput?',
       o: ['Resources taken in from the environment', 'Products and services sent out to the environment', 'Information about results that returns to the system', 'The work processes that transform inputs into outputs'], a: 3,
@@ -400,13 +401,13 @@ window.CPTD_PARTS.push({
     { id: 'q-od-kahn-define', stmt: '3.3.11', model: 'kahn-engagement', q: 'Kahn describes personal engagement as people employing and expressing themselves in their work roles in which three ways?',
       o: ['Financially, socially, and legally', 'Physically, cognitively, and emotionally', 'Formally, informally, and politically', 'Individually, in teams, and organization-wide'], a: 1,
       why: 'Kahn’s personal engagement is employing and expressing the self physically, cognitively, and emotionally in a work role. Disengagement is withdrawing and defending the self.' },
-    { id: 'q-od-alc-last', stmt: '3.3.12', model: 'od-listening-cycle', q: 'In the Cycle of Active Listening in ATD’s Organization Development Handbook, what is the final step?',
+    { id: 'q-od-alc-last', stmt: '3.3.12', model: 'od-listening-cycle', q: 'In Heather Younger’s Cycle of Active Listening, used in ATD’s Organization Development Handbook, what is the final step?',
       o: ['Act', 'Decode', 'Seek to Understand', 'Close the Loop'], a: 3,
       why: 'The cycle runs Recognize the Unsaid, Seek to Understand, Decode, Act, and Close the Loop. Act comes just before the last step: acting isn’t enough until people hear what was done.' },
-    { id: 'q-od-alc-first', stmt: '3.3.12', model: 'od-listening-cycle', q: 'Which step starts the Cycle of Active Listening in ATD’s Organization Development Handbook?',
+    { id: 'q-od-alc-first', stmt: '3.3.12', model: 'od-listening-cycle', q: 'In Heather Younger’s Cycle of Active Listening, used in ATD’s Organization Development Handbook, which step comes first?',
       o: ['Seek to Understand', 'Recognize the Unsaid', 'Decode', 'Act'], a: 1,
-      why: 'Step 1 is Recognize the Unsaid; Seek to Understand is step 2.' },
-    { id: 'q-od-alc-apply', stmt: '3.3.12', model: 'od-listening-cycle', q: 'After an engagement survey, a division made three changes based on employee comments but never told staff. Which step of the Cycle of Active Listening did it skip?',
+      why: 'Younger’s cycle runs Recognize the Unsaid, Seek to Understand, Decode, Act, Close the Loop. You first notice what isn’t being said, then probe it; Seek to Understand is step 2.' },
+    { id: 'q-od-alc-apply', stmt: '3.3.12', model: 'od-listening-cycle', q: 'After an engagement survey, a division made three changes based on employee comments but never told staff. Which step of Heather Younger’s Cycle of Active Listening did it skip?',
       o: ['Close the Loop', 'Recognize the Unsaid', 'Seek to Understand', 'Decode'], a: 0,
       why: 'The division reached Act (it made changes) but didn’t tell employees what was done with their input, which is what Close the Loop means. The earlier steps all come before acting.' },
   ],
@@ -415,7 +416,7 @@ window.CPTD_PARTS.push({
       id: 'case-od-engage', title: 'Falling engagement in a regional division', stmts: ['3.3.2', '3.3.8', '3.3.11', '3.3.12'],
       setup: 'You are the TD director at a logistics company. The COO says engagement in one regional division has dropped, turnover is up, and she wants you to “fix it.”',
       steps: [
-        { text: 'You’re at the start of the engagement. Using ATD’s five-phase OD strategy, which actions fit now?',
+        { text: 'You’re starting the engagement. Using ATD’s five-phase OD strategy, which actions belong in the first two phases, Entry and Diagnosis?',
           options: [
             ['Meet the COO to agree on the problem, the project’s scope, and its resources', true],
             ['Gather and analyze data together with the division’s stakeholders before picking a solution', true],

@@ -61,12 +61,12 @@ After interviewing staff and analyzing survey data, an OD consultant reviews the
 
 Statement 3.3.2 (Designing and implementing organizational development strategy)
 
-In ATD’s five-phase OD strategy, when does evaluation take place?
+In ATD’s five-phase OD strategy, how is evaluation described?
 
-- A. Only when the client asks for a final report
-- B. Only during the diagnosis phase
-- C. Only after the solution is fully in place
-- D. Throughout, using formative and summative data
+- A. A report written when the client asks for one
+- B. A check made during the diagnosis phase
+- C. A final step that starts once the solution is in place
+- D. A continuous process using formative and summative data
 
 ### q-od-solution
 
@@ -94,7 +94,7 @@ Which description matches ATD’s definition of organization development?
 
 Statement 3.3.2 (Designing and implementing organizational development strategy)
 
-An OD practitioner runs team-building sessions and process consultation to improve how a leadership team works together. Which category of OD initiative is this?
+An OD practitioner runs team-building sessions and group process work to improve how a leadership team works together. Which category of OD initiative is this?
 
 - A. Strategic
 - B. Techno-structural
@@ -185,7 +185,7 @@ Statement 3.3.3 (Theories and frameworks for the design, interaction, and operat
 A TD manager notices that every fix to one department’s backlog creates a new backlog somewhere else. Which approach best helps her understand the problem?
 
 - A. Run time-management training for everyone
-- B. Systems thinking: look at the whole and how its parts interact
+- B. Look at the whole process and how the departments affect one another
 - C. Fix each department’s backlog separately, but faster
 - D. Replace the managers of the slowest departments
 
@@ -589,7 +589,7 @@ Kahn describes personal engagement as people employing and expressing themselves
 
 Statement 3.3.12 (Designing and implementing employee engagement strategy)
 
-In the Cycle of Active Listening in ATD’s Organization Development Handbook, what is the final step?
+In Heather Younger’s Cycle of Active Listening, used in ATD’s Organization Development Handbook, what is the final step?
 
 - A. Close the Loop
 - B. Act
@@ -600,7 +600,7 @@ In the Cycle of Active Listening in ATD’s Organization Development Handbook, w
 
 Statement 3.3.12 (Designing and implementing employee engagement strategy)
 
-Which step starts the Cycle of Active Listening in ATD’s Organization Development Handbook?
+In Heather Younger’s Cycle of Active Listening, used in ATD’s Organization Development Handbook, which step comes first?
 
 - A. Seek to Understand
 - B. Recognize the Unsaid
@@ -611,7 +611,7 @@ Which step starts the Cycle of Active Listening in ATD’s Organization Developm
 
 Statement 3.3.12 (Designing and implementing employee engagement strategy)
 
-After an engagement survey, a division made three changes based on employee comments but never told staff. Which step of the Cycle of Active Listening did it skip?
+After an engagement survey, a division made three changes based on employee comments but never told staff. Which step of Heather Younger’s Cycle of Active Listening did it skip?
 
 - A. Decode
 - B. Close the Loop
@@ -628,7 +628,7 @@ You are the TD director at a logistics company. The COO says engagement in one r
 
 #### case-od-engage.step-1
 
-You’re at the start of the engagement. Using ATD’s five-phase OD strategy, which actions fit now?
+You’re starting the engagement. Using ATD’s five-phase OD strategy, which actions belong in the first two phases, Entry and Diagnosis?
 
 1. Meet the COO to agree on the problem, the project’s scope, and its resources
 2. Launch a company-wide training program right away to show quick action

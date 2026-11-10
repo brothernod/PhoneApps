@@ -9,7 +9,7 @@ Statements: 3.3.2 (Designing and implementing organizational development strateg
 Each numbered line is one claim. The id in brackets names where it comes from (model, item, question or case step), so a fix can be found. Check every claim against the sources; report the ids of claims that are wrong, unsupported or misleading.
 
 1. [od-phases.name] The model with id od-phases is called “Five phases of an OD strategy” (short name “OD phases”).
-2. [od-phases.who] Five phases of an OD strategy comes from ATD’s Organization Development Handbook (B. J. Flores, ed., 2023), ch. 1; ATD’s glossary credits Ed Hasan’s chapter.
+2. [od-phases.who] Five phases of an OD strategy comes from ATD’s Organization Development Handbook (B. J. Flores, ed., 2023), ch. 1, Figure 1-1; phases described on ATD’s glossary page.
 3. [od-phases.tag] Five phases of an OD strategy is labeled “On ATD’s reading list”.
 4. [od-phases.src] The source for Five phases of an OD strategy is: ATD’s Organization Development Handbook (2023), ch. 1, Figure 1-1 (headings); ATD Talent Development Glossary, “What Is Organization Development?”
 5. [od-phases.stmt.1] Five phases of an OD strategy belongs under exam statement 3.3.2 (Designing and implementing organizational development strategy).
@@ -36,24 +36,24 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 26. [od-phases.exam] How Five phases of an OD strategy shows up on the exam: Know ATD’s names and order: phase 3 is Feedback (findings go back to the client before anything is built), and phase 4 is Solution, not “Intervention” or “Implementation.” Evaluation is continuous, using formative and summative data, not only an end step.
 27. [od-phases.note] Worth knowing about Five phases of an OD strategy: ATD’s glossary defines OD as “an ongoing, systematic, long-range process of driving organizational effectiveness.” Other OD texts name and count the phases differently; for this exam, use ATD’s five. The same chapter follows the phases with a section on data gathering.
 28. [od-initiatives.name] The model with id od-initiatives is called “Four categories of OD initiatives” (short name “OD initiatives”).
-29. [od-initiatives.who] Four categories of OD initiatives comes from ATD’s glossary, citing ATD’s Organization Development Handbook (2023); the same four types as Cummings and Worley’s OD interventions.
+29. [od-initiatives.who] Four categories of OD initiatives comes from ATD’s glossary, “What Is Organization Development?” (probably Figure 1-2 of ATD’s Organization Development Handbook, 2023); the same four types as Cummings and Worley’s OD interventions.
 30. [od-initiatives.tag] Four categories of OD initiatives is labeled “On ATD’s reading list”.
-31. [od-initiatives.src] The source for Four categories of OD initiatives is: ATD Talent Development Glossary, “What Is Organization Development?” (citing ATD’s Organization Development Handbook, 2023)
+31. [od-initiatives.src] The source for Four categories of OD initiatives is: ATD Talent Development Glossary, “What Is Organization Development?”; ATD’s Organization Development Handbook (2023), ch. 1, Figure 1-2 title (headings)
 32. [od-initiatives.stmt.1] Four categories of OD initiatives belongs under exam statement 3.3.2 (Designing and implementing organizational development strategy).
 33. [od-initiatives.kind] Four categories of OD initiatives has 4 categories, in no particular order.
 34. [od-initiatives.items.1.name] “Human process initiatives” is one of the categories of Four categories of OD initiatives.
-35. [od-initiatives.items.1.desc] In Four categories of OD initiatives, “Human process initiatives” means: Work on people and how they interact, such as team building, process consultation, and conflict resolution.
+35. [od-initiatives.items.1.desc] In Four categories of OD initiatives, “Human process initiatives” means: Work on people and how they interact, such as team building, group process approaches, and coaching.
 36. [od-initiatives.items.2.name] “Techno-structural initiatives” is one of the categories of Four categories of OD initiatives.
-37. [od-initiatives.items.2.desc] In Four categories of OD initiatives, “Techno-structural initiatives” means: Change the structure and how work is designed, such as reorganizing or enriching jobs.
+37. [od-initiatives.items.2.desc] In Four categories of OD initiatives, “Techno-structural initiatives” means: Change the structure and how work is designed, such as restructuring, flexible work design, or process improvement such as Six Sigma.
 38. [od-initiatives.items.3.name] “Human resource management initiatives” is one of the categories of Four categories of OD initiatives.
-39. [od-initiatives.items.3.desc] In Four categories of OD initiatives, “Human resource management initiatives” means: Use people systems such as performance management, rewards, and talent development.
+39. [od-initiatives.items.3.desc] In Four categories of OD initiatives, “Human resource management initiatives” means: Use people systems such as performance management, employee development, succession planning, and engagement.
 40. [od-initiatives.items.4.name] “Strategic initiatives” is one of the categories of Four categories of OD initiatives.
-41. [od-initiatives.items.4.desc] In Four categories of OD initiatives, “Strategic initiatives” means: Fit the whole organization to its environment, such as culture change or mergers.
+41. [od-initiatives.items.4.desc] In Four categories of OD initiatives, “Strategic initiatives” means: Transform the whole organization, such as organization transformation, culture change, or leadership development.
 42. [od-initiatives.decoys.1] “Marketing campaigns” is NOT one of the categories of Four categories of OD initiatives.
 43. [od-initiatives.decoys.2] “Compliance audits” is NOT one of the categories of Four categories of OD initiatives.
 44. [od-initiatives.decoys.3] “Cost-cutting drives” is NOT one of the categories of Four categories of OD initiatives.
-45. [od-initiatives.hook] Memory hook for Four categories of OD initiatives: People, structure, HR systems, strategy: from how people interact up to how the whole organization fits its world.
-46. [od-initiatives.exam] How Four categories of OD initiatives shows up on the exam: Classify an initiative. Team building or process consultation is human process; redesigning jobs or structure is techno-structural; rewards or performance management systems are HR management; organization–environment fit is strategic.
+45. [od-initiatives.hook] Memory hook for Four categories of OD initiatives: People, structure, HR systems, strategy: from how people work together up to transforming the whole organization.
+46. [od-initiatives.exam] How Four categories of OD initiatives shows up on the exam: Classify an initiative. Team building or coaching is human process; restructuring or redesigning work is techno-structural; performance management, development, or succession systems are HR management; organization transformation or culture change is strategic. ATD puts mergers and acquisitions under techno-structural.
 47. [od-initiatives.note] Worth knowing about Four categories of OD initiatives: Cummings and Worley’s OD textbook calls the same four types “interventions” (human process, technostructural, human resource management, strategic change). ATD says “initiatives.” Don’t get stuck on the word.
 48. [action-research.name] The model with id action-research is called “Action research cycle” (short name “Action research”).
 49. [action-research.who] Action research cycle comes from Kurt Lewin coined the term (1940s); eight-step OD version from Cummings and Worley, Organization Development and Change (2009).
@@ -254,490 +254,502 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 244. [q12-items.tag] Gallup Q12 survey items is labeled “Good to know”.
 245. [q12-items.src] The source for Gallup Q12 survey items is: Gallup, “The Q12: The World’s Leading Employee Engagement Survey”
 246. [q12-items.stmt.1] Gallup Q12 survey items belongs under exam statement 3.3.11 (Assessing and evaluating employee engagement).
-247. [q12-items.kind] Gallup Q12 survey items has 12 items, in no particular order.
+247. [q12-items.kind] Gallup Q12 survey items has 12 items in a fixed order, Gallup’s numbering, Q01 to Q12.
 248. [q12-items.items.1.name] “I know what is expected of me at work” is one of the items of Gallup Q12 survey items.
-249. [q12-items.items.1.desc] In Gallup Q12 survey items, “I know what is expected of me at work” means: Q01: clear expectations.
-250. [q12-items.items.2.name] “I have the materials and equipment to do my work right” is one of the items of Gallup Q12 survey items.
-251. [q12-items.items.2.desc] In Gallup Q12 survey items, “I have the materials and equipment to do my work right” means: Q02: the tools and resources for the job.
-252. [q12-items.items.3.name] “I get to do what I do best every day” is one of the items of Gallup Q12 survey items.
-253. [q12-items.items.3.desc] In Gallup Q12 survey items, “I get to do what I do best every day” means: Q03: using my strengths daily.
-254. [q12-items.items.4.name] “In the last seven days, I received recognition or praise for good work” is one of the items of Gallup Q12 survey items.
-255. [q12-items.items.4.desc] In Gallup Q12 survey items, “In the last seven days, I received recognition or praise for good work” means: Q04: recent recognition.
-256. [q12-items.items.5.name] “My supervisor, or someone at work, seems to care about me as a person” is one of the items of Gallup Q12 survey items.
-257. [q12-items.items.5.desc] In Gallup Q12 survey items, “My supervisor, or someone at work, seems to care about me as a person” means: Q05: someone cares about me.
-258. [q12-items.items.6.name] “Someone at work encourages my development” is one of the items of Gallup Q12 survey items.
-259. [q12-items.items.6.desc] In Gallup Q12 survey items, “Someone at work encourages my development” means: Q06: someone backing my growth.
-260. [q12-items.items.7.name] “At work, my opinions seem to count” is one of the items of Gallup Q12 survey items.
-261. [q12-items.items.7.desc] In Gallup Q12 survey items, “At work, my opinions seem to count” means: Q07: my voice matters.
-262. [q12-items.items.8.name] “The mission or purpose of my company makes my job feel important” is one of the items of Gallup Q12 survey items.
-263. [q12-items.items.8.desc] In Gallup Q12 survey items, “The mission or purpose of my company makes my job feel important” means: Q08: connection to purpose.
-264. [q12-items.items.9.name] “My fellow employees are committed to doing quality work” is one of the items of Gallup Q12 survey items.
-265. [q12-items.items.9.desc] In Gallup Q12 survey items, “My fellow employees are committed to doing quality work” means: Q09: coworkers who care about quality.
-266. [q12-items.items.10.name] “I have a best friend at work” is one of the items of Gallup Q12 survey items.
-267. [q12-items.items.10.desc] In Gallup Q12 survey items, “I have a best friend at work” means: Q10: a close friendship on the job.
-268. [q12-items.items.11.name] “In the last six months, someone at work has talked to me about my progress” is one of the items of Gallup Q12 survey items.
-269. [q12-items.items.11.desc] In Gallup Q12 survey items, “In the last six months, someone at work has talked to me about my progress” means: Q11: progress conversations.
-270. [q12-items.items.12.name] “In the last year, I have had opportunities at work to learn and grow” is one of the items of Gallup Q12 survey items.
-271. [q12-items.items.12.desc] In Gallup Q12 survey items, “In the last year, I have had opportunities at work to learn and grow” means: Q12: chances to learn.
-272. [q12-items.decoys.1] “I am paid fairly for what I do” is NOT one of the items of Gallup Q12 survey items.
-273. [q12-items.decoys.2] “How satisfied are you with your company as a place to work?” is NOT one of the items of Gallup Q12 survey items.
-274. [q12-items.decoys.3] “I plan to be here in two years” is NOT one of the items of Gallup Q12 survey items.
-275. [q12-items.hook] Memory hook for Gallup Q12 survey items: Twelve short statements, rated agree to disagree. They cover expectations, tools, strengths, recognition, care, development, voice, purpose, quality, friendship, progress, and growth; nothing about pay.
-276. [q12-items.exam] How Gallup Q12 survey items shows up on the exam: Spot what isn’t a Q12 item: pay, benefits, and the overall satisfaction question are not among the 12. Engagement and satisfaction are different things.
-277. [q12-items.note] Worth knowing about Gallup Q12 survey items: Gallup numbers the items Q01–Q12; the wording here is shortened. Gallup’s exact wording is copyrighted.
-278. [kahn-engagement.name] The model with id kahn-engagement is called “Kahn’s three psychological conditions of engagement” (short name “Kahn’s conditions”).
-279. [kahn-engagement.who] Kahn’s three psychological conditions of engagement comes from William A. Kahn, Academy of Management Journal (1990).
-280. [kahn-engagement.tag] Kahn’s three psychological conditions of engagement is labeled “Good to know”.
-281. [kahn-engagement.src] The source for Kahn’s three psychological conditions of engagement is: Kahn (1990), “Psychological conditions of personal engagement and disengagement at work,” as summarized by The Field Guide (psychsafety.com)
-282. [kahn-engagement.stmt.1] Kahn’s three psychological conditions of engagement belongs under exam statement 3.3.11 (Assessing and evaluating employee engagement).
-283. [kahn-engagement.stmt.2] Kahn’s three psychological conditions of engagement belongs under exam statement 3.3.12 (Designing and implementing employee engagement strategy).
-284. [kahn-engagement.stmt.3] Kahn’s three psychological conditions of engagement belongs under exam statement 3.3.8 (Creating a culture that encourages and/or creates opportunities for dialogue and feedback between individuals and groups, such as designing collaborative work practices and/or spaces, and role-modeling effective feedback techniques).
-285. [kahn-engagement.kind] Kahn’s three psychological conditions of engagement has 3 conditions, in no particular order.
-286. [kahn-engagement.items.1.name] “Meaningfulness” is one of the conditions of Kahn’s three psychological conditions of engagement.
-287. [kahn-engagement.items.1.desc] In Kahn’s three psychological conditions of engagement, “Meaningfulness” means: It feels worthwhile to bring yourself into the role.
-288. [kahn-engagement.items.2.name] “Safety” is one of the conditions of Kahn’s three psychological conditions of engagement.
-289. [kahn-engagement.items.2.desc] In Kahn’s three psychological conditions of engagement, “Safety” means: You can show and employ yourself without fear of negative consequences to self-image, status, or career.
-290. [kahn-engagement.items.3.name] “Availability” is one of the conditions of Kahn’s three psychological conditions of engagement.
-291. [kahn-engagement.items.3.desc] In Kahn’s three psychological conditions of engagement, “Availability” means: You have the physical, emotional, and cognitive resources to engage at that moment.
-292. [kahn-engagement.decoys.1] “Autonomy” is NOT one of the conditions of Kahn’s three psychological conditions of engagement.
-293. [kahn-engagement.decoys.2] “Recognition” is NOT one of the conditions of Kahn’s three psychological conditions of engagement.
-294. [kahn-engagement.decoys.3] “Compensation” is NOT one of the conditions of Kahn’s three psychological conditions of engagement.
-295. [kahn-engagement.hook] Memory hook for Kahn’s three psychological conditions of engagement: Is it worth it? Is it safe? Am I able right now? Meaning, safety, availability.
-296. [kahn-engagement.exam] How Kahn’s three psychological conditions of engagement shows up on the exam: Kahn defines personal engagement as employing and expressing the self in a work role physically, cognitively, and emotionally; disengagement is withdrawing and defending the self. His safety condition is an early, individual-level form of psychological safety.
-297. [kahn-engagement.note] Worth knowing about Kahn’s three psychological conditions of engagement: Kahn names supportive, trusting relationships, group dynamics, a supportive and consistent management style, and clear norms as sources of psychological safety.
-298. [od-listening-cycle.name] The model with id od-listening-cycle is called “Cycle of Active Listening (engagement)” (short name “Active listening cycle”).
-299. [od-listening-cycle.who] Cycle of Active Listening (engagement) comes from ATD’s Organization Development Handbook (2023), ch. 8, “Fostering Employee Engagement Through OD”.
-300. [od-listening-cycle.tag] Cycle of Active Listening (engagement) is labeled “On ATD’s reading list”.
-301. [od-listening-cycle.src] The source for Cycle of Active Listening (engagement) is: ATD’s Organization Development Handbook (2023), ch. 8 (headings, via the University of Pennsylvania library catalog)
-302. [od-listening-cycle.stmt.1] Cycle of Active Listening (engagement) belongs under exam statement 3.3.12 (Designing and implementing employee engagement strategy).
-303. [od-listening-cycle.stmt.2] Cycle of Active Listening (engagement) belongs under exam statement 3.3.8 (Creating a culture that encourages and/or creates opportunities for dialogue and feedback between individuals and groups, such as designing collaborative work practices and/or spaces, and role-modeling effective feedback techniques).
-304. [od-listening-cycle.kind] Cycle of Active Listening (engagement) has 5 steps in a fixed order, first to last (numbered 1–5 in the book).
-305. [od-listening-cycle.items.1.name] “Recognize the Unsaid” is one of the steps of Cycle of Active Listening (engagement).
-306. [od-listening-cycle.items.1.order] In Cycle of Active Listening (engagement), “Recognize the Unsaid” is number 1 of 5 (first to last (numbered 1–5 in the book)).
-307. [od-listening-cycle.items.1.desc] In Cycle of Active Listening (engagement), “Recognize the Unsaid” means: Notice what employees aren’t saying out loud.
-308. [od-listening-cycle.items.2.name] “Seek to Understand” is one of the steps of Cycle of Active Listening (engagement).
-309. [od-listening-cycle.items.2.order] In Cycle of Active Listening (engagement), “Seek to Understand” is number 2 of 5 (first to last (numbered 1–5 in the book)).
-310. [od-listening-cycle.items.2.desc] In Cycle of Active Listening (engagement), “Seek to Understand” means: Ask and listen to learn what employees really mean.
-311. [od-listening-cycle.items.3.name] “Decode” is one of the steps of Cycle of Active Listening (engagement).
-312. [od-listening-cycle.items.3.order] In Cycle of Active Listening (engagement), “Decode” is number 3 of 5 (first to last (numbered 1–5 in the book)).
-313. [od-listening-cycle.items.3.desc] In Cycle of Active Listening (engagement), “Decode” means: Work out what the input means (only the heading was available).
-314. [od-listening-cycle.items.4.name] “Act” is one of the steps of Cycle of Active Listening (engagement).
-315. [od-listening-cycle.items.4.order] In Cycle of Active Listening (engagement), “Act” is number 4 of 5 (first to last (numbered 1–5 in the book)).
-316. [od-listening-cycle.items.4.desc] In Cycle of Active Listening (engagement), “Act” means: Do something about what you learned.
-317. [od-listening-cycle.items.5.name] “Close the Loop” is one of the steps of Cycle of Active Listening (engagement).
-318. [od-listening-cycle.items.5.order] In Cycle of Active Listening (engagement), “Close the Loop” is number 5 of 5 (first to last (numbered 1–5 in the book)).
-319. [od-listening-cycle.items.5.desc] In Cycle of Active Listening (engagement), “Close the Loop” means: Tell employees what was done with their input.
-320. [od-listening-cycle.decoys.1] “Benchmark” is NOT one of the steps of Cycle of Active Listening (engagement).
-321. [od-listening-cycle.decoys.2] “Escalate” is NOT one of the steps of Cycle of Active Listening (engagement).
-322. [od-listening-cycle.decoys.3] “Delegate” is NOT one of the steps of Cycle of Active Listening (engagement).
-323. [od-listening-cycle.hook] Memory hook for Cycle of Active Listening (engagement): Notice, understand, decode, act, close the loop: listening isn’t finished until people hear what you did with what they said.
-324. [od-listening-cycle.exam] How Cycle of Active Listening (engagement) shows up on the exam: Know the order, and that the cycle ends with Close the Loop: telling employees what happened to their input, as with engagement survey results.
-325. [od-listening-cycle.note] Worth knowing about Cycle of Active Listening (engagement): Only the book’s step headings were available, so these descriptions stay close to the headings.
-326. [q-od-phase-order.stem] Question q-od-phase-order (statement 3.3.2, model od-phases) asks: In ATD’s five-phase OD strategy, which phase comes directly after Diagnosis?
-327. [q-od-phase-order.A] Option A of q-od-phase-order: Solution
-328. [q-od-phase-order.B] Option B of q-od-phase-order: Feedback
-329. [q-od-phase-order.C] Option C of q-od-phase-order: Evaluation
-330. [q-od-phase-order.D] Option D of q-od-phase-order: Entry
-331. [q-od-phase-order.key] The one defensible answer to q-od-phase-order is B: “Feedback”.
-332. [q-od-phase-order.why] Explanation for q-od-phase-order: ATD’s order is Entry, Diagnosis, Feedback, Solution, Evaluation. The analyzed findings go back to the client (Feedback) before anything is designed; Solution is phase 4.
-333. [q-od-entry.stem] Question q-od-entry (statement 3.3.2, model od-phases) asks: An OD consultant has her first meeting with a division head. They agree on the problem to work on and the resources the project will have. Which phase of ATD’s OD strategy is this?
-334. [q-od-entry.A] Option A of q-od-entry: Diagnosis
-335. [q-od-entry.B] Option B of q-od-entry: Solution
-336. [q-od-entry.C] Option C of q-od-entry: Entry
-337. [q-od-entry.D] Option D of q-od-entry: Feedback
-338. [q-od-entry.key] The one defensible answer to q-od-entry is C: “Entry”.
-339. [q-od-entry.why] Explanation for q-od-entry: Entry is the first contact between consultant and client, where they identify the problem or opportunity and agree on scope and resources. Diagnosis comes next, when information is gathered and analyzed with stakeholders.
-340. [q-od-feedback.stem] Question q-od-feedback (statement 3.3.2, model od-phases) asks: After interviewing staff and analyzing survey data, an OD consultant reviews the findings with the client for clarity and accuracy, and together they draft an action plan with success indicators. Which ATD OD phase is this?
-341. [q-od-feedback.A] Option A of q-od-feedback: Feedback
-342. [q-od-feedback.B] Option B of q-od-feedback: Diagnosis
-343. [q-od-feedback.C] Option C of q-od-feedback: Evaluation
-344. [q-od-feedback.D] Option D of q-od-feedback: Entry
-345. [q-od-feedback.key] The one defensible answer to q-od-feedback is A: “Feedback”.
-346. [q-od-feedback.why] Explanation for q-od-feedback: In ATD’s model, Feedback is when the analyzed findings go back to the client to check understanding, clarity, and accuracy, usually producing an action plan with success indicators. Diagnosis is the earlier gathering and analysis itself.
-347. [q-od-eval.stem] Question q-od-eval (statement 3.3.2, model od-phases) asks: In ATD’s five-phase OD strategy, when does evaluation take place?
-348. [q-od-eval.A] Option A of q-od-eval: Only after the solution is fully in place
-349. [q-od-eval.B] Option B of q-od-eval: Only during the diagnosis phase
-350. [q-od-eval.C] Option C of q-od-eval: Only when the client asks for a final report
-351. [q-od-eval.D] Option D of q-od-eval: Throughout, using formative and summative data
-352. [q-od-eval.key] The one defensible answer to q-od-eval is D: “Throughout, using formative and summative data”.
-353. [q-od-eval.why] Explanation for q-od-eval: ATD describes evaluation as a continuous process of collecting formative and summative data to see whether goals and success indicators are met. It usually ends in a report, but it isn’t limited to the end.
-354. [q-od-solution.stem] Question q-od-solution (statement 3.3.2, model od-phases) asks: A TD leader is mapping ATD’s five OD phases onto a project plan. Where do designing, developing, and rolling out a communication plan and training belong?
-355. [q-od-solution.A] Option A of q-od-solution: Diagnosis
-356. [q-od-solution.B] Option B of q-od-solution: Feedback
-357. [q-od-solution.C] Option C of q-od-solution: Solution
-358. [q-od-solution.D] Option D of q-od-solution: Evaluation
-359. [q-od-solution.key] The one defensible answer to q-od-solution is C: “Solution”.
-360. [q-od-solution.why] Explanation for q-od-solution: Solution covers the design, development, and implementation of the steps that fix the problems. Feedback comes just before it: it produces an action plan, but doesn’t build or implement anything.
-361. [q-od-define.stem] Question q-od-define (statement 3.3.2, model od-phases) asks: Which description matches ATD’s definition of organization development?
-362. [q-od-define.A] Option A of q-od-define: A one-time training event to close one team’s skills gap
-363. [q-od-define.B] Option B of q-od-define: An ongoing, systematic, long-range process of driving organizational effectiveness
-364. [q-od-define.C] Option C of q-od-define: A quick restructuring led by finance to cut costs this quarter
-365. [q-od-define.D] Option D of q-od-define: An annual survey of how satisfied employees are with their jobs
-366. [q-od-define.key] The one defensible answer to q-od-define is B: “An ongoing, systematic, long-range process of driving organizational effectiveness”.
-367. [q-od-define.why] Explanation for q-od-define: ATD’s glossary defines OD as an ongoing, systematic, long-range process of driving organizational effectiveness. A one-time training event is short-term and focused on one group, the opposite of OD’s whole-system, long-range focus.
-368. [q-od-init-team.stem] Question q-od-init-team (statement 3.3.2, model od-initiatives) asks: An OD practitioner runs team-building sessions and process consultation to improve how a leadership team works together. Which category of OD initiative is this?
-369. [q-od-init-team.A] Option A of q-od-init-team: Techno-structural
-370. [q-od-init-team.B] Option B of q-od-init-team: Human process
-371. [q-od-init-team.C] Option C of q-od-init-team: Strategic
-372. [q-od-init-team.D] Option D of q-od-init-team: Human resource management
-373. [q-od-init-team.key] The one defensible answer to q-od-init-team is B: “Human process”.
-374. [q-od-init-team.why] Explanation for q-od-init-team: Human process initiatives work on people and how they interact, such as team building and process consultation. Techno-structural initiatives change the structure and work design instead.
-375. [q-od-init-jobs.stem] Question q-od-init-jobs (statement 3.3.2, model od-initiatives) asks: A company redesigns jobs and its reporting structure to cut handoffs between departments. Which category of OD initiative is this?
-376. [q-od-init-jobs.A] Option A of q-od-init-jobs: Human process
-377. [q-od-init-jobs.B] Option B of q-od-init-jobs: Strategic
-378. [q-od-init-jobs.C] Option C of q-od-init-jobs: Human resource management
-379. [q-od-init-jobs.D] Option D of q-od-init-jobs: Techno-structural
-380. [q-od-init-jobs.key] The one defensible answer to q-od-init-jobs is D: “Techno-structural”.
-381. [q-od-init-jobs.why] Explanation for q-od-init-jobs: Changing structure and how work is designed is a techno-structural initiative. Human process initiatives work on how people interact, not on the structure itself.
-382. [q-od-init-list.stem] Question q-od-init-list (statement 3.3.2, model od-initiatives) asks: Which is NOT one of the four categories of OD initiatives that ATD lists?
-383. [q-od-init-list.A] Option A of q-od-init-list: Strategic initiatives
-384. [q-od-init-list.B] Option B of q-od-init-list: Marketing initiatives
-385. [q-od-init-list.C] Option C of q-od-init-list: Human process initiatives
-386. [q-od-init-list.D] Option D of q-od-init-list: Human resource management initiatives
-387. [q-od-init-list.key] The one defensible answer to q-od-init-list is B: “Marketing initiatives”.
-388. [q-od-init-list.why] Explanation for q-od-init-list: ATD lists human process, techno-structural, human resource management, and strategic initiatives. Marketing isn’t one of them; strategic initiatives are the ones about the whole organization and its environment.
-389. [q-od-ar-feature.stem] Question q-od-ar-feature (statement 3.3.3, model action-research) asks: What most distinguishes action research from a consultant who simply diagnoses a problem and prescribes a fix?
-390. [q-od-ar-feature.A] Option A of q-od-ar-feature: It relies on the consultant’s expert judgment rather than data
-391. [q-od-ar-feature.B] Option B of q-od-ar-feature: It skips data collection to move straight to action
-392. [q-od-ar-feature.C] Option C of q-od-ar-feature: It runs once, with no follow-up after the change
-393. [q-od-ar-feature.D] Option D of q-od-ar-feature: Client and practitioner diagnose and plan jointly, and the cycle repeats
-394. [q-od-ar-feature.key] The one defensible answer to q-od-ar-feature is D: “Client and practitioner diagnose and plan jointly, and the cycle repeats”.
-395. [q-od-ar-feature.why] Explanation for q-od-ar-feature: Action research is collaborative (joint diagnosis and joint action planning), data-based, and cyclical: data gathered after action loop back to feedback and a new diagnosis. Relying on the consultant’s judgment alone leaves out the client and the data that define it.
-396. [q-od-ar-order.stem] Question q-od-ar-order (statement 3.3.3, model action-research) asks: In the action research cycle, which step comes right after feedback to the client or group?
-397. [q-od-ar-order.A] Option A of q-od-ar-order: Joint diagnosis of the problem
-398. [q-od-ar-order.B] Option B of q-od-ar-order: Data collection and preliminary analysis
-399. [q-od-ar-order.C] Option C of q-od-ar-order: Action
-400. [q-od-ar-order.D] Option D of q-od-ar-order: Problem identification
-401. [q-od-ar-order.key] The one defensible answer to q-od-ar-order is A: “Joint diagnosis of the problem”.
-402. [q-od-ar-order.why] Explanation for q-od-ar-order: The order is problem identification, consultation with an expert facilitator, data collection and preliminary analysis, feedback to the client, joint diagnosis, joint action planning, action, and data gathering after action. Data collection comes before feedback, not after.
-403. [q-od-ar-first.stem] Question q-od-ar-first (statement 3.3.3, model action-research) asks: In Cummings and Worley’s action research cycle, what usually starts the process?
-404. [q-od-ar-first.A] Option A of q-od-ar-first: A key executive or someone with power senses a problem
-405. [q-od-ar-first.B] Option B of q-od-ar-first: An outside consultant proposes a new program
-406. [q-od-ar-first.C] Option C of q-od-ar-first: Employees complete an annual engagement survey
-407. [q-od-ar-first.D] Option D of q-od-ar-first: The OD practitioner runs a pilot change
-408. [q-od-ar-first.key] The one defensible answer to q-od-ar-first is A: “A key executive or someone with power senses a problem”.
-409. [q-od-ar-first.why] Explanation for q-od-ar-first: Step 1 is problem identification: a key executive or someone with power senses a problem that action research might help with. Surveys come later, as part of data collection.
-410. [q-od-ar-loop.stem] Question q-od-ar-loop (statement 3.3.3, model action-research) asks: After carrying out a change, an OD team gathers data on its effects and finds new issues. In the action research cycle, where does the process go next?
-411. [q-od-ar-loop.A] Option A of q-od-ar-loop: It ends, because the action has been taken
-412. [q-od-ar-loop.B] Option B of q-od-ar-loop: Straight to a final summative report
-413. [q-od-ar-loop.C] Option C of q-od-ar-loop: Back to feeding the new data to the client for joint diagnosis
-414. [q-od-ar-loop.D] Option D of q-od-ar-loop: Back to the start, to find a new executive sponsor
-415. [q-od-ar-loop.key] The one defensible answer to q-od-ar-loop is C: “Back to feeding the new data to the client for joint diagnosis”.
-416. [q-od-ar-loop.why] Explanation for q-od-ar-loop: Data gathering after action can cycle back to step 4, feedback to the client, which leads into a new joint diagnosis. Action research is a repeating cycle; it doesn’t start over from scratch or stop once action is taken.
-417. [q-od-ar-lewin.stem] Question q-od-ar-lewin (statement 3.3.3, model action-research) asks: The CPTD outline lists action research among theories of organizational systems. Who coined the term?
-418. [q-od-ar-lewin.A] Option A of q-od-ar-lewin: Peter Senge
-419. [q-od-ar-lewin.B] Option B of q-od-ar-lewin: Edgar Schein
-420. [q-od-ar-lewin.C] Option C of q-od-ar-lewin: Kurt Lewin
-421. [q-od-ar-lewin.D] Option D of q-od-ar-lewin: Mark Granovetter
-422. [q-od-ar-lewin.key] The one defensible answer to q-od-ar-lewin is C: “Kurt Lewin”.
-423. [q-od-ar-lewin.why] Explanation for q-od-ar-lewin: Kurt Lewin coined “action research” in the 1940s. He is also known for the unfreeze–change–refreeze change model, which is a separate model. Senge wrote about learning organizations and systems thinking.
-424. [q-od-systems.stem] Question q-od-systems (statement 3.3.3) asks: A TD manager notices that every fix to one department’s backlog creates a new backlog somewhere else. Which approach best helps her understand the problem?
-425. [q-od-systems.A] Option A of q-od-systems: Fix each department’s backlog separately, but faster
-426. [q-od-systems.B] Option B of q-od-systems: Systems thinking: look at the whole and how its parts interact
-427. [q-od-systems.C] Option C of q-od-systems: Replace the managers of the slowest departments
-428. [q-od-systems.D] Option D of q-od-systems: Run time-management training for everyone
-429. [q-od-systems.key] The one defensible answer to q-od-systems is B: “Systems thinking: look at the whole and how its parts interact”.
-430. [q-od-systems.why] Explanation for q-od-systems: Systems thinking looks at wholes and interrelationships rather than isolated parts, which is what recurring knock-on effects call for. Fixing each department separately treats the parts in isolation, which is why the problem keeps moving.
-431. [q-od-os-thru.stem] Question q-od-os-thru (statement 3.3.3, model open-systems) asks: In open systems theory, what is throughput?
-432. [q-od-os-thru.A] Option A of q-od-os-thru: Resources taken in from the environment
-433. [q-od-os-thru.B] Option B of q-od-os-thru: Products and services sent out to the environment
-434. [q-od-os-thru.C] Option C of q-od-os-thru: Information about results that returns to the system
-435. [q-od-os-thru.D] Option D of q-od-os-thru: The work processes that transform inputs into outputs
-436. [q-od-os-thru.key] The one defensible answer to q-od-os-thru is D: “The work processes that transform inputs into outputs”.
-437. [q-od-os-thru.why] Explanation for q-od-os-thru: Throughput is the transformation: the work processes that turn inputs into outputs. Resources taken in from the environment are inputs.
-438. [q-od-os-open.stem] Question q-od-os-open (statement 3.3.3, model open-systems) asks: What most distinguishes an open-systems view of an organization from a closed-systems view?
-439. [q-od-os-open.A] Option A of q-od-os-open: It depends on and constantly exchanges with its environment
-440. [q-od-os-open.B] Option B of q-od-os-open: It runs with no formal hierarchy at all
-441. [q-od-os-open.C] Option C of q-od-os-open: It follows one best way to organize its work
-442. [q-od-os-open.D] Option D of q-od-os-open: Its boundaries are fixed and sealed off
-443. [q-od-os-open.key] The one defensible answer to q-od-os-open is A: “It depends on and constantly exchanges with its environment”.
-444. [q-od-os-open.why] Explanation for q-od-os-open: An open system takes inputs from its environment and sends outputs back, so it depends on that exchange; a closed-system view treats the organization as self-contained. “One best way” is the opposite of equifinality, an open-systems idea.
-445. [q-od-os-order.stem] Question q-od-os-order (statement 3.3.3, model open-systems) asks: Which sequence shows the basic open systems cycle?
-446. [q-od-os-order.A] Option A of q-od-os-order: Throughput → input → output
-447. [q-od-os-order.B] Option B of q-od-os-order: Input → output → throughput
-448. [q-od-os-order.C] Option C of q-od-os-order: Output → input → throughput
-449. [q-od-os-order.D] Option D of q-od-os-order: Input → throughput → output
-450. [q-od-os-order.key] The one defensible answer to q-od-os-order is D: “Input → throughput → output”.
-451. [q-od-os-order.why] Explanation for q-od-os-order: Resources come in from the environment (input), are transformed by work processes (throughput), and go back out as products and services (output); then the cycle repeats.
-452. [q-od-equifinal.stem] Question q-od-equifinal (statement 3.3.3, model open-systems-terms) asks: Two regional offices use very different processes, yet both reach the same high customer-satisfaction scores. Which open systems concept does this illustrate?
-453. [q-od-equifinal.A] Option A of q-od-equifinal: Entropy
-454. [q-od-equifinal.B] Option B of q-od-equifinal: Equifinality
-455. [q-od-equifinal.C] Option C of q-od-equifinal: Steady state
-456. [q-od-equifinal.D] Option D of q-od-equifinal: Throughput
-457. [q-od-equifinal.key] The one defensible answer to q-od-equifinal is B: “Equifinality”.
-458. [q-od-equifinal.why] Explanation for q-od-equifinal: Equifinality means reaching the same final state from different starting conditions and by different paths, so there’s no one best way to organize. Steady state is about keeping a stable balance, not about different routes to one result.
-459. [q-od-entropy.stem] Question q-od-entropy (statement 3.3.3, model open-systems-terms) asks: In open systems theory, how does an organization resist entropy?
-460. [q-od-entropy.A] Option A of q-od-entropy: By cutting itself off from the environment to protect its resources
-461. [q-od-entropy.B] Option B of q-od-entropy: By standardizing on one best way of organizing
-462. [q-od-entropy.C] Option C of q-od-entropy: By importing more energy and resources than it uses
-463. [q-od-entropy.D] Option D of q-od-entropy: By freezing its structure so nothing changes
-464. [q-od-entropy.key] The one defensible answer to q-od-entropy is C: “By importing more energy and resources than it uses”.
-465. [q-od-entropy.why] Explanation for q-od-entropy: Entropy is the pull toward decline and death; open systems arrest it by importing more energy than they use (negative entropy). Cutting off from the environment is a closed-system move, the opposite of what the theory describes.
-466. [q-od-steady.stem] Question q-od-steady (statement 3.3.3, model open-systems-terms) asks: Which term describes an open system keeping a stable balance while it continuously exchanges with its environment?
-467. [q-od-steady.A] Option A of q-od-steady: Equifinality
-468. [q-od-steady.B] Option B of q-od-steady: Entropy
-469. [q-od-steady.C] Option C of q-od-steady: Nonlinearity
-470. [q-od-steady.D] Option D of q-od-steady: Steady state
-471. [q-od-steady.key] The one defensible answer to q-od-steady is D: “Steady state”.
-472. [q-od-steady.why] Explanation for q-od-steady: Steady state, also called dynamic equilibrium or homeostasis, is a stable balance kept up through constant exchange. Equifinality is about reaching one end by different paths.
-473. [q-od-cx-emerge.stem] Question q-od-cx-emerge (statement 3.3.3, model chaos-complexity) asks: A company-wide habit of sharing customer tips grows out of many small interactions among employees, not from any central design. Which concept from complexity theory does this illustrate?
-474. [q-od-cx-emerge.A] Option A of q-od-cx-emerge: Equifinality
-475. [q-od-cx-emerge.B] Option B of q-od-cx-emerge: Emergence
-476. [q-od-cx-emerge.C] Option C of q-od-cx-emerge: Entropy
-477. [q-od-cx-emerge.D] Option D of q-od-cx-emerge: Throughput
-478. [q-od-cx-emerge.key] The one defensible answer to q-od-cx-emerge is B: “Emergence”.
-479. [q-od-cx-emerge.why] Explanation for q-od-cx-emerge: Emergence is when system-wide traits arise from the interactions of many actors rather than from central design. Equifinality is an open-systems idea about reaching one result by different paths.
-480. [q-od-cx-nonlin.stem] Question q-od-cx-nonlin (statement 3.3.3, model chaos-complexity) asks: A minor change to one team’s schedule sets off a chain of reactions that disrupts the whole division. Which property of complex systems does this show?
-481. [q-od-cx-nonlin.A] Option A of q-od-cx-nonlin: Equifinality
-482. [q-od-cx-nonlin.B] Option B of q-od-cx-nonlin: Steady state
-483. [q-od-cx-nonlin.C] Option C of q-od-cx-nonlin: Nonlinearity
-484. [q-od-cx-nonlin.D] Option D of q-od-cx-nonlin: Homeostasis
-485. [q-od-cx-nonlin.key] The one defensible answer to q-od-cx-nonlin is C: “Nonlinearity”.
-486. [q-od-cx-nonlin.why] Explanation for q-od-cx-nonlin: In nonlinear systems effects are not proportional to their causes, so a small event can trigger large consequences. Steady state and homeostasis describe stable balance, the opposite of what happened here.
-487. [q-od-cx-lead.stem] Question q-od-cx-lead (statement 3.3.3, model chaos-complexity) asks: Drawing on complexity theory, how should leaders guide a complex, fast-changing organization?
-488. [q-od-cx-lead.A] Option A of q-od-cx-lead: Plan every step centrally and enforce it tightly
-489. [q-od-cx-lead.B] Option B of q-od-cx-lead: Step away entirely, since self-organizing systems need no management
-490. [q-od-cx-lead.C] Option C of q-od-cx-lead: Set vision and values, try things, and keep the emerging patterns that work
-491. [q-od-cx-lead.D] Option D of q-od-cx-lead: Fix a long-range strategy and resist changing it
-492. [q-od-cx-lead.key] The one defensible answer to q-od-cx-lead is C: “Set vision and values, try things, and keep the emerging patterns that work”.
-493. [q-od-cx-lead.why] Explanation for q-od-cx-lead: Complexity thinking says to step back from day-to-day control, watch for emergent patterns and keep the ones that work, and evolve strategy by trying things; leaders still supply vision, values, and open communication. Stepping away entirely is wrong: hands-off management may need more management, not less.
-494. [q-od-cx-edge.stem] Question q-od-cx-edge (statement 3.3.3, model chaos-complexity) asks: In complexity theory, what is the “edge of chaos”?
-495. [q-od-cx-edge.A] Option A of q-od-cx-edge: The zone between rigid order and anarchy where complex systems adapt
-496. [q-od-cx-edge.B] Option B of q-od-cx-edge: The point at which an organization collapses
-497. [q-od-cx-edge.C] Option C of q-od-cx-edge: A calm period of stability after a change
-498. [q-od-cx-edge.D] Option D of q-od-cx-edge: The boundary between an open system and its environment
-499. [q-od-cx-edge.key] The one defensible answer to q-od-cx-edge is A: “The zone between rigid order and anarchy where complex systems adapt”.
-500. [q-od-cx-edge.why] Explanation for q-od-cx-edge: Waldrop describes the edge of chaos as the constantly shifting battle zone between stagnation and anarchy, where complex systems sit and adapt. It isn’t collapse; it’s where adaptation happens.
-501. [q-od-weakties.stem] Question q-od-weakties (statement 3.3.3, model network-theory) asks: According to Granovetter’s “strength of weak ties,” why do acquaintances matter for spreading new information?
-502. [q-od-weakties.A] Option A of q-od-weakties: They are more loyal than close colleagues
-503. [q-od-weakties.B] Option B of q-od-weakties: They usually hold more formal authority
-504. [q-od-weakties.C] Option C of q-od-weakties: They already share the information you have
-505. [q-od-weakties.D] Option D of q-od-weakties: They bridge to other groups, so ideas travel further
-506. [q-od-weakties.key] The one defensible answer to q-od-weakties is D: “They bridge to other groups, so ideas travel further”.
-507. [q-od-weakties.why] Explanation for q-od-weakties: Weak ties act as bridges to other groups, so information and innovations spread further and cross more social distance through them. Close ties tend to keep information inside a few tight cliques, so they mostly share what you already know.
-508. [q-od-net-spread.stem] Question q-od-net-spread (statement 3.3.4, model network-theory) asks: A TD leader wants a new peer-coaching practice to spread across siloed departments. Based on network theory, whom should she recruit as early champions?
-509. [q-od-net-spread.A] Option A of q-od-net-spread: Only members of one tight-knit team
-510. [q-od-net-spread.B] Option B of q-od-net-spread: Only senior leaders on the org chart
-511. [q-od-net-spread.C] Option C of q-od-net-spread: People with many weak ties that bridge groups
-512. [q-od-net-spread.D] Option D of q-od-net-spread: People who mostly work alone on specialist tasks
-513. [q-od-net-spread.key] The one defensible answer to q-od-net-spread is C: “People with many weak ties that bridge groups”.
-514. [q-od-net-spread.why] Explanation for q-od-net-spread: Granovetter found that people with many weak ties are well placed to spread innovations, because some of those ties are bridges to other groups. A tight-knit team keeps the idea inside its own cluster, and a position on the org chart doesn’t guarantee reach across the network.
-515. [q-od-net-ties.stem] Question q-od-net-ties (statement 3.3.3, model network-theory) asks: In network theory, what are the “ties” in a network?
-516. [q-od-net-ties.A] Option A of q-od-net-ties: The relationships between actors
-517. [q-od-net-ties.B] Option B of q-od-net-ties: The actors, such as people or teams
-518. [q-od-net-ties.C] Option C of q-od-net-ties: The formal reporting lines on the org chart
-519. [q-od-net-ties.D] Option D of q-od-net-ties: The share of possible links that exist
-520. [q-od-net-ties.key] The one defensible answer to q-od-net-ties is A: “The relationships between actors”.
-521. [q-od-net-ties.why] Explanation for q-od-net-ties: Ties are the relationships between actors, which can be strong or weak, one-way or mutual. The actors themselves are nodes, and reporting lines show only the formal structure, not the informal relationships a network includes.
-522. [q-od-net-bridge.stem] Question q-od-net-bridge (statement 3.3.3, model network-theory) asks: In network theory, what is a bridge?
-523. [q-od-net-bridge.A] Option A of q-od-net-bridge: The most senior person in a network
-524. [q-od-net-bridge.B] Option B of q-od-net-bridge: A cluster of people who all know each other
-525. [q-od-net-bridge.C] Option C of q-od-net-bridge: A tie that links two otherwise separate groups
-526. [q-od-net-bridge.D] Option D of q-od-net-bridge: A survey used to map who talks to whom
-527. [q-od-net-bridge.key] The one defensible answer to q-od-net-bridge is C: “A tie that links two otherwise separate groups”.
-528. [q-od-net-bridge.why] Explanation for q-od-net-bridge: A bridge connects groups that would otherwise be separate, with a liaison person on each side. A tightly linked cluster is what bridges connect, not a bridge itself.
-529. [q-od-fr-expert.stem] Question q-od-fr-expert (statement 3.3.4, model french-raven) asks: A senior engineer has no formal authority, but everyone turns to her for help with the hardest technical problems because of her skill. Which base of power does she hold?
-530. [q-od-fr-expert.A] Option A of q-od-fr-expert: Legitimate
-531. [q-od-fr-expert.B] Option B of q-od-fr-expert: Referent
-532. [q-od-fr-expert.C] Option C of q-od-fr-expert: Expert
-533. [q-od-fr-expert.D] Option D of q-od-fr-expert: Reward
-534. [q-od-fr-expert.key] The one defensible answer to q-od-fr-expert is C: “Expert”.
-535. [q-od-fr-expert.why] Explanation for q-od-fr-expert: Expert power comes from knowledge or skill that others need. Referent power comes from being liked or admired, which isn’t what this scenario describes; legitimate power would need a formal position.
-536. [q-od-fr-legit.stem] Question q-od-fr-legit (statement 3.3.4, model french-raven) asks: A new department head’s requests are followed mainly because of the title and position he holds. Which base of power is this?
-537. [q-od-fr-legit.A] Option A of q-od-fr-legit: Referent
-538. [q-od-fr-legit.B] Option B of q-od-fr-legit: Expert
-539. [q-od-fr-legit.C] Option C of q-od-fr-legit: Reward
-540. [q-od-fr-legit.D] Option D of q-od-fr-legit: Legitimate
-541. [q-od-fr-legit.key] The one defensible answer to q-od-fr-legit is D: “Legitimate”.
-542. [q-od-fr-legit.why] Explanation for q-od-fr-legit: Legitimate power comes from a formal position or title that others accept as a right to make requests. Reward power would rest on his ability to give benefits, not on the title itself.
-543. [q-od-fr-referent.stem] Question q-od-fr-referent (statement 3.3.4, model french-raven) asks: Employees follow a team lead’s suggestions because they admire her and want to be like her. Which base of power is this?
-544. [q-od-fr-referent.A] Option A of q-od-fr-referent: Referent
-545. [q-od-fr-referent.B] Option B of q-od-fr-referent: Legitimate
-546. [q-od-fr-referent.C] Option C of q-od-fr-referent: Coercive
-547. [q-od-fr-referent.D] Option D of q-od-fr-referent: Expert
-548. [q-od-fr-referent.key] The one defensible answer to q-od-fr-referent is A: “Referent”.
-549. [q-od-fr-referent.why] Explanation for q-od-fr-referent: Referent power comes from being liked, admired, or identified with. Expert power would rest on her knowledge or skill, not on admiration.
-550. [q-od-fr-coercive.stem] Question q-od-fr-coercive (statement 3.3.4, model french-raven) asks: A supervisor gets the team to meet a deadline by threatening to write up anyone who misses it. Which base of power is she using?
-551. [q-od-fr-coercive.A] Option A of q-od-fr-coercive: Reward
-552. [q-od-fr-coercive.B] Option B of q-od-fr-coercive: Coercive
-553. [q-od-fr-coercive.C] Option C of q-od-fr-coercive: Referent
-554. [q-od-fr-coercive.D] Option D of q-od-fr-coercive: Informational
-555. [q-od-fr-coercive.key] The one defensible answer to q-od-fr-coercive is B: “Coercive”.
-556. [q-od-fr-coercive.why] Explanation for q-od-fr-coercive: Coercive power is the ability to punish or penalize. Reward power is the opposite lever: offering benefits people want.
-557. [q-od-fr-orig.stem] Question q-od-fr-orig (statement 3.3.4, model french-raven) asks: Which is NOT one of the five bases of power in French and Raven’s original 1959 paper?
-558. [q-od-fr-orig.A] Option A of q-od-fr-orig: Legitimate
-559. [q-od-fr-orig.B] Option B of q-od-fr-orig: Coercive
-560. [q-od-fr-orig.C] Option C of q-od-fr-orig: Referent
-561. [q-od-fr-orig.D] Option D of q-od-fr-orig: Informational
-562. [q-od-fr-orig.key] The one defensible answer to q-od-fr-orig is D: “Informational”.
-563. [q-od-fr-orig.why] Explanation for q-od-fr-orig: The 1959 paper named coercive, reward, legitimate, referent, and expert power. Raven added informational power in 1965, making six.
-564. [q-od-informal.stem] Question q-od-informal (statement 3.3.4) asks: A new TD director wants to know who really shapes decisions in a division, beyond what the org chart shows. What is she trying to identify?
-565. [q-od-informal.A] Option A of q-od-informal: The formal reporting structure
-566. [q-od-informal.B] Option B of q-od-informal: The approved job descriptions
-567. [q-od-informal.C] Option C of q-od-informal: The informal relationships and networks
-568. [q-od-informal.D] Option D of q-od-informal: The span of control of each manager
-569. [q-od-informal.key] The one defensible answer to q-od-informal is C: “The informal relationships and networks”.
-570. [q-od-informal.why] Explanation for q-od-informal: The org chart shows the formal organization: reporting lines, roles, and hierarchy. The informal organization is the actual relationships and networks through which information and influence flow, which 3.3.4 asks TD professionals to identify alongside the formal ones.
-571. [q-od-chart-risk.stem] Question q-od-chart-risk (statement 3.3.4) asks: A TD leader planning a culture change decides whom to involve using only the org chart. What is the main risk?
-572. [q-od-chart-risk.A] Option A of q-od-chart-risk: She will end up involving too many senior executives
-573. [q-od-chart-risk.B] Option B of q-od-chart-risk: She may miss influential people outside the reporting lines
-574. [q-od-chart-risk.C] Option C of q-od-chart-risk: She will break the formal chain of command in the process
-575. [q-od-chart-risk.D] Option D of q-od-chart-risk: She will slow down the data collection phase
-576. [q-od-chart-risk.key] The one defensible answer to q-od-chart-risk is B: “She may miss influential people outside the reporting lines”.
-577. [q-od-chart-risk.why] Explanation for q-od-chart-risk: The org chart shows only formal structure. Power from expertise or from being admired (expert and referent power) and influence through informal networks don’t appear on it, so key influencers can be missed.
-578. [q-od-schein-order.stem] Question q-od-schein-order (statement 3.3.8, model schein) asks: Which lists Schein’s levels of culture from most visible to deepest?
-579. [q-od-schein-order.A] Option A of q-od-schein-order: Espoused beliefs and values → artifacts → basic underlying assumptions
-580. [q-od-schein-order.B] Option B of q-od-schein-order: Artifacts → espoused beliefs and values → basic underlying assumptions
-581. [q-od-schein-order.C] Option C of q-od-schein-order: Basic underlying assumptions → artifacts → espoused beliefs and values
-582. [q-od-schein-order.D] Option D of q-od-schein-order: Artifacts → basic underlying assumptions → espoused beliefs and values
-583. [q-od-schein-order.key] The one defensible answer to q-od-schein-order is B: “Artifacts → espoused beliefs and values → basic underlying assumptions”.
-584. [q-od-schein-order.why] Explanation for q-od-schein-order: Artifacts are what you see, hear, and feel; espoused beliefs and values are what people say they stand for; basic underlying assumptions are the unconscious, taken-for-granted core.
-585. [q-od-schein-gap.stem] Question q-od-schein-gap (statement 3.3.8, model schein) asks: A company’s website says “we value open feedback,” but employees who raise concerns are quietly sidelined. In Schein’s model, what is driving the behavior?
-586. [q-od-schein-gap.A] Option A of q-od-schein-gap: The artifacts, such as the website
-587. [q-od-schein-gap.B] Option B of q-od-schein-gap: The espoused beliefs and values
-588. [q-od-schein-gap.C] Option C of q-od-schein-gap: The formal written policies
-589. [q-od-schein-gap.D] Option D of q-od-schein-gap: The basic underlying assumptions
-590. [q-od-schein-gap.key] The one defensible answer to q-od-schein-gap is D: “The basic underlying assumptions”.
-591. [q-od-schein-gap.why] Explanation for q-od-schein-gap: Schein notes that espoused beliefs and values may or may not match behavior; the basic underlying assumptions are what actually determine it. The stated value of open feedback is espoused, which is why it isn’t what drives behavior here.
-592. [q-od-schein-art.stem] Question q-od-schein-art (statement 3.3.8, model schein) asks: A consultant visiting a client notices open-plan offices, casual dress, and a weekly all-hands ritual. In Schein’s model, what are these?
-593. [q-od-schein-art.A] Option A of q-od-schein-art: Artifacts
-594. [q-od-schein-art.B] Option B of q-od-schein-art: Espoused beliefs and values
-595. [q-od-schein-art.C] Option C of q-od-schein-art: Basic underlying assumptions
-596. [q-od-schein-art.D] Option D of q-od-schein-art: Strategic initiatives
-597. [q-od-schein-art.key] The one defensible answer to q-od-schein-art is A: “Artifacts”.
-598. [q-od-schein-art.why] Explanation for q-od-schein-art: Artifacts are the visible structures, processes, and behaviors you notice on meeting a group, such as layout, dress, and rituals. Espoused beliefs and values are what the group says it stands for.
-599. [q-od-schein-read.stem] Question q-od-schein-read (statement 3.3.8, model schein) asks: Why is it risky to judge a culture from its artifacts alone?
-600. [q-od-schein-read.A] Option A of q-od-schein-read: Artifacts are hidden and hard to observe
-601. [q-od-schein-read.B] Option B of q-od-schein-read: Artifacts are easy to see but hard to decipher
-602. [q-od-schein-read.C] Option C of q-od-schein-read: Artifacts always match the basic assumptions
-603. [q-od-schein-read.D] Option D of q-od-schein-read: Artifacts only change after the values change
-604. [q-od-schein-read.key] The one defensible answer to q-od-schein-read is B: “Artifacts are easy to see but hard to decipher”.
-605. [q-od-schein-read.why] Explanation for q-od-schein-read: Schein marks artifacts “difficult to decipher”: they’re easy to observe, but their meaning isn’t obvious without the deeper levels. The first option reverses this; artifacts are the most visible level.
-606. [q-od-rolemodel.stem] Question q-od-rolemodel (statement 3.3.8) asks: A TD director wants a culture where feedback flows freely between people and teams. Which action best reflects role-modeling effective feedback?
-607. [q-od-rolemodel.A] Option A of q-od-rolemodel: Asking her own team for feedback and taking it without defensiveness
-608. [q-od-rolemodel.B] Option B of q-od-rolemodel: Sending a memo that requires every manager to give monthly feedback
-609. [q-od-rolemodel.C] Option C of q-od-rolemodel: Adding a feedback skills module to the onboarding program
-610. [q-od-rolemodel.D] Option D of q-od-rolemodel: Rating managers on how often they give feedback to staff
-611. [q-od-rolemodel.key] The one defensible answer to q-od-rolemodel is A: “Asking her own team for feedback and taking it without defensiveness”.
-612. [q-od-rolemodel.why] Explanation for q-od-rolemodel: Role-modeling means leaders show the behavior themselves, such as asking for feedback and receiving it without defensiveness, so it becomes a norm. A memo or a course tells people about feedback but doesn’t show it.
-613. [q-od-kahn-safety.stem] Question q-od-kahn-safety (statement 3.3.8, model kahn-engagement) asks: Team members rarely raise problems in meetings because they fear it will hurt their standing. In Kahn’s terms, which condition for engagement is weak?
-614. [q-od-kahn-safety.A] Option A of q-od-kahn-safety: Safety
-615. [q-od-kahn-safety.B] Option B of q-od-kahn-safety: Availability
-616. [q-od-kahn-safety.C] Option C of q-od-kahn-safety: Meaningfulness
-617. [q-od-kahn-safety.D] Option D of q-od-kahn-safety: Expertise
-618. [q-od-kahn-safety.key] The one defensible answer to q-od-kahn-safety is A: “Safety”.
-619. [q-od-kahn-safety.why] Explanation for q-od-kahn-safety: Kahn’s safety condition is being able to show and employ oneself without fear of negative consequences to self-image, status, or career. Availability is about having the energy and resources to engage, which isn’t the issue here.
-620. [q-od-q12-base.stem] Question q-od-q12-base (statement 3.3.11, model q12-levels) asks: In Gallup’s Q12 hierarchy, which level forms the base that the others build on?
-621. [q-od-q12-base.A] Option A of q-od-q12-base: Growth
-622. [q-od-q12-base.B] Option B of q-od-q12-base: Teamwork
-623. [q-od-q12-base.C] Option C of q-od-q12-base: Basic Needs
-624. [q-od-q12-base.D] Option D of q-od-q12-base: Individual Contribution
-625. [q-od-q12-base.key] The one defensible answer to q-od-q12-base is C: “Basic Needs”.
-626. [q-od-q12-base.why] Explanation for q-od-q12-base: Gallup’s four levels, base to top, are Basic Needs, Individual Contribution, Teamwork, and Growth. Growth is the top, not the base.
-627. [q-od-q12-order.stem] Question q-od-q12-order (statement 3.3.11, model q12-levels) asks: Which shows Gallup’s four Q12 levels from base to top?
-628. [q-od-q12-order.A] Option A of q-od-q12-order: Basic Needs → Teamwork → Individual Contribution → Growth
-629. [q-od-q12-order.B] Option B of q-od-q12-order: Individual Contribution → Basic Needs → Growth → Teamwork
-630. [q-od-q12-order.C] Option C of q-od-q12-order: Basic Needs → Individual Contribution → Teamwork → Growth
-631. [q-od-q12-order.D] Option D of q-od-q12-order: Growth → Teamwork → Individual Contribution → Basic Needs
-632. [q-od-q12-order.key] The one defensible answer to q-od-q12-order is C: “Basic Needs → Individual Contribution → Teamwork → Growth”.
-633. [q-od-q12-order.why] Explanation for q-od-q12-order: The hierarchy builds from Basic Needs through Individual Contribution and Teamwork to Growth. The last option is the right list read from the top down.
-634. [q-od-q12-cats.stem] Question q-od-q12-cats (statement 3.3.11, model q12-levels) asks: Gallup places each employee in one of three engagement categories. Which is NOT one of them?
-635. [q-od-q12-cats.A] Option A of q-od-q12-cats: Engaged
-636. [q-od-q12-cats.B] Option B of q-od-q12-cats: Partially engaged
-637. [q-od-q12-cats.C] Option C of q-od-q12-cats: Not engaged
-638. [q-od-q12-cats.D] Option D of q-od-q12-cats: Actively disengaged
-639. [q-od-q12-cats.key] The one defensible answer to q-od-q12-cats is B: “Partially engaged”.
-640. [q-od-q12-cats.why] Explanation for q-od-q12-cats: Gallup’s three categories are engaged, not engaged, and actively disengaged. “Partially engaged” isn’t one of them.
-641. [q-od-q12-pay.stem] Question q-od-q12-pay (statement 3.3.11, model q12-items) asks: A TD manager is reviewing Gallup’s Q12 before adopting it. Which statement is NOT one of the 12 items?
-642. [q-od-q12-pay.A] Option A of q-od-q12-pay: I know what is expected of me at work
-643. [q-od-q12-pay.B] Option B of q-od-q12-pay: At work, my opinions seem to count
-644. [q-od-q12-pay.C] Option C of q-od-q12-pay: I have a best friend at work
-645. [q-od-q12-pay.D] Option D of q-od-q12-pay: I am paid fairly for the work I do
-646. [q-od-q12-pay.key] The one defensible answer to q-od-q12-pay is D: “I am paid fairly for the work I do”.
-647. [q-od-q12-pay.why] Explanation for q-od-q12-pay: None of the 12 items asks about pay. Knowing what is expected, having opinions count, and having a best friend at work are all Q12 items.
-648. [q-od-q12-sat.stem] Question q-od-q12-sat (statement 3.3.11, model q12-items) asks: A Gallup survey opens with “How satisfied are you with your company as a place to work?” How does this item relate to the Q12?
-649. [q-od-q12-sat.A] Option A of q-od-q12-sat: It is an overall satisfaction item, not one of the 12
-650. [q-od-q12-sat.B] Option B of q-od-q12-sat: It is the first of the 12 items
-651. [q-od-q12-sat.C] Option C of q-od-q12-sat: It replaces the best-friend item in some versions
-652. [q-od-q12-sat.D] Option D of q-od-q12-sat: It measures the Growth level
-653. [q-od-q12-sat.key] The one defensible answer to q-od-q12-sat is A: “It is an overall satisfaction item, not one of the 12”.
-654. [q-od-q12-sat.why] Explanation for q-od-q12-sat: Gallup includes an overall satisfaction item, often labeled Q00, that is not one of the 12. Satisfaction and engagement are different measures, so it doesn’t count as the first item.
-655. [q-od-q12-scale.stem] Question q-od-q12-scale (statement 3.3.11, model q12-items) asks: How do employees answer Gallup’s Q12 items?
-656. [q-od-q12-scale.A] Option A of q-od-q12-scale: On a five-point agreement scale
-657. [q-od-q12-scale.B] Option B of q-od-q12-scale: Yes or no
-658. [q-od-q12-scale.C] Option C of q-od-q12-scale: On a 0–10 likelihood scale
-659. [q-od-q12-scale.D] Option D of q-od-q12-scale: In open-ended comments
-660. [q-od-q12-scale.key] The one defensible answer to q-od-q12-scale is A: “On a five-point agreement scale”.
-661. [q-od-q12-scale.why] Explanation for q-od-q12-scale: Gallup rates each item on a five-point agreement scale. A 0–10 likelihood scale belongs to other measures, not the Q12.
-662. [q-od-kahn-three.stem] Question q-od-kahn-three (statement 3.3.12, model kahn-engagement) asks: Which three psychological conditions did Kahn (1990) link to personal engagement at work?
-663. [q-od-kahn-three.A] Option A of q-od-kahn-three: Autonomy, competence, and relatedness
-664. [q-od-kahn-three.B] Option B of q-od-kahn-three: Recognition, pay, and job security
-665. [q-od-kahn-three.C] Option C of q-od-kahn-three: Meaningfulness, safety, and availability
-666. [q-od-kahn-three.D] Option D of q-od-kahn-three: Vigor, dedication, and absorption
-667. [q-od-kahn-three.key] The one defensible answer to q-od-kahn-three is C: “Meaningfulness, safety, and availability”.
-668. [q-od-kahn-three.why] Explanation for q-od-kahn-three: Kahn’s conditions are meaningfulness (it’s worthwhile), safety (it’s safe), and availability (I have the resources right now). Vigor, dedication, and absorption are also a three-part description of engagement, but they are not Kahn’s conditions.
-669. [q-od-kahn-avail.stem] Question q-od-kahn-avail (statement 3.3.12, model kahn-engagement) asks: An employee finds her work meaningful and feels safe speaking up, but she is exhausted from caring for a sick parent and can’t fully engage. Which of Kahn’s conditions is missing?
-670. [q-od-kahn-avail.A] Option A of q-od-kahn-avail: Meaningfulness
-671. [q-od-kahn-avail.B] Option B of q-od-kahn-avail: Safety
-672. [q-od-kahn-avail.C] Option C of q-od-kahn-avail: Recognition
-673. [q-od-kahn-avail.D] Option D of q-od-kahn-avail: Availability
-674. [q-od-kahn-avail.key] The one defensible answer to q-od-kahn-avail is D: “Availability”.
-675. [q-od-kahn-avail.why] Explanation for q-od-kahn-avail: Availability is having the physical, emotional, and cognitive resources to engage at that moment. She already has meaningfulness and safety, so those aren’t what’s missing.
-676. [q-od-kahn-define.stem] Question q-od-kahn-define (statement 3.3.11, model kahn-engagement) asks: Kahn describes personal engagement as people employing and expressing themselves in their work roles in which three ways?
-677. [q-od-kahn-define.A] Option A of q-od-kahn-define: Financially, socially, and legally
-678. [q-od-kahn-define.B] Option B of q-od-kahn-define: Physically, cognitively, and emotionally
-679. [q-od-kahn-define.C] Option C of q-od-kahn-define: Formally, informally, and politically
-680. [q-od-kahn-define.D] Option D of q-od-kahn-define: Individually, in teams, and organization-wide
-681. [q-od-kahn-define.key] The one defensible answer to q-od-kahn-define is B: “Physically, cognitively, and emotionally”.
-682. [q-od-kahn-define.why] Explanation for q-od-kahn-define: Kahn’s personal engagement is employing and expressing the self physically, cognitively, and emotionally in a work role. Disengagement is withdrawing and defending the self.
-683. [q-od-alc-last.stem] Question q-od-alc-last (statement 3.3.12, model od-listening-cycle) asks: In the Cycle of Active Listening in ATD’s Organization Development Handbook, what is the final step?
-684. [q-od-alc-last.A] Option A of q-od-alc-last: Act
-685. [q-od-alc-last.B] Option B of q-od-alc-last: Decode
-686. [q-od-alc-last.C] Option C of q-od-alc-last: Seek to Understand
-687. [q-od-alc-last.D] Option D of q-od-alc-last: Close the Loop
-688. [q-od-alc-last.key] The one defensible answer to q-od-alc-last is D: “Close the Loop”.
-689. [q-od-alc-last.why] Explanation for q-od-alc-last: The cycle runs Recognize the Unsaid, Seek to Understand, Decode, Act, and Close the Loop. Act comes just before the last step: acting isn’t enough until people hear what was done.
-690. [q-od-alc-first.stem] Question q-od-alc-first (statement 3.3.12, model od-listening-cycle) asks: Which step starts the Cycle of Active Listening in ATD’s Organization Development Handbook?
-691. [q-od-alc-first.A] Option A of q-od-alc-first: Seek to Understand
-692. [q-od-alc-first.B] Option B of q-od-alc-first: Recognize the Unsaid
-693. [q-od-alc-first.C] Option C of q-od-alc-first: Decode
-694. [q-od-alc-first.D] Option D of q-od-alc-first: Act
-695. [q-od-alc-first.key] The one defensible answer to q-od-alc-first is B: “Recognize the Unsaid”.
-696. [q-od-alc-first.why] Explanation for q-od-alc-first: Step 1 is Recognize the Unsaid; Seek to Understand is step 2.
-697. [q-od-alc-apply.stem] Question q-od-alc-apply (statement 3.3.12, model od-listening-cycle) asks: After an engagement survey, a division made three changes based on employee comments but never told staff. Which step of the Cycle of Active Listening did it skip?
-698. [q-od-alc-apply.A] Option A of q-od-alc-apply: Close the Loop
-699. [q-od-alc-apply.B] Option B of q-od-alc-apply: Recognize the Unsaid
-700. [q-od-alc-apply.C] Option C of q-od-alc-apply: Seek to Understand
-701. [q-od-alc-apply.D] Option D of q-od-alc-apply: Decode
-702. [q-od-alc-apply.key] The one defensible answer to q-od-alc-apply is A: “Close the Loop”.
-703. [q-od-alc-apply.why] Explanation for q-od-alc-apply: The division reached Act (it made changes) but didn’t tell employees what was done with their input, which is what Close the Loop means. The earlier steps all come before acting.
-704. [case-od-engage.setup] Case case-od-engage (“Falling engagement in a regional division”, statements 3.3.2, 3.3.8, 3.3.11, 3.3.12) setup: You are the TD director at a logistics company. The COO says engagement in one regional division has dropped, turnover is up, and she wants you to “fix it.”
-705. [case-od-engage.step-1.text] Step 1 of case-od-engage asks: You’re at the start of the engagement. Using ATD’s five-phase OD strategy, which actions fit now?
-706. [case-od-engage.step-1.opt-1] In step 1 of case-od-engage, “Meet the COO to agree on the problem, the project’s scope, and its resources” is a RIGHT pick.
-707. [case-od-engage.step-1.opt-2] In step 1 of case-od-engage, “Gather and analyze data together with the division’s stakeholders before picking a solution” is a RIGHT pick.
-708. [case-od-engage.step-1.opt-3] In step 1 of case-od-engage, “Launch a company-wide training program right away to show quick action” is a WRONG pick.
-709. [case-od-engage.step-1.opt-4] In step 1 of case-od-engage, “Choose the solution that worked at your last employer and roll it out” is a WRONG pick.
-710. [case-od-engage.step-1.opt-5] In step 1 of case-od-engage, “Skip sharing findings with the COO to save time” is a WRONG pick.
-711. [case-od-engage.step-1.why] Explanation for step 1 of case-od-engage: ATD’s phases start with Entry (agree on the problem, scope, and resources) and Diagnosis (collaborative data gathering and analysis). Jumping to a solution skips diagnosis and feedback, and Feedback is its own phase.
-712. [case-od-engage.step-2.text] Step 2 of case-od-engage asks: You decide to measure engagement in the division. Which choices are sound?
-713. [case-od-engage.step-2.opt-1] In step 2 of case-od-engage, “Use an established engagement survey such as Gallup’s Q12” is a RIGHT pick.
-714. [case-od-engage.step-2.opt-2] In step 2 of case-od-engage, “Treat overall satisfaction as a separate measure from engagement” is a RIGHT pick.
-715. [case-od-engage.step-2.opt-3] In step 2 of case-od-engage, “Measure engagement only by asking how satisfied people are with the company” is a WRONG pick.
-716. [case-od-engage.step-2.opt-4] In step 2 of case-od-engage, “Expect the Q12 items to tell you whether people feel fairly paid” is a WRONG pick.
-717. [case-od-engage.step-2.opt-5] In step 2 of case-od-engage, “Survey only the division’s senior managers” is a WRONG pick.
-718. [case-od-engage.step-2.why] Explanation for step 2 of case-od-engage: The Q12 is Gallup’s engagement survey, and its overall satisfaction item is not one of the 12, so satisfaction and engagement are measured separately. No Q12 item asks about pay.
-719. [case-od-engage.step-3.text] Step 3 of case-od-engage asks: Results show the division’s posted values say “we welcome feedback,” but staff say people who speak up get sidelined. Which actions fit?
-720. [case-od-engage.step-3.opt-1] In step 3 of case-od-engage, “Treat it as a gap between espoused values and the basic underlying assumptions” is a RIGHT pick.
-721. [case-od-engage.step-3.opt-2] In step 3 of case-od-engage, “Have division leaders role-model asking for feedback and taking it without defensiveness” is a RIGHT pick.
-722. [case-od-engage.step-3.opt-3] In step 3 of case-od-engage, “Work toward people being able to speak up without fear of harm to their status or career” is a RIGHT pick.
-723. [case-od-engage.step-3.opt-4] In step 3 of case-od-engage, “Reprint the values posters with brighter designs” is a WRONG pick.
-724. [case-od-engage.step-3.opt-5] In step 3 of case-od-engage, “Conclude the culture is healthy because the stated values are good” is a WRONG pick.
-725. [case-od-engage.step-3.opt-6] In step 3 of case-od-engage, “Find out who complained and discipline them” is a WRONG pick.
-726. [case-od-engage.step-3.why] Explanation for step 3 of case-od-engage: In Schein’s model, espoused values may not match behavior; the assumptions drive it. Role-modeling feedback is named in 3.3.8, and Kahn’s safety condition is being able to engage without fear for self-image, status, or career. Posters are only artifacts.
-727. [case-od-engage.step-4.text] Step 4 of case-od-engage asks: The division has made several changes based on the survey. What should happen next?
-728. [case-od-engage.step-4.opt-1] In step 4 of case-od-engage, “Tell employees what was done with their input” is a RIGHT pick.
-729. [case-od-engage.step-4.opt-2] In step 4 of case-od-engage, “Keep collecting data to see whether the changes are working” is a RIGHT pick.
-730. [case-od-engage.step-4.opt-3] In step 4 of case-od-engage, “File the results until next year’s survey” is a WRONG pick.
-731. [case-od-engage.step-4.opt-4] In step 4 of case-od-engage, “Share the results with executives only” is a WRONG pick.
-732. [case-od-engage.step-4.opt-5] In step 4 of case-od-engage, “Stop measuring now that the action plan is in place” is a WRONG pick.
-733. [case-od-engage.step-4.why] Explanation for step 4 of case-od-engage: Close the Loop is the last step of the ATD handbook’s Cycle of Active Listening, and ATD’s OD Evaluation phase collects formative and summative data throughout, not only at the end.
+249. [q12-items.items.1.order] In Gallup Q12 survey items, “I know what is expected of me at work” is number 1 of 12 (Gallup’s numbering, Q01 to Q12).
+250. [q12-items.items.1.desc] In Gallup Q12 survey items, “I know what is expected of me at work” means: Q01: clear expectations.
+251. [q12-items.items.2.name] “I have the materials and equipment to do my work right” is one of the items of Gallup Q12 survey items.
+252. [q12-items.items.2.order] In Gallup Q12 survey items, “I have the materials and equipment to do my work right” is number 2 of 12 (Gallup’s numbering, Q01 to Q12).
+253. [q12-items.items.2.desc] In Gallup Q12 survey items, “I have the materials and equipment to do my work right” means: Q02: the tools and resources for the job.
+254. [q12-items.items.3.name] “I get to do what I do best every day” is one of the items of Gallup Q12 survey items.
+255. [q12-items.items.3.order] In Gallup Q12 survey items, “I get to do what I do best every day” is number 3 of 12 (Gallup’s numbering, Q01 to Q12).
+256. [q12-items.items.3.desc] In Gallup Q12 survey items, “I get to do what I do best every day” means: Q03: using my strengths daily.
+257. [q12-items.items.4.name] “In the last seven days, I received recognition or praise for good work” is one of the items of Gallup Q12 survey items.
+258. [q12-items.items.4.order] In Gallup Q12 survey items, “In the last seven days, I received recognition or praise for good work” is number 4 of 12 (Gallup’s numbering, Q01 to Q12).
+259. [q12-items.items.4.desc] In Gallup Q12 survey items, “In the last seven days, I received recognition or praise for good work” means: Q04: recent recognition.
+260. [q12-items.items.5.name] “My supervisor, or someone at work, seems to care about me as a person” is one of the items of Gallup Q12 survey items.
+261. [q12-items.items.5.order] In Gallup Q12 survey items, “My supervisor, or someone at work, seems to care about me as a person” is number 5 of 12 (Gallup’s numbering, Q01 to Q12).
+262. [q12-items.items.5.desc] In Gallup Q12 survey items, “My supervisor, or someone at work, seems to care about me as a person” means: Q05: someone cares about me.
+263. [q12-items.items.6.name] “Someone at work encourages my development” is one of the items of Gallup Q12 survey items.
+264. [q12-items.items.6.order] In Gallup Q12 survey items, “Someone at work encourages my development” is number 6 of 12 (Gallup’s numbering, Q01 to Q12).
+265. [q12-items.items.6.desc] In Gallup Q12 survey items, “Someone at work encourages my development” means: Q06: someone backing my growth.
+266. [q12-items.items.7.name] “At work, my opinions seem to count” is one of the items of Gallup Q12 survey items.
+267. [q12-items.items.7.order] In Gallup Q12 survey items, “At work, my opinions seem to count” is number 7 of 12 (Gallup’s numbering, Q01 to Q12).
+268. [q12-items.items.7.desc] In Gallup Q12 survey items, “At work, my opinions seem to count” means: Q07: my voice matters.
+269. [q12-items.items.8.name] “The mission or purpose of my company makes my job feel important” is one of the items of Gallup Q12 survey items.
+270. [q12-items.items.8.order] In Gallup Q12 survey items, “The mission or purpose of my company makes my job feel important” is number 8 of 12 (Gallup’s numbering, Q01 to Q12).
+271. [q12-items.items.8.desc] In Gallup Q12 survey items, “The mission or purpose of my company makes my job feel important” means: Q08: connection to purpose.
+272. [q12-items.items.9.name] “My fellow employees are committed to doing quality work” is one of the items of Gallup Q12 survey items.
+273. [q12-items.items.9.order] In Gallup Q12 survey items, “My fellow employees are committed to doing quality work” is number 9 of 12 (Gallup’s numbering, Q01 to Q12).
+274. [q12-items.items.9.desc] In Gallup Q12 survey items, “My fellow employees are committed to doing quality work” means: Q09: coworkers who care about quality.
+275. [q12-items.items.10.name] “I have a best friend at work” is one of the items of Gallup Q12 survey items.
+276. [q12-items.items.10.order] In Gallup Q12 survey items, “I have a best friend at work” is number 10 of 12 (Gallup’s numbering, Q01 to Q12).
+277. [q12-items.items.10.desc] In Gallup Q12 survey items, “I have a best friend at work” means: Q10: a close friendship on the job.
+278. [q12-items.items.11.name] “In the last six months, someone at work has talked to me about my progress” is one of the items of Gallup Q12 survey items.
+279. [q12-items.items.11.order] In Gallup Q12 survey items, “In the last six months, someone at work has talked to me about my progress” is number 11 of 12 (Gallup’s numbering, Q01 to Q12).
+280. [q12-items.items.11.desc] In Gallup Q12 survey items, “In the last six months, someone at work has talked to me about my progress” means: Q11: progress conversations.
+281. [q12-items.items.12.name] “In the last year, I have had opportunities at work to learn and grow” is one of the items of Gallup Q12 survey items.
+282. [q12-items.items.12.order] In Gallup Q12 survey items, “In the last year, I have had opportunities at work to learn and grow” is number 12 of 12 (Gallup’s numbering, Q01 to Q12).
+283. [q12-items.items.12.desc] In Gallup Q12 survey items, “In the last year, I have had opportunities at work to learn and grow” means: Q12: chances to learn.
+284. [q12-items.decoys.1] “I am paid fairly for what I do” is NOT one of the items of Gallup Q12 survey items.
+285. [q12-items.decoys.2] “How satisfied are you with your company as a place to work?” is NOT one of the items of Gallup Q12 survey items.
+286. [q12-items.decoys.3] “I plan to be here in two years” is NOT one of the items of Gallup Q12 survey items.
+287. [q12-items.hook] Memory hook for Gallup Q12 survey items: Twelve short statements, rated agree to disagree. They cover expectations, tools, strengths, recognition, care, development, voice, purpose, quality, friendship, progress, and growth; nothing about pay.
+288. [q12-items.exam] How Gallup Q12 survey items shows up on the exam: Spot what isn’t a Q12 item: pay, benefits, and the overall satisfaction question are not among the 12. Engagement and satisfaction are different things.
+289. [q12-items.note] Worth knowing about Gallup Q12 survey items: Gallup numbers the items Q01–Q12; the wording here is shortened. Gallup’s exact wording is copyrighted.
+290. [kahn-engagement.name] The model with id kahn-engagement is called “Kahn’s three psychological conditions of engagement” (short name “Kahn’s conditions”).
+291. [kahn-engagement.who] Kahn’s three psychological conditions of engagement comes from William A. Kahn, Academy of Management Journal (1990).
+292. [kahn-engagement.tag] Kahn’s three psychological conditions of engagement is labeled “Good to know”.
+293. [kahn-engagement.src] The source for Kahn’s three psychological conditions of engagement is: Kahn (1990), “Psychological conditions of personal engagement and disengagement at work,” as summarized by The Field Guide (psychsafety.com)
+294. [kahn-engagement.stmt.1] Kahn’s three psychological conditions of engagement belongs under exam statement 3.3.11 (Assessing and evaluating employee engagement).
+295. [kahn-engagement.stmt.2] Kahn’s three psychological conditions of engagement belongs under exam statement 3.3.12 (Designing and implementing employee engagement strategy).
+296. [kahn-engagement.stmt.3] Kahn’s three psychological conditions of engagement belongs under exam statement 3.3.8 (Creating a culture that encourages and/or creates opportunities for dialogue and feedback between individuals and groups, such as designing collaborative work practices and/or spaces, and role-modeling effective feedback techniques).
+297. [kahn-engagement.kind] Kahn’s three psychological conditions of engagement has 3 conditions, in no particular order.
+298. [kahn-engagement.items.1.name] “Meaningfulness” is one of the conditions of Kahn’s three psychological conditions of engagement.
+299. [kahn-engagement.items.1.desc] In Kahn’s three psychological conditions of engagement, “Meaningfulness” means: It feels worthwhile to bring yourself into the role.
+300. [kahn-engagement.items.2.name] “Safety” is one of the conditions of Kahn’s three psychological conditions of engagement.
+301. [kahn-engagement.items.2.desc] In Kahn’s three psychological conditions of engagement, “Safety” means: You can show and employ yourself without fear of negative consequences to self-image, status, or career.
+302. [kahn-engagement.items.3.name] “Availability” is one of the conditions of Kahn’s three psychological conditions of engagement.
+303. [kahn-engagement.items.3.desc] In Kahn’s three psychological conditions of engagement, “Availability” means: You have the physical, emotional, and cognitive resources to engage at that moment.
+304. [kahn-engagement.decoys.1] “Autonomy” is NOT one of the conditions of Kahn’s three psychological conditions of engagement.
+305. [kahn-engagement.decoys.2] “Recognition” is NOT one of the conditions of Kahn’s three psychological conditions of engagement.
+306. [kahn-engagement.decoys.3] “Compensation” is NOT one of the conditions of Kahn’s three psychological conditions of engagement.
+307. [kahn-engagement.hook] Memory hook for Kahn’s three psychological conditions of engagement: Is it worth it? Is it safe? Am I able right now? Meaning, safety, availability.
+308. [kahn-engagement.exam] How Kahn’s three psychological conditions of engagement shows up on the exam: Kahn defines personal engagement as employing and expressing the self in a work role physically, cognitively, and emotionally; disengagement is withdrawing and defending the self. His safety condition is an early, individual-level form of psychological safety.
+309. [kahn-engagement.note] Worth knowing about Kahn’s three psychological conditions of engagement: Kahn names supportive, trusting relationships, group dynamics, a supportive and consistent management style, and clear norms as sources of psychological safety.
+310. [od-listening-cycle.name] The model with id od-listening-cycle is called “Cycle of Active Listening (engagement)” (short name “Active listening cycle”).
+311. [od-listening-cycle.who] Cycle of Active Listening (engagement) comes from Heather R. Younger (The Art of Active Listening, 2023), as presented in ATD’s Organization Development Handbook (2023), ch. 8, “Fostering Employee Engagement Through OD”.
+312. [od-listening-cycle.tag] Cycle of Active Listening (engagement) is labeled “On ATD’s reading list”.
+313. [od-listening-cycle.src] The source for Cycle of Active Listening (engagement) is: ATD’s Organization Development Handbook (2023), ch. 8 (headings, via the University of Pennsylvania library catalog); Heather R. Younger, The Art of Active Listening (Berrett-Koehler, 2023), ch. 5, “Close the Loop”
+314. [od-listening-cycle.stmt.1] Cycle of Active Listening (engagement) belongs under exam statement 3.3.12 (Designing and implementing employee engagement strategy).
+315. [od-listening-cycle.stmt.2] Cycle of Active Listening (engagement) belongs under exam statement 3.3.8 (Creating a culture that encourages and/or creates opportunities for dialogue and feedback between individuals and groups, such as designing collaborative work practices and/or spaces, and role-modeling effective feedback techniques).
+316. [od-listening-cycle.kind] Cycle of Active Listening (engagement) has 5 steps in a fixed order, first to last (numbered 1–5 in the book).
+317. [od-listening-cycle.items.1.name] “Recognize the Unsaid” is one of the steps of Cycle of Active Listening (engagement).
+318. [od-listening-cycle.items.1.order] In Cycle of Active Listening (engagement), “Recognize the Unsaid” is number 1 of 5 (first to last (numbered 1–5 in the book)).
+319. [od-listening-cycle.items.1.desc] In Cycle of Active Listening (engagement), “Recognize the Unsaid” means: Notice what employees aren’t saying out loud.
+320. [od-listening-cycle.items.2.name] “Seek to Understand” is one of the steps of Cycle of Active Listening (engagement).
+321. [od-listening-cycle.items.2.order] In Cycle of Active Listening (engagement), “Seek to Understand” is number 2 of 5 (first to last (numbered 1–5 in the book)).
+322. [od-listening-cycle.items.2.desc] In Cycle of Active Listening (engagement), “Seek to Understand” means: Ask and listen to learn what employees really mean.
+323. [od-listening-cycle.items.3.name] “Decode” is one of the steps of Cycle of Active Listening (engagement).
+324. [od-listening-cycle.items.3.order] In Cycle of Active Listening (engagement), “Decode” is number 3 of 5 (first to last (numbered 1–5 in the book)).
+325. [od-listening-cycle.items.3.desc] In Cycle of Active Listening (engagement), “Decode” means: Work out what the input means (only the heading was available).
+326. [od-listening-cycle.items.4.name] “Act” is one of the steps of Cycle of Active Listening (engagement).
+327. [od-listening-cycle.items.4.order] In Cycle of Active Listening (engagement), “Act” is number 4 of 5 (first to last (numbered 1–5 in the book)).
+328. [od-listening-cycle.items.4.desc] In Cycle of Active Listening (engagement), “Act” means: Do something about what you learned.
+329. [od-listening-cycle.items.5.name] “Close the Loop” is one of the steps of Cycle of Active Listening (engagement).
+330. [od-listening-cycle.items.5.order] In Cycle of Active Listening (engagement), “Close the Loop” is number 5 of 5 (first to last (numbered 1–5 in the book)).
+331. [od-listening-cycle.items.5.desc] In Cycle of Active Listening (engagement), “Close the Loop” means: Tell employees what was done with their input.
+332. [od-listening-cycle.decoys.1] “Benchmark” is NOT one of the steps of Cycle of Active Listening (engagement).
+333. [od-listening-cycle.decoys.2] “Escalate” is NOT one of the steps of Cycle of Active Listening (engagement).
+334. [od-listening-cycle.decoys.3] “Delegate” is NOT one of the steps of Cycle of Active Listening (engagement).
+335. [od-listening-cycle.hook] Memory hook for Cycle of Active Listening (engagement): Notice, understand, decode, act, close the loop: listening isn’t finished until people hear what you did with what they said.
+336. [od-listening-cycle.exam] How Cycle of Active Listening (engagement) shows up on the exam: Know the order, and that the cycle ends with Close the Loop: telling employees what happened to their input, as with engagement survey results.
+337. [od-listening-cycle.note] Worth knowing about Cycle of Active Listening (engagement): The cycle is Heather Younger’s, from her book The Art of Active Listening, where Close the Loop is the fifth step, after recognizing the unsaid, seeking to understand, decoding, and taking action. Only the step headings were available, so these descriptions stay close to them.
+338. [q-od-phase-order.stem] Question q-od-phase-order (statement 3.3.2, model od-phases) asks: In ATD’s five-phase OD strategy, which phase comes directly after Diagnosis?
+339. [q-od-phase-order.A] Option A of q-od-phase-order: Solution
+340. [q-od-phase-order.B] Option B of q-od-phase-order: Feedback
+341. [q-od-phase-order.C] Option C of q-od-phase-order: Evaluation
+342. [q-od-phase-order.D] Option D of q-od-phase-order: Entry
+343. [q-od-phase-order.key] The one defensible answer to q-od-phase-order is B: “Feedback”.
+344. [q-od-phase-order.why] Explanation for q-od-phase-order: ATD’s order is Entry, Diagnosis, Feedback, Solution, Evaluation. The analyzed findings go back to the client (Feedback) before anything is designed; Solution is phase 4.
+345. [q-od-entry.stem] Question q-od-entry (statement 3.3.2, model od-phases) asks: An OD consultant has her first meeting with a division head. They agree on the problem to work on and the resources the project will have. Which phase of ATD’s OD strategy is this?
+346. [q-od-entry.A] Option A of q-od-entry: Diagnosis
+347. [q-od-entry.B] Option B of q-od-entry: Solution
+348. [q-od-entry.C] Option C of q-od-entry: Entry
+349. [q-od-entry.D] Option D of q-od-entry: Feedback
+350. [q-od-entry.key] The one defensible answer to q-od-entry is C: “Entry”.
+351. [q-od-entry.why] Explanation for q-od-entry: Entry is the first contact between consultant and client, where they identify the problem or opportunity and agree on scope and resources. Diagnosis comes next, when information is gathered and analyzed with stakeholders.
+352. [q-od-feedback.stem] Question q-od-feedback (statement 3.3.2, model od-phases) asks: After interviewing staff and analyzing survey data, an OD consultant reviews the findings with the client for clarity and accuracy, and together they draft an action plan with success indicators. Which ATD OD phase is this?
+353. [q-od-feedback.A] Option A of q-od-feedback: Feedback
+354. [q-od-feedback.B] Option B of q-od-feedback: Diagnosis
+355. [q-od-feedback.C] Option C of q-od-feedback: Evaluation
+356. [q-od-feedback.D] Option D of q-od-feedback: Entry
+357. [q-od-feedback.key] The one defensible answer to q-od-feedback is A: “Feedback”.
+358. [q-od-feedback.why] Explanation for q-od-feedback: In ATD’s model, Feedback is when the analyzed findings go back to the client to check understanding, clarity, and accuracy, usually producing an action plan with success indicators. Diagnosis is the earlier gathering and analysis itself.
+359. [q-od-eval.stem] Question q-od-eval (statement 3.3.2, model od-phases) asks: In ATD’s five-phase OD strategy, how is evaluation described?
+360. [q-od-eval.A] Option A of q-od-eval: A final step that starts once the solution is in place
+361. [q-od-eval.B] Option B of q-od-eval: A check made during the diagnosis phase
+362. [q-od-eval.C] Option C of q-od-eval: A report written when the client asks for one
+363. [q-od-eval.D] Option D of q-od-eval: A continuous process using formative and summative data
+364. [q-od-eval.key] The one defensible answer to q-od-eval is D: “A continuous process using formative and summative data”.
+365. [q-od-eval.why] Explanation for q-od-eval: ATD describes evaluation as a continuous process of collecting formative and summative data to see whether goals and success indicators are met. It usually ends in a report, but it isn’t limited to the end.
+366. [q-od-solution.stem] Question q-od-solution (statement 3.3.2, model od-phases) asks: A TD leader is mapping ATD’s five OD phases onto a project plan. Where do designing, developing, and rolling out a communication plan and training belong?
+367. [q-od-solution.A] Option A of q-od-solution: Diagnosis
+368. [q-od-solution.B] Option B of q-od-solution: Feedback
+369. [q-od-solution.C] Option C of q-od-solution: Solution
+370. [q-od-solution.D] Option D of q-od-solution: Evaluation
+371. [q-od-solution.key] The one defensible answer to q-od-solution is C: “Solution”.
+372. [q-od-solution.why] Explanation for q-od-solution: Solution covers the design, development, and implementation of the steps that fix the problems. Feedback comes just before it: it produces an action plan, but doesn’t build or implement anything.
+373. [q-od-define.stem] Question q-od-define (statement 3.3.2, model od-phases) asks: Which description matches ATD’s definition of organization development?
+374. [q-od-define.A] Option A of q-od-define: A one-time training event to close one team’s skills gap
+375. [q-od-define.B] Option B of q-od-define: An ongoing, systematic, long-range process of driving organizational effectiveness
+376. [q-od-define.C] Option C of q-od-define: A quick restructuring led by finance to cut costs this quarter
+377. [q-od-define.D] Option D of q-od-define: An annual survey of how satisfied employees are with their jobs
+378. [q-od-define.key] The one defensible answer to q-od-define is B: “An ongoing, systematic, long-range process of driving organizational effectiveness”.
+379. [q-od-define.why] Explanation for q-od-define: ATD’s glossary defines OD as an ongoing, systematic, long-range process of driving organizational effectiveness. A one-time training event is short-term and focused on one group, the opposite of OD’s whole-system, long-range focus.
+380. [q-od-init-team.stem] Question q-od-init-team (statement 3.3.2, model od-initiatives) asks: An OD practitioner runs team-building sessions and group process work to improve how a leadership team works together. Which category of OD initiative is this?
+381. [q-od-init-team.A] Option A of q-od-init-team: Techno-structural
+382. [q-od-init-team.B] Option B of q-od-init-team: Human process
+383. [q-od-init-team.C] Option C of q-od-init-team: Strategic
+384. [q-od-init-team.D] Option D of q-od-init-team: Human resource management
+385. [q-od-init-team.key] The one defensible answer to q-od-init-team is B: “Human process”.
+386. [q-od-init-team.why] Explanation for q-od-init-team: Human process initiatives work on people and how they interact, such as team building and group process approaches. Techno-structural initiatives change the structure and work design instead.
+387. [q-od-init-jobs.stem] Question q-od-init-jobs (statement 3.3.2, model od-initiatives) asks: A company redesigns jobs and its reporting structure to cut handoffs between departments. Which category of OD initiative is this?
+388. [q-od-init-jobs.A] Option A of q-od-init-jobs: Human process
+389. [q-od-init-jobs.B] Option B of q-od-init-jobs: Strategic
+390. [q-od-init-jobs.C] Option C of q-od-init-jobs: Human resource management
+391. [q-od-init-jobs.D] Option D of q-od-init-jobs: Techno-structural
+392. [q-od-init-jobs.key] The one defensible answer to q-od-init-jobs is D: “Techno-structural”.
+393. [q-od-init-jobs.why] Explanation for q-od-init-jobs: Changing structure and how work is designed is a techno-structural initiative. Human process initiatives work on how people interact, not on the structure itself.
+394. [q-od-init-list.stem] Question q-od-init-list (statement 3.3.2, model od-initiatives) asks: Which is NOT one of the four categories of OD initiatives that ATD lists?
+395. [q-od-init-list.A] Option A of q-od-init-list: Strategic initiatives
+396. [q-od-init-list.B] Option B of q-od-init-list: Marketing initiatives
+397. [q-od-init-list.C] Option C of q-od-init-list: Human process initiatives
+398. [q-od-init-list.D] Option D of q-od-init-list: Human resource management initiatives
+399. [q-od-init-list.key] The one defensible answer to q-od-init-list is B: “Marketing initiatives”.
+400. [q-od-init-list.why] Explanation for q-od-init-list: ATD lists human process, techno-structural, human resource management, and strategic initiatives. Marketing isn’t one of them; strategic initiatives are whole-organization changes such as transformation and culture change.
+401. [q-od-ar-feature.stem] Question q-od-ar-feature (statement 3.3.3, model action-research) asks: What most distinguishes action research from a consultant who simply diagnoses a problem and prescribes a fix?
+402. [q-od-ar-feature.A] Option A of q-od-ar-feature: It relies on the consultant’s expert judgment rather than data
+403. [q-od-ar-feature.B] Option B of q-od-ar-feature: It skips data collection to move straight to action
+404. [q-od-ar-feature.C] Option C of q-od-ar-feature: It runs once, with no follow-up after the change
+405. [q-od-ar-feature.D] Option D of q-od-ar-feature: Client and practitioner diagnose and plan jointly, and the cycle repeats
+406. [q-od-ar-feature.key] The one defensible answer to q-od-ar-feature is D: “Client and practitioner diagnose and plan jointly, and the cycle repeats”.
+407. [q-od-ar-feature.why] Explanation for q-od-ar-feature: Action research is collaborative (joint diagnosis and joint action planning), data-based, and cyclical: data gathered after action loop back to feedback and a new diagnosis. Relying on the consultant’s judgment alone leaves out the client and the data that define it.
+408. [q-od-ar-order.stem] Question q-od-ar-order (statement 3.3.3, model action-research) asks: In the action research cycle, which step comes right after feedback to the client or group?
+409. [q-od-ar-order.A] Option A of q-od-ar-order: Joint diagnosis of the problem
+410. [q-od-ar-order.B] Option B of q-od-ar-order: Data collection and preliminary analysis
+411. [q-od-ar-order.C] Option C of q-od-ar-order: Action
+412. [q-od-ar-order.D] Option D of q-od-ar-order: Problem identification
+413. [q-od-ar-order.key] The one defensible answer to q-od-ar-order is A: “Joint diagnosis of the problem”.
+414. [q-od-ar-order.why] Explanation for q-od-ar-order: The order is problem identification, consultation with an expert facilitator, data collection and preliminary analysis, feedback to the client, joint diagnosis, joint action planning, action, and data gathering after action. Data collection comes before feedback, not after.
+415. [q-od-ar-first.stem] Question q-od-ar-first (statement 3.3.3, model action-research) asks: In Cummings and Worley’s action research cycle, what usually starts the process?
+416. [q-od-ar-first.A] Option A of q-od-ar-first: A key executive or someone with power senses a problem
+417. [q-od-ar-first.B] Option B of q-od-ar-first: An outside consultant proposes a new program
+418. [q-od-ar-first.C] Option C of q-od-ar-first: Employees complete an annual engagement survey
+419. [q-od-ar-first.D] Option D of q-od-ar-first: The OD practitioner runs a pilot change
+420. [q-od-ar-first.key] The one defensible answer to q-od-ar-first is A: “A key executive or someone with power senses a problem”.
+421. [q-od-ar-first.why] Explanation for q-od-ar-first: Step 1 is problem identification: a key executive or someone with power senses a problem that action research might help with. Surveys come later, as part of data collection.
+422. [q-od-ar-loop.stem] Question q-od-ar-loop (statement 3.3.3, model action-research) asks: After carrying out a change, an OD team gathers data on its effects and finds new issues. In the action research cycle, where does the process go next?
+423. [q-od-ar-loop.A] Option A of q-od-ar-loop: It ends, because the action has been taken
+424. [q-od-ar-loop.B] Option B of q-od-ar-loop: Straight to a final summative report
+425. [q-od-ar-loop.C] Option C of q-od-ar-loop: Back to feeding the new data to the client for joint diagnosis
+426. [q-od-ar-loop.D] Option D of q-od-ar-loop: Back to the start, to find a new executive sponsor
+427. [q-od-ar-loop.key] The one defensible answer to q-od-ar-loop is C: “Back to feeding the new data to the client for joint diagnosis”.
+428. [q-od-ar-loop.why] Explanation for q-od-ar-loop: Data gathering after action can cycle back to step 4, feedback to the client, which leads into a new joint diagnosis. Action research is a repeating cycle; it doesn’t start over from scratch or stop once action is taken.
+429. [q-od-ar-lewin.stem] Question q-od-ar-lewin (statement 3.3.3, model action-research) asks: The CPTD outline lists action research among theories of organizational systems. Who coined the term?
+430. [q-od-ar-lewin.A] Option A of q-od-ar-lewin: Peter Senge
+431. [q-od-ar-lewin.B] Option B of q-od-ar-lewin: Edgar Schein
+432. [q-od-ar-lewin.C] Option C of q-od-ar-lewin: Kurt Lewin
+433. [q-od-ar-lewin.D] Option D of q-od-ar-lewin: Mark Granovetter
+434. [q-od-ar-lewin.key] The one defensible answer to q-od-ar-lewin is C: “Kurt Lewin”.
+435. [q-od-ar-lewin.why] Explanation for q-od-ar-lewin: Kurt Lewin coined “action research” in the 1940s. He is also known for the unfreeze–change–refreeze change model, which is a separate model. Senge wrote about learning organizations and systems thinking.
+436. [q-od-systems.stem] Question q-od-systems (statement 3.3.3) asks: A TD manager notices that every fix to one department’s backlog creates a new backlog somewhere else. Which approach best helps her understand the problem?
+437. [q-od-systems.A] Option A of q-od-systems: Fix each department’s backlog separately, but faster
+438. [q-od-systems.B] Option B of q-od-systems: Look at the whole process and how the departments affect one another
+439. [q-od-systems.C] Option C of q-od-systems: Replace the managers of the slowest departments
+440. [q-od-systems.D] Option D of q-od-systems: Run time-management training for everyone
+441. [q-od-systems.key] The one defensible answer to q-od-systems is B: “Look at the whole process and how the departments affect one another”.
+442. [q-od-systems.why] Explanation for q-od-systems: Systems thinking looks at wholes and interrelationships rather than isolated parts, which is what recurring knock-on effects call for. Fixing each department separately treats the parts in isolation, which is why the problem keeps moving.
+443. [q-od-os-thru.stem] Question q-od-os-thru (statement 3.3.3, model open-systems) asks: In open systems theory, what is throughput?
+444. [q-od-os-thru.A] Option A of q-od-os-thru: Resources taken in from the environment
+445. [q-od-os-thru.B] Option B of q-od-os-thru: Products and services sent out to the environment
+446. [q-od-os-thru.C] Option C of q-od-os-thru: Information about results that returns to the system
+447. [q-od-os-thru.D] Option D of q-od-os-thru: The work processes that transform inputs into outputs
+448. [q-od-os-thru.key] The one defensible answer to q-od-os-thru is D: “The work processes that transform inputs into outputs”.
+449. [q-od-os-thru.why] Explanation for q-od-os-thru: Throughput is the transformation: the work processes that turn inputs into outputs. Resources taken in from the environment are inputs.
+450. [q-od-os-open.stem] Question q-od-os-open (statement 3.3.3, model open-systems) asks: What most distinguishes an open-systems view of an organization from a closed-systems view?
+451. [q-od-os-open.A] Option A of q-od-os-open: It depends on and constantly exchanges with its environment
+452. [q-od-os-open.B] Option B of q-od-os-open: It runs with no formal hierarchy at all
+453. [q-od-os-open.C] Option C of q-od-os-open: It follows one best way to organize its work
+454. [q-od-os-open.D] Option D of q-od-os-open: Its boundaries are fixed and sealed off
+455. [q-od-os-open.key] The one defensible answer to q-od-os-open is A: “It depends on and constantly exchanges with its environment”.
+456. [q-od-os-open.why] Explanation for q-od-os-open: An open system takes inputs from its environment and sends outputs back, so it depends on that exchange; a closed-system view treats the organization as self-contained. “One best way” is the opposite of equifinality, an open-systems idea.
+457. [q-od-os-order.stem] Question q-od-os-order (statement 3.3.3, model open-systems) asks: Which sequence shows the basic open systems cycle?
+458. [q-od-os-order.A] Option A of q-od-os-order: Throughput → input → output
+459. [q-od-os-order.B] Option B of q-od-os-order: Input → output → throughput
+460. [q-od-os-order.C] Option C of q-od-os-order: Output → input → throughput
+461. [q-od-os-order.D] Option D of q-od-os-order: Input → throughput → output
+462. [q-od-os-order.key] The one defensible answer to q-od-os-order is D: “Input → throughput → output”.
+463. [q-od-os-order.why] Explanation for q-od-os-order: Resources come in from the environment (input), are transformed by work processes (throughput), and go back out as products and services (output); then the cycle repeats.
+464. [q-od-equifinal.stem] Question q-od-equifinal (statement 3.3.3, model open-systems-terms) asks: Two regional offices use very different processes, yet both reach the same high customer-satisfaction scores. Which open systems concept does this illustrate?
+465. [q-od-equifinal.A] Option A of q-od-equifinal: Entropy
+466. [q-od-equifinal.B] Option B of q-od-equifinal: Equifinality
+467. [q-od-equifinal.C] Option C of q-od-equifinal: Steady state
+468. [q-od-equifinal.D] Option D of q-od-equifinal: Throughput
+469. [q-od-equifinal.key] The one defensible answer to q-od-equifinal is B: “Equifinality”.
+470. [q-od-equifinal.why] Explanation for q-od-equifinal: Equifinality means reaching the same final state from different starting conditions and by different paths, so there’s no one best way to organize. Steady state is about keeping a stable balance, not about different routes to one result.
+471. [q-od-entropy.stem] Question q-od-entropy (statement 3.3.3, model open-systems-terms) asks: In open systems theory, how does an organization resist entropy?
+472. [q-od-entropy.A] Option A of q-od-entropy: By cutting itself off from the environment to protect its resources
+473. [q-od-entropy.B] Option B of q-od-entropy: By standardizing on one best way of organizing
+474. [q-od-entropy.C] Option C of q-od-entropy: By importing more energy and resources than it uses
+475. [q-od-entropy.D] Option D of q-od-entropy: By freezing its structure so nothing changes
+476. [q-od-entropy.key] The one defensible answer to q-od-entropy is C: “By importing more energy and resources than it uses”.
+477. [q-od-entropy.why] Explanation for q-od-entropy: Entropy is the pull toward decline and death; open systems arrest it by importing more energy than they use (negative entropy). Cutting off from the environment is a closed-system move, the opposite of what the theory describes.
+478. [q-od-steady.stem] Question q-od-steady (statement 3.3.3, model open-systems-terms) asks: Which term describes an open system keeping a stable balance while it continuously exchanges with its environment?
+479. [q-od-steady.A] Option A of q-od-steady: Equifinality
+480. [q-od-steady.B] Option B of q-od-steady: Entropy
+481. [q-od-steady.C] Option C of q-od-steady: Nonlinearity
+482. [q-od-steady.D] Option D of q-od-steady: Steady state
+483. [q-od-steady.key] The one defensible answer to q-od-steady is D: “Steady state”.
+484. [q-od-steady.why] Explanation for q-od-steady: Steady state, also called dynamic equilibrium or homeostasis, is a stable balance kept up through constant exchange. Equifinality is about reaching one end by different paths.
+485. [q-od-cx-emerge.stem] Question q-od-cx-emerge (statement 3.3.3, model chaos-complexity) asks: A company-wide habit of sharing customer tips grows out of many small interactions among employees, not from any central design. Which concept from complexity theory does this illustrate?
+486. [q-od-cx-emerge.A] Option A of q-od-cx-emerge: Equifinality
+487. [q-od-cx-emerge.B] Option B of q-od-cx-emerge: Emergence
+488. [q-od-cx-emerge.C] Option C of q-od-cx-emerge: Entropy
+489. [q-od-cx-emerge.D] Option D of q-od-cx-emerge: Throughput
+490. [q-od-cx-emerge.key] The one defensible answer to q-od-cx-emerge is B: “Emergence”.
+491. [q-od-cx-emerge.why] Explanation for q-od-cx-emerge: Emergence is when system-wide traits arise from the interactions of many actors rather than from central design. Equifinality is an open-systems idea about reaching one result by different paths.
+492. [q-od-cx-nonlin.stem] Question q-od-cx-nonlin (statement 3.3.3, model chaos-complexity) asks: A minor change to one team’s schedule sets off a chain of reactions that disrupts the whole division. Which property of complex systems does this show?
+493. [q-od-cx-nonlin.A] Option A of q-od-cx-nonlin: Equifinality
+494. [q-od-cx-nonlin.B] Option B of q-od-cx-nonlin: Steady state
+495. [q-od-cx-nonlin.C] Option C of q-od-cx-nonlin: Nonlinearity
+496. [q-od-cx-nonlin.D] Option D of q-od-cx-nonlin: Homeostasis
+497. [q-od-cx-nonlin.key] The one defensible answer to q-od-cx-nonlin is C: “Nonlinearity”.
+498. [q-od-cx-nonlin.why] Explanation for q-od-cx-nonlin: In nonlinear systems effects are not proportional to their causes, so a small event can trigger large consequences. Steady state and homeostasis describe stable balance, the opposite of what happened here.
+499. [q-od-cx-lead.stem] Question q-od-cx-lead (statement 3.3.3, model chaos-complexity) asks: Drawing on complexity theory, how should leaders guide a complex, fast-changing organization?
+500. [q-od-cx-lead.A] Option A of q-od-cx-lead: Plan every step centrally and enforce it tightly
+501. [q-od-cx-lead.B] Option B of q-od-cx-lead: Step away entirely, since self-organizing systems need no management
+502. [q-od-cx-lead.C] Option C of q-od-cx-lead: Set vision and values, try things, and keep the emerging patterns that work
+503. [q-od-cx-lead.D] Option D of q-od-cx-lead: Fix a long-range strategy and resist changing it
+504. [q-od-cx-lead.key] The one defensible answer to q-od-cx-lead is C: “Set vision and values, try things, and keep the emerging patterns that work”.
+505. [q-od-cx-lead.why] Explanation for q-od-cx-lead: Complexity thinking says to step back from day-to-day control, watch for emergent patterns and keep the ones that work, and evolve strategy by trying things; leaders still supply vision, values, and open communication. Stepping away entirely is wrong: hands-off management may need more management, not less.
+506. [q-od-cx-edge.stem] Question q-od-cx-edge (statement 3.3.3, model chaos-complexity) asks: In complexity theory, what is the “edge of chaos”?
+507. [q-od-cx-edge.A] Option A of q-od-cx-edge: The zone between rigid order and anarchy where complex systems adapt
+508. [q-od-cx-edge.B] Option B of q-od-cx-edge: The point at which an organization collapses
+509. [q-od-cx-edge.C] Option C of q-od-cx-edge: A calm period of stability after a change
+510. [q-od-cx-edge.D] Option D of q-od-cx-edge: The boundary between an open system and its environment
+511. [q-od-cx-edge.key] The one defensible answer to q-od-cx-edge is A: “The zone between rigid order and anarchy where complex systems adapt”.
+512. [q-od-cx-edge.why] Explanation for q-od-cx-edge: Waldrop describes the edge of chaos as the constantly shifting battle zone between stagnation and anarchy, where complex systems sit and adapt. It isn’t collapse; it’s where adaptation happens.
+513. [q-od-weakties.stem] Question q-od-weakties (statement 3.3.3, model network-theory) asks: According to Granovetter’s “strength of weak ties,” why do acquaintances matter for spreading new information?
+514. [q-od-weakties.A] Option A of q-od-weakties: They are more loyal than close colleagues
+515. [q-od-weakties.B] Option B of q-od-weakties: They usually hold more formal authority
+516. [q-od-weakties.C] Option C of q-od-weakties: They already share the information you have
+517. [q-od-weakties.D] Option D of q-od-weakties: They bridge to other groups, so ideas travel further
+518. [q-od-weakties.key] The one defensible answer to q-od-weakties is D: “They bridge to other groups, so ideas travel further”.
+519. [q-od-weakties.why] Explanation for q-od-weakties: Weak ties act as bridges to other groups, so information and innovations spread further and cross more social distance through them. Close ties tend to keep information inside a few tight cliques, so they mostly share what you already know.
+520. [q-od-net-spread.stem] Question q-od-net-spread (statement 3.3.4, model network-theory) asks: A TD leader wants a new peer-coaching practice to spread across siloed departments. Based on network theory, whom should she recruit as early champions?
+521. [q-od-net-spread.A] Option A of q-od-net-spread: Only members of one tight-knit team
+522. [q-od-net-spread.B] Option B of q-od-net-spread: Only senior leaders on the org chart
+523. [q-od-net-spread.C] Option C of q-od-net-spread: People with many weak ties that bridge groups
+524. [q-od-net-spread.D] Option D of q-od-net-spread: People who mostly work alone on specialist tasks
+525. [q-od-net-spread.key] The one defensible answer to q-od-net-spread is C: “People with many weak ties that bridge groups”.
+526. [q-od-net-spread.why] Explanation for q-od-net-spread: Granovetter found that people with many weak ties are well placed to spread innovations, because some of those ties are bridges to other groups. A tight-knit team keeps the idea inside its own cluster, and a position on the org chart doesn’t guarantee reach across the network.
+527. [q-od-net-ties.stem] Question q-od-net-ties (statement 3.3.3, model network-theory) asks: In network theory, what are the “ties” in a network?
+528. [q-od-net-ties.A] Option A of q-od-net-ties: The relationships between actors
+529. [q-od-net-ties.B] Option B of q-od-net-ties: The actors, such as people or teams
+530. [q-od-net-ties.C] Option C of q-od-net-ties: The formal reporting lines on the org chart
+531. [q-od-net-ties.D] Option D of q-od-net-ties: The share of possible links that exist
+532. [q-od-net-ties.key] The one defensible answer to q-od-net-ties is A: “The relationships between actors”.
+533. [q-od-net-ties.why] Explanation for q-od-net-ties: Ties are the relationships between actors, which can be strong or weak, one-way or mutual. The actors themselves are nodes, and reporting lines show only the formal structure, not the informal relationships a network includes.
+534. [q-od-net-bridge.stem] Question q-od-net-bridge (statement 3.3.3, model network-theory) asks: In network theory, what is a bridge?
+535. [q-od-net-bridge.A] Option A of q-od-net-bridge: The most senior person in a network
+536. [q-od-net-bridge.B] Option B of q-od-net-bridge: A cluster of people who all know each other
+537. [q-od-net-bridge.C] Option C of q-od-net-bridge: A tie that links two otherwise separate groups
+538. [q-od-net-bridge.D] Option D of q-od-net-bridge: A survey used to map who talks to whom
+539. [q-od-net-bridge.key] The one defensible answer to q-od-net-bridge is C: “A tie that links two otherwise separate groups”.
+540. [q-od-net-bridge.why] Explanation for q-od-net-bridge: A bridge connects groups that would otherwise be separate, with a liaison person on each side. A tightly linked cluster is what bridges connect, not a bridge itself.
+541. [q-od-fr-expert.stem] Question q-od-fr-expert (statement 3.3.4, model french-raven) asks: A senior engineer has no formal authority, but everyone turns to her for help with the hardest technical problems because of her skill. Which base of power does she hold?
+542. [q-od-fr-expert.A] Option A of q-od-fr-expert: Legitimate
+543. [q-od-fr-expert.B] Option B of q-od-fr-expert: Referent
+544. [q-od-fr-expert.C] Option C of q-od-fr-expert: Expert
+545. [q-od-fr-expert.D] Option D of q-od-fr-expert: Reward
+546. [q-od-fr-expert.key] The one defensible answer to q-od-fr-expert is C: “Expert”.
+547. [q-od-fr-expert.why] Explanation for q-od-fr-expert: Expert power comes from knowledge or skill that others need. Referent power comes from being liked or admired, which isn’t what this scenario describes; legitimate power would need a formal position.
+548. [q-od-fr-legit.stem] Question q-od-fr-legit (statement 3.3.4, model french-raven) asks: A new department head’s requests are followed mainly because of the title and position he holds. Which base of power is this?
+549. [q-od-fr-legit.A] Option A of q-od-fr-legit: Referent
+550. [q-od-fr-legit.B] Option B of q-od-fr-legit: Expert
+551. [q-od-fr-legit.C] Option C of q-od-fr-legit: Reward
+552. [q-od-fr-legit.D] Option D of q-od-fr-legit: Legitimate
+553. [q-od-fr-legit.key] The one defensible answer to q-od-fr-legit is D: “Legitimate”.
+554. [q-od-fr-legit.why] Explanation for q-od-fr-legit: Legitimate power comes from a formal position or title that others accept as a right to make requests. Reward power would rest on his ability to give benefits, not on the title itself.
+555. [q-od-fr-referent.stem] Question q-od-fr-referent (statement 3.3.4, model french-raven) asks: Employees follow a team lead’s suggestions because they admire her and want to be like her. Which base of power is this?
+556. [q-od-fr-referent.A] Option A of q-od-fr-referent: Referent
+557. [q-od-fr-referent.B] Option B of q-od-fr-referent: Legitimate
+558. [q-od-fr-referent.C] Option C of q-od-fr-referent: Coercive
+559. [q-od-fr-referent.D] Option D of q-od-fr-referent: Expert
+560. [q-od-fr-referent.key] The one defensible answer to q-od-fr-referent is A: “Referent”.
+561. [q-od-fr-referent.why] Explanation for q-od-fr-referent: Referent power comes from being liked, admired, or identified with. Expert power would rest on her knowledge or skill, not on admiration.
+562. [q-od-fr-coercive.stem] Question q-od-fr-coercive (statement 3.3.4, model french-raven) asks: A supervisor gets the team to meet a deadline by threatening to write up anyone who misses it. Which base of power is she using?
+563. [q-od-fr-coercive.A] Option A of q-od-fr-coercive: Reward
+564. [q-od-fr-coercive.B] Option B of q-od-fr-coercive: Coercive
+565. [q-od-fr-coercive.C] Option C of q-od-fr-coercive: Referent
+566. [q-od-fr-coercive.D] Option D of q-od-fr-coercive: Informational
+567. [q-od-fr-coercive.key] The one defensible answer to q-od-fr-coercive is B: “Coercive”.
+568. [q-od-fr-coercive.why] Explanation for q-od-fr-coercive: Coercive power is the ability to punish or penalize. Reward power is the opposite lever: offering benefits people want.
+569. [q-od-fr-orig.stem] Question q-od-fr-orig (statement 3.3.4, model french-raven) asks: Which is NOT one of the five bases of power in French and Raven’s original 1959 paper?
+570. [q-od-fr-orig.A] Option A of q-od-fr-orig: Legitimate
+571. [q-od-fr-orig.B] Option B of q-od-fr-orig: Coercive
+572. [q-od-fr-orig.C] Option C of q-od-fr-orig: Referent
+573. [q-od-fr-orig.D] Option D of q-od-fr-orig: Informational
+574. [q-od-fr-orig.key] The one defensible answer to q-od-fr-orig is D: “Informational”.
+575. [q-od-fr-orig.why] Explanation for q-od-fr-orig: The 1959 paper named coercive, reward, legitimate, referent, and expert power. Raven added informational power in 1965, making six.
+576. [q-od-informal.stem] Question q-od-informal (statement 3.3.4) asks: A new TD director wants to know who really shapes decisions in a division, beyond what the org chart shows. What is she trying to identify?
+577. [q-od-informal.A] Option A of q-od-informal: The formal reporting structure
+578. [q-od-informal.B] Option B of q-od-informal: The approved job descriptions
+579. [q-od-informal.C] Option C of q-od-informal: The informal relationships and networks
+580. [q-od-informal.D] Option D of q-od-informal: The span of control of each manager
+581. [q-od-informal.key] The one defensible answer to q-od-informal is C: “The informal relationships and networks”.
+582. [q-od-informal.why] Explanation for q-od-informal: The org chart shows the formal organization: reporting lines, roles, and hierarchy. The informal organization is the actual relationships and networks through which information and influence flow, which 3.3.4 asks TD professionals to identify alongside the formal ones.
+583. [q-od-chart-risk.stem] Question q-od-chart-risk (statement 3.3.4) asks: A TD leader planning a culture change decides whom to involve using only the org chart. What is the main risk?
+584. [q-od-chart-risk.A] Option A of q-od-chart-risk: She will end up involving too many senior executives
+585. [q-od-chart-risk.B] Option B of q-od-chart-risk: She may miss influential people outside the reporting lines
+586. [q-od-chart-risk.C] Option C of q-od-chart-risk: She will break the formal chain of command in the process
+587. [q-od-chart-risk.D] Option D of q-od-chart-risk: She will slow down the data collection phase
+588. [q-od-chart-risk.key] The one defensible answer to q-od-chart-risk is B: “She may miss influential people outside the reporting lines”.
+589. [q-od-chart-risk.why] Explanation for q-od-chart-risk: The org chart shows only formal structure. Power from expertise or from being admired (expert and referent power) and influence through informal networks don’t appear on it, so key influencers can be missed.
+590. [q-od-schein-order.stem] Question q-od-schein-order (statement 3.3.8, model schein) asks: Which lists Schein’s levels of culture from most visible to deepest?
+591. [q-od-schein-order.A] Option A of q-od-schein-order: Espoused beliefs and values → artifacts → basic underlying assumptions
+592. [q-od-schein-order.B] Option B of q-od-schein-order: Artifacts → espoused beliefs and values → basic underlying assumptions
+593. [q-od-schein-order.C] Option C of q-od-schein-order: Basic underlying assumptions → artifacts → espoused beliefs and values
+594. [q-od-schein-order.D] Option D of q-od-schein-order: Artifacts → basic underlying assumptions → espoused beliefs and values
+595. [q-od-schein-order.key] The one defensible answer to q-od-schein-order is B: “Artifacts → espoused beliefs and values → basic underlying assumptions”.
+596. [q-od-schein-order.why] Explanation for q-od-schein-order: Artifacts are what you see, hear, and feel; espoused beliefs and values are what people say they stand for; basic underlying assumptions are the unconscious, taken-for-granted core.
+597. [q-od-schein-gap.stem] Question q-od-schein-gap (statement 3.3.8, model schein) asks: A company’s website says “we value open feedback,” but employees who raise concerns are quietly sidelined. In Schein’s model, what is driving the behavior?
+598. [q-od-schein-gap.A] Option A of q-od-schein-gap: The artifacts, such as the website
+599. [q-od-schein-gap.B] Option B of q-od-schein-gap: The espoused beliefs and values
+600. [q-od-schein-gap.C] Option C of q-od-schein-gap: The formal written policies
+601. [q-od-schein-gap.D] Option D of q-od-schein-gap: The basic underlying assumptions
+602. [q-od-schein-gap.key] The one defensible answer to q-od-schein-gap is D: “The basic underlying assumptions”.
+603. [q-od-schein-gap.why] Explanation for q-od-schein-gap: Schein notes that espoused beliefs and values may or may not match behavior; the basic underlying assumptions are what actually determine it. The stated value of open feedback is espoused, which is why it isn’t what drives behavior here.
+604. [q-od-schein-art.stem] Question q-od-schein-art (statement 3.3.8, model schein) asks: A consultant visiting a client notices open-plan offices, casual dress, and a weekly all-hands ritual. In Schein’s model, what are these?
+605. [q-od-schein-art.A] Option A of q-od-schein-art: Artifacts
+606. [q-od-schein-art.B] Option B of q-od-schein-art: Espoused beliefs and values
+607. [q-od-schein-art.C] Option C of q-od-schein-art: Basic underlying assumptions
+608. [q-od-schein-art.D] Option D of q-od-schein-art: Strategic initiatives
+609. [q-od-schein-art.key] The one defensible answer to q-od-schein-art is A: “Artifacts”.
+610. [q-od-schein-art.why] Explanation for q-od-schein-art: Artifacts are the visible structures, processes, and behaviors you notice on meeting a group, such as layout, dress, and rituals. Espoused beliefs and values are what the group says it stands for.
+611. [q-od-schein-read.stem] Question q-od-schein-read (statement 3.3.8, model schein) asks: Why is it risky to judge a culture from its artifacts alone?
+612. [q-od-schein-read.A] Option A of q-od-schein-read: Artifacts are hidden and hard to observe
+613. [q-od-schein-read.B] Option B of q-od-schein-read: Artifacts are easy to see but hard to decipher
+614. [q-od-schein-read.C] Option C of q-od-schein-read: Artifacts always match the basic assumptions
+615. [q-od-schein-read.D] Option D of q-od-schein-read: Artifacts only change after the values change
+616. [q-od-schein-read.key] The one defensible answer to q-od-schein-read is B: “Artifacts are easy to see but hard to decipher”.
+617. [q-od-schein-read.why] Explanation for q-od-schein-read: Schein marks artifacts “difficult to decipher”: they’re easy to observe, but their meaning isn’t obvious without the deeper levels. The first option reverses this; artifacts are the most visible level.
+618. [q-od-rolemodel.stem] Question q-od-rolemodel (statement 3.3.8) asks: A TD director wants a culture where feedback flows freely between people and teams. Which action best reflects role-modeling effective feedback?
+619. [q-od-rolemodel.A] Option A of q-od-rolemodel: Asking her own team for feedback and taking it without defensiveness
+620. [q-od-rolemodel.B] Option B of q-od-rolemodel: Sending a memo that requires every manager to give monthly feedback
+621. [q-od-rolemodel.C] Option C of q-od-rolemodel: Adding a feedback skills module to the onboarding program
+622. [q-od-rolemodel.D] Option D of q-od-rolemodel: Rating managers on how often they give feedback to staff
+623. [q-od-rolemodel.key] The one defensible answer to q-od-rolemodel is A: “Asking her own team for feedback and taking it without defensiveness”.
+624. [q-od-rolemodel.why] Explanation for q-od-rolemodel: Role-modeling means leaders show the behavior themselves, such as asking for feedback and receiving it without defensiveness, so it becomes a norm. A memo or a course tells people about feedback but doesn’t show it.
+625. [q-od-kahn-safety.stem] Question q-od-kahn-safety (statement 3.3.8, model kahn-engagement) asks: Team members rarely raise problems in meetings because they fear it will hurt their standing. In Kahn’s terms, which condition for engagement is weak?
+626. [q-od-kahn-safety.A] Option A of q-od-kahn-safety: Safety
+627. [q-od-kahn-safety.B] Option B of q-od-kahn-safety: Availability
+628. [q-od-kahn-safety.C] Option C of q-od-kahn-safety: Meaningfulness
+629. [q-od-kahn-safety.D] Option D of q-od-kahn-safety: Expertise
+630. [q-od-kahn-safety.key] The one defensible answer to q-od-kahn-safety is A: “Safety”.
+631. [q-od-kahn-safety.why] Explanation for q-od-kahn-safety: Kahn’s safety condition is being able to show and employ oneself without fear of negative consequences to self-image, status, or career. Availability is about having the energy and resources to engage, which isn’t the issue here.
+632. [q-od-q12-base.stem] Question q-od-q12-base (statement 3.3.11, model q12-levels) asks: In Gallup’s Q12 hierarchy, which level forms the base that the others build on?
+633. [q-od-q12-base.A] Option A of q-od-q12-base: Growth
+634. [q-od-q12-base.B] Option B of q-od-q12-base: Teamwork
+635. [q-od-q12-base.C] Option C of q-od-q12-base: Basic Needs
+636. [q-od-q12-base.D] Option D of q-od-q12-base: Individual Contribution
+637. [q-od-q12-base.key] The one defensible answer to q-od-q12-base is C: “Basic Needs”.
+638. [q-od-q12-base.why] Explanation for q-od-q12-base: Gallup’s four levels, base to top, are Basic Needs, Individual Contribution, Teamwork, and Growth. Growth is the top, not the base.
+639. [q-od-q12-order.stem] Question q-od-q12-order (statement 3.3.11, model q12-levels) asks: Which shows Gallup’s four Q12 levels from base to top?
+640. [q-od-q12-order.A] Option A of q-od-q12-order: Basic Needs → Teamwork → Individual Contribution → Growth
+641. [q-od-q12-order.B] Option B of q-od-q12-order: Individual Contribution → Basic Needs → Growth → Teamwork
+642. [q-od-q12-order.C] Option C of q-od-q12-order: Basic Needs → Individual Contribution → Teamwork → Growth
+643. [q-od-q12-order.D] Option D of q-od-q12-order: Growth → Teamwork → Individual Contribution → Basic Needs
+644. [q-od-q12-order.key] The one defensible answer to q-od-q12-order is C: “Basic Needs → Individual Contribution → Teamwork → Growth”.
+645. [q-od-q12-order.why] Explanation for q-od-q12-order: The hierarchy builds from Basic Needs through Individual Contribution and Teamwork to Growth. The last option is the right list read from the top down.
+646. [q-od-q12-cats.stem] Question q-od-q12-cats (statement 3.3.11, model q12-levels) asks: Gallup places each employee in one of three engagement categories. Which is NOT one of them?
+647. [q-od-q12-cats.A] Option A of q-od-q12-cats: Engaged
+648. [q-od-q12-cats.B] Option B of q-od-q12-cats: Partially engaged
+649. [q-od-q12-cats.C] Option C of q-od-q12-cats: Not engaged
+650. [q-od-q12-cats.D] Option D of q-od-q12-cats: Actively disengaged
+651. [q-od-q12-cats.key] The one defensible answer to q-od-q12-cats is B: “Partially engaged”.
+652. [q-od-q12-cats.why] Explanation for q-od-q12-cats: Gallup’s three categories are engaged, not engaged, and actively disengaged. “Partially engaged” isn’t one of them.
+653. [q-od-q12-pay.stem] Question q-od-q12-pay (statement 3.3.11, model q12-items) asks: A TD manager is reviewing Gallup’s Q12 before adopting it. Which statement is NOT one of the 12 items?
+654. [q-od-q12-pay.A] Option A of q-od-q12-pay: I know what is expected of me at work
+655. [q-od-q12-pay.B] Option B of q-od-q12-pay: At work, my opinions seem to count
+656. [q-od-q12-pay.C] Option C of q-od-q12-pay: I have a best friend at work
+657. [q-od-q12-pay.D] Option D of q-od-q12-pay: I am paid fairly for the work I do
+658. [q-od-q12-pay.key] The one defensible answer to q-od-q12-pay is D: “I am paid fairly for the work I do”.
+659. [q-od-q12-pay.why] Explanation for q-od-q12-pay: None of the 12 items asks about pay. Knowing what is expected, having opinions count, and having a best friend at work are all Q12 items.
+660. [q-od-q12-sat.stem] Question q-od-q12-sat (statement 3.3.11, model q12-items) asks: A Gallup survey opens with “How satisfied are you with your company as a place to work?” How does this item relate to the Q12?
+661. [q-od-q12-sat.A] Option A of q-od-q12-sat: It is an overall satisfaction item, not one of the 12
+662. [q-od-q12-sat.B] Option B of q-od-q12-sat: It is the first of the 12 items
+663. [q-od-q12-sat.C] Option C of q-od-q12-sat: It replaces the best-friend item in some versions
+664. [q-od-q12-sat.D] Option D of q-od-q12-sat: It measures the Growth level
+665. [q-od-q12-sat.key] The one defensible answer to q-od-q12-sat is A: “It is an overall satisfaction item, not one of the 12”.
+666. [q-od-q12-sat.why] Explanation for q-od-q12-sat: Gallup includes an overall satisfaction item, often labeled Q00, that is not one of the 12. Satisfaction and engagement are different measures, so it doesn’t count as the first item.
+667. [q-od-q12-scale.stem] Question q-od-q12-scale (statement 3.3.11, model q12-items) asks: How do employees answer Gallup’s Q12 items?
+668. [q-od-q12-scale.A] Option A of q-od-q12-scale: On a five-point agreement scale
+669. [q-od-q12-scale.B] Option B of q-od-q12-scale: Yes or no
+670. [q-od-q12-scale.C] Option C of q-od-q12-scale: On a 0–10 likelihood scale
+671. [q-od-q12-scale.D] Option D of q-od-q12-scale: In open-ended comments
+672. [q-od-q12-scale.key] The one defensible answer to q-od-q12-scale is A: “On a five-point agreement scale”.
+673. [q-od-q12-scale.why] Explanation for q-od-q12-scale: Gallup rates each item on a five-point agreement scale. A 0–10 likelihood scale belongs to other measures, not the Q12.
+674. [q-od-kahn-three.stem] Question q-od-kahn-three (statement 3.3.12, model kahn-engagement) asks: Which three psychological conditions did Kahn (1990) link to personal engagement at work?
+675. [q-od-kahn-three.A] Option A of q-od-kahn-three: Autonomy, competence, and relatedness
+676. [q-od-kahn-three.B] Option B of q-od-kahn-three: Recognition, pay, and job security
+677. [q-od-kahn-three.C] Option C of q-od-kahn-three: Meaningfulness, safety, and availability
+678. [q-od-kahn-three.D] Option D of q-od-kahn-three: Vigor, dedication, and absorption
+679. [q-od-kahn-three.key] The one defensible answer to q-od-kahn-three is C: “Meaningfulness, safety, and availability”.
+680. [q-od-kahn-three.why] Explanation for q-od-kahn-three: Kahn’s conditions are meaningfulness (it’s worthwhile), safety (it’s safe), and availability (I have the resources right now). Vigor, dedication, and absorption are also a three-part description of engagement, but they are not Kahn’s conditions.
+681. [q-od-kahn-avail.stem] Question q-od-kahn-avail (statement 3.3.12, model kahn-engagement) asks: An employee finds her work meaningful and feels safe speaking up, but she is exhausted from caring for a sick parent and can’t fully engage. Which of Kahn’s conditions is missing?
+682. [q-od-kahn-avail.A] Option A of q-od-kahn-avail: Meaningfulness
+683. [q-od-kahn-avail.B] Option B of q-od-kahn-avail: Safety
+684. [q-od-kahn-avail.C] Option C of q-od-kahn-avail: Recognition
+685. [q-od-kahn-avail.D] Option D of q-od-kahn-avail: Availability
+686. [q-od-kahn-avail.key] The one defensible answer to q-od-kahn-avail is D: “Availability”.
+687. [q-od-kahn-avail.why] Explanation for q-od-kahn-avail: Availability is having the physical, emotional, and cognitive resources to engage at that moment. She already has meaningfulness and safety, so those aren’t what’s missing.
+688. [q-od-kahn-define.stem] Question q-od-kahn-define (statement 3.3.11, model kahn-engagement) asks: Kahn describes personal engagement as people employing and expressing themselves in their work roles in which three ways?
+689. [q-od-kahn-define.A] Option A of q-od-kahn-define: Financially, socially, and legally
+690. [q-od-kahn-define.B] Option B of q-od-kahn-define: Physically, cognitively, and emotionally
+691. [q-od-kahn-define.C] Option C of q-od-kahn-define: Formally, informally, and politically
+692. [q-od-kahn-define.D] Option D of q-od-kahn-define: Individually, in teams, and organization-wide
+693. [q-od-kahn-define.key] The one defensible answer to q-od-kahn-define is B: “Physically, cognitively, and emotionally”.
+694. [q-od-kahn-define.why] Explanation for q-od-kahn-define: Kahn’s personal engagement is employing and expressing the self physically, cognitively, and emotionally in a work role. Disengagement is withdrawing and defending the self.
+695. [q-od-alc-last.stem] Question q-od-alc-last (statement 3.3.12, model od-listening-cycle) asks: In Heather Younger’s Cycle of Active Listening, used in ATD’s Organization Development Handbook, what is the final step?
+696. [q-od-alc-last.A] Option A of q-od-alc-last: Act
+697. [q-od-alc-last.B] Option B of q-od-alc-last: Decode
+698. [q-od-alc-last.C] Option C of q-od-alc-last: Seek to Understand
+699. [q-od-alc-last.D] Option D of q-od-alc-last: Close the Loop
+700. [q-od-alc-last.key] The one defensible answer to q-od-alc-last is D: “Close the Loop”.
+701. [q-od-alc-last.why] Explanation for q-od-alc-last: The cycle runs Recognize the Unsaid, Seek to Understand, Decode, Act, and Close the Loop. Act comes just before the last step: acting isn’t enough until people hear what was done.
+702. [q-od-alc-first.stem] Question q-od-alc-first (statement 3.3.12, model od-listening-cycle) asks: In Heather Younger’s Cycle of Active Listening, used in ATD’s Organization Development Handbook, which step comes first?
+703. [q-od-alc-first.A] Option A of q-od-alc-first: Seek to Understand
+704. [q-od-alc-first.B] Option B of q-od-alc-first: Recognize the Unsaid
+705. [q-od-alc-first.C] Option C of q-od-alc-first: Decode
+706. [q-od-alc-first.D] Option D of q-od-alc-first: Act
+707. [q-od-alc-first.key] The one defensible answer to q-od-alc-first is B: “Recognize the Unsaid”.
+708. [q-od-alc-first.why] Explanation for q-od-alc-first: Younger’s cycle runs Recognize the Unsaid, Seek to Understand, Decode, Act, Close the Loop. You first notice what isn’t being said, then probe it; Seek to Understand is step 2.
+709. [q-od-alc-apply.stem] Question q-od-alc-apply (statement 3.3.12, model od-listening-cycle) asks: After an engagement survey, a division made three changes based on employee comments but never told staff. Which step of Heather Younger’s Cycle of Active Listening did it skip?
+710. [q-od-alc-apply.A] Option A of q-od-alc-apply: Close the Loop
+711. [q-od-alc-apply.B] Option B of q-od-alc-apply: Recognize the Unsaid
+712. [q-od-alc-apply.C] Option C of q-od-alc-apply: Seek to Understand
+713. [q-od-alc-apply.D] Option D of q-od-alc-apply: Decode
+714. [q-od-alc-apply.key] The one defensible answer to q-od-alc-apply is A: “Close the Loop”.
+715. [q-od-alc-apply.why] Explanation for q-od-alc-apply: The division reached Act (it made changes) but didn’t tell employees what was done with their input, which is what Close the Loop means. The earlier steps all come before acting.
+716. [case-od-engage.setup] Case case-od-engage (“Falling engagement in a regional division”, statements 3.3.2, 3.3.8, 3.3.11, 3.3.12) setup: You are the TD director at a logistics company. The COO says engagement in one regional division has dropped, turnover is up, and she wants you to “fix it.”
+717. [case-od-engage.step-1.text] Step 1 of case-od-engage asks: You’re starting the engagement. Using ATD’s five-phase OD strategy, which actions belong in the first two phases, Entry and Diagnosis?
+718. [case-od-engage.step-1.opt-1] In step 1 of case-od-engage, “Meet the COO to agree on the problem, the project’s scope, and its resources” is a RIGHT pick.
+719. [case-od-engage.step-1.opt-2] In step 1 of case-od-engage, “Gather and analyze data together with the division’s stakeholders before picking a solution” is a RIGHT pick.
+720. [case-od-engage.step-1.opt-3] In step 1 of case-od-engage, “Launch a company-wide training program right away to show quick action” is a WRONG pick.
+721. [case-od-engage.step-1.opt-4] In step 1 of case-od-engage, “Choose the solution that worked at your last employer and roll it out” is a WRONG pick.
+722. [case-od-engage.step-1.opt-5] In step 1 of case-od-engage, “Skip sharing findings with the COO to save time” is a WRONG pick.
+723. [case-od-engage.step-1.why] Explanation for step 1 of case-od-engage: ATD’s phases start with Entry (agree on the problem, scope, and resources) and Diagnosis (collaborative data gathering and analysis). Jumping to a solution skips diagnosis and feedback, and Feedback is its own phase.
+724. [case-od-engage.step-2.text] Step 2 of case-od-engage asks: You decide to measure engagement in the division. Which choices are sound?
+725. [case-od-engage.step-2.opt-1] In step 2 of case-od-engage, “Use an established engagement survey such as Gallup’s Q12” is a RIGHT pick.
+726. [case-od-engage.step-2.opt-2] In step 2 of case-od-engage, “Treat overall satisfaction as a separate measure from engagement” is a RIGHT pick.
+727. [case-od-engage.step-2.opt-3] In step 2 of case-od-engage, “Measure engagement only by asking how satisfied people are with the company” is a WRONG pick.
+728. [case-od-engage.step-2.opt-4] In step 2 of case-od-engage, “Expect the Q12 items to tell you whether people feel fairly paid” is a WRONG pick.
+729. [case-od-engage.step-2.opt-5] In step 2 of case-od-engage, “Survey only the division’s senior managers” is a WRONG pick.
+730. [case-od-engage.step-2.why] Explanation for step 2 of case-od-engage: The Q12 is Gallup’s engagement survey, and its overall satisfaction item is not one of the 12, so satisfaction and engagement are measured separately. No Q12 item asks about pay.
+731. [case-od-engage.step-3.text] Step 3 of case-od-engage asks: Results show the division’s posted values say “we welcome feedback,” but staff say people who speak up get sidelined. Which actions fit?
+732. [case-od-engage.step-3.opt-1] In step 3 of case-od-engage, “Treat it as a gap between espoused values and the basic underlying assumptions” is a RIGHT pick.
+733. [case-od-engage.step-3.opt-2] In step 3 of case-od-engage, “Have division leaders role-model asking for feedback and taking it without defensiveness” is a RIGHT pick.
+734. [case-od-engage.step-3.opt-3] In step 3 of case-od-engage, “Work toward people being able to speak up without fear of harm to their status or career” is a RIGHT pick.
+735. [case-od-engage.step-3.opt-4] In step 3 of case-od-engage, “Reprint the values posters with brighter designs” is a WRONG pick.
+736. [case-od-engage.step-3.opt-5] In step 3 of case-od-engage, “Conclude the culture is healthy because the stated values are good” is a WRONG pick.
+737. [case-od-engage.step-3.opt-6] In step 3 of case-od-engage, “Find out who complained and discipline them” is a WRONG pick.
+738. [case-od-engage.step-3.why] Explanation for step 3 of case-od-engage: In Schein’s model, espoused values may not match behavior; the assumptions drive it. Role-modeling feedback is named in 3.3.8, and Kahn’s safety condition is being able to engage without fear for self-image, status, or career. Posters are only artifacts.
+739. [case-od-engage.step-4.text] Step 4 of case-od-engage asks: The division has made several changes based on the survey. What should happen next?
+740. [case-od-engage.step-4.opt-1] In step 4 of case-od-engage, “Tell employees what was done with their input” is a RIGHT pick.
+741. [case-od-engage.step-4.opt-2] In step 4 of case-od-engage, “Keep collecting data to see whether the changes are working” is a RIGHT pick.
+742. [case-od-engage.step-4.opt-3] In step 4 of case-od-engage, “File the results until next year’s survey” is a WRONG pick.
+743. [case-od-engage.step-4.opt-4] In step 4 of case-od-engage, “Share the results with executives only” is a WRONG pick.
+744. [case-od-engage.step-4.opt-5] In step 4 of case-od-engage, “Stop measuring now that the action plan is in place” is a WRONG pick.
+745. [case-od-engage.step-4.why] Explanation for step 4 of case-od-engage: Close the Loop is the last step of the ATD handbook’s Cycle of Active Listening, and ATD’s OD Evaluation phase collects formative and summative data throughout, not only at the end.
