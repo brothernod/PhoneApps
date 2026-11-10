@@ -8,6 +8,7 @@ Steps 3 and 4 are done (chat B2, 2026-11-09). Domain 3 is on branch `cptd-d3`, n
 
 **Start chat B3 (Domain 3, steps 5–6).** Jonathan opens a new chat at **high** effort and says: *"Continue the CPTD build from cptd/research/PLAN.md in brothernod/PhoneApps."*
 - Branch `cptd-d3`. Use `BRIEF-check.md` (claims pass and cold pass, `effort: "xhigh"`), then `BRIEF-fix.md` (fixers, `effort: "high"`) and one fresh re-check agent (`xhigh`). 14 check agents for 7 areas, in waves of at most 3 (2 if the window is past half used). Cold passes go first or alongside claims passes, never after the same agent has seen the source.
+- Log every agent's reported tokens, tool uses and duration in the spend log, and use `PLAN.md` "Costing" to put an estimated dollar figure on Domains 2 and 3 in the final report (Jonathan wants this for pricing future projects).
 - Then merge `cptd-d3` into `main` (that deploys to the friend), log spend, update this file and `LESSONS.md`, and send Jonathan the final report.
 
 Points the authors flagged for the checkers. Add each to that area's check prompt:
