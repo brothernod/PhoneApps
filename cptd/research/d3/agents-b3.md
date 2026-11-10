@@ -19,5 +19,7 @@ C = reported tokens (final history), T = tool uses, duration in minutes.
 | claims data | xhigh | 183,643 | 25 | 6.2 | 888 claims, 10 issues (1 FALSE, 2 AMBIGUOUS, 2 MISLEADING) |
 | fix strategy | high | 99,684 | 32 | 2.3 | 18 findings: 14 fixed, 2 reworded, 1 kept |
 | fix od | high | 101,919 | 15 | 1.8 | 17 findings: 14 fixed, 4 reworded, 1 kept |
+| fix biz | high | 141,339 | 19 | 3.2 | 17 fixed, 3 reworded, 1 removed (q-biz-block-resist), 1 kept |
+| fix market | high | 109,137 | 26 | 3.1 | 31 fixed, 1 reworded, 4 kept |
 
 Main chat: all 9 Domain 3 statement labels in `content-d3.js` now say "for example" as the handbook does (was "such as"; flagged for 3.4.5 and 3.7.6).

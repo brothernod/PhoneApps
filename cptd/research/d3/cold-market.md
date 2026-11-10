@@ -119,9 +119,9 @@ Statement 3.4.6 (Establishing and executing a marketing strategy to promote tale
 Employees can attend a new leadership program at no charge. In HRD marketing terms, what is the program’s “price”?
 
 - A. The vendor’s licensing fee
-- B. The learner’s time, energy, and commitment
+- B. The learner’s time, energy, effort, and personal commitment
 - C. Nothing, because the program is free
-- D. The training department’s annual budget
+- D. The training department’s annual budget for the program
 
 ### q-market-4ps-place
 
@@ -182,10 +182,10 @@ To get people to try a new microlearning app, the TD team offers a free sample m
 
 Statement 3.4.6 (Establishing and executing a marketing strategy to promote talent development)
 
-A TD function offers a single program to the whole workforce and makes no attempt to segment its audience. Which target-market approach is this?
+Rather than concentrating on just a few employee segments, a TD function decides to serve all of them. What does the HRD marketing excerpt call this approach?
 
 - A. Market specialization
-- B. Full coverage
+- B. Product-market concentration
 - C. Mass marketing
 - D. Selective specialization
 
@@ -611,7 +611,7 @@ In ATD’s description, what do self-directed learners do?
 
 Statement 3.4.9 (Communicating the value of lifelong learning and professional development)
 
-More than two-thirds of TD leaders in the ATD/i4cp study named which benefit as the leading one they expect from lifelong learners?
+More than two-thirds of TD leaders in the ATD/i4cp study named which benefit as the leading one their organizations expect to gain from encouraging lifelong learning?
 
 - A. Lower training costs
 - B. Fewer managers
@@ -635,7 +635,7 @@ Statement 3.4.9 (Communicating the value of lifelong learning and professional d
 
 Which is NOT a benefit of lifelong learning cited by ATD?
 
-- A. Greater ability to respond to changing business needs
+- A. Enhanced ability to respond to changing business needs
 - B. Better organizational performance
 - C. Greater competitive ability
 - D. Smaller training budgets
