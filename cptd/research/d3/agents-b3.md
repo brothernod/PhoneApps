@@ -21,5 +21,10 @@ C = reported tokens (final history), T = tool uses, duration in minutes.
 | fix od | high | 101,919 | 15 | 1.8 | 17 findings: 14 fixed, 4 reworded, 1 kept |
 | fix biz | high | 141,339 | 19 | 3.2 | 17 fixed, 3 reworded, 1 removed (q-biz-block-resist), 1 kept |
 | fix market | high | 109,137 | 26 | 3.1 | 31 fixed, 1 reworded, 4 kept |
+| claims change | xhigh | 184,485 | 24 | 7.7 | 767 claims, 16 issues (3 AMBIGUOUS case steps, 1 MISLEADING) |
+
+| fix change | high | 123,851 | 38 | 3.3 | 15 rows: 9 fixed, 6 reworded, 2 replaced/removed |
+| fix data | high | 88,593 | 11 | 1.7 | 12 rows: 7 fixed, 4 reworded, 1 kept |
+| fix perf | high | 136,879 | 35 | 4.0 | 16 fixed, 8 reworded, 1 removed, 3 kept; Gilbert formula unresolved |
 
 Main chat: all 9 Domain 3 statement labels in `content-d3.js` now say "for example" as the handbook does (was "such as"; flagged for 3.4.5 and 3.7.6).
