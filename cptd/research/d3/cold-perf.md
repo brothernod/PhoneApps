@@ -98,7 +98,7 @@ What role does change management play in ATD’s HPI model?
 
 - A. It applies only when training is the chosen solution
 - B. It replaces cause analysis when the gap is urgent
-- C. It is part of the model and helps any kind of solution take hold
+- C. It is part of the model and helps any solution take hold
 - D. It belongs to HR, outside the HPI practitioner’s work
 
 ### q-perf-hpi-evaluate
@@ -204,12 +204,12 @@ Nurses know how to chart, but no one told them about a new charting standard, an
 
 Statement 3.5.1 (Theories, models, and principles of human performance improvement)
 
-Gilbert’s model rests on P = B × E. What does the formula say?
+In Human Competence (1978), where does Gilbert say the immediate cause of a performance deficiency lies?
 
-- A. Productivity equals budget multiplied by effort
-- B. Potential equals background multiplied by education
-- C. Performance comes from behavior and the environment together
-- D. Proficiency equals practice multiplied by experience
+- A. In the course design, the trainer’s delivery, or both
+- B. In the person’s personality, seniority, or both
+- C. In the person’s behavior repertory, the environment, or both
+- D. In the person’s job title, the org chart, or both
 
 ### q-perf-rummler-levels
 
@@ -705,12 +705,12 @@ The causes: most agents were never told about the lookup screen, the speed-only 
 
 #### case-perf-complaints.step-4
 
-You have chosen the solutions. What should you do as you record the choice and plan the rollout and its evaluation?
+You have chosen the solutions. What should you do from here, through rollout and evaluation?
 
 1. Roll out quietly without telling managers, to avoid resistance
 2. Judge success only by agents’ satisfaction with the changes
 3. Skip evaluation, since the solutions came from careful analysis
 4. Plan to measure first-contact resolution against the 85% target
-5. Record the chosen solutions in a design document
+5. Write the chosen solutions into a design document before rollout
 6. Secure a respected sponsor and plan change management
 

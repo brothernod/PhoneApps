@@ -72,7 +72,7 @@ A pilot of a new sales process succeeded, and leaders want to declare the change
 
 Statement 3.6.1 (Change management theories and models, for example Lewin, Kotter, Bridges’ transition model, the Kübler-Ross change curve, and appreciative inquiry)
 
-Kotter groups the eight stages into three phases, beginning with “defrosting” the status quo. Which stages make up the defrosting phase?
+Kotter groups the eight stages into three phases. Which stages make up the phase that “defrosts” the status quo?
 
 - A. Stages 1 to 5: urgency through removing barriers to action
 - B. Stages 1 to 4: urgency, coalition, vision, and communicating it
@@ -654,7 +654,7 @@ Many adjusters don’t see why the old process needs to change. Drawing on Kotte
 
 1. Help people see why change is needed now, for example by sharing evidence about the current process
 2. Plan to declare the change complete as soon as the platform goes live
-3. Skip the vision and go straight to system training
+3. Form the guiding coalition first, and build urgency once it is in place
 4. Change reward criteria to lock in the new process before anyone has used it
 5. Make the need for change felt before introducing the new process
 
@@ -662,11 +662,12 @@ Many adjusters don’t see why the old process needs to change. Drawing on Kotte
 
 Two months in, paper files are gone and the new platform isn’t fully working. Most adjusters have let go of the old process but feel unsettled and unsure how the new one will work; a few still mourn their old team routines, and one keeps insisting the platform won’t last. What should you recognize or do?
 
-1. For those still mourning, acknowledge what they are losing, since transition starts with an ending
-2. See most adjusters as in Bridges’ neutral zone, the in-between time after letting go
-3. Expect every adjuster to pass through the emotional stages in the same order
+1. Expect reactions on the change curve to overlap, repeat, or skip stages
+2. For those still mourning, acknowledge what they are losing, since transition starts with an ending
+3. See most adjusters as in Bridges’ neutral zone, the in-between time after letting go
 4. Ignore the reactions, since only the external change itself matters
-5. Expect reactions on the change curve to overlap, repeat, or skip stages
+5. Treat those who have let go as already in Bridges’ new beginning
+6. Expect every adjuster to pass through the emotional stages in the same order
 
 #### case-change-claims.step-3
 

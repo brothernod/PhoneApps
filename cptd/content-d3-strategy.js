@@ -346,7 +346,7 @@ window.CPTD_PARTS.push({
       o: ['Talent strategy and management', 'Succession planning', 'Strategic planning', 'Performance management'],
       a: 0, why: 'ATD defines talent strategy and management as the practices used to build culture, engagement, capability, and capacity. Succession planning is narrower: it identifies, evaluates, and develops people for key roles.' },
     { id: 'q-strategy-tm-verbs', stmt: '3.4.3', model: 'tm-verbs', q: 'ATD’s glossary defines talent management as acquiring, onboarding, developing, retaining, and what else?',
-      o: ['Auditing', 'Transitioning', 'Rating', 'Budgeting'],
+      o: ['Benchmarking', 'Transitioning', 'Rating', 'Budgeting'],
       a: 1, why: 'The five verbs are acquiring, onboarding, developing, retaining, and transitioning employees. Rating people belongs to performance management, which ATD CI lists as a separate talent management function, not as a verb in the glossary definition.' },
     { id: 'q-strategy-tm-vs-td', stmt: '3.4.3', model: 'tm-verbs', q: 'How does talent development relate to talent management, as ATD uses the terms?',
       o: ['They are two names for the same practice', 'Talent management is one part of talent development', 'Talent development is one part of talent management', 'They cover separate employees and don’t overlap'],

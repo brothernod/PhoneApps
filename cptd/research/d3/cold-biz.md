@@ -149,12 +149,12 @@ Which statement correctly contrasts NPV and IRR?
 
 Statement 3.1.6 (Managing budgets and resources)
 
-Phillips says three measures can be used for most types of investment, including non-capital spending such as talent development. Which pair is NOT among those three?
+Phillips says three measures can be used for most types of investment, including non-capital spending such as talent development. Which are they?
 
-- A. ROI and BCR
-- B. ROI and payback period
-- C. Payback period and BCR
-- D. NPV and IRR
+- A. ROI, BCR, and payback period
+- B. ROI, NPV, and payback period
+- C. ROI, BCR, and IRR
+- D. ROI, BCR, and NPV
 
 ### q-biz-payback-limit
 
@@ -171,7 +171,7 @@ Which limitation of the payback period does Phillips point out?
 
 Statement 3.1.7 (Creating business cases for talent development initiatives using economic, financial, and organizational data)
 
-A CFO describes onboarding and compliance training as costs recorded in the period they occur, with no performance evidence beyond it. Which term from “Boost Your Financial IQ” is she using?
+A CFO describes onboarding and compliance training as costs accounted for when they happen, with no performance evidence beyond that time. Which term from “Boost Your Financial IQ” is she using?
 
 - A. Relevant cost
 - B. Period expense
@@ -602,9 +602,9 @@ Statement 3.2.8 (Identifying, minimizing, and overcoming organizational barriers
 
 Which of these appears in Block’s list of the faces of resistance?
 
-- A. Delegation
-- B. Benchmarking
-- C. Gratitude
+- A. Bargaining
+- B. Frustration
+- C. Denial
 - D. Impracticality
 
 ### q-biz-resist-detail

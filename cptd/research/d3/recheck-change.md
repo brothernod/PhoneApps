@@ -15,3 +15,5 @@ Case steps 1–3: under +1/−1 scoring, every option is now clearly right or cl
 | 373 | q-change-kotter-phases.stem | MINOR | "Three phases, beginning with 'defrosting'" says that defrosting is phase 1. That rules out C (stages 5 to 7) and D (stage 8 alone) from the stem's wording alone and leaves a 50/50 between A and B. The key, the options and the why are right (book quote above). | stem: "Kotter groups the eight stages into three phases. Which stages make up the phase that “defrosts” the status quo?" Options, key and why unchanged. |
 
 Re-checked 16 rows; 3 issues.
+
+Applied: 3 as written, 0 adjusted.

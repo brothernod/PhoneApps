@@ -10,4 +10,4 @@ Inputs: `fixes-strategy.md` (18 rows), `check-strategy.md`, `content-d3-strategy
 
 Re-checked 18 rows; 3 issues.
 
-Applied by the main chat: all 3 fixes as written above (#236 note, q-strategy-tm-verbs options and `why`, #294 nine-box src).
+Applied by the main chat: all 3 fixes (#236 note, q-strategy-tm-verbs `why` as written; its options became Benchmarking, Transitioning, Rating, Budgeting so the key isn’t the longest by far; #294 nine-box src).

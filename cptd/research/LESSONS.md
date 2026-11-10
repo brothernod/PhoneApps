@@ -159,3 +159,13 @@ For every case step:
 - **Cross-area kin goes in the domain's metadata file** (`content-d3.js`), since the merge reads `kin` from every part. Authors list candidates; the main chat adds only real overlaps (shared steps or items, or one list inside another), not mere contrasts or confusable names.
 - **Big domains lose “which model?” items.** With 114 models, word stems repeat across areas, so 43 Domain 3 models have no “which model?” card (154 of 529 items usable). Authors kept the source's terms on purpose. It's a warning, not an error; the other card types still cover those models.
 - **Ask authors to say where a description is only a paraphrase of a name.** Several did, unprompted; those go straight into the checkers' prompts.
+
+## Process lessons from Domain 3 steps 5–6 (chat B3)
+
+- **Rolling launches beat waves.** Start the next agent as soon as one finishes, keeping at most 3 running. Cold passes take about 1.5 min and claims passes about 7, so pairing cheap and long agents keeps the slots full. Start a fixer as soon as both of its area's passes are in.
+- **Cold passes are cheap and pull their weight.** At about $1 each, they independently found most of the case-step problems the claims passes confirmed. Change's three case steps were flagged by both passes.
+- **Fixers introduce giveaways.** 22 re-check issues came from 147 fixed rows, mostly a key that became the longest option, a stem that echoes the key, absolutes only in wrong options, or a `why` that mentions a removed option. The main chat's own small fixes need the same test-taker read (one of them tripped the checker's length warning).
+- **Split the re-check by area.** About 147 rows across 3 agents of about 190k each worked; one agent would have run past 300k. `BRIEF-recheck.md` holds the brief.
+- **Facts from a checker's web fetch are valid sources** if the check file cites the URL. Have the re-check confirm them (Prosci's barrier point and Kotter's phases were confirmed; Gilbert's "P = B × E" was not, so the question was rewritten).
+- **Generator tests catch what the checker doesn't.** A fixer's new note (“sensitivity training”) collided with another model's item in a “which model?” card. Run `gen_test.py` after every fix round, not just at the end.
+- **The 5-hour limit hit at about 23 agent runs** into the window, with the main chat at about 150k. Launches that fail at once cost almost nothing; relaunch fresh after the reset.

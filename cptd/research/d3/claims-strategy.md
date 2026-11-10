@@ -522,7 +522,7 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 512. [q-strategy-tsm-term.key] The one defensible answer to q-strategy-tsm-term is A: “Talent strategy and management”.
 513. [q-strategy-tsm-term.why] Explanation for q-strategy-tsm-term: ATD defines talent strategy and management as the practices used to build culture, engagement, capability, and capacity. Succession planning is narrower: it identifies, evaluates, and develops people for key roles.
 514. [q-strategy-tm-verbs.stem] Question q-strategy-tm-verbs (statement 3.4.3, model tm-verbs) asks: ATD’s glossary defines talent management as acquiring, onboarding, developing, retaining, and what else?
-515. [q-strategy-tm-verbs.A] Option A of q-strategy-tm-verbs: Auditing
+515. [q-strategy-tm-verbs.A] Option A of q-strategy-tm-verbs: Benchmarking
 516. [q-strategy-tm-verbs.B] Option B of q-strategy-tm-verbs: Transitioning
 517. [q-strategy-tm-verbs.C] Option C of q-strategy-tm-verbs: Rating
 518. [q-strategy-tm-verbs.D] Option D of q-strategy-tm-verbs: Budgeting

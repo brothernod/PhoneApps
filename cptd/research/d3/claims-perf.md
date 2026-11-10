@@ -21,7 +21,7 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 11. [hpi-principles.items.3.name] “Quantitative, time-limited goals” is one of the points of Four points about HPI in ATD’s 2017 article.
 12. [hpi-principles.items.3.desc] In Four points about HPI in ATD’s 2017 article, “Quantitative, time-limited goals” means: Goals are set in numbers and with a deadline, so success can be measured.
 13. [hpi-principles.items.4.name] “Begins with the business output” is one of the points of Four points about HPI in ATD’s 2017 article.
-14. [hpi-principles.items.4.desc] In Four points about HPI in ATD’s 2017 article, “Begins with the business output” means: Starts at the end of the process, with the business output, and applies the goals backwards to departments, teams, and individuals.
+14. [hpi-principles.items.4.desc] In Four points about HPI in ATD’s 2017 article, “Begins with the business output” means: Starts at the end of the process and applies the goals backwards to departments, teams, and individuals.
 15. [hpi-principles.decoys.1] “Learner-centered” is NOT one of the points of Four points about HPI in ATD’s 2017 article.
 16. [hpi-principles.decoys.2] “Content-driven” is NOT one of the points of Four points about HPI in ATD’s 2017 article.
 17. [hpi-principles.decoys.3] “Activity-based” is NOT one of the points of Four points about HPI in ATD’s 2017 article.
@@ -87,7 +87,7 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 77. [gilbert-bem.name] The model with id gilbert-bem is called “Gilbert’s Behavior Engineering Model (BEM)” (short name “Gilbert’s BEM”).
 78. [gilbert-bem.who] Gilbert’s Behavior Engineering Model (BEM) comes from Thomas F. Gilbert, Human Competence: Engineering Worthy Performance (1978).
 79. [gilbert-bem.tag] Gilbert’s Behavior Engineering Model (BEM) is labeled “Good to know”.
-80. [gilbert-bem.src] The source for Gilbert’s Behavior Engineering Model (BEM) is: Gilbert (1978), via Boise State University OPWL WORC, “Evidence for Behavior Engineering Model,” and Wikipedia, “Thomas Gilbert (engineer)”
+80. [gilbert-bem.src] The source for Gilbert’s Behavior Engineering Model (BEM) is: Gilbert (1978), via Boise State University OPWL WORC, “Evidence for Behavior Engineering Model,” and Wikipedia, “Thomas Gilbert (engineer)”; Fred Nickols, quoting Human Competence, p. 76
 81. [gilbert-bem.stmt.1] Gilbert’s Behavior Engineering Model (BEM) belongs under exam statement 3.5.1 (Theories, models, and principles of human performance improvement).
 82. [gilbert-bem.stmt.2] Gilbert’s Behavior Engineering Model (BEM) belongs under exam statement 3.5.4 (Conducting performance analysis to identify goals, gaps, or opportunities).
 83. [gilbert-bem.kind] Gilbert’s Behavior Engineering Model (BEM) has 6 factors in a fixed order, Gilbert’s diagnostic order: the environmental factors first, then the personal ones.
@@ -119,8 +119,8 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 109. [gilbert-bem.decoys.2] “Seniority” is NOT one of the factors of Gilbert’s Behavior Engineering Model (BEM).
 110. [gilbert-bem.decoys.3] “Job title” is NOT one of the factors of Gilbert’s Behavior Engineering Model (BEM).
 111. [gilbert-bem.hook] Memory hook for Gilbert’s Behavior Engineering Model (BEM): Fix the environment before the person: information, resources, incentives, then knowledge, capacity, motives.
-112. [gilbert-bem.exam] How Gilbert’s Behavior Engineering Model (BEM) shows up on the exam: Built on P = B × E: performance comes from behavior and environment together. Gilbert held that the biggest barrier to exemplary performance is a lack of performance support at work, not a lack of individual knowledge or skill, so check the environment first. Watch the likely mix-ups: incentives (environment) vs motives (individual), and resources (environment) vs capacity (individual).
-113. [gilbert-bem.note] Worth knowing about Gilbert’s Behavior Engineering Model (BEM): Gilbert’s 1978 labels are Data and Instruments; modern versions say Information and Resources. They are the same factors, not different ones. Gilbert’s cost-effective order is Data > Instruments > Incentives > Knowledge > Capacity > Motives.
+112. [gilbert-bem.exam] How Gilbert’s Behavior Engineering Model (BEM) shows up on the exam: Gilbert said the immediate cause of any performance deficiency lies in the person’s behavior repertory, the environment that supports it, or both, so the BEM has an environment row and a person row. Gilbert held that the biggest barrier to exemplary performance is a lack of performance support at work, not a lack of individual knowledge or skill, so check the environment first. Watch the likely mix-ups: incentives (environment) vs motives (individual), and resources (environment) vs capacity (individual).
+113. [gilbert-bem.note] Worth knowing about Gilbert’s Behavior Engineering Model (BEM): Gilbert’s 1978 labels are Data and Instruments; modern versions say Information and Resources. They are the same factors, not different ones. Gilbert’s cost-effective order is Data > Instruments > Incentives > Knowledge > Capacity > Motives. Some sources, such as Wikipedia, write the idea as P = B × E; in Gilbert’s own text, P is the person’s behavior repertory and E is the environment that supports it.
 114. [rummler-levels.name] The model with id rummler-levels is called “Rummler and Brache’s three levels of performance” (short name “Rummler’s levels”).
 115. [rummler-levels.who] Rummler and Brache’s three levels of performance comes from Geary A. Rummler & Alan P. Brache, Improving Performance: How to Manage the White Space on the Organization Chart.
 116. [rummler-levels.tag] Rummler and Brache’s three levels of performance is labeled “Good to know”.
@@ -324,7 +324,7 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 314. [perf-support-examples.exam] How Performance support named in statement 3.5.6 shows up on the exam: Know the five examples: instructional resources, data, process models, job aids, and expert advice. Three match what the early EPSS literature names: learning experiences, data or an information base, and advice.
 315. [perf-support-examples.note] Worth knowing about Performance support named in statement 3.5.6: The descriptions are the app’s paraphrases; the outline names the examples without defining them.
 316. [hpi-systems-view.name] The model with id hpi-systems-view is called “The HPI systems view of performance” (short name “HPI systems view”).
-317. [hpi-systems-view.who] The HPI systems view of performance comes from HPI practice: Gilbert’s P = B × E, Rummler & Brache’s levels, and ATD’s point that HPI starts from business output and works backwards.
+317. [hpi-systems-view.who] The HPI systems view of performance comes from HPI practice: Gilbert’s environment-before-person view, Rummler & Brache’s levels, and ATD’s point that HPI starts from business output and works backwards.
 318. [hpi-systems-view.tag] The HPI systems view of performance is labeled “Good to know”.
 319. [hpi-systems-view.src] The source for The HPI systems view of performance is: Gilbert (1978), via Wikipedia and Boise State OPWL WORC; Rummler & Brache (2012), via the HPT Manual; ATD, “What Is Human Performance Improvement?” (2017); ATD HPI Certificate course page
 320. [hpi-systems-view.stmt.1] The HPI systems view of performance belongs under exam statement 3.5.7 (Conducting analysis of systems to improve human performance, for example determining how organizations learn, closing knowledge or skill gaps, and addressing human factors issues).
@@ -444,11 +444,11 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 434. [q-perf-hpi-vs-addie.key] The one defensible answer to q-perf-hpi-vs-addie is D: “HPI chooses among many solutions; ADDIE designs a learning one”.
 435. [q-perf-hpi-vs-addie.why] Explanation for q-perf-hpi-vs-addie: HPI is a performance model: it selects whatever solutions fit the causes, and training is only one of them. ADDIE is a design model for building a learning solution. HPI does evaluate results, so it doesn’t skip evaluation.
 436. [q-perf-hpi-change.stem] Question q-perf-hpi-change (statement 3.5.1, model atd-hpi-model) asks: What role does change management play in ATD’s HPI model?
-437. [q-perf-hpi-change.A] Option A of q-perf-hpi-change: It is part of the model and helps any kind of solution take hold
+437. [q-perf-hpi-change.A] Option A of q-perf-hpi-change: It is part of the model and helps any solution take hold
 438. [q-perf-hpi-change.B] Option B of q-perf-hpi-change: It belongs to HR, outside the HPI practitioner’s work
 439. [q-perf-hpi-change.C] Option C of q-perf-hpi-change: It applies only when training is the chosen solution
 440. [q-perf-hpi-change.D] Option D of q-perf-hpi-change: It replaces cause analysis when the gap is urgent
-441. [q-perf-hpi-change.key] The one defensible answer to q-perf-hpi-change is A: “It is part of the model and helps any kind of solution take hold”.
+441. [q-perf-hpi-change.key] The one defensible answer to q-perf-hpi-change is A: “It is part of the model and helps any solution take hold”.
 442. [q-perf-hpi-change.why] Explanation for q-perf-hpi-change: ATD’s HPI Certificate lists “increase impact through effective change management” as part of the model, and the ASTD version has a Change Management step after implementation. It supports every kind of solution, not just training.
 443. [q-perf-hpi-evaluate.stem] Question q-perf-hpi-evaluate (statement 3.5.5, model atd-hpi-model) asks: Six months after a new scheduling tool and a job aid were rolled out, the TD lead compares on-time delivery with the target the sponsor set at the start. Which HPI step is this?
 444. [q-perf-hpi-evaluate.A] Option A of q-perf-hpi-evaluate: Diagnose the current state
@@ -513,13 +513,13 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 503. [q-perf-bem-info.D] Option D of q-perf-bem-info: Information
 504. [q-perf-bem-info.key] The one defensible answer to q-perf-bem-info is D: “Information”.
 505. [q-perf-bem-info.why] Explanation for q-perf-bem-info: Clear expectations and timely feedback are Information (Gilbert’s Data), an environmental factor. Knowledge is what the person knows how to do, and the nurses already know how to chart; they were never told what is expected.
-506. [q-perf-bem-formula.stem] Question q-perf-bem-formula (statement 3.5.1, model gilbert-bem) asks: Gilbert’s model rests on P = B × E. What does the formula say?
-507. [q-perf-bem-formula.A] Option A of q-perf-bem-formula: Performance comes from behavior and the environment together
-508. [q-perf-bem-formula.B] Option B of q-perf-bem-formula: Productivity equals budget multiplied by effort
-509. [q-perf-bem-formula.C] Option C of q-perf-bem-formula: Potential equals background multiplied by education
-510. [q-perf-bem-formula.D] Option D of q-perf-bem-formula: Proficiency equals practice multiplied by experience
-511. [q-perf-bem-formula.key] The one defensible answer to q-perf-bem-formula is A: “Performance comes from behavior and the environment together”.
-512. [q-perf-bem-formula.why] Explanation for q-perf-bem-formula: P = B × E means performance is a product of behavior and environment. That is why the BEM crosses environmental factors with personal ones.
+506. [q-perf-bem-formula.stem] Question q-perf-bem-formula (statement 3.5.1, model gilbert-bem) asks: In Human Competence (1978), where does Gilbert say the immediate cause of a performance deficiency lies?
+507. [q-perf-bem-formula.A] Option A of q-perf-bem-formula: In the person’s behavior repertory, the environment, or both
+508. [q-perf-bem-formula.B] Option B of q-perf-bem-formula: In the course design, the trainer’s delivery, or both
+509. [q-perf-bem-formula.C] Option C of q-perf-bem-formula: In the person’s personality, seniority, or both
+510. [q-perf-bem-formula.D] Option D of q-perf-bem-formula: In the person’s job title, the org chart, or both
+511. [q-perf-bem-formula.key] The one defensible answer to q-perf-bem-formula is A: “In the person’s behavior repertory, the environment, or both”.
+512. [q-perf-bem-formula.why] Explanation for q-perf-bem-formula: Gilbert wrote that a deficiency in performance always has as its immediate cause a deficiency in the behavior repertory (P), in the environment that supports it (E), or in both. That is why the BEM has an environment row and a person row. Personality, seniority, and job titles aren’t BEM factors.
 513. [q-perf-rummler-levels.stem] Question q-perf-rummler-levels (statement 3.5.1, model rummler-levels) asks: Rummler and Brache analyze performance at which three levels?
 514. [q-perf-rummler-levels.A] Option A of q-perf-rummler-levels: Reaction, learning, and behavior
 515. [q-perf-rummler-levels.B] Option B of q-perf-rummler-levels: Society, organization, and individual
@@ -832,8 +832,8 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 822. [case-perf-complaints.step-3.opt-5] In step 3 of case-perf-complaints, “Pick one solution for all three causes, to keep things simple” is a WRONG pick.
 823. [case-perf-complaints.step-3.opt-6] In step 3 of case-perf-complaints, “Replace the agents who are below target with new hires” is a WRONG pick.
 824. [case-perf-complaints.step-3.why] Explanation for step 3 of case-perf-complaints: Each root cause needs a matching solution: information about the screen, an incentive that rewards the right result, and a job aid for a rare, complex task used at the moment of need. A single course would leave the rating system working against the agents.
-825. [case-perf-complaints.step-4.text] Step 4 of case-perf-complaints asks: You have chosen the solutions. What should you do as you record the choice and plan the rollout and its evaluation?
-826. [case-perf-complaints.step-4.opt-1] In step 4 of case-perf-complaints, “Record the chosen solutions in a design document” is a RIGHT pick.
+825. [case-perf-complaints.step-4.text] Step 4 of case-perf-complaints asks: You have chosen the solutions. What should you do from here, through rollout and evaluation?
+826. [case-perf-complaints.step-4.opt-1] In step 4 of case-perf-complaints, “Write the chosen solutions into a design document before rollout” is a RIGHT pick.
 827. [case-perf-complaints.step-4.opt-2] In step 4 of case-perf-complaints, “Secure a respected sponsor and plan change management” is a RIGHT pick.
 828. [case-perf-complaints.step-4.opt-3] In step 4 of case-perf-complaints, “Plan to measure first-contact resolution against the 85% target” is a RIGHT pick.
 829. [case-perf-complaints.step-4.opt-4] In step 4 of case-perf-complaints, “Judge success only by agents’ satisfaction with the changes” is a WRONG pick.

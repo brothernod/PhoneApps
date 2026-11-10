@@ -262,7 +262,7 @@ Statement 3.4.3 (Developing a talent strategy that aligns to organizational stra
 ATD’s glossary defines talent management as acquiring, onboarding, developing, retaining, and what else?
 
 - A. Budgeting
-- B. Auditing
+- B. Benchmarking
 - C. Rating
 - D. Transitioning
 

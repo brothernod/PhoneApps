@@ -14,7 +14,7 @@ window.CPTD_PARTS.push({
         { t: 'Results based', d: 'Driven by a business need and a performance need, and justified by what cause analysis finds.' },
         { t: 'Business-focused', d: 'Starts from the organization’s strategic priorities and key business goals.' },
         { t: 'Quantitative, time-limited goals', d: 'Goals are set in numbers and with a deadline, so success can be measured.' },
-        { t: 'Begins with the business output', d: 'Starts at the end of the process, with the business output, and applies the goals backwards to departments, teams, and individuals.' },
+        { t: 'Begins with the business output', d: 'Starts at the end of the process and applies the goals backwards to departments, teams, and individuals.' },
       ],
       decoys: ['Learner-centered', 'Content-driven', 'Activity-based'],
       hook: 'Begin with the business output, set goals in numbers, and work back to the people.',
@@ -73,9 +73,9 @@ window.CPTD_PARTS.push({
       ],
       decoys: ['Personality traits', 'Seniority', 'Job title'],
       hook: 'Fix the environment before the person: information, resources, incentives, then knowledge, capacity, motives.',
-      exam: 'Built on P = B × E: performance comes from behavior and environment together. Gilbert held that the biggest barrier to exemplary performance is a lack of performance support at work, not a lack of individual knowledge or skill, so check the environment first. Watch the likely mix-ups: incentives (environment) vs motives (individual), and resources (environment) vs capacity (individual).',
-      note: 'Gilbert’s 1978 labels are Data and Instruments; modern versions say Information and Resources. They are the same factors, not different ones. Gilbert’s cost-effective order is Data > Instruments > Incentives > Knowledge > Capacity > Motives.',
-      src: 'Gilbert (1978), via Boise State University OPWL WORC, “Evidence for Behavior Engineering Model,” and Wikipedia, “Thomas Gilbert (engineer)”',
+      exam: 'Gilbert said the immediate cause of any performance deficiency lies in the person’s behavior repertory, the environment that supports it, or both, so the BEM has an environment row and a person row. Gilbert held that the biggest barrier to exemplary performance is a lack of performance support at work, not a lack of individual knowledge or skill, so check the environment first. Watch the likely mix-ups: incentives (environment) vs motives (individual), and resources (environment) vs capacity (individual).',
+      note: 'Gilbert’s 1978 labels are Data and Instruments; modern versions say Information and Resources. They are the same factors, not different ones. Gilbert’s cost-effective order is Data > Instruments > Incentives > Knowledge > Capacity > Motives. Some sources, such as Wikipedia, write the idea as P = B × E; in Gilbert’s own text, P is the person’s behavior repertory and E is the environment that supports it.',
+      src: 'Gilbert (1978), via Boise State University OPWL WORC, “Evidence for Behavior Engineering Model,” and Wikipedia, “Thomas Gilbert (engineer)”; Fred Nickols, quoting Human Competence, p. 76',
     },
     {
       id: 'rummler-levels', area: 'perf', stmts: ['3.5.1', '3.5.7'], tag: 'extra',
@@ -224,7 +224,7 @@ window.CPTD_PARTS.push({
     /* ----- 3.5.7 analysis of systems ----- */
     {
       id: 'hpi-systems-view', area: 'perf', stmts: ['3.5.7'], tag: 'extra',
-      name: 'The HPI systems view of performance', short: 'HPI systems view', who: 'HPI practice: Gilbert’s P = B × E, Rummler & Brache’s levels, and ATD’s point that HPI starts from business output and works backwards', kind: 'set', unit: 'principles',
+      name: 'The HPI systems view of performance', short: 'HPI systems view', who: 'HPI practice: Gilbert’s environment-before-person view, Rummler & Brache’s levels, and ATD’s point that HPI starts from business output and works backwards', kind: 'set', unit: 'principles',
       items: [
         { t: 'Environment before the individual', d: 'Look at the work setting before the person (Gilbert).' },
         { t: 'All three levels', d: 'Analyze the organization, process, and job/performer levels (Rummler and Brache).' },
@@ -315,7 +315,7 @@ window.CPTD_PARTS.push({
       o: ['HPI skips evaluation; ADDIE ends with it', 'HPI starts with design; ADDIE starts with business goals', 'HPI is for technical jobs only; ADDIE is for all jobs', 'HPI chooses among many solutions; ADDIE designs a learning one'],
       a: 3, why: 'HPI is a performance model: it selects whatever solutions fit the causes, and training is only one of them. ADDIE is a design model for building a learning solution. HPI does evaluate results, so it doesn’t skip evaluation.' },
     { id: 'q-perf-hpi-change', stmt: '3.5.1', model: 'atd-hpi-model', q: 'What role does change management play in ATD’s HPI model?',
-      o: ['It is part of the model and helps any kind of solution take hold', 'It belongs to HR, outside the HPI practitioner’s work', 'It applies only when training is the chosen solution', 'It replaces cause analysis when the gap is urgent'],
+      o: ['It is part of the model and helps any solution take hold', 'It belongs to HR, outside the HPI practitioner’s work', 'It applies only when training is the chosen solution', 'It replaces cause analysis when the gap is urgent'],
       a: 0, why: 'ATD’s HPI Certificate lists “increase impact through effective change management” as part of the model, and the ASTD version has a Change Management step after implementation. It supports every kind of solution, not just training.' },
     { id: 'q-perf-hpi-evaluate', stmt: '3.5.5', model: 'atd-hpi-model', q: 'Six months after a new scheduling tool and a job aid were rolled out, the TD lead compares on-time delivery with the target the sponsor set at the start. Which HPI step is this?',
       o: ['Diagnose the current state', 'Identify root causes', 'Evaluate results', 'Articulate business goals'],
@@ -348,9 +348,9 @@ window.CPTD_PARTS.push({
     { id: 'q-perf-bem-info', stmt: '3.5.4', model: 'gilbert-bem', q: 'Nurses know how to chart, but no one told them about a new charting standard, and they get no feedback on their charts. Which BEM factor should be fixed?',
       o: ['Knowledge', 'Incentives', 'Resources', 'Information'],
       a: 3, why: 'Clear expectations and timely feedback are Information (Gilbert’s Data), an environmental factor. Knowledge is what the person knows how to do, and the nurses already know how to chart; they were never told what is expected.' },
-    { id: 'q-perf-bem-formula', stmt: '3.5.1', model: 'gilbert-bem', q: 'Gilbert’s model rests on P = B × E. What does the formula say?',
-      o: ['Performance comes from behavior and the environment together', 'Productivity equals budget multiplied by effort', 'Potential equals background multiplied by education', 'Proficiency equals practice multiplied by experience'],
-      a: 0, why: 'P = B × E means performance is a product of behavior and environment. That is why the BEM crosses environmental factors with personal ones.' },
+    { id: 'q-perf-bem-formula', stmt: '3.5.1', model: 'gilbert-bem', q: 'In Human Competence (1978), where does Gilbert say the immediate cause of a performance deficiency lies?',
+      o: ['In the person’s behavior repertory, the environment, or both', 'In the course design, the trainer’s delivery, or both', 'In the person’s personality, seniority, or both', 'In the person’s job title, the org chart, or both'],
+      a: 0, why: 'Gilbert wrote that a deficiency in performance always has as its immediate cause a deficiency in the behavior repertory (P), in the environment that supports it (E), or in both. That is why the BEM has an environment row and a person row. Personality, seniority, and job titles aren’t BEM factors.' },
 
     /* rummler-levels */
     { id: 'q-perf-rummler-levels', stmt: '3.5.1', model: 'rummler-levels', q: 'Rummler and Brache analyze performance at which three levels?',
@@ -533,9 +533,9 @@ window.CPTD_PARTS.push({
             ['Replace the agents who are below target with new hires', false],
           ],
           why: 'Each root cause needs a matching solution: information about the screen, an incentive that rewards the right result, and a job aid for a rare, complex task used at the moment of need. A single course would leave the rating system working against the agents.' },
-        { text: 'You have chosen the solutions. What should you do as you record the choice and plan the rollout and its evaluation?',
+        { text: 'You have chosen the solutions. What should you do from here, through rollout and evaluation?',
           options: [
-            ['Record the chosen solutions in a design document', true],
+            ['Write the chosen solutions into a design document before rollout', true],
             ['Secure a respected sponsor and plan change management', true],
             ['Plan to measure first-contact resolution against the 85% target', true],
             ['Judge success only by agents’ satisfaction with the changes', false],

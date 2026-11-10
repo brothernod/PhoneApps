@@ -14,3 +14,5 @@ Inputs: `fixes-biz.md` (22 rows), `check-biz.md`, `content-d3-biz.js` (grepped),
 | 175, 382 | block-phases.src, block-resistance.src | MINOR | The new exam sentences rest on the 4th edition's table of contents: the resistance chapters are in Part 3 "More Fundamentals", between Entry and Contracting and Discovery (check-biz #566, O'Reilly 4th-ed. contents). Neither `src` names that table of contents. block-phases cites only the 4th-ed. "reading sample", and block-resistance cites the 2nd-ed. contents plus the 4th-ed. reading sample. | block-phases src: "Block, Flawless Consulting, 4th ed. (Wiley, 2023), reading sample and table of contents; 2nd ed. (1999), table of contents". block-resistance src: "Block, Flawless Consulting, 2nd ed. (1999), ch. 8 “Understanding Resistance,” table of contents; 4th ed. (2023), reading sample and table of contents" |
 
 Re-checked 22 rows; 4 issues.
+
+Applied: 4 as written, 0 adjusted.

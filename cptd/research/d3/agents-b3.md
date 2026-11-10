@@ -29,5 +29,9 @@ C = reported tokens (final history), T = tool uses, duration in minutes.
 | recheck market+data | xhigh | 187,630 | 36 | 8.3 | 49 rows, 3 issues (2 AMBIGUOUS, 1 MINOR); applied by main chat |
 | recheck od+biz | xhigh | 191,186 | 42 | 9.1 | 40 rows, 9 MINOR |
 | recheck perf+change | xhigh | 197,470 | 39 | 10.7 | 40 rows, 7 issues (1 MISLEADING Gilbert, rest MINOR); Prosci + Kotter facts confirmed |
+| apply re-check fixes (od, biz, perf, change) | high | 89,723 | 16 | 1.7 | 16 rows applied as written |
 
 Main chat: all 9 Domain 3 statement labels in `content-d3.js` now say "for example" as the handbook does (was "such as"; flagged for 3.4.5 and 3.7.6).
+
+The three first re-check launches (2026-11-09 ~23:00) hit the 5-hour usage limit at once; only the strategy re-check had written its file. Relaunched for the other six areas at 03:30 after the reset.
+Main chat also applied the strategy, market and data re-check fixes and a `q-strategy-tm-verbs` option swap (key was longest by far).

@@ -380,7 +380,7 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 370. [q-change-kotter-victory.D] Option D of q-change-kotter-victory: Developing a vision and strategy
 371. [q-change-kotter-victory.key] The one defensible answer to q-change-kotter-victory is A: “Consolidating gains and producing more change”.
 372. [q-change-kotter-victory.why] Explanation for q-change-kotter-victory: Stage 7 uses the credibility from early wins to drive more change and warns against declaring victory too soon. Generating short-term wins (stage 6) is what the pilot already did.
-373. [q-change-kotter-phases.stem] Question q-change-kotter-phases (statement 3.6.1, model kotter-8) asks: Kotter groups the eight stages into three phases, beginning with “defrosting” the status quo. Which stages make up the defrosting phase?
+373. [q-change-kotter-phases.stem] Question q-change-kotter-phases (statement 3.6.1, model kotter-8) asks: Kotter groups the eight stages into three phases. Which stages make up the phase that “defrosts” the status quo?
 374. [q-change-kotter-phases.A] Option A of q-change-kotter-phases: Stages 1 to 5: urgency through removing barriers to action
 375. [q-change-kotter-phases.B] Option B of q-change-kotter-phases: Stages 1 to 4: urgency, coalition, vision, and communicating it
 376. [q-change-kotter-phases.C] Option C of q-change-kotter-phases: Stages 5 to 7: removing barriers, short-term wins, and consolidating
@@ -749,7 +749,7 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 739. [case-change-claims.step-1.opt-1] In step 1 of case-change-claims, “Help people see why change is needed now, for example by sharing evidence about the current process” is a RIGHT pick.
 740. [case-change-claims.step-1.opt-2] In step 1 of case-change-claims, “Make the need for change felt before introducing the new process” is a RIGHT pick.
 741. [case-change-claims.step-1.opt-3] In step 1 of case-change-claims, “Change reward criteria to lock in the new process before anyone has used it” is a WRONG pick.
-742. [case-change-claims.step-1.opt-4] In step 1 of case-change-claims, “Skip the vision and go straight to system training” is a WRONG pick.
+742. [case-change-claims.step-1.opt-4] In step 1 of case-change-claims, “Form the guiding coalition first, and build urgency once it is in place” is a WRONG pick.
 743. [case-change-claims.step-1.opt-5] In step 1 of case-change-claims, “Plan to declare the change complete as soon as the platform goes live” is a WRONG pick.
 744. [case-change-claims.step-1.why] Explanation for step 1 of case-change-claims: Kotter starts with urgency; Lewin starts by unfreezing, making the need for change felt. The guiding coalition is Kotter’s next stage, once people see why change is needed. Locking in rewards is refreezing, which comes after the change, and Kotter warns against declaring victory early.
 745. [case-change-claims.step-2.text] Step 2 of case-change-claims asks: Two months in, paper files are gone and the new platform isn’t fully working. Most adjusters have let go of the old process but feel unsettled and unsure how the new one will work; a few still mourn their old team routines, and one keeps insisting the platform won’t last. What should you recognize or do?
@@ -758,19 +758,20 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 748. [case-change-claims.step-2.opt-3] In step 2 of case-change-claims, “Expect reactions on the change curve to overlap, repeat, or skip stages” is a RIGHT pick.
 749. [case-change-claims.step-2.opt-4] In step 2 of case-change-claims, “Expect every adjuster to pass through the emotional stages in the same order” is a WRONG pick.
 750. [case-change-claims.step-2.opt-5] In step 2 of case-change-claims, “Ignore the reactions, since only the external change itself matters” is a WRONG pick.
-751. [case-change-claims.step-2.why] Explanation for step 2 of case-change-claims: Bridges separates the external change from the inner transition, which starts with an ending and passes through the neutral zone. Adjusters who have let go but feel unsettled are in the neutral zone; those still mourning are in the ending, so acknowledge their losses. The Kübler-Ross Foundation says the areas of the curve can overlap, repeat, or be skipped, so a fixed order is wrong.
-752. [case-change-claims.step-3.text] Step 3 of case-change-claims asks: Adjusters now agree the change is needed, want it to work, and can describe the new workflow, but they make errors on live claims and fall back on paper workarounds when they get stuck. Using ADKAR, where should you focus first?
-753. [case-change-claims.step-3.opt-1] In step 3 of case-change-claims, “Ability: help them put the new skills into practice on real claims” is a RIGHT pick.
-754. [case-change-claims.step-3.opt-2] In step 3 of case-change-claims, “Reinforcement: reward the new way to prevent backsliding” is a WRONG pick.
-755. [case-change-claims.step-3.opt-3] In step 3 of case-change-claims, “Awareness: explain again why the change is needed” is a WRONG pick.
-756. [case-change-claims.step-3.opt-4] In step 3 of case-change-claims, “Knowledge: send everyone through the same training again” is a WRONG pick.
-757. [case-change-claims.step-3.opt-5] In step 3 of case-change-claims, “Desire: run a campaign to persuade them the change is worthwhile” is a WRONG pick.
-758. [case-change-claims.step-3.why] Explanation for step 3 of case-change-claims: Awareness, desire, and knowledge are in place, so Ability is the first gap: errors on live work, with paper workarounds when people get stuck. ADKAR’s elements build in order, and Prosci says to address the first element that is a barrier before later ones, so reinforcement comes after ability is in place.
-759. [case-change-claims.step-4.text] Step 4 of case-change-claims asks: You decide to redesign the adjusters’ job aids with them, using design thinking and a brainstorming session. Which practices fit?
-760. [case-change-claims.step-4.opt-1] In step 4 of case-change-claims, “Observe and listen to adjusters on live claims before defining the problem” is a RIGHT pick.
-761. [case-change-claims.step-4.opt-2] In step 4 of case-change-claims, “Withhold judgment of ideas during the brainstorm” is a RIGHT pick.
-762. [case-change-claims.step-4.opt-3] In step 4 of case-change-claims, “Encourage people to build on and combine each other’s ideas” is a RIGHT pick.
-763. [case-change-claims.step-4.opt-4] In step 4 of case-change-claims, “Build quick, low-cost mock-ups and test them with adjusters” is a RIGHT pick.
-764. [case-change-claims.step-4.opt-5] In step 4 of case-change-claims, “Have the manager rule out impractical ideas as they come up” is a WRONG pick.
-765. [case-change-claims.step-4.opt-6] In step 4 of case-change-claims, “Finalize the design before any adjuster sees it” is a WRONG pick.
-766. [case-change-claims.step-4.why] Explanation for step 4 of case-change-claims: Design thinking starts with empathy and tests low-cost prototypes with real users; Osborn’s rules rule out criticism and seek combination and improvement. Screening ideas on the spot breaks the no-criticism rule, and skipping user testing breaks design thinking.
+751. [case-change-claims.step-2.opt-6] In step 2 of case-change-claims, “Treat those who have let go as already in Bridges’ new beginning” is a WRONG pick.
+752. [case-change-claims.step-2.why] Explanation for step 2 of case-change-claims: Bridges separates the external change from the inner transition, which starts with an ending and passes through the neutral zone. Adjusters who have let go but feel unsettled are in the neutral zone; those still mourning are in the ending, so acknowledge their losses. The Kübler-Ross Foundation says the areas of the curve can overlap, repeat, or be skipped, so a fixed order is wrong. Those who have let go aren’t in the new beginning yet: that comes when new attitudes take hold and energy goes into the new direction.
+753. [case-change-claims.step-3.text] Step 3 of case-change-claims asks: Adjusters now agree the change is needed, want it to work, and can describe the new workflow, but they make errors on live claims and fall back on paper workarounds when they get stuck. Using ADKAR, where should you focus first?
+754. [case-change-claims.step-3.opt-1] In step 3 of case-change-claims, “Ability: help them put the new skills into practice on real claims” is a RIGHT pick.
+755. [case-change-claims.step-3.opt-2] In step 3 of case-change-claims, “Reinforcement: reward the new way to prevent backsliding” is a WRONG pick.
+756. [case-change-claims.step-3.opt-3] In step 3 of case-change-claims, “Awareness: explain again why the change is needed” is a WRONG pick.
+757. [case-change-claims.step-3.opt-4] In step 3 of case-change-claims, “Knowledge: send everyone through the same training again” is a WRONG pick.
+758. [case-change-claims.step-3.opt-5] In step 3 of case-change-claims, “Desire: run a campaign to persuade them the change is worthwhile” is a WRONG pick.
+759. [case-change-claims.step-3.why] Explanation for step 3 of case-change-claims: Awareness, desire, and knowledge are in place, so Ability is the first gap: errors on live work, with paper workarounds when people get stuck. ADKAR’s elements build in order, and Prosci says to address the first element that is a barrier before later ones, so reinforcement comes after ability is in place.
+760. [case-change-claims.step-4.text] Step 4 of case-change-claims asks: You decide to redesign the adjusters’ job aids with them, using design thinking and a brainstorming session. Which practices fit?
+761. [case-change-claims.step-4.opt-1] In step 4 of case-change-claims, “Observe and listen to adjusters on live claims before defining the problem” is a RIGHT pick.
+762. [case-change-claims.step-4.opt-2] In step 4 of case-change-claims, “Withhold judgment of ideas during the brainstorm” is a RIGHT pick.
+763. [case-change-claims.step-4.opt-3] In step 4 of case-change-claims, “Encourage people to build on and combine each other’s ideas” is a RIGHT pick.
+764. [case-change-claims.step-4.opt-4] In step 4 of case-change-claims, “Build quick, low-cost mock-ups and test them with adjusters” is a RIGHT pick.
+765. [case-change-claims.step-4.opt-5] In step 4 of case-change-claims, “Have the manager rule out impractical ideas as they come up” is a WRONG pick.
+766. [case-change-claims.step-4.opt-6] In step 4 of case-change-claims, “Finalize the design before any adjuster sees it” is a WRONG pick.
+767. [case-change-claims.step-4.why] Explanation for step 4 of case-change-claims: Design thinking starts with empathy and tests low-cost prototypes with real users; Osborn’s rules rule out criticism and seek combination and improvement. Screening ideas on the spot breaks the no-criticism rule, and skipping user testing breaks design thinking.

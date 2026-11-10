@@ -11,3 +11,5 @@ Inputs: `fixes-od.md` (18 rows), `check-od.md`, `content-d3-od.js` (grepped), `o
 | 299 (follow-on) | case-od-engage.step-4.why | MINOR | Fix #299 and the "notes" row moved credit for the cycle to Heather Younger (model `who`, `note`, `src` and the three q-od-alc-* stems). This why still calls it "the ATD handbook’s Cycle of Active Listening". | why: "Close the Loop is the last step of Heather Younger’s Cycle of Active Listening (used in ATD’s Organization Development Handbook), and ATD’s OD Evaluation phase collects formative and summative data throughout, not only at the end." |
 
 Re-checked 18 rows; 5 issues.
+
+Applied: 5 as written, 0 adjusted.

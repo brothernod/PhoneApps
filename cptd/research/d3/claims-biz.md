@@ -159,7 +159,7 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 149. [block-phases.name] The model with id block-phases is called “Block’s five phases of consulting” (short name “Block’s phases”).
 150. [block-phases.who] Block’s five phases of consulting comes from Peter Block, Flawless Consulting (1st ed. 1981; 4th ed. 2023).
 151. [block-phases.tag] Block’s five phases of consulting is labeled “Good to know”.
-152. [block-phases.src] The source for Block’s five phases of consulting is: Block, Flawless Consulting, 4th ed. (Wiley, 2023), reading sample; 2nd ed. (1999), table of contents
+152. [block-phases.src] The source for Block’s five phases of consulting is: Block, Flawless Consulting, 4th ed. (Wiley, 2023), reading sample and table of contents; 2nd ed. (1999), table of contents
 153. [block-phases.stmt.1] Block’s five phases of consulting belongs under exam statement 3.2.1 (Establishing and managing organizational and/or business partnerships and relationships).
 154. [block-phases.stmt.2] Block’s five phases of consulting belongs under exam statement 3.2.5 (Synthesizing information to formulate recommendations or a course of action to gain agreement, support, and/or buy-in from stakeholders).
 155. [block-phases.kind] Block’s five phases of consulting has 5 phases in a fixed order, first to last.
@@ -367,7 +367,7 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 357. [block-resistance.name] The model with id block-resistance is called “Seven of Block’s faces of resistance” (short name “Faces of resistance”).
 358. [block-resistance.who] Seven of Block’s faces of resistance comes from Peter Block, Flawless Consulting, 2nd ed. (1999), ch. 8.
 359. [block-resistance.tag] Seven of Block’s faces of resistance is labeled “Good to know”.
-360. [block-resistance.src] The source for Seven of Block’s faces of resistance is: Block, Flawless Consulting, 2nd ed. (1999), ch. 8 “Understanding Resistance,” table of contents; 4th ed. (2023), reading sample
+360. [block-resistance.src] The source for Seven of Block’s faces of resistance is: Block, Flawless Consulting, 2nd ed. (1999), ch. 8 “Understanding Resistance,” table of contents; 4th ed. (2023), reading sample and table of contents
 361. [block-resistance.stmt.1] Seven of Block’s faces of resistance belongs under exam statement 3.2.8 (Identifying, minimizing, and overcoming organizational barriers to implementing talent development solutions and/or strategies).
 362. [block-resistance.stmt.2] Seven of Block’s faces of resistance belongs under exam statement 3.2.5 (Synthesizing information to formulate recommendations or a course of action to gain agreement, support, and/or buy-in from stakeholders).
 363. [block-resistance.kind] Seven of Block’s faces of resistance has 7 faces, in no particular order.
@@ -468,13 +468,13 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 458. [q-biz-npv-irr.D] Option D of q-biz-npv-irr: NPV is an amount; IRR is a rate
 459. [q-biz-npv-irr.key] The one defensible answer to q-biz-npv-irr is D: “NPV is an amount; IRR is a rate”.
 460. [q-biz-npv-irr.why] Explanation for q-biz-npv-irr: NPV is the present value of inflows minus the present value of outflows (an amount); IRR is the discount rate that makes NPV zero. Time to recover costs is the payback period.
-461. [q-biz-capital-metrics.stem] Question q-biz-capital-metrics (statement 3.1.6, model invest-metrics) asks: Phillips says three measures can be used for most types of investment, including non-capital spending such as talent development. Which pair is NOT among those three?
-462. [q-biz-capital-metrics.A] Option A of q-biz-capital-metrics: NPV and IRR
-463. [q-biz-capital-metrics.B] Option B of q-biz-capital-metrics: ROI and BCR
-464. [q-biz-capital-metrics.C] Option C of q-biz-capital-metrics: Payback period and BCR
-465. [q-biz-capital-metrics.D] Option D of q-biz-capital-metrics: ROI and payback period
-466. [q-biz-capital-metrics.key] The one defensible answer to q-biz-capital-metrics is A: “NPV and IRR”.
-467. [q-biz-capital-metrics.why] Explanation for q-biz-capital-metrics: Phillips names BCR, ROI, and payback period. NPV and IRR aren’t among them, and his table marks IRR as used in capital budgeting.
+461. [q-biz-capital-metrics.stem] Question q-biz-capital-metrics (statement 3.1.6, model invest-metrics) asks: Phillips says three measures can be used for most types of investment, including non-capital spending such as talent development. Which are they?
+462. [q-biz-capital-metrics.A] Option A of q-biz-capital-metrics: ROI, BCR, and NPV
+463. [q-biz-capital-metrics.B] Option B of q-biz-capital-metrics: ROI, BCR, and payback period
+464. [q-biz-capital-metrics.C] Option C of q-biz-capital-metrics: ROI, BCR, and IRR
+465. [q-biz-capital-metrics.D] Option D of q-biz-capital-metrics: ROI, NPV, and payback period
+466. [q-biz-capital-metrics.key] The one defensible answer to q-biz-capital-metrics is B: “ROI, BCR, and payback period”.
+467. [q-biz-capital-metrics.why] Explanation for q-biz-capital-metrics: Phillips names ROI, BCR, and payback period. NPV isn’t among them, and his table marks IRR as used in capital budgeting.
 468. [q-biz-payback-limit.stem] Question q-biz-payback-limit (statement 3.1.7, model invest-metrics) asks: Which limitation of the payback period does Phillips point out?
 469. [q-biz-payback-limit.A] Option A of q-biz-payback-limit: It can’t be calculated without a control group
 470. [q-biz-payback-limit.B] Option B of q-biz-payback-limit: It uses net benefits instead of total benefits
@@ -482,7 +482,7 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 472. [q-biz-payback-limit.D] Option D of q-biz-payback-limit: It applies only to equipment purchases
 473. [q-biz-payback-limit.key] The one defensible answer to q-biz-payback-limit is C: “It ignores the time value of money”.
 474. [q-biz-payback-limit.why] Explanation for q-biz-payback-limit: Payback ignores the time value of money and benefits after the payback point. It divides costs by benefits, so it doesn’t depend on net benefits; that’s ROI.
-475. [q-biz-expense.stem] Question q-biz-expense (statement 3.1.7, model fin-terms) asks: A CFO describes onboarding and compliance training as costs recorded in the period they occur, with no performance evidence beyond it. Which term from “Boost Your Financial IQ” is she using?
+475. [q-biz-expense.stem] Question q-biz-expense (statement 3.1.7, model fin-terms) asks: A CFO describes onboarding and compliance training as costs accounted for when they happen, with no performance evidence beyond that time. Which term from “Boost Your Financial IQ” is she using?
 476. [q-biz-expense.A] Option A of q-biz-expense: Investment
 477. [q-biz-expense.B] Option B of q-biz-expense: Relevant cost
 478. [q-biz-expense.C] Option C of q-biz-expense: Period expense
@@ -756,12 +756,12 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 746. [q-biz-sb-cats.key] The one defensible answer to q-biz-sb-cats is A: “External, organizational, interpersonal, and intrapersonal”.
 747. [q-biz-sb-cats.why] Explanation for q-biz-sb-cats: Chapter 4 of Consulting on the Inside names external, organizational, interpersonal, and intrapersonal challenges. The last option mixes in the outline’s business-case data types.
 748. [q-biz-resist-face.stem] Question q-biz-resist-face (statement 3.2.8, model block-resistance) asks: Which of these appears in Block’s list of the faces of resistance?
-749. [q-biz-resist-face.A] Option A of q-biz-resist-face: Gratitude
-750. [q-biz-resist-face.B] Option B of q-biz-resist-face: Delegation
-751. [q-biz-resist-face.C] Option C of q-biz-resist-face: Benchmarking
+749. [q-biz-resist-face.A] Option A of q-biz-resist-face: Denial
+750. [q-biz-resist-face.B] Option B of q-biz-resist-face: Bargaining
+751. [q-biz-resist-face.C] Option C of q-biz-resist-face: Frustration
 752. [q-biz-resist-face.D] Option D of q-biz-resist-face: Impracticality
 753. [q-biz-resist-face.key] The one defensible answer to q-biz-resist-face is D: “Impracticality”.
-754. [q-biz-resist-face.why] Explanation for q-biz-resist-face: Impracticality is one of the headings in Block’s faces of resistance, alongside Silence, Confusion, Attack, and others. Gratitude, delegation, and benchmarking aren’t on the list.
+754. [q-biz-resist-face.why] Explanation for q-biz-resist-face: Impracticality is one of the headings in Block’s faces of resistance, alongside Silence, Confusion, Attack, and others. Denial and bargaining are Kübler-Ross stages, and frustration is a stage of the change curve; none is one of Block’s headings.
 755. [q-biz-resist-detail.stem] Question q-biz-resist-detail (statement 3.2.8, model block-resistance) asks: When a consultant presents findings, the client keeps asking for more data before agreeing to anything. Which face of resistance is this?
 756. [q-biz-resist-detail.A] Option A of q-biz-resist-detail: Flood You with Detail
 757. [q-biz-resist-detail.B] Option B of q-biz-resist-detail: Give Me More Detail

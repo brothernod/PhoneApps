@@ -10,3 +10,5 @@ Inputs: `fixes-perf.md` (24 rows), `check-perf.md`, `content-d3-perf.js` (greppe
 | 1 | hpi-principles.items.3.d (Begins with the business output) | MINOR | The new description repeats its item's name ("…with the business output…"), so the match card gives itself away. The fixer avoided the same problem for "reference data" (row 306). The source phrase doesn't need the repeat: [S5] has HPI "begins at the end of the process". | d: "Starts at the end of the process and applies the goals backwards to departments, teams, and individuals." |
 
 Re-checked 24 rows; 4 issues.
+
+Applied: 4 as written, 0 adjusted.
