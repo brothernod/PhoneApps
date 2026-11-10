@@ -68,6 +68,8 @@ Agreed with Jonathan on 2026-11-09. Agents only get a non-default effort when th
   - **B2:** steps 3–4 (7 authors, then machine checks).
   - **B3:** steps 5–6 (claims and cold passes, fixes, re-check, merge to `main`, final report).
 
+**Work in progress lives on a branch.** If a `cptd-dN` branch exists for the domain being built, check it out first: its `STATUS.md` is the current one, and `main`'s may be out of date.
+
 To start a conversation, Jonathan says: *"Continue the CPTD build from cptd/research/PLAN.md in brothernod/PhoneApps."* The new conversation adds and clones the repo, reads `PLAN.md`, `STATUS.md` and `LESSONS.md`, and picks up at "Next action" in `STATUS.md`.
 
 ## Steps
@@ -122,3 +124,18 @@ Per shard, two passes:
 
 ## Expected cost
 This is an estimate, to be checked at the checkpoint. Per question and per model, roughly a third to a half of Domain 1's cost, mostly from removing the history re-reading and the reloads. Domains 2 and 3 are bigger than Domain 1 (45% and 35% of the exam versus 20%), so the totals depend on step 0's statement count. Report actual spend at every commit.
+
+## Costing (for the final report, and for pricing future projects)
+
+Cloud sessions have no dollar meter, and the token figure an agent reports when it finishes is its **final history size**, not what it spent: every turn re-reads the history (cheap, cached), and new history is written to the cache once (expensive). So estimate cost from three numbers per agent, which the completion notice gives: reported tokens (C), tool uses (T) and duration.
+
+Opus 5.5 list prices per million tokens (Nov 2026): input $4, output $20, cache write $5, cache read $0.20. Thinking is billed as output.
+
+Per agent, roughly:
+- cache reads ≈ T × C ÷ 2, at $0.20/M
+- cache writes ≈ C, at $5/M (add C again for each pause over 5 minutes, such as a usage-limit wait)
+- output ≈ 0.2 × C, at $20/M (thinking-heavy xhigh work; use 0.1 for high)
+
+For the main chat, use its final history and number of turns the same way, and add one full cache write of its then-current history for every wait on agents longer than 5 minutes; those waits are most of a coordinator chat's cost.
+
+From chat B3 on, log C, T and duration for every agent in the spend log (not just C), so the final report's estimate uses real T rather than a guess. The final report gives: estimated dollars per domain, per agent run, per shard, per model and per question, and how Domain 1's metered $82 compares.
