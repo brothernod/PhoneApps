@@ -28,5 +28,6 @@ C = reported tokens (final history), T = tool uses, duration in minutes.
 | fix perf | high | 136,879 | 35 | 4.0 | 16 fixed, 8 reworded, 1 removed, 3 kept; Gilbert formula unresolved |
 | recheck market+data | xhigh | 187,630 | 36 | 8.3 | 49 rows, 3 issues (2 AMBIGUOUS, 1 MINOR); applied by main chat |
 | recheck od+biz | xhigh | 191,186 | 42 | 9.1 | 40 rows, 9 MINOR |
+| recheck perf+change | xhigh | 197,470 | 39 | 10.7 | 40 rows, 7 issues (1 MISLEADING Gilbert, rest MINOR); Prosci + Kotter facts confirmed |
 
 Main chat: all 9 Domain 3 statement labels in `content-d3.js` now say "for example" as the handbook does (was "such as"; flagged for 3.4.5 and 3.7.6).
