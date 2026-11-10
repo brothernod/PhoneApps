@@ -72,6 +72,17 @@ Agreed with Jonathan on 2026-11-09. Agents only get a non-default effort when th
 
 To start a conversation, Jonathan says: *"Continue the CPTD build from cptd/research/PLAN.md in brothernod/PhoneApps."* The new conversation adds and clones the repo, reads `PLAN.md`, `STATUS.md` and `LESSONS.md`, and picks up at "Next action" in `STATUS.md`.
 
+### After Domain 3: chat B4 (final accuracy pass)
+
+Agreed with Jonathan on 2026-11-09. Starts after B3 has merged Domain 3 into `main`. Open the chat at **high** effort. Not a repeat of step 5: it covers what no per-shard checker could see. Work on a branch `cptd-b4`, merge when done.
+
+1. **Cross-domain consistency** (one fresh agent, `effort: "xhigh"`). A script lists every model name, item term and question option that appears in more than one domain, or that word-stem-clashes across domains. The agent checks each for: the same model described differently in two domains, a term worded differently from the source in one place, and "which model?" or question options where a model from another domain also fits. Same verdict table as `BRIEF-check.md`. Needs `kin` across domains where overlap is real.
+2. **Sampled audit** (one fresh agent, `effort: "xhigh"`). A script draws about 60 random questions across all three domains, weighted 20/45/35, and writes them without keys. The agent answers cold and flags any with two defensible options. A script compares with the keys; each disagreement or flag is adjudicated against the source files (a second fresh `xhigh` agent if there are more than a handful). Report the error rate. If any one area shows more than one real problem, re-check that area with the step 5 briefs.
+3. **"Report this question" button** (one agent, `effort: "high"`, or the main chat if small). On the answer screen of every question, model card and case step: a small button that saves the card key, the date and an optional note to a `reports` list in state (via `upgrade()`, never renaming `cptd-bpc-v1`). Settings gets a way to view the reports and copy them as text, so Yvonne can send them to Jonathan. Tests in `run_all.sh`. Bump the service worker cache.
+4. Apply fixes (`effort: "high"`), re-check changed items (`xhigh`), tests, merge to `main`, spend logged with C, T and duration, and a short report: error rate, what changed, cost.
+
+Expected cost: about $15–25.
+
 ## Steps
 
 ### 0. Scope (main conversation, small)
