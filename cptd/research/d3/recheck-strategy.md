@@ -1,0 +1,13 @@
+# Re-check: strategy (end of step 6)
+
+Inputs: `fixes-strategy.md` (18 rows), `check-strategy.md`, `content-d3-strategy.js` and `content-d3.js` (grepped), `strategy.md` and `biz.md` (line ranges), `content-d3-biz.js` `scale-skills` for the SCALE cross-check. No web calls. Rows not listed are OK. On SCALE: `who`, `tag` (`reflist`), `src`, the reading-list caveat and the kin entry now match across the two models. One label still differs (row 236).
+
+| # | Id | Verdict | Evidence | Exact fix |
+|---|---|---|---|---|
+| 236 | scale-align.note | MINOR | The note says the issue "names four skills of a strategic business partner". Biz's fix #248 (check-biz.md: the issue sample presents them as essential skills for LTD professionals, not as "strategic business partner" skills) renamed `scale-skills` to "Four essential skills for LTD professionals". So the two models that credit the same issue label the same four skills in two ways. fixes-biz.md's "Cross-area, not fixed here" note flags the same thing. | note: "ATD’s excerpt calls SCALE “a structured, yet flexible, process.” The same TD at Work issue, by Guerra-López and Hicks, also names four essential skills for LTD professionals: system thinking, strategic thinking, critical thinking, and collaboration. ATD’s reading list carries the issue under 3.2, where it seems to print the title as “Turning Trainers into Trusted Business Partners.”" |
+| cold | q-strategy-tm-verbs | MINOR | New distractors "Rating" and "Evaluating" are near-synonyms. A test-taker can rule out both because they can't both be the one key, which leaves Auditing against Transitioning. The key and `why` are right (strategy.md:149, glossary's five verbs). | o: ['Auditing', 'Transitioning', 'Rating', 'Budgeting'], a: 1. why: "The five verbs are acquiring, onboarding, developing, retaining, and transitioning employees. Rating people belongs to performance management, which ATD CI lists as a separate talent management function, not as a verb in the glossary definition." |
+| 294 | nine-box.src | MINOR | "(2025)" sits after the book title, so it reads as a 2025 edition of Rothwell's *Effective Succession Planning*. 2025 is the date of the Capacity Building Solutions summary (strategy.md:34 [S10] "dated Feb 26, 2025"). The book's latest edition is earlier (strategy.md:211, "5th ed. 2015, general knowledge"). | src: "No tier 1–3 source names the grid; performance-and-potential framing from Capacity Building Solutions’ summary (2025) of Rothwell’s Effective Succession Planning" |
+
+Re-checked 18 rows; 3 issues.
+
+Applied by the main chat: all 3 fixes (#236 note, q-strategy-tm-verbs `why` as written; its options became Benchmarking, Transitioning, Rating, Budgeting so the key isn’t the longest by far; #294 nine-box src).

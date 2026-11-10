@@ -25,7 +25,7 @@ JS = r"""
       const Q = makeQ(card);
       counts[card.type] = (counts[card.type] || 0) + 1;
       const txt = JSON.stringify([Q.prompt, Q.ctx, Q.hint || "", Q.why, Q.opts || [], Q.seq || [], Q.pool || []]);
-      if (/undefined|null|NaN|\[object/.test(txt)) problems.push(`${card.key}: bad text ${txt.slice(0, 120)}`);
+      if (/undefined|\bnull\b(?! hypothesis)|NaN|\[object/.test(txt)) problems.push(`${card.key}: bad text ${txt.slice(0, 120)}`);
       if (Q.kind === 'single') {
         const ok = Q.opts.filter(o => o.ok).length;
         if (ok !== 1) problems.push(`${card.key}: ${ok} correct options`);
@@ -37,7 +37,7 @@ JS = r"""
           if (Q.opts.length < 4) problems.push(`${card.key}: only ${Q.opts.length} options`);
           const own = MBY[card.model];
           for (const o of C.models) if (o.id !== own.id && o.domain === own.domain && member(o, item)) problems.push(`${card.key}: "${item}" clashes with ${o.id} in its own domain`);
-          for (const o of Q.opts) { if (o.ok) continue; const mm = C.models.find(x => x.name === o.t); const il = item.toLowerCase(); if (mm.name.toLowerCase().includes(il) || (mm.note || '').toLowerCase().includes(il) || mm.items.some(i => i.d.toLowerCase().includes(il))) problems.push(`${card.key}: "${item}" appears in distractor ${mm.id}`); }
+          for (const o of Q.opts) { if (o.ok) continue; const mm = C.models.find(x => x.name === o.t); const il = new RegExp('(?<![a-z0-9])' + item.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![a-z0-9])'); if (il.test(mm.name.toLowerCase()) || il.test((mm.note || '').toLowerCase()) || mm.items.some(i => il.test(i.d.toLowerCase()))) problems.push(`${card.key}: "${item}" appears in distractor ${mm.id}`); }
           for (const o of Q.opts) {
             if (o.ok) continue;
             const m = C.models.find(x => x.name === o.t);

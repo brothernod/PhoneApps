@@ -147,7 +147,7 @@
   MODELS.forEach((m) => {
     const base = { model: m.id, area: m.area, domain: m.domain, stmts: m.stmts };
     if (m.decoys && m.decoys.length >= 2) CARDS.push(Object.assign({}, base, { key: `m:${m.id}:pick`, type: 'pick' }));
-    if (m.kind === 'ordered') CARDS.push(Object.assign({}, base, { key: `m:${m.id}:order`, type: 'order' }));
+    if (m.kind === 'ordered' && m.items.length >= 3) CARDS.push(Object.assign({}, base, { key: `m:${m.id}:order`, type: 'order' }));
     if (m.items.length >= 3) CARDS.push(Object.assign({}, base, { key: `m:${m.id}:match`, type: 'match' }));
     if (m.groups) CARDS.push(Object.assign({}, base, { key: `m:${m.id}:group`, type: 'group' }));
     if (UNIQUE[m.id].length) CARDS.push(Object.assign({}, base, { key: `m:${m.id}:which`, type: 'which' }));
