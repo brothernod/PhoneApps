@@ -237,7 +237,7 @@ Managers in several departments share responsibility for a cross-functional onbo
 
 Statement 3.7.3 (Identifying stakeholders’ needs, goals, requirements, questions, and objectives to develop a framework and/or plan for data analysis)
 
-In a traditional company, what stakeholders expect from training data differs by management level, and the pattern is the same in every department. Which basis for segmenting stakeholders fits best?
+In a traditional company, directors, line managers, and supervisors each expect different things from training data, and the pattern is the same in every department. Which basis for segmenting stakeholders fits best?
 
 - A. Hierarchy (level or job title)
 - B. Geographic location

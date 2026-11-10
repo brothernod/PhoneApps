@@ -590,13 +590,13 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 580. [q-data-seg-decision.D] Option D of q-data-seg-decision: Decision-making authority
 581. [q-data-seg-decision.key] The one defensible answer to q-data-seg-decision is D: “Decision-making authority”.
 582. [q-data-seg-decision.why] Explanation for q-data-seg-decision: Segmenting by decision-making authority fits when responsibilities span departments. Function fits when one department holds more authority, and hierarchy when authority rises with level; neither is the case here.
-583. [q-data-seg-hierarchy.stem] Question q-data-seg-hierarchy (statement 3.7.3, model data-stakeholder-segments) asks: In a traditional company, what stakeholders expect from training data differs by management level, and the pattern is the same in every department. Which basis for segmenting stakeholders fits best?
+583. [q-data-seg-hierarchy.stem] Question q-data-seg-hierarchy (statement 3.7.3, model data-stakeholder-segments) asks: In a traditional company, directors, line managers, and supervisors each expect different things from training data, and the pattern is the same in every department. Which basis for segmenting stakeholders fits best?
 584. [q-data-seg-hierarchy.A] Option A of q-data-seg-hierarchy: Hierarchy (level or job title)
 585. [q-data-seg-hierarchy.B] Option B of q-data-seg-hierarchy: Function (department)
 586. [q-data-seg-hierarchy.C] Option C of q-data-seg-hierarchy: Geographic location
 587. [q-data-seg-hierarchy.D] Option D of q-data-seg-hierarchy: Tenure with the company
 588. [q-data-seg-hierarchy.key] The one defensible answer to q-data-seg-hierarchy is A: “Hierarchy (level or job title)”.
-589. [q-data-seg-hierarchy.why] Explanation for q-data-seg-hierarchy: When stakeholders differ by level, segment by hierarchy (level or job title): directors, line managers, supervisors. Function fits when one department holds more authority, but here the pattern is the same in every department.
+589. [q-data-seg-hierarchy.why] Explanation for q-data-seg-hierarchy: Hierarchy (level or job title) fits when stakeholders differ by level and decision authority rises with it, as in a traditional company: directors, line managers, supervisors. Function fits when one department holds more authority, but here the pattern is the same in every department.
 590. [q-data-first-project.stem] Question q-data-first-project (statement 3.7.3, model first-analytics-project) asks: A TD team is choosing its first analytics project. Which candidate best fits the recommended criteria?
 591. [q-data-first-project.A] Option A of q-data-first-project: A study of culture across 40 countries that needs new data systems
 592. [q-data-first-project.B] Option B of q-data-first-project: An analysis of a reorganization the executives are still fighting over

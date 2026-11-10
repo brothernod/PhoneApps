@@ -115,7 +115,7 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 105. [hrd-target-markets.stmt.1] Target-market approaches belongs under exam statement 3.4.6 (Establishing and executing a marketing strategy to promote talent development).
 106. [hrd-target-markets.kind] Target-market approaches has 6 approaches, in no particular order.
 107. [hrd-target-markets.items.1.name] “Mass marketing” is one of the approaches of Target-market approaches.
-108. [hrd-target-markets.items.1.desc] In Target-market approaches, “Mass marketing” means: Serving all segments, rather than concentrating on just a few (which the excerpt calls target marketing).
+108. [hrd-target-markets.items.1.desc] In Target-market approaches, “Mass marketing” means: The broad choice to serve all segments instead of targeting a few; unlike the other five, it doesn’t say which products go to which segments.
 109. [hrd-target-markets.items.2.name] “Product-market concentration” is one of the approaches of Target-market approaches.
 110. [hrd-target-markets.items.2.desc] In Target-market approaches, “Product-market concentration” means: One product for one segment.
 111. [hrd-target-markets.items.3.name] “Product specialization” is one of the approaches of Target-market approaches.
@@ -129,9 +129,9 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 119. [hrd-target-markets.decoys.1] “Demographic segmentation” is NOT one of the approaches of Target-market approaches.
 120. [hrd-target-markets.decoys.2] “Behavioral segmentation” is NOT one of the approaches of Target-market approaches.
 121. [hrd-target-markets.decoys.3] “Stakeholder mapping” is NOT one of the approaches of Target-market approaches.
-122. [hrd-target-markets.hook] Memory hook for Target-market approaches: Serve all segments (mass marketing) or target a few. Then one product to one segment, one product to all, all products to one segment, tailored pairs, or every program to every segment (full coverage).
+122. [hrd-target-markets.hook] Memory hook for Target-market approaches: Serve all segments (mass marketing) or target a few. The excerpt’s patterns: one product to one segment, one product to all, all products to one segment, tailored pairs, or every program to every segment (full coverage).
 123. [hrd-target-markets.exam] How Target-market approaches shows up on the exam: These are choices about which segments to serve, the target-market step of the HRD marketing planning process. Mass marketing serves all segments; concentrating on just a few is target marketing. Selective specialization custom tailors the mix between products and segments.
-124. [hrd-target-markets.note] Worth knowing about Target-market approaches: The excerpt defines all six. It first sets mass marketing (serving all segments) against target marketing (concentrating on just a few), so mass marketing is the opposite of target marketing; then it gives the specific patterns. General marketing texts (Abell 1980) list five similar patterns, with product specialization meaning one product for many segments and market specialization a range of products for one segment, and they don’t include mass marketing. Use the excerpt’s meanings.
+124. [hrd-target-markets.note] Worth knowing about Target-market approaches: The excerpt defines all six. It first sets mass marketing (serving all segments) against target marketing (concentrating on just a few), so mass marketing is the opposite of target marketing; then it gives the specific patterns. Product specialization, full coverage, and (in the excerpt’s example) selective specialization also reach every segment; mass marketing names the overall choice, not a product–segment pattern. General marketing texts (Abell 1980) list five similar patterns, with product specialization meaning one product for many segments and market specialization a range of products for one segment, and they don’t include mass marketing. Use the excerpt’s meanings.
 125. [hrd-life-cycle.name] The model with id hrd-life-cycle is called “HRD product life cycle” (short name “HRD life cycle”).
 126. [hrd-life-cycle.who] HRD product life cycle comes from An ASTD Training and Development Journal excerpt (1987) from the book Principles of HRD.
 127. [hrd-life-cycle.tag] HRD product life cycle is labeled “Good to know”.
@@ -505,10 +505,10 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 495. [q-market-target-mass.stem] Question q-market-target-mass (statement 3.4.6, model hrd-target-markets) asks: Rather than concentrating on just a few employee segments, a TD function decides to serve all of them. What does the HRD marketing excerpt call this approach?
 496. [q-market-target-mass.A] Option A of q-market-target-mass: Product-market concentration
 497. [q-market-target-mass.B] Option B of q-market-target-mass: Mass marketing
-498. [q-market-target-mass.C] Option C of q-market-target-mass: Selective specialization
+498. [q-market-target-mass.C] Option C of q-market-target-mass: Target marketing
 499. [q-market-target-mass.D] Option D of q-market-target-mass: Market specialization
 500. [q-market-target-mass.key] The one defensible answer to q-market-target-mass is B: “Mass marketing”.
-501. [q-market-target-mass.why] Explanation for q-market-target-mass: The excerpt says that serving all segments “is known as mass marketing”; concentrating on just a few is target marketing. Product-market concentration markets one product to only one segment.
+501. [q-market-target-mass.why] Explanation for q-market-target-mass: The excerpt says that serving all segments “is known as mass marketing”; concentrating on just a few is target marketing, the approach this TD function turns down. Product-market concentration and market specialization each serve only one segment.
 502. [q-market-target-selective.stem] Question q-market-target-selective (statement 3.4.6, model hrd-target-markets) asks: A TD team picks which of its programs go to which employee segments, pairing them one by one. Which target-market approach is this?
 503. [q-market-target-selective.A] Option A of q-market-target-selective: Mass marketing
 504. [q-market-target-selective.B] Option B of q-market-target-selective: Full coverage

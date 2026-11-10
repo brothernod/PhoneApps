@@ -187,7 +187,7 @@ Rather than concentrating on just a few employee segments, a TD function decides
 - A. Market specialization
 - B. Product-market concentration
 - C. Mass marketing
-- D. Selective specialization
+- D. Target marketing
 
 ### q-market-target-selective
 

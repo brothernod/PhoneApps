@@ -438,9 +438,9 @@ window.CPTD_PARTS.push({
     { id: 'q-data-seg-decision', stmt: '3.7.3', model: 'data-stakeholder-segments', q: 'Managers in several departments share responsibility for a cross-functional onboarding program. No single department or management level has more say over it than the others. Which basis for segmenting stakeholders fits best?',
       o: ['Function (department)', 'Hierarchy (level or job title)', 'Geographic location', 'Decision-making authority'],
       a: 3, why: 'Segmenting by decision-making authority fits when responsibilities span departments. Function fits when one department holds more authority, and hierarchy when authority rises with level; neither is the case here.' },
-    { id: 'q-data-seg-hierarchy', stmt: '3.7.3', model: 'data-stakeholder-segments', q: 'In a traditional company, what stakeholders expect from training data differs by management level, and the pattern is the same in every department. Which basis for segmenting stakeholders fits best?',
+    { id: 'q-data-seg-hierarchy', stmt: '3.7.3', model: 'data-stakeholder-segments', q: 'In a traditional company, directors, line managers, and supervisors each expect different things from training data, and the pattern is the same in every department. Which basis for segmenting stakeholders fits best?',
       o: ['Hierarchy (level or job title)', 'Function (department)', 'Geographic location', 'Tenure with the company'],
-      a: 0, why: 'When stakeholders differ by level, segment by hierarchy (level or job title): directors, line managers, supervisors. Function fits when one department holds more authority, but here the pattern is the same in every department.' },
+      a: 0, why: 'Hierarchy (level or job title) fits when stakeholders differ by level and decision authority rises with it, as in a traditional company: directors, line managers, supervisors. Function fits when one department holds more authority, but here the pattern is the same in every department.' },
 
     /* first-analytics-project */
     { id: 'q-data-first-project', stmt: '3.7.3', model: 'first-analytics-project', q: 'A TD team is choosing its first analytics project. Which candidate best fits the recommended criteria?',

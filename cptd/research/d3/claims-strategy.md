@@ -243,7 +243,7 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 233. [scale-align.decoys.3] “Negotiate facilitator fees” is NOT one of the steps of SCALE: aligning TD solutions to strategic objectives.
 234. [scale-align.hook] Memory hook for SCALE: aligning TD solutions to strategic objectives: Understand, design, track and confirm. Each phase starts by discovering something.
 235. [scale-align.exam] How SCALE: aligning TD solutions to strategic objectives shows up on the exam: Alignment starts with how the requestor and other stakeholders see the need; solutions are chosen to fit gaps and root causes; and alignment is tracked and confirmed after implementation, not assumed.
-236. [scale-align.note] Worth knowing about SCALE: aligning TD solutions to strategic objectives: ATD’s excerpt calls SCALE “a structured, yet flexible, process.” The same TD at Work issue, by Guerra-López and Hicks, also names four skills of a strategic business partner: system thinking, strategic thinking, critical thinking, and collaboration. ATD’s reading list carries the issue under 3.2, where it seems to print the title as “Turning Trainers into Trusted Business Partners.”
+236. [scale-align.note] Worth knowing about SCALE: aligning TD solutions to strategic objectives: ATD’s excerpt calls SCALE “a structured, yet flexible, process.” The same TD at Work issue, by Guerra-López and Hicks, also names four essential skills for LTD professionals: system thinking, strategic thinking, critical thinking, and collaboration. ATD’s reading list carries the issue under 3.2, where it seems to print the title as “Turning Trainers into Trusted Business Partners.”
 237. [succession-triggers.name] The model with id succession-triggers is called “Succession planning: the vacancies it prepares for” (short name “Succession triggers”).
 238. [succession-triggers.who] Succession planning: the vacancies it prepares for comes from ATD glossary.
 239. [succession-triggers.tag] Succession planning: the vacancies it prepares for is labeled “Good to know”.
@@ -301,7 +301,7 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 291. [nine-box.name] The model with id nine-box is called “Nine-box grid (talent review)” (short name “Nine-box grid”).
 292. [nine-box.who] Nine-box grid (talent review) comes from Common talent-review tool (origin not confirmed).
 293. [nine-box.tag] Nine-box grid (talent review) is labeled “Good to know”.
-294. [nine-box.src] The source for Nine-box grid (talent review) is: No tier 1–3 source names the grid; performance-and-potential framing from Capacity Building Solutions, summary of Rothwell, Effective Succession Planning (2025)
+294. [nine-box.src] The source for Nine-box grid (talent review) is: No tier 1–3 source names the grid; performance-and-potential framing from Capacity Building Solutions’ summary (2025) of Rothwell’s Effective Succession Planning
 295. [nine-box.stmt.1] Nine-box grid (talent review) belongs under exam statement 3.4.3 (Developing a talent strategy that aligns to organizational strategy to influence organizational outcomes in a positive direction).
 296. [nine-box.kind] Nine-box grid (talent review) has 2 axes, in no particular order.
 297. [nine-box.items.1.name] “Performance” is one of the axes of Nine-box grid (talent review).
@@ -525,9 +525,9 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 515. [q-strategy-tm-verbs.A] Option A of q-strategy-tm-verbs: Auditing
 516. [q-strategy-tm-verbs.B] Option B of q-strategy-tm-verbs: Transitioning
 517. [q-strategy-tm-verbs.C] Option C of q-strategy-tm-verbs: Rating
-518. [q-strategy-tm-verbs.D] Option D of q-strategy-tm-verbs: Evaluating
+518. [q-strategy-tm-verbs.D] Option D of q-strategy-tm-verbs: Budgeting
 519. [q-strategy-tm-verbs.key] The one defensible answer to q-strategy-tm-verbs is B: “Transitioning”.
-520. [q-strategy-tm-verbs.why] Explanation for q-strategy-tm-verbs: The five verbs are acquiring, onboarding, developing, retaining, and transitioning employees. Rating and evaluating people belong to performance management, which ATD CI lists as a separate talent management function, not as a verb in the glossary definition.
+520. [q-strategy-tm-verbs.why] Explanation for q-strategy-tm-verbs: The five verbs are acquiring, onboarding, developing, retaining, and transitioning employees. Rating people belongs to performance management, which ATD CI lists as a separate talent management function, not as a verb in the glossary definition.
 521. [q-strategy-tm-vs-td.stem] Question q-strategy-tm-vs-td (statement 3.4.3, model tm-verbs) asks: How does talent development relate to talent management, as ATD uses the terms?
 522. [q-strategy-tm-vs-td.A] Option A of q-strategy-tm-vs-td: They are two names for the same practice
 523. [q-strategy-tm-vs-td.B] Option B of q-strategy-tm-vs-td: Talent management is one part of talent development

@@ -9,3 +9,5 @@ Inputs: `fixes-strategy.md` (18 rows), `check-strategy.md`, `content-d3-strategy
 | 294 | nine-box.src | MINOR | "(2025)" sits after the book title, so it reads as a 2025 edition of Rothwell's *Effective Succession Planning*. 2025 is the date of the Capacity Building Solutions summary (strategy.md:34 [S10] "dated Feb 26, 2025"). The book's latest edition is earlier (strategy.md:211, "5th ed. 2015, general knowledge"). | src: "No tier 1–3 source names the grid; performance-and-potential framing from Capacity Building Solutions’ summary (2025) of Rothwell’s Effective Succession Planning" |
 
 Re-checked 18 rows; 3 issues.
+
+Applied by the main chat: all 3 fixes as written above (#236 note, q-strategy-tm-verbs options and `why`, #294 nine-box src).
