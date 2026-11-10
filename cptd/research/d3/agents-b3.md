@@ -13,3 +13,6 @@ C = reported tokens (final history), T = tool uses, duration in minutes.
 | cold market | xhigh | 77,045 | 4 | 1.7 | 60 ok, 1 two-defensible |
 | cold perf | xhigh | 78,239 | 3 | 1.6 | 59 ok, 3 two-defensible, 3 notes |
 | cold data | xhigh | 76,704 | 3 | 1.5 | 59 ok, 3 two-defensible |
+| cold change | xhigh | 78,071 | 3 | 1.5 | 53+1 ok, 3 questions + 3 case steps two-defensible |
+| claims market | xhigh | 201,131 | 33 | 8.3 | 827 claims, 23 issues (5 FALSE, 6 MISLEADING) |
+| claims perf | xhigh | 200,245 | 32 | 8.1 | 835 claims, 18 issues (MISLEADING, UNVERIFIABLE, minor) |
