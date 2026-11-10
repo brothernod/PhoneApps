@@ -154,7 +154,7 @@ Each numbered line is one claim. The id in brackets names where it comes from (m
 144. [hrd-life-cycle.decoys.2] “Dormancy” is NOT one of the stages of HRD product life cycle.
 145. [hrd-life-cycle.hook] Memory hook for HRD product life cycle: Exposure → Acceptance → Maturity → Decline.
 146. [hrd-life-cycle.exam] How HRD product life cycle shows up on the exam: The general marketing product life cycle names the stages introduction, growth, maturity, and decline. This HRD version calls the first two Exposure and Acceptance. Neither set is wrong; use the names of the source a question gives.
-147. [hrd-life-cycle.note] Worth knowing about HRD product life cycle: The excerpt names the four stages but doesn’t define them; the one-line meanings follow the general product life cycle. It adds that courses move through the cycle at different speeds (sensitivity training fast, management skills development slowly), depending on their importance and applicability.
+147. [hrd-life-cycle.note] Worth knowing about HRD product life cycle: The excerpt names the four stages but doesn’t define them; the one-line meanings follow the general product life cycle. It adds that courses move through the cycle at different speeds (management skills development, for one, moves slowly), depending on their importance and applicability.
 148. [mix-7ps.name] The model with id mix-7ps is called “Extended marketing mix: 7 Ps (services)” (short name “7 Ps”).
 149. [mix-7ps.who] Extended marketing mix: 7 Ps (services) comes from Bernard Booms and Mary Jo Bitner (1981), extending McCarthy’s 4 Ps for services.
 150. [mix-7ps.tag] Extended marketing mix: 7 Ps (services) is labeled “Good to know”.

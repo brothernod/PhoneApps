@@ -102,7 +102,7 @@ window.CPTD_PARTS.push({
       decoys: ['Incubation', 'Dormancy'],
       hook: 'Exposure → Acceptance → Maturity → Decline.',
       exam: 'The general marketing product life cycle names the stages introduction, growth, maturity, and decline. This HRD version calls the first two Exposure and Acceptance. Neither set is wrong; use the names of the source a question gives.',
-      note: 'The excerpt names the four stages but doesn’t define them; the one-line meanings follow the general product life cycle. It adds that courses move through the cycle at different speeds (sensitivity training fast, management skills development slowly), depending on their importance and applicability.',
+      note: 'The excerpt names the four stages but doesn’t define them; the one-line meanings follow the general product life cycle. It adds that courses move through the cycle at different speeds (management skills development, for one, moves slowly), depending on their importance and applicability.',
       src: 'ASTD, Training and Development Journal (1987), excerpt from Principles of HRD, Figure 3',
     },
     {
