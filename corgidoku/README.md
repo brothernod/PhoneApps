@@ -219,4 +219,4 @@ Bump `VERSION` in `app.js` and `CACHE` in `sw.js` together. The version shows fa
 
 ## Special dates
 
-The 2026-11-11 week gets easy puzzles and a get-well banner. Every June 15 gets a birthday banner, an easy puzzle and a party hat for Cheddar. Messages live in `specialBanner()` and `winLine()` in `app.js`; the schedule lives in `want()` in `tools/generate.mjs`.
+The 2026-11-11 week gets easy puzzles and a get-well banner. The 2026-11-11 "Thinking of you" message only shows when the Default player's name is Halina (case doesn't matter); with any other name that day has no banner. Every June 15 gets a birthday banner, an easy puzzle and a party hat for Cheddar. Messages live in `specialBanner()` and `winLine()` in `app.js`; the schedule lives in `want()` in `tools/generate.mjs`.

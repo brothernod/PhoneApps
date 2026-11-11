@@ -4,7 +4,7 @@ import { ITEMS, SLOTS, item, outfit, colorsOf, baseId, ownsLine, priceFor, shopD
 
 // ---------- constants ----------
 const NAME = 'Halina'; // the Default player's name until they set their own in Settings
-const VERSION = '1.23'; // bump with CACHE in sw.js on every release
+const VERSION = '1.24'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
 const EMPTY = 0, PAW = 1, AUTO = 2, CORGI = 3, NOPE = 4; // NOPE = a wrong guess, shown as a red paw
@@ -36,6 +36,7 @@ const me = () => PLAYERS[player];
 const isKid = () => !!me().kid;
 // Shown name: kids have fixed names; the Default player can set theirs in Settings.
 const nm = () => (isKid() ? kidName(player) : (db.settings.name || '').trim() || NAME);
+const isHalina = () => !isKid() && nm().toLowerCase() === 'halina';
 // Coin amounts with the corgi coin icon in front, e.g. coin(245).
 const coin = (n) => `${coinIcon()}&#8239;${n}`;
 // Cheddar in what the player has on (the Closet passes a preview look instead).
@@ -162,7 +163,8 @@ function specialBanner(iso) {
   if (isKid()) return ''; // these messages are for Halina
   // Only Cozy goes easy during recovery week, so Hard and Extreme just point there.
   const cozy = mode() === 'cozy';
-  if (iso === '2026-11-11') return `Thinking of you today, ${esc(nm())} 💗<small>Cheddar is keeping your spot warm. ${cozy ? 'Easy puzzles all week while you rest.' : 'Cozy has easy puzzles all week if you want a gentle one.'}</small>`;
+  // The get-well message is personal, so it only shows when the Default player is named Halina.
+  if (iso === '2026-11-11' && isHalina()) return `Thinking of you today, ${esc(nm())} 💗<small>Cheddar is keeping your spot warm. ${cozy ? 'Easy puzzles all week while you rest.' : 'Cozy has easy puzzles all week if you want a gentle one.'}</small>`;
   if (iso > '2026-11-11' && iso <= '2026-11-17') return `Cozy rainbow week 🌈<small>${cozy ? 'Easy, gentle puzzles while you rest up.' : 'Cozy is extra gentle this week if you want an easy one.'} Cheddar approves.</small>`;
   if (iso.slice(5) === '06-15') return `Happy Birthday, ${esc(nm())}! 🎂🌈<small>Cheddar made you a special puzzle today.</small>`;
   return '';
