@@ -10,6 +10,7 @@ Cheddar's puzzle yard for Halina. A corgi take on Queens-style logic puzzles: on
 | --- | --- |
 | `index.html`, `app.js`, `art.js` | The game: daily puzzle, The Climb (60 levels), past days, hints, stats |
 | `puzzles-extreme.json` | Extreme mode (grown-ups only): 730 daily 9×9/10×10 boards from 2026-11-05 that need "what if" chains + 120-level Extreme Climb |
+| `shop.js` | Coins and the Closet: earning rules, back pay, prices, item catalog (pure functions, no DOM) |
 | `engine.js` | Generator, exact solver, human-technique grader (shared by game and tools) |
 | `puzzles.json` | Cozy mode: 730 daily puzzles from 2026-11-05 + 60 Climb levels, all verified |
 | `puzzles-hard.json` | Hard mode: 730 daily 8×8–10×10 boards needing pair/group locks + 80-level Hard Climb |
@@ -63,11 +64,39 @@ Only 9×9 and 10×10. Boards already in `puzzles-hard.json` are never reused. Th
 
 Settings → Who's playing? switches between Default, Holden and Quentin. Each player has their own progress, streak, Climb and settings in localStorage (`corgidoku:v1` for Default, so existing progress is untouched; `corgidoku:v1:holden` and `corgidoku:v1:quentin` for the kids). The active player is in `corgidoku:player`.
 
+Each player also has their own wallet, outfits and (later) scenes. The Default player's name shows on the home screen and in Halina's banners; it's `Halina` unless changed in Settings → Your name (`db.settings.name`). The birthday and get-well banners stay with the Default player.
+
 Kid players see their name next to Cheddar on the home screen, get the 🐣 Chill mode (alongside Cozy and Hard), and start with Relaxed on, the timer off and Easy double-tap on (560 ms window instead of 380 ms, plus a little finger wiggle allowed). Halina's special-date banners don't show for the kids.
 
 The Chill Climb: holds 1–6 are 4×4 "last spot" only, 7–28 stay on 5×5/6×6 with only last-spot and confined steps, then 29–40 ramp to 6×6/7×7 boards that need "would block" (about mid-Cozy). Kids boards are capped at 2×n steps.
 
 Placed corgis are always correct, so they're locked: tapping one does nothing, and Undo only takes back paw marks (corgis and red paws stay).
+
+## Shop
+
+Solving puzzles earns coins; coins buy outfits for Cheddar in the **Closet** (home screen → 👗 Closet, or tap the 🪙 chip). Everything is cosmetic: hints stay free and are never sold, and nothing is time-limited. Every puzzle pays once (`db.paid`), so Start over and replays earn nothing new. "Clean" means zero mistakes (Relaxed mode can't lose treats, so mistakes are what count).
+
+| Grown-ups (Default) | Coins |
+| --- | --- |
+| Today's daily, solved on its date: Cozy / Hard / Extreme | 10 / 15 / 20 |
+| Past day (any mode) | 3 |
+| Climb hold | 2 |
+| Clean solve (any of the above) | +3 |
+| Weekly: today's daily solved on 5 of 7 days, Mon–Sun, any mode | +25 |
+
+Kids (Holden, Quentin) get 10 for any solve, +5 if clean, no weekly goal. They start with 100 coins and pay half price.
+
+Prices: basic 60 · nice 150 · fancy 350 · dream 900 · color variant 40. Today the Closet has one item, the party hat (60); the Neck, Face, Scenes and Frames tabs are placeholders until the next phases.
+
+**Back pay:** the first launch with the shop (per player, `db.shopV`) credits puzzles already solved at base rates: a daily at its daily rate if `solvedAt` is the puzzle's date, otherwise 3; Climb holds 2 (kids: 10 each, plus their 100). No clean bonus and no weekly back pay; weeks that already had 5 days are marked paid. A one-time "Welcome to the closet" sheet shows the total.
+
+**Data** (per player db, additive): `coins`, `paid {pid:1}`, `weeks {"2026-W46":1}`, `owned [itemId]`, `worn {head, neck, face}`, `shopV`.
+
+**Backup:** Settings → Backup. "Copy backup code" copies base64 JSON of every `corgidoku:*` key (all players). "Restore from code" checks the code, asks, replaces everything and reloads. Safari can clear a site's storage after 7 days without a visit unless it's on the Home Screen, so a backup protects the coins.
+
+## Scenes
+
+Coming in phase 3: pictures behind the whole app, earned only in the Climb (never bought), plus summit frames. See the plan doc in the Corgidoku project.
 
 ## Field research reports
 

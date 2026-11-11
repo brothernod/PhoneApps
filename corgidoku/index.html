@@ -167,6 +167,40 @@
   .pl{flex:1;padding:10px 4px;border-radius:14px;background:#F3EAF6;font-weight:900;font-size:15px}
   .pl.on{background:linear-gradient(90deg,var(--pink),var(--purple));color:#fff}
 
+  /* ---------- coins & closet ---------- */
+  .coins{position:absolute;top:calc(var(--safe-t) + 12px);right:14px;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.85);font-weight:900;font-size:16px;
+    box-shadow:0 2px 8px rgba(155,107,255,.18);z-index:2}
+  .bar .coins.still{position:static;flex:none;min-width:44px;text-align:center}
+  .row .pill{padding:8px 2px;font-size:14px;white-space:nowrap}
+  .row .pill .e{display:block;font-size:20px;line-height:1.2}
+  .row .pill.gear{flex:none;width:56px;font-size:22px}
+  .earn{margin:10px 0 4px;padding:10px;border-radius:16px;background:#FFF5D6;color:#8A5A00;font-weight:900;font-size:20px}
+  .earn span{display:block;font-size:14px;font-weight:800;margin-top:2px}
+  .cpreview{width:150px;margin:6px 0 4px}
+  .ctabs{display:flex;gap:4px;background:rgba(255,255,255,.75);border-radius:999px;padding:4px;width:100%;max-width:440px;box-shadow:0 2px 8px rgba(155,107,255,.15)}
+  .ctab{flex:1;padding:8px 0;border-radius:999px;font-weight:900;font-size:14px;color:var(--ink-soft)}
+  .ctab.on{background:linear-gradient(90deg,var(--pink),var(--purple));color:#fff}
+  .cbody{width:100%;max-width:440px;margin-top:12px}
+  .cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .ctile{background:#fff;border-radius:18px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:2px;box-shadow:0 4px 0 rgba(91,42,110,.10);border:3px solid transparent}
+  .ctile.on{border-color:var(--pink)}
+  .cthumb{width:64px;height:64px;display:grid;place-items:center}
+  .cthumb svg{width:100%;height:100%}
+  .cthumb span{font-size:30px;opacity:.5}
+  .ctile b{font-size:14px}
+  .ctile small{font-size:12px;font-weight:800;color:var(--ink-soft)}
+  .csoon{background:rgba(255,255,255,.75);border-radius:18px;padding:18px;text-align:center;font-weight:800;color:var(--ink-soft);line-height:1.4}
+  .cact{width:100%;max-width:440px;margin-top:8px}
+  .cact .cta{display:block;width:100%;padding:14px;border-radius:16px;font-weight:900;font-size:18px;color:#fff;background:linear-gradient(90deg,var(--pink),var(--purple))}
+  .cact .cta.alt{background:#F3EAF6;color:var(--ink)}
+  .toggle input.name{width:150px;height:auto;padding:8px 10px;border-radius:12px;border:2px solid #F1E6F3;font:inherit;font-weight:800;color:var(--ink);text-align:right;-webkit-user-select:text;user-select:text}
+  .backup{padding:12px 4px;border-bottom:1px solid #F1E6F3;text-align:left}
+  .backup b{display:block}
+  .backup small{display:block;color:var(--ink-soft);font-weight:700}
+  .backup .two{display:flex;flex-direction:column}
+  .backup .two .cta{font-size:16px;padding:12px 6px;margin-top:8px}
+  .sheet textarea.code{width:100%;height:110px;margin-top:8px;padding:8px;border-radius:12px;border:2px solid #F1E6F3;font:12px ui-monospace,monospace;word-break:break-all;-webkit-user-select:text;user-select:text}
+  .sheet p.bad{color:#A3214D}
   /* ---------- celebration ---------- */
   .zoom{position:fixed;left:-160px;top:38%;width:110px;z-index:20;pointer-events:none;animation:zoomies 2.2s cubic-bezier(.45,.05,.55,.95) forwards}
   .zoom::before{content:"";position:absolute;right:70%;top:30%;width:260px;height:40px;border-radius:20px;
@@ -182,6 +216,7 @@
   <section id="play" class="screen"></section>
   <section id="climb" class="screen"></section>
   <section id="past" class="screen"></section>
+  <section id="closet" class="screen"></section>
   <div id="overlay" class="overlay"><div class="sheet" id="sheet"></div></div>
   <script type="module" src="app.js"></script>
   <script>

@@ -1,9 +1,10 @@
 import { decodeRegions, decodeSolution, grade } from './engine.js';
 import { cheddarHead, cheddarLoaf, partyHat, paw, treat } from './art.js';
+import { ITEMS, SLOTS, item, priceFor, shopDefaults, payout, backPay, buy } from './shop.js';
 
 // ---------- constants ----------
-const NAME = 'Halina';
-const VERSION = '1.12'; // bump with CACHE in sw.js on every release
+const NAME = 'Halina'; // the Default player's name until they set their own in Settings
+const VERSION = '1.13'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
 const EMPTY = 0, PAW = 1, AUTO = 2, CORGI = 3, NOPE = 4; // NOPE = a wrong guess, shown as a red paw
@@ -26,6 +27,9 @@ let player = 'main';
 try { const p = localStorage.getItem(PLAYER_KEY); if (PLAYERS[p]) player = p; } catch {}
 const me = () => PLAYERS[player];
 const isKid = () => !!me().kid;
+// Shown name: kids have fixed names; the Default player can set theirs in Settings.
+const nm = () => (isKid() ? me().name : (db.settings.name || '').trim() || NAME);
+const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
 // ---------- storage ----------
 const defaults = { progress: {}, settings: { autoPaws: true, relaxed: false, timer: true, mode: 'cozy', research: false, pawColor: 0, easyTap: false }, seenHelp: false };
@@ -39,7 +43,12 @@ function loadDb() {
   try { saved = JSON.parse(localStorage.getItem(me().key) || '{}') || {}; } catch {}
   db = { ...base, ...saved };
   db.settings = { ...base.settings, ...saved.settings };
+  // Shop fields are additive. The first launch with the shop pays for puzzles already solved.
+  shopDefaults(db);
+  const bp = backPay(db, isKid());
+  if (bp) { welcome = bp; try { localStorage.setItem(me().key, JSON.stringify(db)); } catch {} }
 }
+let welcome = null; // back pay result waiting for its one-time "Welcome to the closet" sheet
 loadDb();
 const save = () => { try { localStorage.setItem(me().key, JSON.stringify(db)); } catch {} };
 // Double-tap timing: kids get a longer window and a little finger wiggle room.
@@ -99,9 +108,9 @@ function specialBanner(iso) {
   if (isKid()) return ''; // these messages are for Halina
   // Only Cozy goes easy during recovery week, so Hard and Extreme just point there.
   const cozy = mode() === 'cozy';
-  if (iso === '2026-11-11') return `Thinking of you today, ${NAME} 💗<small>Cheddar is keeping your spot warm. ${cozy ? 'Easy puzzles all week while you rest.' : 'Cozy has easy puzzles all week if you want a gentle one.'}</small>`;
+  if (iso === '2026-11-11') return `Thinking of you today, ${esc(nm())} 💗<small>Cheddar is keeping your spot warm. ${cozy ? 'Easy puzzles all week while you rest.' : 'Cozy has easy puzzles all week if you want a gentle one.'}</small>`;
   if (iso > '2026-11-11' && iso <= '2026-11-17') return `Cozy rainbow week 🌈<small>${cozy ? 'Easy, gentle puzzles while you rest up.' : 'Cozy is extra gentle this week if you want an easy one.'} Cheddar approves.</small>`;
-  if (iso.slice(5) === '06-15') return `Happy Birthday, ${NAME}! 🎂🌈<small>Cheddar made you a special puzzle today.</small>`;
+  if (iso.slice(5) === '06-15') return `Happy Birthday, ${esc(nm())}! 🎂🌈<small>Cheddar made you a special puzzle today.</small>`;
   return '';
 }
 
@@ -127,12 +136,14 @@ function renderHome() {
   const lvl = climbLevel();
   const banner = specialBanner(t);
   const birthday = !isKid() && t.slice(5) === '06-15';
+  const hat = item(db.worn.head)?.art || (birthday ? partyHat : '');
   $('home').innerHTML = `
+    <button class="coins" id="go-coins" aria-label="coins">🪙 ${db.coins}</button>
     <div class="title">Corgidoku</div>
-    <div class="subtitle">Cheddar's puzzle yard for ${me().name}</div>
+    <div class="subtitle">Cheddar's puzzle yard for ${esc(nm())}</div>
     <div class="modes${modesFor().length > 2 ? ' three' : ''}">${modesFor().map((k) => `<button class="mode${k === mode() ? ' on' : ''}" data-m="${k}">${MODES[k].label}</button>`).join('')}</div>
-    <div class="hero-row">${isKid() ? `<div class="kidname" style="--kc:${me().color}">${me().name}</div>` : ''}
-      <div class="hero${isKid() ? ' kid' : ''}">${cheddarLoaf({ hat: birthday ? partyHat : '' })}</div></div>
+    <div class="hero-row">${isKid() ? `<div class="kidname" style="--kc:${me().color}">${nm()}</div>` : ''}
+      <div class="hero${isKid() ? ' kid' : ''}">${cheddarLoaf({ hat })}</div></div>
     ${banner ? `<div class="banner">${banner}</div>` : ''}
     <div class="menu">
       <button class="big" id="go-daily"><div class="ico" style="background:#FFE0F0">☀️</div>
@@ -145,9 +156,10 @@ function renderHome() {
       <div class="stat"><b>${solvedCount()}</b><span>Solved</span></div>
     </div>
     <div class="row">
-      <button class="pill" id="go-past">📅 Past days</button>
-      <button class="pill" id="go-help">❓ How to play</button>
-      <button class="pill" id="go-set">⚙️</button>
+      <button class="pill" id="go-past"><span class="e">📅</span>Past days</button>
+      <button class="pill" id="go-help"><span class="e">❓</span>How to play</button>
+      <button class="pill" id="go-closet"><span class="e">👗</span>Closet</button>
+      <button class="pill gear" id="go-set" aria-label="Settings">⚙️</button>
     </div>
     <button class="ver" id="ver">v${VERSION}</button>`;
   $('go-daily').onclick = () => play(D(t));
@@ -155,6 +167,7 @@ function renderHome() {
   $('go-past').onclick = renderPast;
   $('go-help').onclick = help;
   $('go-set').onclick = settings;
+  $('go-closet').onclick = $('go-coins').onclick = () => renderCloset();
   document.querySelectorAll('.mode').forEach((b) => (b.onclick = () => { if (b.dataset.m !== mode()) { useMode(b.dataset.m); renderHome(); if (mode() === 'extreme' && !db.seenExtreme) extremeIntro(); } }));
   // Tap the version to drop any cached copy and reload fresh.
   $('ver').onclick = async () => {
@@ -163,6 +176,7 @@ function renderHome() {
     location.reload();
   };
   show('home');
+  if (welcome) welcomeSheet();
 }
 
 // ---------- past days ----------
@@ -273,7 +287,7 @@ function play(pid) {
 
 function greeting() {
   if (isKid()) {
-    const kid = [`Hi ${me().name}! Tap two times fast to put a corgi down.`, 'One corgi in every row, every column and every color!', 'Corgis don\'t like to touch, not even corners!', 'Cheddar believes in you! 🧡'];
+    const kid = [`Hi ${nm()}! Tap two times fast to put a corgi down.`, 'One corgi in every row, every column and every color!', 'Corgis don\'t like to touch, not even corners!', 'Cheddar believes in you! 🧡'];
     return kid[Math.floor(Math.random() * kid.length)];
   }
   const lines = ['Find a cozy spot for every corgi!', 'One corgi per row, column and yard. No touching!', 'Tap for a paw mark, double-tap for a corgi.', 'Cheddar believes in you! 🧡'];
@@ -505,17 +519,20 @@ function win() {
   if (!G.solvedAt) G.solvedAt = todayISO();
   G.best = G.best ? Math.min(G.best, G.elapsed) : G.elapsed;
   stopClock(); persist(); drawClock();
+  // Every puzzle pays once; a replay after Start over earns nothing new.
+  const earned = payout(db, G.pid, isKid()); save();
   // Clear paws so the finished board shows just the corgis.
   G.cells = G.cells.map((v) => (v === CORGI ? v : EMPTY)); drawBoard();
   boardParty();
   celebrate();
-  say(isKid() ? `You did it, ${me().name}! 🎉` : 'Every corgi is cozy! 🎉');
+  say(isKid() ? `You did it, ${nm()}! 🎉` : 'Every corgi is cozy! 🎉');
   const isClimb = G.kind === 'c', nextLvl = Number(G.key) + 1;
   const hasNext = isClimb && nextLvl <= PUZ.campaign.length;
   setTimeout(() => {
     sheet(`<div style="width:150px;margin:0 auto">${cheddarLoaf()}</div><h3>Pawsome! 🎉</h3>
       <p>Solved in <b>${clock(G.elapsed)}</b>${G.kind === 'd' ? ` · streak <b>${streak()}</b> 🔥` : ''}</p>
       <p>${winLine()}</p>
+      ${earned.coins ? `<div class="earn">🪙 +${earned.coins} coins${earned.weekly ? `<span>+${earned.weekly} weekly bonus! 5 days this week 🌟</span>` : ''}</div>` : ''}
       ${db.settings.research ? ratingRow() : ''}
       ${hasNext ? '<button class="cta" id="next">Next hold 🧗‍♀️</button>' : ''}
       <button class="cta ${hasNext ? 'alt' : ''}" id="home3">Home</button>`);
@@ -550,7 +567,7 @@ function report() {
     .sort((a, b) => (a.p.solvedAt || '').localeCompare(b.p.solvedAt || ''));
   const lines = rows.map(({ pid, p, raw }) => [raw.m, pid, raw.n, raw.lv, raw.st, p.best != null ? Math.round(p.best) : '', p.mistakes ?? '', p.hints ?? '', p.rating ?? '', p.solvedAt ?? '', raw.ch ?? '', raw.cd ?? ''].join(','));
   return { count: rows.length, rated: rows.filter((x) => x.p.rating).length,
-    text: `Corgidoku field report v${VERSION} · ${me().name} · ${todayISO()} · ${rows.length} solved\nmode,id,size,lv,steps,secs,mistakes,hints,rating,date,chains,depth\n${lines.join('\n')}` };
+    text: `Corgidoku field report v${VERSION} · ${nm()} · ${todayISO()} · ${rows.length} solved\nmode,id,size,lv,steps,secs,mistakes,hints,rating,date,chains,depth\n${lines.join('\n')}` };
 }
 async function sendReport() {
   const r = report();
@@ -563,12 +580,12 @@ async function sendReport() {
 
 function winLine() {
   if (isKid()) {
-    const nm = me().name;
+    const nm = esc(me().name);
     const kid = [`Great job, ${nm}!`, `High paw, ${nm}! 🐾`, 'Cheddar is doing zoomies!', 'Every corgi found a cozy spot!', `${nm}, you're a corgi genius!`];
     return kid[Math.floor(Math.random() * kid.length)];
   }
   const t = todayISO();
-  if (t.slice(5) === '06-15') return `Happy birthday, ${NAME}! Cheddar did birthday zoomies just for you.`;
+  if (t.slice(5) === '06-15') return `Happy birthday, ${esc(nm())}! Cheddar did birthday zoomies just for you.`;
   if (t >= '2026-11-11' && t <= '2026-11-17') return 'Rest up! Cheddar says you\'re doing amazing.';
   const lines = ['Cheddar is doing zoomies!', 'Every corgi found a cozy spot.', 'Big brain, tiny legs. Well done!', 'That\'s worth a belly rub.', 'Cheddar is so proud of you!'];
   return lines[Math.floor(Math.random() * lines.length)];
@@ -675,25 +692,144 @@ function extremeIntro() {
   $('gotx').onclick = () => { db.seenExtreme = true; save(); closeSheet(); };
 }
 
+// ---------- closet ----------
+// Big Cheddar preview on top, tabs below. Tapping an item previews it; owned items can be worn,
+// others bought with coins. Scenes and frames come only from the Climb (phase 3).
+const CLOSET_TABS = [['head', 'Head'], ['neck', 'Neck'], ['face', 'Face'], ['scenes', 'Scenes'], ['frames', 'Frames']];
+let closetTab = 'head', closetPick = undefined; // undefined = show what's worn
+function renderCloset(tab = closetTab) {
+  if (tab !== closetTab) closetPick = undefined;
+  closetTab = tab;
+  const slot = SLOTS.includes(tab) ? tab : null;
+  const pick = slot ? (closetPick !== undefined ? closetPick : db.worn[slot] || null) : null;
+  const look = { ...db.worn };
+  if (slot) look[slot] = pick;
+  const kid = isKid();
+  const tile = (it) => {
+    const owned = !it || db.owned.includes(it.id), worn = it ? db.worn[it.slot] === it.id : !db.worn[slot];
+    const sub = worn ? 'Wearing' : owned ? (it ? 'Yours' : '') : `🪙 ${priceFor(it, kid)}`;
+    return `<button class="ctile${(it ? it.id : null) === pick ? ' on' : ''}" data-id="${it ? it.id : ''}">
+      <div class="cthumb">${it ? `<svg viewBox="${it.thumb}">${it.art}</svg>` : '<span>🚫</span>'}</div>
+      <b>${it ? it.name : 'Nothing'}</b><small>${sub}</small></button>`;
+  };
+  let body = '', action = '';
+  if (slot) {
+    const list = ITEMS.filter((x) => x.slot === slot);
+    body = list.length ? `<div class="cgrid">${tile(null)}${list.map(tile).join('')}</div>`
+      : `<p class="csoon">Cheddar's tailor is still sewing. New ${tab} things are coming soon!</p>`;
+    const it = item(pick);
+    if (!list.length) action = '';
+    else if (!it) action = db.worn[slot] ? `<button class="cta" id="c-wear">Take it off</button>` : '';
+    else if (db.worn[slot] === it.id) action = `<button class="cta alt" disabled>Wearing the ${it.name.toLowerCase()} ✓</button>`;
+    else if (db.owned.includes(it.id)) action = `<button class="cta" id="c-wear">Wear it</button>`;
+    else {
+      const cost = priceFor(it, kid);
+      action = db.coins >= cost ? `<button class="cta" id="c-buy">Buy for 🪙 ${cost}</button>`
+        : `<button class="cta alt" disabled>🪙 ${cost} · ${cost - db.coins} more coins to go</button>`;
+    }
+  } else {
+    body = `<p class="csoon">${tab === 'scenes' ? 'Scenes are pictures behind the whole app. You earn them in the Climb, and they can never be bought. Coming soon!' : 'Reach the top of a Climb to earn a sparkly summit frame for the board. Coming soon!'}</p>`;
+  }
+  $('closet').innerHTML = `
+    <div class="bar"><button class="back">‹</button><h2>Closet</h2><span class="coins still">🪙 ${db.coins}</span></div>
+    <div class="cpreview">${cheddarLoaf({ hat: item(look.head)?.art || '' })}</div>
+    <div class="ctabs">${CLOSET_TABS.map(([k, l]) => `<button class="ctab${k === tab ? ' on' : ''}" data-t="${k}">${l}</button>`).join('')}</div>
+    <div class="cbody">${body}</div>
+    <div class="cact">${action}</div>`;
+  $('closet').querySelector('.back').onclick = () => { closetPick = undefined; renderHome(); };
+  $('closet').querySelectorAll('.ctab').forEach((b) => (b.onclick = () => renderCloset(b.dataset.t)));
+  $('closet').querySelectorAll('.ctile').forEach((b) => (b.onclick = () => { closetPick = b.dataset.id || null; renderCloset(); }));
+  const wear = $('c-wear'), buyB = $('c-buy');
+  if (wear) wear.onclick = () => { if (pick) db.worn[slot] = pick; else delete db.worn[slot]; save(); renderCloset(); };
+  if (buyB) buyB.onclick = () => {
+    const it = item(pick), cost = priceFor(it, kid);
+    confirmSheet(`Buy the ${it.name.toLowerCase()}?`, `It costs 🪙 ${cost}. You have 🪙 ${db.coins}.`, () => {
+      if (buy(db, it.id, kid)) { db.worn[slot] = it.id; save(); }
+      renderCloset();
+    });
+  };
+  show('closet');
+}
+
+// One time per player, the first launch with the shop: show the back pay.
+function welcomeSheet() {
+  const w = welcome; welcome = null;
+  const kid = isKid();
+  sheet(`<div style="width:120px;margin:0 auto">${cheddarLoaf()}</div><h3>Welcome to the closet!</h3>
+    <p>Solve puzzles to earn coins, then spend them on outfits for Cheddar. Hints are always free.</p>
+    ${w.coins || w.start ? `<div class="earn">🪙 +${w.coins + w.start} coins${w.coins ? `<span>for ${w.puzzles} puzzle${w.puzzles === 1 ? '' : 's'} you already solved${w.start ? `, plus ${w.start} to start` : ''}</span>` : `<span>to start you off</span>`}</div>` : ''}
+    <p>${kid ? 'Everything in the closet is half price for you!' : 'Every puzzle pays once. Today\'s daily pays the most.'}</p>
+    <button class="cta" id="w-open">Open the closet 👗</button><button class="cta alt" id="w-later">Later</button>`);
+  $('w-open').onclick = () => { closeSheet(); renderCloset('head'); };
+  $('w-later').onclick = closeSheet;
+}
+
+// ---------- backup ----------
+// The code is base64 JSON of every corgidoku:* key, so all players come back at once.
+const toB64 = (t) => { const u = new TextEncoder().encode(t); let b = ''; for (let i = 0; i < u.length; i += 8192) b += String.fromCharCode(...u.subarray(i, i + 8192)); return btoa(b); };
+const fromB64 = (b) => new TextDecoder().decode(Uint8Array.from(atob(b), (c) => c.charCodeAt(0)));
+function backupCode() {
+  const all = {};
+  for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k.startsWith('corgidoku:')) all[k] = localStorage.getItem(k); }
+  return toB64(JSON.stringify(all));
+}
+function readBackup(code) {
+  try {
+    const all = JSON.parse(fromB64(code.replace(/\s+/g, '')));
+    const keys = Object.keys(all);
+    if (all && typeof all === 'object' && keys.length && keys.every((k) => k.startsWith('corgidoku:') && typeof all[k] === 'string')) return all;
+  } catch {}
+  return null;
+}
+async function copyBackup() {
+  const code = backupCode();
+  try { await navigator.clipboard.writeText(code); sheet(`<h3>Backup copied</h3><p>Paste it somewhere safe, like a note or a text to yourself. It holds every player's coins, outfits and progress.</p><button class="cta" id="okb">OK</button>`); }
+  catch { sheet(`<h3>Backup code</h3><p>Select all and copy it somewhere safe.</p><textarea class="code" readonly>${code}</textarea><button class="cta" id="okb">Done</button>`); }
+  $('okb').onclick = closeSheet;
+}
+function restoreSheet(msg = '') {
+  sheet(`<h3>Restore from code</h3><p>Paste a backup code. It replaces everything on this phone, for every player.</p>
+    <textarea class="code" id="r-code" placeholder="Paste code here"></textarea>${msg ? `<p class="bad">${msg}</p>` : ''}
+    <button class="cta" id="r-go">Restore</button><button class="cta alt" id="r-no">Cancel</button>`);
+  $('r-no').onclick = closeSheet;
+  $('r-go').onclick = () => {
+    const all = readBackup($('r-code').value);
+    if (!all) return restoreSheet('That code doesn\'t look right. Check that you pasted all of it.');
+    confirmSheet('Replace everything?', 'All progress, coins and outfits on this phone will be swapped for the backup. This can\'t be undone.', () => {
+      try {
+        for (const k of Object.keys(localStorage)) if (k.startsWith('corgidoku:')) localStorage.removeItem(k);
+        for (const [k, v] of Object.entries(all)) localStorage.setItem(k, v);
+      } catch {}
+      location.reload();
+    });
+  };
+}
+
 function settings() {
   const s = db.settings;
   sheet(`<h3>Settings</h3>
     <div class="who"><b>Who's playing?</b>
       <div class="players">${Object.entries(PLAYERS).map(([k, p]) => `<button class="pl${k === player ? ' on' : ''}" data-p="${k}">${p.label}</button>`).join('')}</div>
       <small>Everyone keeps their own progress.</small></div>
+    ${isKid() ? '' : `<label class="toggle"><div>Your name<small>Shown on the home screen</small></div><input type="text" class="name" id="s-name" maxlength="20" autocomplete="off" value="${esc(nm())}"></label>`}
     <label class="toggle"><div>Auto paw marks<small>Mark spots a new corgi rules out</small></div><input type="checkbox" id="s-auto" ${s.autoPaws ? 'checked' : ''}></label>
     <label class="toggle"><div>Relaxed mode<small>Mistakes never cost treats</small></div><input type="checkbox" id="s-relax" ${s.relaxed ? 'checked' : ''}></label>
     <label class="toggle"><div>Show timer</div><input type="checkbox" id="s-timer" ${s.timer ? 'checked' : ''}></label>
     <label class="toggle"><div>Easy double-tap<small>More time between taps, and a little finger wiggle is OK</small></div><input type="checkbox" id="s-easytap" ${s.easyTap ? 'checked' : ''}></label>
     <label class="toggle"><div>Field research mode 🔬<small>Rate how hard each puzzle felt, 1–10, to help tune the game</small></div><input type="checkbox" id="s-research" ${s.research ? 'checked' : ''}></label>
     <button class="cta alt" id="s-report">📤 Send report <small>(${report().count} solved, ${report().rated} rated)</small></button>
+    <div class="backup"><b>Backup</b><small>Keeps coins and progress safe if Safari clears the site. Adding Corgidoku to the Home Screen helps too.</small>
+      <div class="two"><button class="cta alt" id="s-copy">📋 Copy backup code</button><button class="cta alt" id="s-restore">📥 Restore from code</button></div></div>
     <button class="cta" id="s-done">Done</button>`);
+  $('s-copy').onclick = () => { apply(); copyBackup(); };
+  $('s-restore').onclick = () => restoreSheet();
   $('s-report').onclick = () => { s.research = $('s-research').checked; save(); sendReport(); };
   const apply = () => {
     s.autoPaws = $('s-auto').checked; s.relaxed = $('s-relax').checked; s.timer = $('s-timer').checked; s.research = $('s-research').checked; s.easyTap = $('s-easytap').checked;
+    if ($('s-name')) s.name = $('s-name').value.trim();
     save();
   };
-  $('s-done').onclick = () => { apply(); closeSheet(); };
+  $('s-done').onclick = () => { apply(); closeSheet(); renderHome(); };
   document.querySelectorAll('.players .pl').forEach((b) => (b.onclick = () => {
     apply();
     if (b.dataset.p !== player) switchPlayer(b.dataset.p);
