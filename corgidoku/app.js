@@ -4,7 +4,7 @@ import { ITEMS, SLOTS, item, outfit, priceFor, shopDefaults, payout, backPay, bu
 
 // ---------- constants ----------
 const NAME = 'Halina'; // the Default player's name until they set their own in Settings
-const VERSION = '1.14'; // bump with CACHE in sw.js on every release
+const VERSION = '1.15'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
 const EMPTY = 0, PAW = 1, AUTO = 2, CORGI = 3, NOPE = 4; // NOPE = a wrong guess, shown as a red paw
@@ -33,9 +33,10 @@ const nm = () => (isKid() ? me().name : (db.settings.name || '').trim() || NAME)
 const coin = (n) => `${coinIcon()}&#8239;${n}`;
 // Cheddar in what the player has on (the Closet passes a preview look instead).
 const dressed = (worn = db.worn) => outfit(worn);
-// The equipped hat, for board corgis (when dressed up) and the win party.
-const hatArt = () => item(db.worn.head)?.art || '';
-const boardHead = () => cheddarHead(db.settings.dressBoard ? { head: hatArt() } : {});
+// What board corgis wear (when dressed up) and put on at the win party: the hat and the face item.
+// Neck items don't show on a head.
+const headLook = () => { const o = dressed(); return { head: o.head, face: o.face }; };
+const boardHead = () => cheddarHead(db.settings.dressBoard ? headLook() : {});
 const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
 // ---------- storage ----------
@@ -613,11 +614,11 @@ function boardParty() {
     el.classList.add('done', 'party');
   });
   setTimeout(() => board.classList.remove('party'), 3200);
-  // Party time: every corgi puts on the equipped hat (even with board dress-up off).
-  const hat = hatArt();
+  // Party time: every corgi puts on the equipped hat and face item (even with board dress-up off).
+  const look = headLook(), hat = look.head || look.face;
   G.cells.forEach((v, i) => {
     if (v !== CORGI) return;
-    if (hat) board.children[i].innerHTML = cheddarHead({ head: hat });
+    if (hat) board.children[i].innerHTML = cheddarHead(look);
     const r = board.children[i].getBoundingClientRect();
     const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
     const wave = (Math.floor(i / n) + (i % n)) * 70;
@@ -641,7 +642,7 @@ function boardParty() {
 function celebrate() {
   const z = document.createElement('div');
   z.className = 'zoom';
-  z.innerHTML = cheddarHead({ head: hatArt() });
+  z.innerHTML = cheddarHead(headLook());
   document.body.appendChild(z);
   setTimeout(() => z.remove(), 2400);
   const emoji = ['💖', '🌈', '💜', '🧡', '✨', '🩷', '💛'];
@@ -847,7 +848,7 @@ function settings() {
     <label class="toggle"><div>Relaxed mode<small>Mistakes never cost treats</small></div><input type="checkbox" id="s-relax" ${s.relaxed ? 'checked' : ''}></label>
     <label class="toggle"><div>Show timer</div><input type="checkbox" id="s-timer" ${s.timer ? 'checked' : ''}></label>
     <label class="toggle"><div>Easy double-tap<small>More time between taps, and a little finger wiggle is OK</small></div><input type="checkbox" id="s-easytap" ${s.easyTap ? 'checked' : ''}></label>
-    <label class="toggle"><div>Dress up board corgis<small>Corgis on the board wear ${isKid() ? 'your' : 'Cheddar\'s'} hat</small></div><input type="checkbox" id="s-dress" ${s.dressBoard ? 'checked' : ''}></label>
+    <label class="toggle"><div>Dress up board corgis<small>Corgis on the board wear ${isKid() ? 'your' : 'Cheddar\'s'} hat and glasses</small></div><input type="checkbox" id="s-dress" ${s.dressBoard ? 'checked' : ''}></label>
     <label class="toggle"><div>Field research mode 🔬<small>Rate how hard each puzzle felt, 1–10, to help tune the game</small></div><input type="checkbox" id="s-research" ${s.research ? 'checked' : ''}></label>
     <button class="cta alt" id="s-report">📤 Send report <small>(${report().count} solved, ${report().rated} rated)</small></button>
     <div class="backup"><b>Backup</b><small>Keeps coins and progress safe if Safari clears the site. Adding Corgidoku to the Home Screen helps too.</small>

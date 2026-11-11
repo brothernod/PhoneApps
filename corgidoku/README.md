@@ -98,7 +98,7 @@ Prices: basic 60 · nice 150 · fancy 350 · dream 900 · color variant 40.
 
 More items and color variants come in phase 4. Buying an item wears it right away. Neck items only show on the full Cheddar (home, Closet, sheets).
 
-**Board corgis.** Settings → Dress up board corgis puts the equipped hat on every corgi on the board (on by default for the kids, off for Default). At the win party every corgi puts on the equipped hat either way, and so does the zooming Cheddar.
+**Board corgis.** Settings → Dress up board corgis puts the equipped hat and face item (sunglasses) on every corgi on the board (on by default for the kids, off for Default). At the win party every corgi puts them on either way, and so does the zooming Cheddar. Nothing equipped means plain corgis: there's no default party hat.
 
 **Kids' piggy bank.** Kids don't see a coin number on the home screen. In the Closet, an item they can't afford yet has a "Save up for this" button; the home screen then shows a bar filling toward it (no numbers), which glows when they have enough. Tapping the bar opens the Closet on that item. Buying it clears the goal.
 
