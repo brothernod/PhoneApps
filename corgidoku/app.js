@@ -4,7 +4,7 @@ import { ITEMS, SLOTS, item, outfit, priceFor, shopDefaults, payout, backPay, bu
 
 // ---------- constants ----------
 const NAME = 'Halina'; // the Default player's name until they set their own in Settings
-const VERSION = '1.19'; // bump with CACHE in sw.js on every release
+const VERSION = '1.20'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
 const EMPTY = 0, PAW = 1, AUTO = 2, CORGI = 3, NOPE = 4; // NOPE = a wrong guess, shown as a red paw
@@ -19,16 +19,23 @@ const pawValue = () => (db.settings.pawColor ? 4 + db.settings.pawColor : PAW);
 // The default player keeps the original storage key so nothing already saved is lost.
 const PLAYERS = {
   main: { name: NAME, label: '🌈 Default', key: 'corgidoku:v1' },
-  holden: { name: 'Holden', label: '⭐ Holden', key: 'corgidoku:v1:holden', kid: true, color: '#46B3FF' },
-  quentin: { name: 'Quentin', label: '🐙 Quentin', key: 'corgidoku:v1:quentin', kid: true, color: '#2FC27F' },
+  // The kid players' ids and storage keys never change; only their shown names can (Settings → Kid 1 / Kid 2 name).
+  holden: { name: 'Holden', icon: '⭐', key: 'corgidoku:v1:holden', kid: true, color: '#46B3FF' },
+  quentin: { name: 'Quentin', icon: '🐙', key: 'corgidoku:v1:quentin', kid: true, color: '#2FC27F' },
 };
+// Kids' names live in one shared key (every player sees the same names), so another family can use the app.
+const NAMES_KEY = 'corgidoku:names';
+let kidNames = {};
+try { kidNames = JSON.parse(localStorage.getItem(NAMES_KEY) || '{}') || {}; } catch {}
+const kidName = (k) => (kidNames[k] || '').trim() || PLAYERS[k].name;
+const playerLabel = (k) => (PLAYERS[k].kid ? `${PLAYERS[k].icon} ${esc(kidName(k))}` : PLAYERS[k].label);
 const PLAYER_KEY = 'corgidoku:player';
 let player = 'main';
 try { const p = localStorage.getItem(PLAYER_KEY); if (PLAYERS[p]) player = p; } catch {}
 const me = () => PLAYERS[player];
 const isKid = () => !!me().kid;
 // Shown name: kids have fixed names; the Default player can set theirs in Settings.
-const nm = () => (isKid() ? me().name : (db.settings.name || '').trim() || NAME);
+const nm = () => (isKid() ? kidName(player) : (db.settings.name || '').trim() || NAME);
 // Coin amounts with the corgi coin icon in front, e.g. coin(245).
 const coin = (n) => `${coinIcon()}&#8239;${n}`;
 // Cheddar in what the player has on (the Closet passes a preview look instead).
@@ -192,7 +199,7 @@ function renderHome() {
     <div class="title">Corgidoku</div>
     <div class="subtitle">Cheddar's puzzle yard for ${esc(nm())}</div>
     <div class="modes${modesFor().length > 2 ? ' three' : ''}">${modesFor().map((k) => `<button class="mode${k === mode() ? ' on' : ''}" data-m="${k}">${MODES[k].label}</button>`).join('')}</div>
-    <div class="hero-row">${isKid() ? `<div class="kidname" style="--kc:${me().color}">${nm()}</div>` : ''}
+    <div class="hero-row">${isKid() ? `<div class="kidname" style="--kc:${me().color}">${esc(nm())}</div>` : ''}
       <div class="hero${isKid() ? ' kid' : ''}">${cheddarLoaf(look)}</div></div>
     ${isKid() ? piggyBank() : ''}
     ${banner ? `<div class="banner">${banner}</div>` : ''}
@@ -654,7 +661,7 @@ async function sendReport() {
 
 function winLine() {
   if (isKid()) {
-    const nm = esc(me().name);
+    const nm = esc(kidName(player));
     const kid = [`Great job, ${nm}!`, `High paw, ${nm}! 🐾`, 'Cheddar is doing zoomies!', 'Every corgi found a cozy spot!', `${nm}, you're a corgi genius!`];
     return kid[Math.floor(Math.random() * kid.length)];
   }
@@ -968,8 +975,10 @@ function settings() {
   const s = db.settings;
   sheet(`<h3>Settings</h3>
     <div class="who"><b>Who's playing?</b>
-      <div class="players">${Object.entries(PLAYERS).map(([k, p]) => `<button class="pl${k === player ? ' on' : ''}" data-p="${k}">${p.label}</button>`).join('')}</div>
-      <small>Everyone keeps their own progress.</small></div>
+      <div class="players">${Object.entries(PLAYERS).map(([k, p]) => `<button class="pl${k === player ? ' on' : ''}" data-p="${k}">${playerLabel(k)}</button>`).join('')}</div>
+      <small>Everyone keeps their own progress.</small>
+      <label class="toggle kidnm"><div>Kid 1 name<small>⭐ Blank = Holden</small></div><input type="text" class="name" id="s-kid1" maxlength="20" autocomplete="off" value="${esc(kidNames.holden || '')}" placeholder="Holden"></label>
+      <label class="toggle kidnm"><div>Kid 2 name<small>🐙 Blank = Quentin</small></div><input type="text" class="name" id="s-kid2" maxlength="20" autocomplete="off" value="${esc(kidNames.quentin || '')}" placeholder="Quentin"></label></div>
     ${isKid() ? '' : `<label class="toggle"><div>Your name<small>Shown on the home screen</small></div><input type="text" class="name" id="s-name" maxlength="20" autocomplete="off" value="${esc(nm())}"></label>`}
     <label class="toggle"><div>Auto paw marks<small>Mark spots a new corgi rules out</small></div><input type="checkbox" id="s-auto" ${s.autoPaws ? 'checked' : ''}></label>
     <label class="toggle"><div>Relaxed mode<small>Mistakes never cost treats</small></div><input type="checkbox" id="s-relax" ${s.relaxed ? 'checked' : ''}></label>
@@ -988,6 +997,8 @@ function settings() {
   const apply = () => {
     s.autoPaws = $('s-auto').checked; s.relaxed = $('s-relax').checked; s.timer = $('s-timer').checked; s.research = $('s-research').checked; s.easyTap = $('s-easytap').checked; s.dressBoard = $('s-dress').checked; s.sparkles = $('s-spark').checked;
     if ($('s-name')) s.name = $('s-name').value.trim();
+    kidNames = { holden: $('s-kid1').value.trim(), quentin: $('s-kid2').value.trim() };
+    try { localStorage.setItem(NAMES_KEY, JSON.stringify(kidNames)); } catch {}
     save();
   };
   $('s-done').onclick = () => { apply(); closeSheet(); renderHome(); };
