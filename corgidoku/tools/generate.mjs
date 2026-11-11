@@ -23,11 +23,17 @@
 //   node tools/generate.mjs --bonus extreme --count 300 --workers 16
 // An existing bonus file is kept and only topped up to --count, so ids players already
 // solved never change. Then: node tools/verify.mjs bonus-extreme.json
+// All four pools in one go, with progress + ETA, then verify and a timing summary
+// (saves as it goes; Ctrl+C is safe, rerun to continue):
+//   node tools/generate.mjs --bonus all            (--workers N, default all cores; --every 30 seconds)
+// Benchmark (same fixed work on any machine, to compare PCs):
+//   node tools/generate.mjs --bench
 //
 // Options: --mode cozy|hard|extreme|kids  --start YYYY-MM-DD  --days 730  --campaign 60  --seed 1  --out puzzles.json  --workers N
 import { Worker, isMainThread, parentPort, workerData } from 'node:worker_threads';
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
-import { cpus } from 'node:os';
+import { readFileSync, writeFileSync, existsSync, unlinkSync } from 'node:fs';
+import { cpus, tmpdir } from 'node:os';
+import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { generate, rng, canonicalKey } from '../engine.js';
@@ -178,55 +184,200 @@ const BONUS = {
 };
 const ALL_FILES = ['puzzles.json', 'puzzles-hard.json', 'puzzles-extreme.json', 'puzzles-kids.json', ...Object.keys(BONUS).map((m) => `bonus-${m}.json`)];
 
-function runBonus(name, workers) {
+// Rough core-seconds per kept board, measured on the cloud box (2 cores, Node 22). Only used for
+// the overall ETA before a stage has run; each finished stage rescales them to this machine.
+const BONUS_COST = { kids: 0.007, cozy: 0.013, hard: 0.32, extreme: 2.7 };
+const BONUS_ORDER = ['kids', 'cozy', 'hard', 'extreme']; // fast ones first, so the ETA calibrates early
+
+const fmtTime = (s) => {
+  if (!isFinite(s)) return '?';
+  s = Math.max(0, Math.round(s));
+  const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+  return h ? `${h}h ${String(m).padStart(2, '0')}m` : m ? `${m}m ${String(sec).padStart(2, '0')}s` : `${sec}s`;
+};
+
+// Fill one mode's bonus file up to `count`. Saves the finished prefix as it goes (and on Ctrl+C),
+// so a rerun continues where it stopped. Resolves with timing stats.
+function runBonus(name, workers, opts = {}) {
   const cfg = BONUS[name], mode = MODES[name];
   if (!cfg) throw new Error('unknown --bonus mode ' + name);
-  const out = resolve(here, '..', arg('out', `bonus-${name}.json`));
-  const count = Number(arg('count', cfg.count));
+  const out = opts.out || resolve(here, '..', arg('out', `bonus-${name}.json`));
+  const count = opts.count ?? Number(arg('count', cfg.count));
   const seed = Number(arg('seed', cfg.seed));
+  const label = opts.label || name;
   const old = existsSync(out) ? JSON.parse(readFileSync(out, 'utf8')) : null;
   const bonus = old?.bonus?.slice() || [];
+  const startLen = bonus.length;
   // Never repeat a board from any puzzle file, including the other bonus files.
   const seen = new Set();
-  for (const f of ALL_FILES) {
-    const file = resolve(here, '..', f);
-    if (!existsSync(file)) continue;
-    const d = JSON.parse(readFileSync(file, 'utf8'));
+  for (const f of [...ALL_FILES.map((x) => resolve(here, '..', x)), out]) {
+    if (!existsSync(f)) continue;
+    const d = JSON.parse(readFileSync(f, 'utf8'));
     for (const p of [...(d.daily || []), ...(d.campaign || []), ...(d.bonus || [])]) seen.add(canonicalKey(p.n, p.r));
   }
   // Slots still to fill continue the cycle where the existing file left off.
   const slots = [];
   for (let i = bonus.length; i < count; i++) slots.push(cfg.cycle[i % cfg.cycle.length]);
-  if (!slots.length) return console.log(`${out} already has ${bonus.length} boards`);
+  const stats = { name, label, have: startLen, added: 0, target: count, tried: 0, secs: 0, workers };
+  if (!slots.length) { console.log(`${label}: ${out} already has ${bonus.length} boards`); return Promise.resolve(stats); }
   const need = new Map();
   for (const [n, g] of slots) need.set(`${n}:${g}`, (need.get(`${n}:${g}`) || 0) + 1);
   const buckets = new Map();
-  const sizesNeeded = () => [...new Set([...need].filter(([k, v]) => (buckets.get(k)?.length || 0) < v).map(([k]) => Number(k.split(':')[0])))];
-  console.log(`Bonus ${name}: have ${bonus.length}, adding ${slots.length}`, Object.fromEntries(need));
+  const found = new Map(); // boards kept per bucket (the buckets themselves drain as the file is saved)
+  const sizesNeeded = () => [...new Set([...need].filter(([k, v]) => (found.get(k) || 0) < v).map(([k]) => Number(k.split(':')[0])))];
+  console.log(`${label}: have ${bonus.length}, adding ${slots.length} (${workers} workers)`, Object.fromEntries(need));
   const t0 = Date.now();
-  let got = 0;
-  const keyOf = cfg.key || mode.key;
-  runWorkers(workers, seed * 31 + bonus.length, sizesNeeded(), mode.maxLevel ?? 5, (p, setSizes) => {
-    const key = keyOf(p);
-    if (!need.has(key) || (buckets.get(key)?.length || 0) >= need.get(key)) return false;
-    const ck = canonicalKey(p.n, p.r);
-    if (seen.has(ck)) return false;
-    seen.add(ck);
-    if (!buckets.has(key)) buckets.set(key, []);
-    buckets.get(key).push(p);
-    if (++got % 20 === 0) console.log(`${got}/${slots.length}  ${((Date.now() - t0) / 1000).toFixed(0)}s  ` + [...need].map(([k, v]) => `${k} ${buckets.get(k)?.length || 0}/${v}`).join('  '));
-    const sizes = sizesNeeded();
-    setSizes(sizes);
-    return sizes.length === 0;
-  }, () => {
-    for (const [n, g] of slots) bonus.push({ id: bonus.length + 1, ...buckets.get(`${n}:${g}`).shift() });
-    writeFileSync(out, JSON.stringify({ version: 1, mode: name, generatedAt: new Date().toISOString(), seed, bonus }));
-    console.log(`Wrote ${bonus.length} bonus boards to ${out} in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
+  let got = 0, next = 0, lastSave = 0;
+  const samples = [[t0, 0]]; // [time, kept] for the recent rate
+  const save = () => {
+    // Write only the unbroken prefix of filled slots, so ids stay in cycle order.
+    while (next < slots.length) {
+      const b = buckets.get(`${slots[next][0]}:${slots[next][1]}`);
+      if (!b?.length) break;
+      bonus.push({ id: bonus.length + 1, ...b.shift() });
+      next++;
+    }
+    if (bonus.length > (old?.bonus?.length || 0) || next === slots.length) {
+      writeFileSync(out, JSON.stringify({ version: 1, mode: name, generatedAt: new Date().toISOString(), seed: old?.seed ?? seed, bonus }));
+    }
+    lastSave = Date.now();
+  };
+  const remainingSecs = () => {
+    // The stage ends when its slowest bucket fills: max over buckets of remaining / that bucket's rate.
+    const el = (Date.now() - t0) / 1000;
+    let eta = 0;
+    for (const [k, v] of need) {
+      const f = found.get(k) || 0, rem = v - f;
+      if (rem <= 0) continue;
+      eta = Math.max(eta, f ? rem / (f / el) : Infinity);
+    }
+    return eta;
+  };
+  const progress = () => {
+    const now = Date.now(), el = (now - t0) / 1000;
+    while (samples.length > 1 && now - samples[0][0] > 5 * 60000) samples.shift();
+    const [ts, gs] = samples[0];
+    const recent = now > ts ? (got - gs) / ((now - ts) / 60000) : 0;
+    const eta = remainingSecs();
+    const slow = [...need].filter(([k, v]) => (found.get(k) || 0) < v).map(([k, v]) => `${k} ${found.get(k) || 0}/${v}`).join('  ');
+    return { el, recent, eta, rough: el < 120, slow };
+  };
+  stats.progress = () => ({ ...progress(), got, total: slots.length });
+  return new Promise((done) => {
+    const finish = () => {
+      clearInterval(stats.timer);
+      process.removeListener('SIGINT', stats.onInt);
+      save();
+      stats.added = bonus.length - startLen;
+      stats.secs = (Date.now() - t0) / 1000;
+      console.log(`${label}: wrote ${bonus.length} boards to ${out} in ${fmtTime(stats.secs)}`);
+      done(stats);
+    };
+    stats.onInt = () => {
+      save();
+      console.log(`\nStopped. Saved ${bonus.length} boards to ${out}. Run the same command again to continue.`);
+      process.exit(130);
+    };
+    process.on('SIGINT', stats.onInt);
+    if (opts.tick) stats.timer = setInterval(() => opts.tick(stats), opts.every || 30000);
+    const keyOf = cfg.key || mode.key;
+    runWorkers(workers, seed * 31 + bonus.length, sizesNeeded(), mode.maxLevel ?? 5, (p, setSizes) => {
+      stats.tried++;
+      const key = keyOf(p);
+      if (!need.has(key) || (found.get(key) || 0) >= need.get(key)) return false;
+      const ck = canonicalKey(p.n, p.r);
+      if (seen.has(ck)) return false;
+      seen.add(ck);
+      if (!buckets.has(key)) buckets.set(key, []);
+      buckets.get(key).push(p);
+      found.set(key, (found.get(key) || 0) + 1);
+      got++;
+      samples.push([Date.now(), got]);
+      if (samples.length > 5000) samples.splice(1, samples.length - 2500);
+      if (Date.now() - lastSave > 10000) save();
+      const sizes = sizesNeeded();
+      setSizes(sizes);
+      return sizes.length === 0;
+    }, finish);
   });
 }
 
+// --bonus all: every mode's pool, then verify.mjs on each file, then a timing summary.
+async function runAllBonus(workers) {
+  const every = Number(arg('every', 30)) * 1000;
+  const T0 = Date.now();
+  const plan = BONUS_ORDER.map((name) => {
+    const out = resolve(here, '..', `bonus-${name}.json`);
+    const have = existsSync(out) ? JSON.parse(readFileSync(out, 'utf8')).bonus.length : 0;
+    return { name, out, have, todo: Math.max(0, BONUS[name].count - have) };
+  });
+  const totalTodo = plan.reduce((s, p) => s + p.todo, 0);
+  let scale = 1, calibrated = false; // this machine's speed vs the reference costs
+  const est = (p, n = p.todo) => (BONUS_COST[p.name] * n * scale) / workers;
+  console.log(`Bonus Yards, all modes: ${workers} workers (${cpus().length} logical cores), progress every ${every / 1000}s`);
+  for (const p of plan) console.log(`  ${p.name.padEnd(8)} have ${p.have}, adding ${p.todo}`);
+  console.log(`  rough total before calibration: ${fmtTime(plan.reduce((s, p) => s + est(p), 0))}`);
+  console.log('Ctrl+C is safe: rerun the same command to continue.\n');
+  const results = [];
+  let doneBoards = 0;
+  for (let i = 0; i < plan.length; i++) {
+    const p = plan[i];
+    const label = `[${i + 1}/${plan.length} ${p.name}]`;
+    const tick = (st) => {
+      const pr = st.progress();
+      const later = plan.slice(i + 1).reduce((s, q) => s + est(q), 0);
+      const pct = totalTodo ? ((doneBoards + pr.got) / totalTodo) * 100 : 100;
+      const r = pr.rough || !calibrated ? ' (rough)' : '';
+      console.log(`${label} ${pr.got}/${pr.total} kept, ${st.tried} tried  ·  overall ${pct.toFixed(1)}%  ·  ${pr.recent.toFixed(1)}/min recent  ·  elapsed ${fmtTime(pr.el)} (total ${fmtTime((Date.now() - T0) / 1000)})  ·  stage ETA ${fmtTime(pr.eta)}${pr.rough ? ' (rough)' : ''}  ·  all done in ~${fmtTime(pr.eta + later)}${r}`);
+      if (pr.slow) console.log(`${' '.repeat(label.length)} still hunting: ${pr.slow}`);
+    };
+    const st = await runBonus(p.name, workers, { out: p.out, count: BONUS[p.name].count, label, tick, every });
+    results.push(st);
+    doneBoards += p.todo;
+    // Rescale the remaining stages' estimates from what this machine actually did (skip tiny stages).
+    if (st.added >= 20 && st.secs > 2) {
+      const done = results.filter((x) => x.added >= 20 && x.secs > 2);
+      scale = done.reduce((s, x) => s + x.secs * workers, 0) / done.reduce((s, x) => s + BONUS_COST[x.name] * x.added, 0);
+      calibrated = true;
+      const later = plan.slice(i + 1).reduce((s, q) => s + est(q), 0);
+      if (i + 1 < plan.length) console.log(`  → remaining stages estimated at ~${fmtTime(later)} on this machine\n`);
+    }
+  }
+  const total = (Date.now() - T0) / 1000;
+  console.log('\nVerifying...');
+  let bad = false;
+  const verified = {};
+  for (const p of plan) {
+    const r = spawnSync(process.execPath, [resolve(here, 'verify.mjs'), p.out], { encoding: 'utf8' });
+    verified[p.name] = r.status === 0;
+    if (r.status !== 0) { bad = true; process.stdout.write(r.stdout + r.stderr); }
+  }
+  console.log('\nTiming summary');
+  console.log('  stage      boards   added    tried     time   boards/min  verify');
+  for (const st of results) {
+    const rate = st.secs ? (st.added / (st.secs / 60)).toFixed(1) : '-';
+    console.log(`  ${st.name.padEnd(9)} ${String(st.have + st.added).padStart(6)} ${String(st.added).padStart(7)} ${String(st.tried).padStart(8)} ${fmtTime(st.secs).padStart(8)} ${String(rate).padStart(12)}  ${verified[st.name] ? 'ok' : 'FAIL'}`);
+  }
+  console.log(`  total: ${fmtTime(total)} with ${workers} workers on ${cpus()[0]?.model?.trim() || 'this CPU'} (${cpus().length} logical cores), Node ${process.version}`);
+  console.log(bad ? '\nVerify FAILED; do not commit.' : '\nAll verified. Commit the bonus-*.json files.');
+  process.exit(bad ? 1 : 0);
+}
+
+// --bench: fixed work (the first 60 Hard bonus boards, written to a temp file), same on any machine.
+async function runBench(workers) {
+  const out = resolve(tmpdir(), `corgidoku-bench-${process.pid}.json`);
+  console.log(`Benchmark: 60 Hard bonus boards from scratch, ${workers} workers, ${cpus()[0]?.model?.trim()} (${cpus().length} logical cores), Node ${process.version}`);
+  const st = await runBonus('hard', workers, { out, count: 60, label: 'bench' });
+  try { unlinkSync(out); } catch {}
+  console.log(`\nBenchmark: ${fmtTime(st.secs)} (${st.secs.toFixed(1)}s), ${st.tried} boards tried. Lower is faster.`);
+  process.exit(0);
+}
+
 function main() {
-  if (arg('bonus')) return runBonus(arg('bonus'), Number(arg('workers', Math.max(1, cpus().length - 1))));
+  const bonusWorkers = Number(arg('workers', cpus().length));
+  if (process.argv.includes('--bench')) return runBench(bonusWorkers);
+  if (arg('bonus') === 'all') return runAllBonus(bonusWorkers);
+  if (arg('bonus')) return runBonus(arg('bonus'), bonusWorkers, { tick: (st) => { const pr = st.progress(); console.log(`${pr.got}/${pr.total} kept, ${st.tried} tried  ·  ${pr.recent.toFixed(1)}/min  ·  elapsed ${fmtTime(pr.el)}  ·  ETA ${fmtTime(pr.eta)}${pr.rough ? ' (rough)' : ''}`); }, every: Number(arg('every', 30)) * 1000 }).then(() => process.exit(0));
   const mode = MODES[arg('mode', 'cozy')];
   const out = resolve(here, '..', arg('out', mode.out));
   const seed = Number(arg('seed', 1));

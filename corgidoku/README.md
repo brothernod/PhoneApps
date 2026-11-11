@@ -70,7 +70,17 @@ No board repeats one in any other puzzle or bonus file (`canonicalKey`, so turne
 - **Endless laps:** after the last board of a pool, yard N+1 is board 1 again, turned or mirrored (`transformBoard` in `engine.js`) with its yard colors shifted, and the numbers keep going. Each lap uses a different turn.
 - **Growing a pool:** the generator keeps an existing bonus file and only adds boards up to `--count`, so yards players already solved keep their numbers. A lap board's number can point at a new board once the pool grows, so an unfinished bonus yard remembers its board (`bk` in its progress) and starts fresh if the board changed.
 
-Generate or top up a pool (a few minutes on the desktop PC), then verify:
+Fill every pool in one go (Chill, Cozy, Hard, then Extreme, which takes most of the time), verify them all and print a timing summary:
+
+```
+node tools/generate.mjs --bonus all
+```
+
+It uses every logical core (override with `--workers N`) and prints progress every 30 seconds (`--every N`): the stage, boards kept and tried, overall %, the recent rate, elapsed time, and an ETA for the stage and the whole run. The stage ETA comes from the slowest board type still being hunted; it's marked rough for the first two minutes, and the overall ETA rescales itself to the machine after each stage. Boards are saved as they come in, so Ctrl+C is safe: run the same command again to continue. On the 2-core cloud box, Extreme's 260 boards took about 5 minutes and the other three under a minute together.
+
+To compare two machines first, `node tools/generate.mjs --bench` does the same fixed work anywhere (60 Hard bonus boards into a temp file) and prints the time; lower is faster. It took 9 s on the 2-core cloud box.
+
+Or one pool at a time, then verify:
 
 ```
 node tools/generate.mjs --bonus cozy --workers 16
