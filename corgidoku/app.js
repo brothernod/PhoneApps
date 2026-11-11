@@ -4,7 +4,7 @@ import { ITEMS, SLOTS, item, outfit, priceFor, shopDefaults, payout, backPay, bu
 
 // ---------- constants ----------
 const NAME = 'Halina'; // the Default player's name until they set their own in Settings
-const VERSION = '1.18'; // bump with CACHE in sw.js on every release
+const VERSION = '1.19'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
 const EMPTY = 0, PAW = 1, AUTO = 2, CORGI = 3, NOPE = 4; // NOPE = a wrong guess, shown as a red paw

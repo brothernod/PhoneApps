@@ -1,6 +1,6 @@
 // Offline support. Network first, so a fresh push shows up right away;
 // the cache is only used when there's no connection.
-const CACHE = 'corgidoku-1.18'; // keep in step with VERSION in app.js
+const CACHE = 'corgidoku-1.19'; // keep in step with VERSION in app.js
 const FILES = ['./', 'index.html', 'app.js', 'engine.js', 'art.js', 'shop.js', 'scenes.js', 'puzzles.json', 'puzzles-hard.json', 'puzzles-extreme.json', 'puzzles-kids.json', 'manifest.webmanifest', 'apple-touch-icon.png'];
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)).then(() => self.skipWaiting()));
