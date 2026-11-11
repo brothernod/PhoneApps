@@ -3,7 +3,7 @@ import { cheddarHead, cheddarLoaf, partyHat, paw, treat } from './art.js';
 
 // ---------- constants ----------
 const NAME = 'Halina';
-const VERSION = '1.9'; // bump with CACHE in sw.js on every release
+const VERSION = '1.11'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
 const EMPTY = 0, PAW = 1, AUTO = 2, CORGI = 3, NOPE = 4; // NOPE = a wrong guess, shown as a red paw
@@ -12,14 +12,39 @@ const PAW_COLORS = [null, '#1F5FE0', '#13924A', '#F07C00', '#B0179A'];
 const PAW_NAMES = ['plum', 'blue', 'green', 'orange', 'magenta'];
 const isPaw = (v) => v === PAW || v >= 5;
 const pawValue = () => (db.settings.pawColor ? 4 + db.settings.pawColor : PAW);
-const STORE = 'corgidoku:v1';
+
+// ---------- players ----------
+// Everyone sharing the phone gets their own progress, streak and settings.
+// The default player keeps the original storage key so nothing already saved is lost.
+const PLAYERS = {
+  main: { name: NAME, label: '🌈 Default', key: 'corgidoku:v1' },
+  holden: { name: 'Holden', label: '⭐ Holden', key: 'corgidoku:v1:holden', kid: true, color: '#46B3FF' },
+  quentin: { name: 'Quentin', label: '🐙 Quentin', key: 'corgidoku:v1:quentin', kid: true, color: '#2FC27F' },
+};
+const PLAYER_KEY = 'corgidoku:player';
+let player = 'main';
+try { const p = localStorage.getItem(PLAYER_KEY); if (PLAYERS[p]) player = p; } catch {}
+const me = () => PLAYERS[player];
+const isKid = () => !!me().kid;
 
 // ---------- storage ----------
-const defaults = { progress: {}, settings: { autoPaws: true, relaxed: false, timer: true, mode: 'cozy', research: false, pawColor: 0 }, seenHelp: false };
+const defaults = { progress: {}, settings: { autoPaws: true, relaxed: false, timer: true, mode: 'cozy', research: false, pawColor: 0, easyTap: false }, seenHelp: false };
+// Kids start in Chill, with no treat penalty, no clock and the forgiving double-tap.
+const kidDefaults = { mode: 'kids', relaxed: true, timer: false, easyTap: true };
 let db;
-try { db = { ...defaults, ...JSON.parse(localStorage.getItem(STORE) || '{}') }; } catch { db = structuredClone(defaults); }
-db.settings = { ...defaults.settings, ...db.settings };
-const save = () => { try { localStorage.setItem(STORE, JSON.stringify(db)); } catch {} };
+function loadDb() {
+  const base = structuredClone(defaults);
+  if (isKid()) Object.assign(base.settings, kidDefaults);
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(me().key) || '{}') || {}; } catch {}
+  db = { ...base, ...saved };
+  db.settings = { ...base.settings, ...saved.settings };
+}
+loadDb();
+const save = () => { try { localStorage.setItem(me().key, JSON.stringify(db)); } catch {} };
+// Double-tap timing: kids get a longer window and a little finger wiggle room.
+const tapWindow = () => (db.settings.easyTap ? 560 : 380);
+const tapSlop = () => (db.settings.easyTap ? 16 : 0); // px of movement still counted as a tap
 
 // ---------- dates ----------
 const pad = (x) => String(x).padStart(2, '0');
@@ -31,13 +56,16 @@ const clock = (s) => `${Math.floor(s / 60)}:${pad(Math.floor(s % 60))}`;
 // ---------- puzzles ----------
 // Modes. Each has its own puzzle file, ids, streak and climb. Add 'extreme' here later.
 const MODES = {
+  kids: { file: 'puzzles-kids.json', d: 'kd', c: 'kc', label: '🐣 Chill', climb: 'The Chill Climb', kids: true },
   cozy: { file: 'puzzles.json', d: 'd', c: 'c', label: '🌈 Cozy', climb: 'The Climb' },
   hard: { file: 'puzzles-hard.json', d: 'hd', c: 'hc', label: '🔥 Hard', climb: 'The Hard Climb' },
 };
 const DATA = {};
 let PUZ;
 let daily = new Map();
-const mode = () => (MODES[db.settings.mode] ? db.settings.mode : 'cozy');
+// Chill only shows up for the kids; everyone can still pick Cozy or Hard.
+const modesFor = () => Object.keys(MODES).filter((k) => !MODES[k].kids || isKid());
+const mode = () => (modesFor().includes(db.settings.mode) ? db.settings.mode : isKid() ? 'kids' : 'cozy');
 const D = (k) => `${MODES[mode()].d}:${k}`;
 const C = (k) => `${MODES[mode()].c}:${k}`;
 function useMode(m) {
@@ -45,7 +73,7 @@ function useMode(m) {
   PUZ = DATA[m];
   daily = new Map(PUZ.daily.map((p) => [p.date, p]));
 }
-const levelName = (p) => (mode() === 'hard' ? (p.lv >= 5 ? 'very hard' : 'hard') : p.g);
+const levelName = (p) => (mode() === 'hard' ? (p.lv >= 5 ? 'very hard' : 'hard') : mode() === 'kids' ? (p.lv >= 3 ? 'a bit tricky' : 'chill') : p.g);
 function dailyFor(iso) {
   if (daily.has(iso)) return daily.get(iso);
   // Past the end of the file: wrap around so there's always a puzzle.
@@ -63,6 +91,7 @@ function load(pid) {
 
 // ---------- special days ----------
 function specialBanner(iso) {
+  if (isKid()) return ''; // these messages are for Halina
   if (iso === '2026-11-11') return `Thinking of you today, ${NAME} 💗<small>Cheddar is keeping your spot warm. Easy puzzles all week while you rest.</small>`;
   if (iso > '2026-11-11' && iso <= '2026-11-17') return `Cozy rainbow week 🌈<small>Easy, gentle puzzles while you rest up. Cheddar approves.</small>`;
   if (iso.slice(5) === '06-15') return `Happy Birthday, ${NAME}! 🎂🌈<small>Cheddar made you a special puzzle today.</small>`;
@@ -90,12 +119,13 @@ function renderHome() {
   const dp = dailyFor(t);
   const lvl = climbLevel();
   const banner = specialBanner(t);
-  const birthday = t.slice(5) === '06-15';
+  const birthday = !isKid() && t.slice(5) === '06-15';
   $('home').innerHTML = `
     <div class="title">Corgidoku</div>
-    <div class="subtitle">Cheddar's puzzle yard for ${NAME}</div>
-    <div class="modes">${Object.entries(MODES).map(([k, v]) => `<button class="mode${k === mode() ? ' on' : ''}" data-m="${k}">${v.label}</button>`).join('')}</div>
-    <div class="hero">${cheddarLoaf({ hat: birthday ? partyHat : '' })}</div>
+    <div class="subtitle">Cheddar's puzzle yard for ${me().name}</div>
+    <div class="modes${modesFor().length > 2 ? ' three' : ''}">${modesFor().map((k) => `<button class="mode${k === mode() ? ' on' : ''}" data-m="${k}">${MODES[k].label}</button>`).join('')}</div>
+    <div class="hero-row">${isKid() ? `<div class="kidname" style="--kc:${me().color}">${me().name}</div>` : ''}
+      <div class="hero${isKid() ? ' kid' : ''}">${cheddarLoaf({ hat: birthday ? partyHat : '' })}</div></div>
     ${banner ? `<div class="banner">${banner}</div>` : ''}
     <div class="menu">
       <button class="big" id="go-daily"><div class="ico" style="background:#FFE0F0">☀️</div>
@@ -212,7 +242,7 @@ function play(pid) {
     const k = Number(b.dataset.k), now = performance.now();
     db.settings.pawColor = k; save();
     document.querySelectorAll('#swatches .sw').forEach((x) => x.classList.toggle('on', x === b));
-    if (lastSw.k === k && now - lastSw.t < 380 && !G.solved) {
+    if (lastSw.k === k && now - lastSw.t < tapWindow() && !G.solved) {
       lastSw = { k: -1, t: 0 };
       const val = k ? 4 + k : PAW;
       if (!G.cells.includes(val)) return say(`No ${PAW_NAMES[k]} paws to clear.`);
@@ -235,6 +265,10 @@ function play(pid) {
 }
 
 function greeting() {
+  if (isKid()) {
+    const kid = [`Hi ${me().name}! Tap two times fast to put a corgi down.`, 'One corgi in every row, every column and every color!', 'Corgis don\'t like to touch, not even corners!', 'Cheddar believes in you! 🧡'];
+    return kid[Math.floor(Math.random() * kid.length)];
+  }
   const lines = ['Find a cozy spot for every corgi!', 'One corgi per row, column and yard. No touching!', 'Tap for a paw mark, double-tap for a corgi.', 'Cheddar believes in you! 🧡'];
   return lines[Math.floor(Math.random() * lines.length)];
 }
@@ -296,17 +330,33 @@ function persist() {
   save();
 }
 function snapshot() { G.history.push({ cells: G.cells.slice(), treats: G.treats }); if (G.history.length > 200) G.history.shift(); }
+// Undo only takes back paw marks. A corgi on its right spot (and a red "no corgi" paw)
+// is a fact Cheddar checked, so it stays put. Treats stay eaten.
 function undo() {
   if (G.solved) return;
-  const h = G.history.pop();
-  if (!h) return say('Nothing to undo yet!');
-  G.cells = h.cells; // treats stay eaten
+  const now = G.cells;
+  const keepFacts = (cells) => {
+    const out = cells.slice();
+    now.forEach((v, i) => { if (v === CORGI || v === NOPE) out[i] = v; });
+    if (db.settings.autoPaws) now.forEach((v, i) => { if (v === CORGI) for (const j of peers(i)) if (out[j] === EMPTY) out[j] = AUTO; });
+    return out;
+  };
+  let next = null;
+  // Skip snapshots that would change nothing (e.g. the one taken just before a corgi landed).
+  while (G.history.length) {
+    next = keepFacts(G.history.pop().cells);
+    if (next.some((v, i) => v !== now[i])) break;
+    next = null;
+  }
+  if (!next) return say('Nothing to undo yet!');
+  G.cells = next;
   persist(); drawBoard();
 }
 
 // ---------- input: tap to cycle, drag to paint paws ----------
 function attachInput(board) {
-  let start = null, dragging = false, erasing = false, painted = new Set();
+  let start = null, dragging = false, erasing = false, painted = new Set(), down = { x: 0, y: 0 };
+  const moved = (e) => Math.hypot(e.clientX - down.x, e.clientY - down.y);
   // Dragging from a paw erases paws; dragging from anything else paints paws in the chosen color.
   const paint = (i) => {
     const v = G.cells[i];
@@ -320,14 +370,14 @@ function attachInput(board) {
   };
   board.onpointerdown = (e) => {
     if (G.solved) return;
-    start = cellAt(e); dragging = false; painted = new Set();
+    start = cellAt(e); dragging = false; painted = new Set(); down = { x: e.clientX, y: e.clientY };
     board.setPointerCapture(e.pointerId);
   };
   board.onpointermove = (e) => {
     if (start === null) return;
     const i = cellAt(e);
     if (i === null) return;
-    if (!dragging && i !== start) {
+    if (!dragging && i !== start && moved(e) > tapSlop()) {
       dragging = true; snapshot();
       erasing = isPaw(G.cells[start]);
       paint(start);
@@ -337,24 +387,27 @@ function attachInput(board) {
   board.onpointerup = (e) => {
     if (start === null) return;
     if (dragging) { persist(); drawBoard(); }
-    else if (cellAt(e) === start) tap(start);
+    else if (cellAt(e) === start || moved(e) <= tapSlop()) tap(start, down.x, down.y);
     start = null; dragging = false;
   };
   board.onpointercancel = () => { start = null; dragging = false; };
 }
 
-// Single tap toggles a paw (or lifts a corgi). A quick second tap on the same cell
-// undoes that first tap and guesses a corgi instead.
-let lastTap = { i: -1, t: 0 };
-function tap(i) {
+// Single tap toggles a paw. A quick second tap on the same cell undoes that first tap
+// and guesses a corgi instead. A corgi that's placed is on its right spot, so taps leave it alone.
+// With easy tap on, a second tap that lands just over the line in the next cell still counts.
+let lastTap = { i: -1, t: 0, x: 0, y: 0 };
+function tap(i, x = 0, y = 0) {
   const now = performance.now();
-  const quick = lastTap.i === i && now - lastTap.t < 380;
-  lastTap = quick ? { i: -1, t: 0 } : { i, t: now };
+  if (G.cells[i] === CORGI) { lastTap = { i: -1, t: 0, x: 0, y: 0 }; return say(isKid() ? 'That corgi is happy right there! 🧡' : 'This corgi is already in its cozy spot.'); }
+  const near = lastTap.i === i || (db.settings.easyTap && lastTap.i >= 0 && Math.hypot(x - lastTap.x, y - lastTap.y) < 22);
+  const quick = near && now - lastTap.t < tapWindow();
+  if (quick) i = lastTap.i;
+  lastTap = quick ? { i: -1, t: 0, x: 0, y: 0 } : { i, t: now, x, y };
   if (G.cells[i] === NOPE && !quick) { lastTap = { i: -1, t: 0 }; return say('Cheddar already sniffed here: no corgi in this spot.', true); }
   if (quick) {
     const h = G.history.pop();
     if (h) G.cells = h.cells;
-    if (G.cells[i] === CORGI) { persist(); drawBoard(); return; }
     if (G.cells[i] === NOPE) return say('Cheddar already sniffed here: no corgi in this spot.', true);
     snapshot();
     placeCorgi(i);
@@ -447,8 +500,9 @@ function win() {
   stopClock(); persist(); drawClock();
   // Clear paws so the finished board shows just the corgis.
   G.cells = G.cells.map((v) => (v === CORGI ? v : EMPTY)); drawBoard();
-  [...$('board').children].forEach((el) => el.classList.add('done'));
+  boardParty();
   celebrate();
+  say(isKid() ? `You did it, ${me().name}! 🎉` : 'Every corgi is cozy! 🎉');
   const isClimb = G.kind === 'c', nextLvl = Number(G.key) + 1;
   const hasNext = isClimb && nextLvl <= PUZ.campaign.length;
   setTimeout(() => {
@@ -464,7 +518,7 @@ function win() {
       G.rating = Number(b.dataset.r); persist();
       document.querySelectorAll('.rate button').forEach((x) => x.classList.toggle('on', x === b));
     }));
-  }, 1700);
+  }, 2600); // let the board party play before the card covers it
 }
 
 // ---------- field research ----------
@@ -489,7 +543,7 @@ function report() {
     .sort((a, b) => (a.p.solvedAt || '').localeCompare(b.p.solvedAt || ''));
   const lines = rows.map(({ pid, p, raw }) => [raw.m, pid, raw.n, raw.lv, raw.st, p.best != null ? Math.round(p.best) : '', p.mistakes ?? '', p.hints ?? '', p.rating ?? '', p.solvedAt ?? ''].join(','));
   return { count: rows.length, rated: rows.filter((x) => x.p.rating).length,
-    text: `Corgidoku field report v${VERSION} · ${todayISO()} · ${rows.length} solved\nmode,id,size,lv,steps,secs,mistakes,hints,rating,date\n${lines.join('\n')}` };
+    text: `Corgidoku field report v${VERSION} · ${me().name} · ${todayISO()} · ${rows.length} solved\nmode,id,size,lv,steps,secs,mistakes,hints,rating,date\n${lines.join('\n')}` };
 }
 async function sendReport() {
   const r = report();
@@ -501,11 +555,49 @@ async function sendReport() {
 }
 
 function winLine() {
+  if (isKid()) {
+    const nm = me().name;
+    const kid = [`Great job, ${nm}!`, `High paw, ${nm}! 🐾`, 'Cheddar is doing zoomies!', 'Every corgi found a cozy spot!', `${nm}, you're a corgi genius!`];
+    return kid[Math.floor(Math.random() * kid.length)];
+  }
   const t = todayISO();
   if (t.slice(5) === '06-15') return `Happy birthday, ${NAME}! Cheddar did birthday zoomies just for you.`;
   if (t >= '2026-11-11' && t <= '2026-11-17') return 'Rest up! Cheddar says you\'re doing amazing.';
   const lines = ['Cheddar is doing zoomies!', 'Every corgi found a cozy spot.', 'Big brain, tiny legs. Well done!', 'That\'s worth a belly rub.', 'Cheddar is so proud of you!'];
   return lines[Math.floor(Math.random() * lines.length)];
+}
+
+// Win show on the board: a rainbow wave rolls across the tiles from the top-left,
+// the corgis hop, and each corgi throws off a burst of sparkles.
+const SPARK_COLORS = ['#FF5FA8', '#FF9F45', '#FFD23C', '#3FD98B', '#46B3FF', '#9B6BFF', '#FFFFFF'];
+function boardParty() {
+  const board = $('board'), n = G.n;
+  board.classList.add('party');
+  [...board.children].forEach((el, i) => {
+    el.style.setProperty('--d', `${(Math.floor(i / n) + (i % n)) * 70}ms`);
+    el.classList.add('done', 'party');
+  });
+  setTimeout(() => board.classList.remove('party'), 3200);
+  G.cells.forEach((v, i) => {
+    if (v !== CORGI) return;
+    const r = board.children[i].getBoundingClientRect();
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const wave = (Math.floor(i / n) + (i % n)) * 70;
+    for (let k = 0; k < 10; k++) {
+      const s = document.createElement('div');
+      s.className = 'spark';
+      const ang = (k / 10) * Math.PI * 2 + Math.random() * 0.5, dist = r.width * (0.7 + Math.random() * 0.6);
+      s.style.left = cx + 'px';
+      s.style.top = cy + 'px';
+      s.style.setProperty('--dx', Math.cos(ang) * dist + 'px');
+      s.style.setProperty('--dy', Math.sin(ang) * dist + 'px');
+      s.style.setProperty('--sz', 8 + Math.random() * 10 + 'px');
+      s.style.background = SPARK_COLORS[(k + i) % SPARK_COLORS.length];
+      s.style.animationDelay = wave + 250 + Math.random() * 300 + 'ms';
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 2400);
+    }
+  });
 }
 
 function celebrate() {
@@ -559,7 +651,7 @@ function help() {
     </ol>
     <p>Tap for a 🐾 paw mark (“no corgi here”); tap it again to remove it. <b>Double-tap</b> to place a corgi. Drag to paw-mark lots of cells; start a drag on a paw to erase instead.</p>
     <p>Pick a paw color under the board to brainstorm "what if" ideas in different colors. Double-tap a color to clear just those paws.</p>
-    <p>Want more challenge? Switch to <b>🔥 Hard</b> on the home screen.</p>
+    <p>${isKid() ? 'Ready for more? Try <b>🌈 Cozy</b> on the home screen.' : 'Want more challenge? Switch to <b>🔥 Hard</b> on the home screen.'}</p>
     <p>A wrong corgi costs a treat. Stuck? Tap <b>Sniff</b> and Cheddar will help.</p>
     <button class="cta" id="gotit">Let's go!</button>`);
   $('gotit').onclick = () => { db.seenHelp = true; save(); closeSheet(); };
@@ -568,17 +660,34 @@ function help() {
 function settings() {
   const s = db.settings;
   sheet(`<h3>Settings</h3>
+    <div class="who"><b>Who's playing?</b>
+      <div class="players">${Object.entries(PLAYERS).map(([k, p]) => `<button class="pl${k === player ? ' on' : ''}" data-p="${k}">${p.label}</button>`).join('')}</div>
+      <small>Everyone keeps their own progress.</small></div>
     <label class="toggle"><div>Auto paw marks<small>Mark spots a new corgi rules out</small></div><input type="checkbox" id="s-auto" ${s.autoPaws ? 'checked' : ''}></label>
     <label class="toggle"><div>Relaxed mode<small>Mistakes never cost treats</small></div><input type="checkbox" id="s-relax" ${s.relaxed ? 'checked' : ''}></label>
     <label class="toggle"><div>Show timer</div><input type="checkbox" id="s-timer" ${s.timer ? 'checked' : ''}></label>
+    <label class="toggle"><div>Easy double-tap<small>More time between taps, and a little finger wiggle is OK</small></div><input type="checkbox" id="s-easytap" ${s.easyTap ? 'checked' : ''}></label>
     <label class="toggle"><div>Field research mode 🔬<small>Rate how hard each puzzle felt, 1–10, to help tune the game</small></div><input type="checkbox" id="s-research" ${s.research ? 'checked' : ''}></label>
     <button class="cta alt" id="s-report">📤 Send report <small>(${report().count} solved, ${report().rated} rated)</small></button>
     <button class="cta" id="s-done">Done</button>`);
   $('s-report').onclick = () => { s.research = $('s-research').checked; save(); sendReport(); };
-  $('s-done').onclick = () => {
-    s.autoPaws = $('s-auto').checked; s.relaxed = $('s-relax').checked; s.timer = $('s-timer').checked; s.research = $('s-research').checked;
-    save(); closeSheet();
+  const apply = () => {
+    s.autoPaws = $('s-auto').checked; s.relaxed = $('s-relax').checked; s.timer = $('s-timer').checked; s.research = $('s-research').checked; s.easyTap = $('s-easytap').checked;
+    save();
   };
+  $('s-done').onclick = () => { apply(); closeSheet(); };
+  document.querySelectorAll('.players .pl').forEach((b) => (b.onclick = () => {
+    apply();
+    if (b.dataset.p !== player) switchPlayer(b.dataset.p);
+    closeSheet(); renderHome();
+  }));
+}
+
+function switchPlayer(p) {
+  player = p;
+  try { localStorage.setItem(PLAYER_KEY, p); } catch {}
+  loadDb();
+  useMode(mode());
 }
 
 // ---------- boot ----------

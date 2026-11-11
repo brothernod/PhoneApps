@@ -4,7 +4,7 @@ A personal corgi-themed logic puzzle for Halina. Static site in `PhoneApps/corgi
 
 ## Rules (the only rules)
 
-An N×N grid (N = 5..10) is split into exactly N colored regions ("yards"). Each region is a 4-connected set of cells.
+An N×N grid (N = 4..10; 4×4 only in the kids' Chill Climb) is split into exactly N colored regions ("yards"). Each region is a 4-connected set of cells.
 
 A solution places exactly N corgis such that:
 
@@ -61,6 +61,10 @@ The grader always applies the lowest level that makes progress, then starts over
 | Sat, Sun | 7×7 or 8×8 | medium |
 
 The week of 2026-11-11 (Halina's surgery) is all easy. 9×9 and 10×10 come later from the heavy generator run on Jonathan's PC.
+
+## Chill mode (kids)
+
+`puzzles-kids.json`, same schema. Daily: 5×5 L1 Mon/Tue, L1 or L2 Wed, L2 Thu, 6×6 L1 Fri, 5×5 L2 or 6×6 L1 Sat, 6×6 L1 or L2 Sun. Climb (40): 6× 4×4 L1, 10× 5×5 L1, 6× 5×5 L2, 3× 6×6 L1, 3× 6×6 L2, 4× 6×6 L3, 3× 7×7 L2, 5× 7×7 L3. Every kids board has at most 2×n steps.
 
 ## Special dates
 
