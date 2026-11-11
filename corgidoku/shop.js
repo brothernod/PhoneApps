@@ -2,6 +2,7 @@
 // Pure functions only (no DOM, no storage) so tools can test the coin math in node.
 // Everything here is cosmetic. Hints are always free and are never sold.
 import { OUTFIT } from './art.js';
+import { SCENE_ART } from './scenes.js';
 
 // ---------- catalog ----------
 // slot: head | neck | face. art: an SVG fragment in Cheddar's 200x200 space (see OUTFIT in art.js).
@@ -63,7 +64,57 @@ export function weekDays(progress, week) {
 
 // Fresh shop fields for a player db. Additive: old keys are never touched.
 export function shopDefaults(db) {
-  db.coins ??= 0; db.paid ??= {}; db.weeks ??= {}; db.owned ??= []; db.worn ??= {};
+  db.coins ??= 0; db.paid ??= {}; db.weeks ??= {}; db.owned ??= []; db.worn ??= {}; db.scenes ??= []; db.frames ??= [];
+}
+
+// ---------- scenes and frames ----------
+// Earned in the Climb only, never bought. Each unlock rule is [climb prefix, hold]:
+// kc = Chill, c = Cozy, hc = Hard, xc = Extreme. The kids reuse the grown-up scenes.
+// dark: light text goes on top, and the play screen gets a navy tint instead of a white one.
+// Phase 4 adds the other 9 scenes; syncUnlocks picks them up from progress already made.
+export const CLIMBS = { kc: 'Chill Climb', c: 'Cozy Climb', hc: 'Hard Climb', xc: 'Extreme Climb' };
+export const SCENES = [
+  { id: 'lawn', name: 'Lawn', at: [['kc', 10], ['c', 20]] },
+  { id: 'beach', name: 'Beach', at: [['kc', 20], ['c', 40]] },
+  { id: 'lava', name: 'Lava flow', dark: true, at: [['hc', 60]] },
+  { id: 'moon', name: 'The Moon', dark: true, at: [['xc', 120]] },
+];
+for (const s of SCENES) s.art = SCENE_ART[s.id] || '';
+// Every summit gives a frame around the board.
+export const FRAMES = [
+  { id: 'rainbow', name: 'Rainbow', at: [['kc', 40], ['c', 60]] },
+  { id: 'gold', name: 'Gold', at: [['hc', 80]] },
+  { id: 'starlight', name: 'Starlight', at: [['xc', 120]] },
+];
+export const scene = (id) => SCENES.find((x) => x.id === id) || null;
+export const frame = (id) => FRAMES.find((x) => x.id === id) || null;
+// Kids can't play Extreme and grown-ups don't see Chill, so only some rules apply to each player.
+const usable = (kid) => ([c]) => (kid ? c !== 'xc' : c !== 'kc');
+export const earnable = (s, kid) => s.at.some(usable(kid));
+// "Hard Climb · hold 40": the earliest hold this player can earn it at.
+export function unlockAt(s, kid) {
+  const [c, h] = s.at.filter(usable(kid)).sort((a, b) => a[1] - b[1])[0] || s.at[0];
+  return { climb: c, hold: h, label: `${CLIMBS[c]} · hold ${h}` };
+}
+// What a climb hands out, by hold: [{ hold, kind: 'scene'|'frame', it }].
+export function milestones(climb) {
+  const out = [];
+  for (const [kind, list] of [['scene', SCENES], ['frame', FRAMES]])
+    for (const it of list) for (const [c, h] of it.at) if (c === climb) out.push({ hold: h, kind, it });
+  return out.sort((a, b) => a.hold - b.hold);
+}
+// A hold counts once it was ever solved: Start over clears `solved`, but `paid` remembers it.
+const everSolved = (db, pid) => !!(db.progress?.[pid]?.solved || db.paid?.[pid]);
+// Unlock every scene and frame the player's Climb progress has earned. Idempotent: safe to run on
+// every launch and after every solve, never takes anything away, and also covers players whose
+// back pay (shopV) ran before scenes existed. Returns what's new, scenes first.
+export function syncUnlocks(db) {
+  shopDefaults(db);
+  const got = [];
+  for (const [kind, list, key] of [['scene', SCENES, 'scenes'], ['frame', FRAMES, 'frames']])
+    for (const it of list)
+      if (!db[key].includes(it.id) && it.at.some(([c, h]) => everSolved(db, `${c}:${h}`))) { db[key].push(it.id); got.push({ kind, it }); }
+  return got;
 }
 
 // Pay a just-solved puzzle once. Returns { coins, weekly } (both 0 if it was paid before).

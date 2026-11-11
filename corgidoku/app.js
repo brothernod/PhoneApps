@@ -1,10 +1,10 @@
 import { decodeRegions, decodeSolution, grade } from './engine.js';
 import { cheddarHead, cheddarLoaf, partyHat, paw, treat, artDefs, coinIcon, closetIcon } from './art.js';
-import { ITEMS, SLOTS, item, outfit, priceFor, shopDefaults, payout, backPay, buy } from './shop.js';
+import { ITEMS, SLOTS, item, outfit, priceFor, shopDefaults, payout, backPay, buy, SCENES, FRAMES, CLIMBS, scene, frame, earnable, unlockAt, milestones, syncUnlocks } from './shop.js';
 
 // ---------- constants ----------
 const NAME = 'Halina'; // the Default player's name until they set their own in Settings
-const VERSION = '1.15'; // bump with CACHE in sw.js on every release
+const VERSION = '1.16'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
 const EMPTY = 0, PAW = 1, AUTO = 2, CORGI = 3, NOPE = 4; // NOPE = a wrong guess, shown as a red paw
@@ -40,7 +40,7 @@ const boardHead = () => cheddarHead(db.settings.dressBoard ? headLook() : {});
 const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
 // ---------- storage ----------
-const defaults = { progress: {}, settings: { autoPaws: true, relaxed: false, timer: true, mode: 'cozy', research: false, pawColor: 0, easyTap: false, dressBoard: false }, seenHelp: false };
+const defaults = { progress: {}, settings: { autoPaws: true, relaxed: false, timer: true, mode: 'cozy', research: false, pawColor: 0, easyTap: false, dressBoard: false, sparkles: true }, seenHelp: false };
 // Kids start in Chill, with no treat penalty, no clock, the forgiving double-tap and dressed-up board corgis.
 const kidDefaults = { mode: 'kids', relaxed: true, timer: false, easyTap: true, dressBoard: true };
 let db;
@@ -54,9 +54,15 @@ function loadDb() {
   // Shop fields are additive. The first launch with the shop pays for puzzles already solved.
   shopDefaults(db);
   const bp = backPay(db, isKid());
-  if (bp) { welcome = bp; try { localStorage.setItem(me().key, JSON.stringify(db)); } catch {} }
+  // Scenes and frames already earned in the Climb. Idempotent, so it also covers players whose
+  // back pay ran before scenes existed (shopV already 1), and any scenes added in later releases.
+  const got = syncUnlocks(db);
+  if (bp) welcome = bp;
+  unlocked = got;
+  if (bp || got.length) { try { localStorage.setItem(me().key, JSON.stringify(db)); } catch {} }
 }
 let welcome = null; // back pay result waiting for its one-time "Welcome to the closet" sheet
+let unlocked = []; // scenes/frames found by the launch sync, waiting for their one-time sheet
 loadDb();
 const save = () => { try { localStorage.setItem(me().key, JSON.stringify(db)); } catch {} };
 // Double-tap timing: kids get a longer window and a little finger wiggle room.
@@ -124,7 +130,42 @@ function specialBanner(iso) {
 
 // ---------- helpers ----------
 const $ = (id) => document.getElementById(id);
-const show = (id) => { document.querySelectorAll('.screen').forEach((s) => s.classList.toggle('on', s.id === id)); };
+const show = (id) => { document.querySelectorAll('.screen').forEach((s) => s.classList.toggle('on', s.id === id)); document.body.dataset.screen = id; };
+const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ---------- scenes & frames ----------
+// The worn scene fills a fixed layer behind every screen (the play screen tints it in CSS).
+// Dark scenes set body.dark so text on the picture turns light. id = a preview (the Closet).
+const wornScene = () => (db.scenes.includes(db.worn.scene) ? scene(db.worn.scene) : null);
+const wornFrame = () => (db.frames.includes(db.worn.frame) ? frame(db.worn.frame) : null);
+function applyScene(s = wornScene()) {
+  const el = $('scene'), id = s?.id || '';
+  if (el.dataset.id !== id) { el.innerHTML = s ? s.art : ''; el.dataset.id = id; }
+  document.body.classList.toggle('scened', !!s);
+  document.body.classList.toggle('dark', !!s?.dark);
+}
+// The top of a scene in a 3:4 box (the landmarks live in the top band).
+const sceneThumb = (s, big = false) => (s ? `<div class="sthumb${big ? ' big' : ''}">${s.art.replace('xMidYMid slice', 'xMidYMin slice')}</div>` : `<div class="sthumb pink${big ? ' big' : ''}"></div>`);
+// A 4-point sparkle (same shape as the scene sparkles).
+const SPARK = '<svg viewBox="-10 -10 20 20"><path d="M0 -9 Q1.6 -1.6 9 0 Q1.6 1.6 0 9 Q-1.6 1.6 -9 0 Q-1.6 -1.6 0 -9Z"/></svg>';
+// Sparkles sit on the ring's corners and edges, never over the cells. [left %, top %, size px, delay ms]
+const SPARKS = [[0, 0, 20, 0], [100, 0, 13, 220], [100, 100, 20, 110], [0, 100, 13, 330], [32, 0, 10, 160], [68, 100, 10, 270], [0, 55, 10, 400], [100, 42, 10, 60]];
+function frameWrap(f, inner, { mini = false, id = '' } = {}) {
+  if (!f) return `<div class="bframe${mini ? ' mini' : ''}"${id ? ` id="${id}"` : ''}>${inner}</div>`;
+  const sp = db.settings.sparkles ? SPARKS.filter((_, k) => !mini || k < 4).map(([x, y, sz, dl]) => `<i class="fsp" style="left:${x}%;top:${y}%;--s:${mini ? Math.round(sz * 0.7) : sz}px;--dl:${dl}ms">${SPARK}</i>`).join('') : '';
+  return `<div class="bframe framed f-${f.id}${mini ? ' mini' : ''}"${id ? ` id="${id}"` : ''}>${inner}${sp}</div>`;
+}
+function twinkle(el = $('bframe')) {
+  if (!el || !el.classList.contains('framed')) return;
+  el.classList.remove('twinkle'); void el.offsetWidth; el.classList.add('twinkle');
+  setTimeout(() => el.classList.remove('twinkle'), 2400);
+}
+// A little solved 4x4 board, for frame previews.
+const MINI_REG = [0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 3, 1, 2, 2, 3, 3], MINI_SOL = [1, 7, 8, 14];
+function miniBoard(f, w = 120) {
+  const cells = MINI_REG.map((k, i) => `<div class="cell" style="background:${YARD_COLORS[k]}">${MINI_SOL.includes(i) ? cheddarHead() : ''}</div>`).join('');
+  return `<div style="--mw:${w}px">${frameWrap(f, `<div class="mboard">${cells}</div>`, { mini: true })}</div>`;
+}
 const prog = (pid) => db.progress[pid] || null;
 
 function streak() {
@@ -189,6 +230,7 @@ function renderHome() {
   };
   show('home');
   if (welcome) welcomeSheet();
+  else if (unlocked.length) { const u = unlocked; unlocked = []; unlockSheet(u); }
 }
 
 // ---------- past days ----------
@@ -216,7 +258,18 @@ function renderClimb() {
     const p = pos(i);
     const cls = prog(C(i))?.solved ? 'solved' : i > lvl ? 'locked' : '';
     const n = PUZ.campaign[i - 1].n;
-    holds += `<button class="hold ${cls}" data-i="${i}" style="top:${p.top}px;left:${p.left}%;background:${HOLD_COLORS[(i - 1) % HOLD_COLORS.length]}">${i}<small style="position:absolute;bottom:-16px;font-size:11px;color:var(--ink-soft);text-shadow:none">${n}×${n}</small></button>`;
+    holds += `<button class="hold ${cls}" data-i="${i}" style="top:${p.top}px;left:${p.left}%;background:${HOLD_COLORS[(i - 1) % HOLD_COLORS.length]}">${i}<small class="hsz">${n}×${n}</small></button>`;
+  }
+  // Scenes and frames still to earn on this climb, shown next to their hold: "Lava flow at hold 60".
+  const byHold = {};
+  for (const m of milestones(MODES[mode()].c)) {
+    if ((m.kind === 'scene' ? db.scenes : db.frames).includes(m.it.id) || m.hold > total) continue;
+    (byHold[m.hold] ||= []).push(m.kind === 'scene' ? m.it.name : `${m.it.name} frame`);
+  }
+  for (const [i, names] of Object.entries(byHold)) {
+    const p = pos(Number(i));
+    const side = p.left > 50 ? `right:calc(${100 - p.left}% + 10px)` : `left:calc(${p.left}% + 72px)`;
+    holds += `<div class="mtag" style="top:${p.top + 4}px;${side}">🔒 ${names.join(' + ')}<small>at hold ${i}</small></div>`;
   }
   const cp = pos(Math.min(lvl, total));
   $('climb').innerHTML = `
@@ -258,7 +311,7 @@ function play(pid) {
   $('play').innerHTML = `
     <div class="bar"><button class="back">‹</button><h2>${title}</h2><button class="back" id="restart" title="Start over">↺</button></div>
     <div class="meta"><div class="treats" id="treats"></div><div id="clock"></div></div>
-    <div class="board" id="board" style="--n:${P.n}"></div>
+    ${frameWrap(wornFrame(), `<div class="board" id="board" style="--n:${P.n}"></div>`, { id: 'bframe' })}
     <div class="swatches" id="swatches">${PAW_COLORS.map((c, k) => `<button class="sw${(db.settings.pawColor || 0) === k ? ' on' : ''}" data-k="${k}" aria-label="paw color ${k}">${paw(false, c || '#5B2A6E')}</button>`).join('')}</div>
     <div class="bubble"><div class="face">${cheddarHead()}</div><p id="msg"></p></div>
     <div class="tools">
@@ -294,6 +347,7 @@ function play(pid) {
   say(G.solved ? `You solved this one in ${clock(G.best)}! 🎉` : greeting());
   show('play');
   if (!G.solved) startClock(); else drawClock();
+  twinkle();
   if (!db.seenHelp) help();
 }
 
@@ -532,15 +586,20 @@ function win() {
   G.best = G.best ? Math.min(G.best, G.elapsed) : G.elapsed;
   stopClock(); persist(); drawClock();
   // Every puzzle pays once; a replay after Start over earns nothing new.
-  const earned = payout(db, G.pid, isKid()); save();
+  const earned = payout(db, G.pid, isKid());
+  const got = syncUnlocks(db); // a milestone hold unlocks a scene, a summit also a frame
+  save();
   // Clear paws so the finished board shows just the corgis.
   G.cells = G.cells.map((v) => (v === CORGI ? v : EMPTY)); drawBoard();
   boardParty();
   celebrate();
+  twinkle();
   say(isKid() ? `You did it, ${nm()}! 🎉` : 'Every corgi is cozy! 🎉');
   const isClimb = G.kind === 'c', nextLvl = Number(G.key) + 1;
   const hasNext = isClimb && nextLvl <= PUZ.campaign.length;
-  setTimeout(() => {
+  const pid = G.pid;
+  const winSheet = () => {
+    if (G?.pid !== pid || !$('play').classList.contains('on')) return; // they already left the board
     sheet(`<div style="width:150px;margin:0 auto">${cheddarLoaf(dressed())}</div><h3>Pawsome! 🎉</h3>
       <p>Solved in <b>${clock(G.elapsed)}</b>${G.kind === 'd' ? ` · streak <b>${streak()}</b> 🔥` : ''}</p>
       <p>${winLine()}</p>
@@ -554,7 +613,10 @@ function win() {
       G.rating = Number(b.dataset.r); persist();
       document.querySelectorAll('.rate button').forEach((x) => x.classList.toggle('on', x === b));
     }));
-  }, 2600); // let the board party play before the card covers it
+  };
+  // Let the board party (rainbow wave + hops, longer on big boards) and the zoomies finish first.
+  const wait = reduceMotion() ? 700 : Math.max(3500, 2200 + (2 * G.n - 2) * 70 + 500);
+  setTimeout(() => (got.length ? unlockSheet(got, winSheet) : winSheet()), wait);
 }
 
 // ---------- field research ----------
@@ -709,7 +771,7 @@ function extremeIntro() {
 
 // ---------- closet ----------
 // Big Cheddar preview on top, tabs below. Tapping an item previews it; owned items can be worn,
-// others bought with coins. Scenes and frames come only from the Climb (phase 3).
+// others bought with coins. Scenes and frames come only from the Climb: never a Buy button.
 const CLOSET_TABS = [['head', 'Head'], ['neck', 'Neck'], ['face', 'Face'], ['scenes', 'Scenes'], ['frames', 'Frames']];
 let closetTab = 'head', closetPick = undefined; // undefined = show what's worn
 function renderCloset(tab = closetTab, pickId) {
@@ -717,19 +779,20 @@ function renderCloset(tab = closetTab, pickId) {
   if (pickId !== undefined) closetPick = pickId;
   closetTab = tab;
   const slot = SLOTS.includes(tab) ? tab : null;
-  const pick = slot ? (closetPick !== undefined ? closetPick : db.worn[slot] || null) : null;
-  const look = { ...db.worn };
-  if (slot) look[slot] = pick;
+  const kind = tab === 'scenes' ? 'scene' : tab === 'frames' ? 'frame' : null;
   const kid = isKid();
-  const tile = (it) => {
-    const owned = !it || db.owned.includes(it.id), worn = it ? db.worn[it.slot] === it.id : !db.worn[slot];
-    const sub = worn ? 'Wearing' : owned ? (it ? 'Yours' : '') : coin(priceFor(it, kid)) + (kid && db.goal === it.id ? ' ⭐' : '');
-    return `<button class="ctile${(it ? it.id : null) === pick ? ' on' : ''}" data-id="${it ? it.id : ''}">
-      <div class="cthumb">${it ? `<svg viewBox="${it.thumb}">${it.art}</svg>` : '<span>🚫</span>'}</div>
-      <b>${it ? it.name : 'Nothing'}</b><small>${sub}</small></button>`;
-  };
-  let body = '', action = '';
+  const look = { ...db.worn };
+  let body = '', action = '', preview = '', pick = null;
   if (slot) {
+    pick = closetPick !== undefined ? closetPick : db.worn[slot] || null;
+    look[slot] = pick;
+    const tile = (it) => {
+      const owned = !it || db.owned.includes(it.id), worn = it ? db.worn[it.slot] === it.id : !db.worn[slot];
+      const sub = worn ? 'Wearing' : owned ? (it ? 'Yours' : '') : coin(priceFor(it, kid)) + (kid && db.goal === it.id ? ' ⭐' : '');
+      return `<button class="ctile${(it ? it.id : null) === pick ? ' on' : ''}" data-id="${it ? it.id : ''}">
+        <div class="cthumb">${it ? `<svg viewBox="${it.thumb}">${it.art}</svg>` : '<span>🚫</span>'}</div>
+        <b>${it ? it.name : 'Nothing'}</b><small>${sub}</small></button>`;
+    };
     const list = ITEMS.filter((x) => x.slot === slot);
     body = list.length ? `<div class="cgrid">${tile(null)}${list.map(tile).join('')}</div>`
       : `<p class="csoon">Cheddar's tailor is still sewing. New ${tab} things are coming soon!</p>`;
@@ -747,20 +810,45 @@ function renderCloset(tab = closetTab, pickId) {
       else action = `<button class="cta alt" disabled>${coin(cost)} · ${cost - db.coins} more coins to go</button>`;
     }
   } else {
-    body = `<p class="csoon">${tab === 'scenes' ? 'Scenes are pictures behind the whole app. You earn them in the Climb, and they can never be bought. Coming soon!' : 'Reach the top of a Climb to earn a sparkly summit frame for the board. Coming soon!'}</p>`;
+    // Scenes and frames: earned ones can be used, locked ones show where to earn them.
+    // A kid only sees what their climbs can give (no Extreme).
+    const all = (kind === 'scene' ? SCENES : FRAMES).filter((x) => earnable(x, kid));
+    const mine = kind === 'scene' ? db.scenes : db.frames;
+    const worn = kind === 'scene' ? wornScene() : wornFrame();
+    pick = closetPick !== undefined ? closetPick : worn?.id || null;
+    const it = kind === 'scene' ? scene(pick) : frame(pick);
+    const has = !it || mine.includes(it.id);
+    const tile = (x) => {
+      const own = !x || mine.includes(x.id), on = (x ? x.id : null) === pick, using = (x ? x.id : null) === (worn?.id || null);
+      const thumb = kind === 'scene' ? sceneThumb(x) : `<div class="fthumb">${miniBoard(x, 54)}</div>`;
+      const at = x && unlockAt(x, kid), sub = using ? 'Using' : own ? (x ? 'Yours' : '') : `${CLIMBS[at.climb]}<br>hold ${at.hold}`;
+      return `<button class="ctile tall${on ? ' on' : ''}${own ? '' : ' locked'}" data-id="${x ? x.id : ''}">
+        <div class="cthumb" style="position:relative">${thumb}${own ? '' : '<span class="lock">🔒</span>'}</div>
+        <b>${x ? x.name : kind === 'scene' ? 'Pink' : 'No frame'}</b><small class="${own ? '' : 'at'}">${sub}</small></button>`;
+    };
+    body = `<div class="cgrid">${tile(null)}${all.map(tile).join('')}</div>
+      <p class="csoon" style="margin-top:12px">${kind === 'scene' ? 'Scenes are pictures behind the whole app. Earn them on the Climb: they can never be bought.' : 'Reach the top of a Climb to earn a sparkly frame for the board.'}</p>`;
+    if (!has) action = `<button class="cta alt" disabled>🔒 Earn it at ${unlockAt(it, kid).label}</button>`;
+    else if ((it?.id || null) === (worn?.id || null)) action = `<button class="cta alt" disabled>Using ${it ? (kind === 'scene' ? it.name : `the ${it.name.toLowerCase()} frame`) : kind === 'scene' ? 'pink' : 'no frame'} ✓</button>`;
+    else action = `<button class="cta" id="c-use">${it ? 'Use it' : kind === 'scene' ? 'Use pink' : 'No frame'}</button>`;
+    // Scenes preview behind the whole Closet; frames preview around a little board.
+    if (kind === 'scene') applyScene(has ? it : worn);
+    else preview = `<div class="cpreview fr">${miniBoard(has ? it : worn, 130)}</div>`;
   }
+  if (kind !== 'scene') applyScene();
   $('closet').innerHTML = `
     <div class="bar"><button class="back">‹</button><h2>Closet</h2><span class="coins still">${coin(db.coins)}</span></div>
-    <div class="cpreview">${cheddarLoaf(dressed(look))}</div>
+    ${preview || `<div class="cpreview">${cheddarLoaf(dressed(look))}</div>`}
     <div class="ctabs">${CLOSET_TABS.map(([k, l]) => `<button class="ctab${k === tab ? ' on' : ''}" data-t="${k}">${l}</button>`).join('')}</div>
     <div class="cbody">${body}</div>
     <div class="cact">${action}</div>`;
-  $('closet').querySelector('.back').onclick = () => { closetPick = undefined; renderHome(); };
+  $('closet').querySelector('.back').onclick = () => { closetPick = undefined; applyScene(); renderHome(); };
   $('closet').querySelectorAll('.ctab').forEach((b) => (b.onclick = () => renderCloset(b.dataset.t)));
   $('closet').querySelectorAll('.ctile').forEach((b) => (b.onclick = () => { closetPick = b.dataset.id || null; renderCloset(); }));
-  const wear = $('c-wear'), buyB = $('c-buy'), goal = $('c-goal');
+  const wear = $('c-wear'), buyB = $('c-buy'), goal = $('c-goal'), use = $('c-use');
   if (goal) goal.onclick = () => { db.goal = pick; save(); renderCloset(); };
   if (wear) wear.onclick = () => { if (pick) db.worn[slot] = pick; else delete db.worn[slot]; save(); renderCloset(); };
+  if (use) use.onclick = () => { if (pick) db.worn[kind] = pick; else delete db.worn[kind]; save(); applyScene(); renderCloset(); };
   if (buyB) buyB.onclick = () => {
     const it = item(pick), cost = priceFor(it, kid);
     confirmSheet(`Buy the ${it.name.toLowerCase()}?`, `It costs ${coin(cost)}. You have ${coin(db.coins)}.`, () => {
@@ -769,6 +857,39 @@ function renderCloset(tab = closetTab, pickId) {
     });
   };
   show('closet');
+}
+
+// "New scene: Lava flow!" with a preview and Use it, one sheet per unlock, then done() (the win sheet).
+// The launch sync (progress made before scenes existed) shows several at once on one sheet.
+function unlockSheet(list, done) {
+  const finish = () => { closeSheet(); if (done) done(); };
+  if (!done && list.length > 1) {
+    sheet(`<h3>Climb rewards! 🏔️</h3>
+      <p>Your climbing already earned these. Scenes go behind the whole app; frames go around the board.</p>
+      <div class="ulist">${list.map(({ kind, it }) => `<div>${kind === 'scene' ? sceneThumb(it) : `<div class="fthumb" style="margin:0 auto 4px">${miniBoard(it, 54)}</div>`}${kind === 'scene' ? it.name : `${it.name} frame`}</div>`).join('')}</div>
+      <button class="cta" id="u-open">Pick in the closet ${closetIcon()}</button><button class="cta alt" id="u-later">Later</button>`);
+    $('u-open').onclick = () => { closeSheet(); renderCloset(list[0].kind === 'scene' ? 'scenes' : 'frames'); };
+    $('u-later').onclick = closeSheet;
+    return;
+  }
+  const [{ kind, it }, ...rest] = list;
+  const next = () => (rest.length ? unlockSheet(rest, done) : finish());
+  sheet(`${kind === 'scene' ? sceneThumb(it, true) : `<div style="display:flex;justify-content:center;padding:10px 0 8px">${miniBoard(it, 130)}</div>`}
+    <h3>New ${kind}: ${it.name}!</h3>
+    <p>${kind === 'scene' ? 'A picture for behind the whole app. Cheddar loves it already.' : 'You reached the summit! A sparkly frame for the board.'}</p>
+    <button class="cta" id="u-use">Use it</button><button class="cta alt" id="u-later">Not now</button>`);
+  if (kind === 'frame') twinkle($('sheet').querySelector('.bframe'));
+  $('u-use').onclick = () => { db.worn[kind] = it.id; save(); if (kind === 'scene') applyScene(); else applyFrame(); next(); };
+  $('u-later').onclick = next;
+}
+// Swap the frame around the board that's on screen (after "Use it" on the win board).
+function applyFrame() {
+  const old = $('bframe'), board = $('board');
+  if (!old || !board) return;
+  const t = document.createElement('div');
+  t.innerHTML = frameWrap(wornFrame(), '', { id: 'bframe' });
+  const el = t.firstElementChild;
+  old.replaceWith(el); el.prepend(board); twinkle(el);
 }
 
 // Kids' piggy bank on the home screen: a bar that fills toward the item they picked to save for,
@@ -786,11 +907,13 @@ function piggyBank() {
 // One time per player, the first launch with the shop: show the back pay.
 function welcomeSheet() {
   const w = welcome; welcome = null;
+  const u = unlocked; unlocked = []; // scenes and frames their Climb progress already earned
   const kid = isKid();
   sheet(`<div style="width:120px;margin:0 auto">${cheddarLoaf(dressed())}</div><h3>Welcome to the closet!</h3>
     <p>Solve puzzles to earn coins, then spend them on outfits for Cheddar. Hints are always free.</p>
     ${w.coins || w.start ? `<div class="earn">${coinIcon()} +${w.coins + w.start} coins${w.coins ? `<span>for ${w.puzzles} puzzle${w.puzzles === 1 ? '' : 's'} you already solved${w.start ? `, plus ${w.start} to start` : ''}</span>` : `<span>to start you off</span>`}</div>` : ''}
     <p>${kid ? 'Everything in the closet is half price for you!' : 'Every puzzle pays once. Today\'s daily pays the most.'}</p>
+    ${u.length ? `<p>Your climbing also earned:</p><div class="ulist">${u.map(({ kind, it }) => `<div>${kind === 'scene' ? sceneThumb(it) : `<div class="fthumb" style="margin:0 auto 4px">${miniBoard(it, 54)}</div>`}${kind === 'scene' ? it.name : `${it.name} frame`}</div>`).join('')}</div>` : ''}
     <button class="cta" id="w-open">Open the closet ${closetIcon()}</button><button class="cta alt" id="w-later">Later</button>`);
   $('w-open').onclick = () => { closeSheet(); renderCloset('head'); };
   $('w-later').onclick = closeSheet;
@@ -849,6 +972,7 @@ function settings() {
     <label class="toggle"><div>Show timer</div><input type="checkbox" id="s-timer" ${s.timer ? 'checked' : ''}></label>
     <label class="toggle"><div>Easy double-tap<small>More time between taps, and a little finger wiggle is OK</small></div><input type="checkbox" id="s-easytap" ${s.easyTap ? 'checked' : ''}></label>
     <label class="toggle"><div>Dress up board corgis<small>Corgis on the board wear ${isKid() ? 'your' : 'Cheddar\'s'} hat and glasses</small></div><input type="checkbox" id="s-dress" ${s.dressBoard ? 'checked' : ''}></label>
+    <label class="toggle"><div>Summit sparkles<small>Twinkly stars on a summit frame around the board</small></div><input type="checkbox" id="s-spark" ${s.sparkles ? 'checked' : ''}></label>
     <label class="toggle"><div>Field research mode 🔬<small>Rate how hard each puzzle felt, 1–10, to help tune the game</small></div><input type="checkbox" id="s-research" ${s.research ? 'checked' : ''}></label>
     <button class="cta alt" id="s-report">📤 Send report <small>(${report().count} solved, ${report().rated} rated)</small></button>
     <div class="backup"><b>Backup</b><small>Keeps coins and progress safe if Safari clears the site. Adding Corgidoku to the Home Screen helps too.</small>
@@ -858,7 +982,7 @@ function settings() {
   $('s-restore').onclick = () => restoreSheet();
   $('s-report').onclick = () => { s.research = $('s-research').checked; save(); sendReport(); };
   const apply = () => {
-    s.autoPaws = $('s-auto').checked; s.relaxed = $('s-relax').checked; s.timer = $('s-timer').checked; s.research = $('s-research').checked; s.easyTap = $('s-easytap').checked; s.dressBoard = $('s-dress').checked;
+    s.autoPaws = $('s-auto').checked; s.relaxed = $('s-relax').checked; s.timer = $('s-timer').checked; s.research = $('s-research').checked; s.easyTap = $('s-easytap').checked; s.dressBoard = $('s-dress').checked; s.sparkles = $('s-spark').checked;
     if ($('s-name')) s.name = $('s-name').value.trim();
     save();
   };
@@ -875,12 +999,13 @@ function switchPlayer(p) {
   try { localStorage.setItem(PLAYER_KEY, p); } catch {}
   loadDb();
   useMode(mode());
+  applyScene();
 }
 
 // ---------- boot ----------
 document.body.insertAdjacentHTML('afterbegin', artDefs); // the shared die-cut filter for every Cheddar
 Promise.all(Object.entries(MODES).map(([k, m]) => fetch(m.file).then((r) => r.json()).then((d) => { DATA[k] = d; })))
-  .then(() => { useMode(mode()); renderHome(); })
+  .then(() => { useMode(mode()); applyScene(); renderHome(); })
   .catch(() => { $('home').innerHTML = '<p style="margin-top:40vh;font-weight:800">Cheddar couldn\'t find the puzzles. Check your connection and reopen.</p>'; });
 
 document.addEventListener('visibilitychange', () => { if (document.hidden && G && !G.solved && $('play').classList.contains('on')) persist(); });
