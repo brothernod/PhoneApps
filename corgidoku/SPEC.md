@@ -26,8 +26,9 @@ Candidates = cells that could still hold a corgi. Placing a corgi removes every 
 | 3 | Would block | A candidate is removed if placing a corgi there would remove every candidate of some other row, column or region. |
 | 4 | Pair lock | Two regions whose candidates together cover exactly two rows (or columns) clear those rows (columns) outside them; and the reverse, two rows (columns) covering exactly two regions. |
 | 5 | Group lock | The same as level 4 for groups of 3 or more. |
+| 6 | What if (chain) | Pretend a corgi sits on a candidate, then keep placing only forced corgis (last spots). If some row, column or region runs out of candidates within 6 forced corgis, remove the candidate. Depth = forced corgis before the dead end; the shortest chain on the board is used. Extreme mode only. |
 
-The grader always applies the lowest level that makes progress, then starts over at level 1. Grade = highest level used: `easy` (≤2), `medium` (3–4), `hard` (5). Steps = number of technique applications.
+The grader always applies the lowest level that makes progress, then starts over at level 1. Grade = highest level used: `easy` (≤2), `medium` (3–4), `hard` (5), `extreme` (6). Steps = number of technique applications. Cozy, Hard and Chill are generated with levels 1–5 only.
 
 ## puzzles.json schema
 
@@ -49,6 +50,7 @@ The grader always applies the lowest level that makes progress, then starts over
 - `r`: region map, `n*n` lowercase letters, row-major. Region k is letter `'a' + k`. Exactly n distinct letters, `a` through the n-th letter.
 - `s`: solution, `n` characters. `s[row]` is the column (digit `0`–`9`) of that row's corgi.
 - `g`, `lv`, `st`: grade, highest technique level, steps.
+- `ch`, `cd` (level 6 boards only): number of what-if chains, and the deepest one.
 - `daily` dates are consecutive, local calendar dates, no gaps.
 
 ## Schedule (medium, leaning casual)
@@ -65,6 +67,10 @@ The week of 2026-11-11 (Halina's surgery) is all easy. 9×9 and 10×10 come late
 ## Chill mode (kids)
 
 `puzzles-kids.json`, same schema. Daily: 5×5 L1 Mon/Tue, L1 or L2 Wed, L2 Thu, 6×6 L1 Fri, 5×5 L2 or 6×6 L1 Sat, 6×6 L1 or L2 Sun. Climb (40): 6× 4×4 L1, 10× 5×5 L1, 6× 5×5 L2, 3× 6×6 L1, 3× 6×6 L2, 4× 6×6 L3, 3× 7×7 L2, 5× 7×7 L3. Every kids board has at most 2×n steps.
+
+## Extreme mode
+
+`puzzles-extreme.json`, same schema. 9×9 and 10×10 only, daily from 2026-11-05. Tiers by chain score (`ch + 3 × (cd − 1)`): X0 = L5 with ≥25 steps, X1 ≤ 2, X2 3–5, X3 6–11, X4 ≥ 12. Daily: Mon 9×9 X1, Tue 9×9 or 10×10 X1, Wed 9×9 X2, Thu 9×9 or 10×10 X2, Fri 9×9 X3, Sat 10×10 X3, Sun 10×10 X3 or 9×9 X4, June 15 9×9 X1. Climb (120): 10× 9×9 X0, 10× 10×10 X0, 15× 9×9 X1, 10× 10×10 X1, 15× 9×9 X2, 15× 10×10 X2, 12× 9×9 X3, 13× 10×10 X3, 8× 9×9 X4, 12× 10×10 X4. No board from `puzzles-hard.json` is reused.
 
 ## Special dates
 
