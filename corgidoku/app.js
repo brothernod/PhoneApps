@@ -4,7 +4,7 @@ import { ITEMS, SLOTS, item, outfit, colorsOf, baseId, ownsLine, priceFor, shopD
 
 // ---------- constants ----------
 const NAME = 'Halina'; // the Default player's name until they set their own in Settings
-const VERSION = '1.25'; // bump with CACHE in sw.js on every release
+const VERSION = '1.26'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const YARD_NAMES = ['pink', 'purple', 'blue', 'mint', 'yellow', 'orange', 'red', 'lavender', 'teal', 'lime']; // how Sniff names each yard color
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
@@ -167,7 +167,7 @@ function specialBanner(iso) {
   // The get-well message is personal, so it only shows when the Default player is named Halina.
   if (iso === '2026-11-11' && isHalina()) return `Thinking of you today, ${esc(nm())} 💗<small>Cheddar is keeping your spot warm. ${cozy ? 'Easy puzzles all week while you rest.' : 'Cozy has easy puzzles all week if you want a gentle one.'}</small>`;
   if (iso > '2026-11-11' && iso <= '2026-11-17') return `Cozy rainbow week 🌈<small>${cozy ? 'Easy, gentle puzzles while you rest up.' : 'Cozy is extra gentle this week if you want an easy one.'} Cheddar approves.</small>`;
-  if (iso.slice(5) === '06-15') return `Happy Birthday, ${esc(nm())}! 🎂🌈<small>Cheddar made you a special puzzle today.</small>`;
+  if (iso.slice(5) === '06-15' && isHalina()) return `Happy Birthday, ${esc(nm())}! 🎂🌈<small>Cheddar made you a special puzzle today.</small>`;
   return '';
 }
 
@@ -227,7 +227,7 @@ function renderHome() {
   const dp = dailyFor(t);
   const lvl = climbLevel();
   const banner = specialBanner(t);
-  const birthday = !isKid() && t.slice(5) === '06-15';
+  const birthday = isHalina() && t.slice(5) === '06-15';
   const look = dressed();
   if (!look.head && birthday) look.head = partyHat;
   $('home').innerHTML = `
@@ -235,8 +235,8 @@ function renderHome() {
     <div class="title">Corgidoku</div>
     <div class="subtitle">Cheddar's puzzle yard for ${esc(nm())}</div>
     <div class="modes${modesFor().length > 2 ? ' three' : ''}">${modesFor().map((k) => `<button class="mode${k === mode() ? ' on' : ''}" data-m="${k}">${MODES[k].label}</button>`).join('')}</div>
-    <div class="hero-row">${isKid() ? `<div class="kidname" style="--kc:${me().color}">${esc(nm())}</div>` : ''}
-      <div class="hero${isKid() ? ' kid' : ''}">${cheddarLoaf(look)}</div></div>
+    <div class="hero-row"><div class="kidname${nm().length > 8 ? ' long' : ''}" style="--kc:${me().color || 'var(--pink)'}">${esc(nm())}</div>
+      <div class="hero kid">${cheddarLoaf(look)}</div></div>
     ${isKid() ? piggyBank() : ''}
     ${banner ? `<div class="banner">${banner}</div>` : ''}
     <div class="menu">
@@ -853,8 +853,8 @@ function winLine() {
     return kid[Math.floor(Math.random() * kid.length)];
   }
   const t = todayISO();
-  if (t.slice(5) === '06-15') return `Happy birthday, ${esc(nm())}! Cheddar did birthday zoomies just for you.`;
-  if (t >= '2026-11-11' && t <= '2026-11-17') return 'Rest up! Cheddar says you\'re doing amazing.';
+  if (t.slice(5) === '06-15' && isHalina()) return `Happy birthday, ${esc(nm())}! Cheddar did birthday zoomies just for you.`;
+  if (t >= '2026-11-11' && t <= '2026-11-17' && isHalina()) return 'Rest up! Cheddar says you\'re doing amazing.';
   const lines = ['Cheddar is doing zoomies!', 'Every corgi found a cozy spot.', 'Big brain, tiny legs. Well done!', 'That\'s worth a belly rub.', 'Cheddar is so proud of you!'];
   return lines[Math.floor(Math.random() * lines.length)];
 }
