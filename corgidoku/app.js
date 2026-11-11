@@ -1,10 +1,10 @@
 import { decodeRegions, decodeSolution, grade } from './engine.js';
 import { cheddarHead, cheddarLoaf, partyHat, paw, treat, artDefs, coinIcon, closetIcon } from './art.js';
-import { ITEMS, SLOTS, item, outfit, priceFor, shopDefaults, payout, backPay, buy, SCENES, FRAMES, CLIMBS, scene, frame, earnable, unlockAt, milestones, syncUnlocks } from './shop.js';
+import { ITEMS, SLOTS, item, outfit, colorsOf, baseId, ownsLine, priceFor, shopDefaults, payout, backPay, buy, SCENES, FRAMES, CLIMBS, scene, frame, earnable, unlockAt, milestones, syncUnlocks } from './shop.js';
 
 // ---------- constants ----------
 const NAME = 'Halina'; // the Default player's name until they set their own in Settings
-const VERSION = '1.20'; // bump with CACHE in sw.js on every release
+const VERSION = '1.21'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
 const EMPTY = 0, PAW = 1, AUTO = 2, CORGI = 3, NOPE = 4; // NOPE = a wrong guess, shown as a red paw
@@ -781,6 +781,10 @@ function extremeIntro() {
 // own previews it, with Buy at the bottom. Scenes and frames come only from the Climb: never a Buy button.
 const CLOSET_TABS = [['head', 'Head'], ['neck', 'Neck'], ['face', 'Face'], ['scenes', 'Scenes'], ['frames', 'Frames']];
 let closetTab = 'head', closetPick = undefined; // undefined = show what's worn
+function wearIt(key, id) {
+  if (id) db.worn[key] = id; else delete db.worn[key];
+  save(); closetPick = undefined; applyScene(); renderCloset();
+}
 function renderCloset(tab = closetTab, pickId) {
   if (tab !== closetTab) closetPick = undefined;
   if (pickId !== undefined) closetPick = pickId;
@@ -793,25 +797,41 @@ function renderCloset(tab = closetTab, pickId) {
   if (slot) {
     pick = closetPick !== undefined ? closetPick : db.worn[slot] || null;
     look[slot] = pick;
+    // One tile per item; its colors are swatches in the bottom bar. The tile shows the color you're
+    // looking at, else the one you wear, else one you own.
+    const shown = (it) => {
+      const mine = colorsOf(it.id).map((c) => c.id).filter((id) => db.owned.includes(id));
+      for (const id of [pick, db.worn[slot], ...(db.owned.includes(it.id) ? [it.id] : []), ...mine]) if (id && baseId(id) === it.id) return item(id);
+      return it;
+    };
     const tile = (it) => {
-      const owned = !it || db.owned.includes(it.id), worn = it ? db.worn[it.slot] === it.id : !db.worn[slot];
-      const sub = worn ? 'Wearing' : owned ? (it ? 'Yours' : '') : coin(priceFor(it, kid)) + (kid && db.goal === it.id ? ' ⭐' : '');
-      return `<button class="ctile${(it ? it.id : null) === pick ? ' on' : ''}" data-id="${it ? it.id : ''}">
-        <div class="cthumb">${it ? `<svg viewBox="${it.thumb}">${it.art}</svg>` : '<span>🚫</span>'}</div>
-        <b>${it ? it.name : 'Nothing'}</b><small>${sub}</small></button>`;
+      const owned = !it || ownsLine(db, it.id), worn = it ? baseId(db.worn[it.slot]) === it.id : !db.worn[slot];
+      const sub = worn ? 'Wearing' : owned ? (it ? 'Yours' : '') : coin(priceFor(it, kid)) + (kid && baseId(db.goal) === it.id ? ' ⭐' : '');
+      const v = it && shown(it);
+      return `<button class="ctile${(it ? it.id : null) === baseId(pick) ? ' on' : ''}" data-id="${it ? it.id : ''}">
+        <div class="cthumb">${it ? `<svg viewBox="${v.thumb}">${v.art}</svg>` : '<span>🚫</span>'}</div>
+        <b>${it ? it.name : 'Nothing'}</b><small>${sub}</small>${it?.colors ? `<i class="cdots">${colorsOf(it.id).map((c) => `<span style="background:${c.dot}"></span>`).join('')}</i>` : ''}</button>`;
     };
     const list = ITEMS.filter((x) => x.slot === slot);
     body = list.length ? `<div class="cgrid">${tile(null)}${list.map(tile).join('')}</div>`
       : `<p class="csoon">Cheddar's tailor is still sewing. New ${tab} things are coming soon!</p>`;
     const it = item(pick);
+    // Colors of the picked item: owned ones go on with a tap, others preview (and can be bought).
+    const cols = it ? colorsOf(it.id) : [];
+    if (cols.length) action += `<div class="csw" role="group" aria-label="Colors">${cols.map((c) => {
+      const own = db.owned.includes(c.id), on = c.id === pick, wear = c.id === db.worn[slot];
+      return `<button class="sw${on ? ' on' : ''}${own ? '' : ' new'}" data-id="${c.id}" aria-label="${c.name}${wear ? ', wearing' : own ? ', yours' : ''}" style="--c:${c.dot}">${wear ? '✓' : ''}</button>`;
+    }).join('')}<small>${esc(it.name)}${db.owned.includes(it.id) ? '' : ` · ${it.variant ? 'new color' : 'not yours yet'}`}</small></div>`;
     // Owned things go on with a tap (see the tile handler), so only things to buy need a button.
     if (it && !db.owned.includes(it.id)) {
       const cost = priceFor(it, kid);
-      if (db.coins >= cost) action = `<button class="cta" id="c-buy">Buy for ${coin(cost)}</button>`;
+      // A new color needs the item first.
+      if (it.variant && !ownsLine(db, it.id)) action += `<button class="cta alt" disabled>Get the ${item(it.base).name.toLowerCase()} first, then colors are ${coin(priceFor(it, kid))}</button>`;
+      else if (db.coins >= cost) action += `<button class="cta" id="c-buy">Buy for ${coin(cost)}</button>`;
       // Kids can't afford it yet: they can make it their piggy bank goal.
-      else if (kid) action = db.goal === it.id ? `<button class="cta alt" disabled>⭐ Saving up for this · ${cost - db.coins} more to go</button>`
+      else if (kid) action += db.goal === it.id ? `<button class="cta alt" disabled>⭐ Saving up for this · ${cost - db.coins} more to go</button>`
         : `<button class="cta" id="c-goal">⭐ Save up for this</button>`;
-      else action = `<button class="cta alt" disabled>${coin(cost)} · ${cost - db.coins} more coins to go</button>`;
+      else action += `<button class="cta alt" disabled>${coin(cost)} · ${cost - db.coins} more coins to go</button>`;
     }
   } else {
     // Scenes and frames: earned ones can be used, locked ones show where to earn them.
@@ -849,14 +869,16 @@ function renderCloset(tab = closetTab, pickId) {
   // Tap something you own (or Nothing / Pink / No frame) and it goes on right away, no button.
   // Tap something you don't own yet to preview it and see Buy, Save up, or where to earn it.
   $('closet').querySelectorAll('.ctile').forEach((b) => (b.onclick = () => {
-    const id = b.dataset.id || null;
-    const mine = !id || (slot ? db.owned : kind === 'scene' ? db.scenes : db.frames).includes(id);
-    if (mine) {
-      const key = slot || kind;
-      if (id) db.worn[key] = id; else delete db.worn[key];
-      save(); closetPick = undefined; applyScene();
-    } else closetPick = id;
-    renderCloset();
+    let id = b.dataset.id || null;
+    let mine = !id || (slot ? ownsLine(db, id) : (kind === 'scene' ? db.scenes : db.frames).includes(id));
+    // An item you own in some color: keep the color you wear, else put on one you own.
+    if (slot && id && mine) id = baseId(db.worn[slot]) === id ? db.worn[slot] : db.owned.includes(id) ? id : colorsOf(id).find((c) => db.owned.includes(c.id)).id;
+    if (mine) wearIt(slot || kind, id);
+    else { closetPick = id; renderCloset(); }
+  }));
+  $('closet').querySelectorAll('.sw').forEach((b) => (b.onclick = () => {
+    const id = b.dataset.id;
+    if (db.owned.includes(id)) wearIt(slot, id); else { closetPick = id; renderCloset(); }
   }));
   const buyB = $('c-buy'), goal = $('c-goal');
   if (goal) goal.onclick = () => { db.goal = pick; save(); renderCloset(); };

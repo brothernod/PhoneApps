@@ -8,20 +8,74 @@ import { SCENE_ART } from './scenes.js';
 // slot: head | neck | face. art: an SVG fragment in Cheddar's 200x200 space (see OUTFIT in art.js).
 // thumb: the viewBox that frames the item on its own for the Closet tile.
 // Grown-up prices: basic 60 · nice 150 · fancy 350 · dream 900. Kids pay half.
+// Color variants: one drawing makes several items. `paint` lists the item's recolorable hexes as
+// [main, dark, light, deep] (null where unused); `color` names the drawn color; `colors` are the
+// other colors on sale, from PALETTE. A variant's id is "<item>:<color>", e.g. "bandana:purple".
+export const PALETTE = {
+  pink: { name: 'Pink', hex: ['#FF6FB5', '#C93F86', '#FFC6DE', '#7A2A5E'] },
+  purple: { name: 'Purple', hex: ['#9B6BFF', '#6B44C9', '#D9C9FF', '#3E2A7A'] },
+  blue: { name: 'Blue', hex: ['#46B3FF', '#2E7BC4', '#BFE4FF', '#1F4E7A'] },
+  mint: { name: 'Mint', hex: ['#3FD98B', '#22A866', '#C6F5DD', '#1F6A48'] },
+  green: { name: 'Green', hex: ['#6CCB5F', '#3E9A3A', '#C8F0B8', '#1F5A2A'] },
+  yellow: { name: 'Yellow', hex: ['#FFC93C', '#D99A12', '#FFEBA6', '#7A5A12'] },
+  red: { name: 'Red', hex: ['#FF5A5A', '#C93636', '#FFC2C2', '#7A1F2A'] },
+  orange: { name: 'Orange', hex: ['#FF9F45', '#D9741C', '#FFD9B0', '#7A3E12'] },
+  black: { name: 'Black', hex: ['#3A3346', '#24202C', '#7D7590', '#1A1720'] },
+};
 export const ITEMS = [
-  { id: 'partyhat', slot: 'head', name: 'Party hat', price: 60, thumb: '66 -30 96 96' },
-  { id: 'beanie', slot: 'head', name: 'Pom-pom beanie', price: 60, thumb: '50 -25 100 100' },
+  { id: 'partyhat', slot: 'head', name: 'Party hat', price: 60, thumb: '66 -30 96 96', color: 'pink', paint: ['#FF6FB5'], colors: ['blue', 'mint', 'purple'] },
+  { id: 'beanie', slot: 'head', name: 'Pom-pom beanie', price: 60, thumb: '50 -25 100 100', color: 'pink', paint: ['#FF6FB5', '#C93F86', '#FFC6DE'], colors: ['blue', 'mint', 'purple'] },
   { id: 'flowercrown', slot: 'head', name: 'Flower crown', price: 150, thumb: '22 -12 156 156' },
   { id: 'rainbowbow', slot: 'head', name: 'Rainbow bow', price: 150, thumb: '58 -16 112 112' },
   { id: 'pirate', slot: 'head', name: 'Pirate hat', price: 150, thumb: '44 -24 112 112' },
-  { id: 'bandana', slot: 'neck', name: 'Pink bandana', price: 60, thumb: '50 115 100 100' },
-  { id: 'bandana-purple', slot: 'neck', name: 'Purple bandana', price: 60, thumb: '50 115 100 100' },
-  { id: 'bowtie', slot: 'neck', name: 'Bow tie', price: 60, thumb: '55 118 90 90' },
-  { id: 'heartglasses', slot: 'face', name: 'Heart sunglasses', price: 150, thumb: '14 20 172 172' },
+  { id: 'bandana', slot: 'neck', name: 'Bandana', price: 60, thumb: '50 115 100 100', color: 'pink', paint: ['#FF6FB5'], colors: ['purple', 'blue', 'mint'] },
+  { id: 'bowtie', slot: 'neck', name: 'Bow tie', price: 60, thumb: '55 118 90 90', color: 'purple', paint: ['#9B6BFF', '#6B44C9'], colors: ['pink', 'blue', 'red'] },
+  { id: 'heartglasses', slot: 'face', name: 'Heart sunglasses', price: 150, thumb: '14 20 172 172', color: 'pink', paint: ['#FF6FB5', null, null, '#7A2A5E'], colors: ['purple', 'red', 'blue'] },
 ];
+ITEMS.push(
+  { id: 'helmet', slot: 'head', name: 'Climbing helmet', price: 150, thumb: '42 -14 116 116', color: 'red', paint: ['#FF5A5A', '#C93636', '#FFC2C2'], colors: ['blue', 'mint', 'purple'] },
+  { id: 'tiara', slot: 'head', name: 'Tiara', price: 350, thumb: '48 -18 104 104', color: 'pink', paint: ['#FF6FB5', '#C93F86', '#FFC6DE'], colors: ['blue', 'purple', 'mint'] },
+  { id: 'wizard', slot: 'head', name: 'Wizard hat', price: 350, thumb: '28 -24 144 100', color: 'purple', paint: ['#7B5CE0', '#4E35A8', '#B9A6FF'], colors: ['blue', 'pink', 'mint'] },
+  { id: 'dino', slot: 'head', name: 'Dino hood', price: 350, thumb: '6 -26 188 188', color: 'green', paint: ['#6CCB5F', '#3E9A3A', '#C8F0B8'], colors: ['purple', 'blue', 'pink'] },
+  { id: 'bunny', slot: 'head', name: 'Bunny ears', price: 150, thumb: '44 -30 122 122', color: 'pink', paint: ['#FF6FB5', '#C93F86', '#FFC6DE'], colors: ['blue', 'purple', 'mint'] },
+  { id: 'unicorn', slot: 'head', name: 'Unicorn horn', price: 900, thumb: '46 -30 110 110' },
+  { id: 'bandana-rainbow', slot: 'neck', name: 'Rainbow bandana', price: 150, thumb: '48 113 104 104' },
+  { id: 'scarf', slot: 'neck', name: 'Cozy scarf', price: 150, thumb: '38 112 124 124', color: 'red', paint: ['#FF5A5A', '#C93636', '#FFC2C2'], colors: ['blue', 'mint', 'purple'] },
+  { id: 'starcollar', slot: 'neck', name: 'Star collar', price: 150, thumb: '44 114 112 112', color: 'purple', paint: ['#9B6BFF', '#6B44C9', '#D9C9FF'], colors: ['pink', 'blue', 'mint'] },
+  { id: 'roundglasses', slot: 'face', name: 'Round glasses', price: 60, thumb: '16 22 168 168', color: 'black', paint: ['#3A3346', null, '#7D7590'], colors: ['pink', 'purple', 'yellow'] },
+);
+export const VARIANT_PRICE = 40;
 for (const it of ITEMS) it.art = OUTFIT[it.id] || '';
 export const SLOTS = ['head', 'neck', 'face'];
-export const item = (id) => ITEMS.find((x) => x.id === id) || null;
+// Swap an item's recolorable hexes for another palette color (case-insensitive, whole hex only).
+function recolor(art, paint, to) {
+  const map = {};
+  paint.forEach((h, i) => { if (h) map[h.toUpperCase()] = PALETTE[to].hex[i]; });
+  return art.replace(/#[0-9a-fA-F]{6}\b/g, (h) => map[h.toUpperCase()] || h);
+}
+const base = (id) => ITEMS.find((x) => x.id === id) || null;
+const variants = new Map(); // built once on first use
+// item('bandana') is the drawn item; item('bandana:blue') is a color variant with its own art and price.
+export function item(id) {
+  if (!id) return null;
+  if (!id.includes(':')) return base(id);
+  if (variants.has(id)) return variants.get(id);
+  const [b, c] = id.split(':'), it = base(b);
+  if (!it || !it.colors?.includes(c)) return null;
+  const v = { id, base: b, colorKey: c, slot: it.slot, name: `${PALETTE[c].name} ${it.name.toLowerCase()}`, price: VARIANT_PRICE, thumb: it.thumb, art: recolor(it.art, it.paint, c), variant: true };
+  variants.set(id, v);
+  return v;
+}
+// Every color of an item, drawn color first: [{ id, key, name, dot }].
+export function colorsOf(id) {
+  const it = base(String(id).split(':')[0]);
+  if (!it?.colors) return [];
+  return [{ id: it.id, key: it.color, name: PALETTE[it.color].name, dot: it.paint[0] },
+    ...it.colors.map((c) => ({ id: `${it.id}:${c}`, key: c, name: PALETTE[c].name, dot: PALETTE[c].hex[0] }))];
+}
+export const baseId = (id) => (id ? String(id).split(':')[0] : id);
+// Owns the item in any color (a variant can only be bought once you own some color of it).
+export const ownsLine = (db, id) => (db.owned || []).some((o) => baseId(o) === baseId(id));
 // The art for what a player has on: { head, neck, face } fragments ('' for an empty slot).
 export const outfit = (worn = {}) => Object.fromEntries(SLOTS.map((s) => [s, item(worn[s])?.art || '']));
 // Kids pay half price.
@@ -65,18 +119,32 @@ export function weekDays(progress, week) {
 // Fresh shop fields for a player db. Additive: old keys are never touched.
 export function shopDefaults(db) {
   db.coins ??= 0; db.paid ??= {}; db.weeks ??= {}; db.owned ??= []; db.worn ??= {}; db.scenes ??= []; db.frames ??= [];
+  // v1.21: the purple bandana became a color of the bandana. Same drawing, new id.
+  const ren = { 'bandana-purple': 'bandana:purple' };
+  db.owned = [...new Set(db.owned.map((o) => ren[o] || o))];
+  for (const k of Object.keys(db.worn)) if (ren[db.worn[k]]) db.worn[k] = ren[db.worn[k]];
+  if (ren[db.goal]) db.goal = ren[db.goal];
 }
 
 // ---------- scenes and frames ----------
 // Earned in the Climb only, never bought. Each unlock rule is [climb prefix, hold]:
 // kc = Chill, c = Cozy, hc = Hard, xc = Extreme. The kids reuse the grown-up scenes.
 // dark: light text goes on top, and the play screen gets a navy tint instead of a white one.
-// Phase 4 adds the other 9 scenes; syncUnlocks picks them up from progress already made.
+// Scenes added in a later release are handed out by syncUnlocks from progress already made.
 export const CLIMBS = { kc: 'Chill Climb', c: 'Cozy Climb', hc: 'Hard Climb', xc: 'Extreme Climb' };
 export const SCENES = [
   { id: 'lawn', name: 'Lawn', at: [['kc', 10], ['c', 20]] },
   { id: 'beach', name: 'Beach', at: [['kc', 20], ['c', 40]] },
+  { id: 'mountaintop', name: 'Mountaintop', at: [['c', 60]] },
+  { id: 'ocean', name: 'Ocean', at: [['kc', 30], ['hc', 20]] },
+  { id: 'autumn', name: 'Autumn forest', at: [['hc', 40]] },
   { id: 'lava', name: 'Lava flow', dark: true, at: [['hc', 60]] },
+  { id: 'snowy', name: 'Snowy peak', at: [['hc', 80]] },
+  { id: 'night', name: 'Night sky', dark: true, at: [['kc', 40], ['xc', 20]] },
+  { id: 'aurora', name: 'Aurora', dark: true, at: [['xc', 40]] },
+  { id: 'canyon', name: 'Canyon', at: [['xc', 60]] },
+  { id: 'clouds', name: 'Clouds', at: [['xc', 80]] },
+  { id: 'space', name: 'Outer space', dark: true, at: [['xc', 100]] },
   { id: 'moon', name: 'The Moon', dark: true, at: [['xc', 120]] },
 ];
 for (const s of SCENES) s.art = SCENE_ART[s.id] || '';
@@ -91,9 +159,10 @@ export const frame = (id) => FRAMES.find((x) => x.id === id) || null;
 // Kids can't play Extreme and grown-ups don't see Chill, so only some rules apply to each player.
 const usable = (kid) => ([c]) => (kid ? c !== 'xc' : c !== 'kc');
 export const earnable = (s, kid) => s.at.some(usable(kid));
-// "Hard Climb · hold 40": the earliest hold this player can earn it at.
+// "Hard Climb · hold 40": the earliest hold this player can earn it at (kids: their Chill Climb first).
 export function unlockAt(s, kid) {
-  const [c, h] = s.at.filter(usable(kid)).sort((a, b) => a[1] - b[1])[0] || s.at[0];
+  const rank = ([c, h]) => (kid && c === 'kc' ? 0 : 1000) + h;
+  const [c, h] = s.at.filter(usable(kid)).sort((a, b) => rank(a) - rank(b))[0] || s.at[0];
   return { climb: c, hold: h, label: `${CLIMBS[c]} · hold ${h}` };
 }
 // What a climb hands out, by hold: [{ hold, kind: 'scene'|'frame', it }].
@@ -157,6 +226,7 @@ export function buy(db, id, kid) {
   shopDefaults(db);
   const it = item(id);
   if (!it || db.owned.includes(id)) return false;
+  if (it.variant && !ownsLine(db, id)) return false; // colors come after you own the item itself
   const cost = priceFor(it, kid);
   if (db.coins < cost) return false;
   db.coins -= cost;

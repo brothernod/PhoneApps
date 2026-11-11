@@ -94,11 +94,13 @@ Prices: basic 60 · nice 150 · fancy 350 · dream 900 · color variant 40.
 
 | Slot | Items (grown-up price; kids pay half) |
 | --- | --- |
-| Head | Party hat 60 · Pom-pom beanie 60 · Flower crown 150 · Rainbow bow 150 · Pirate hat 150 |
-| Neck | Pink bandana 60 · Purple bandana 60 · Bow tie 60 |
-| Face | Heart sunglasses 150 |
+| Head | Party hat 60 · Pom-pom beanie 60 · Flower crown 150 · Rainbow bow 150 · Pirate hat 150 · Climbing helmet 150 · Bunny ears 150 · Tiara 350 · Wizard hat 350 · Dino hood 350 · Unicorn horn 900 |
+| Neck | Bandana 60 · Bow tie 60 · Rainbow bandana 150 · Star collar 150 · Cozy scarf 150 |
+| Face | Round glasses 60 · Heart sunglasses 150 |
 
-More items and color variants come in phase 4. Tapping an item you own wears it; buying one wears it right away. Neck items only show on the full Cheddar (home, Closet, sheets).
+Tapping an item you own wears it; buying one wears it right away. Neck items only show on the full Cheddar (home, Closet, sheets).
+
+**Color variants.** Most items come in 3 more colors at 40 coins each (kids 20): one drawing, with its recolorable hexes (`paint`) swapped for another color from `PALETTE` in `shop.js`. A variant's id is `<item>:<color>` (`bandana:purple`, `wizard:mint`), and it's a separate thing you own. You need the item in some color before you can buy another color. In the Closet each item is one tile with little color dots; picking it shows a row of swatches above the Buy button (solid = yours, dashed = not yet, ✓ = wearing): tap one you own to wear it, or one you don't to preview it. Kids can save up for a color too. No colors for the flower crown, rainbow bow, pirate hat, rainbow bandana or unicorn horn (they're already multicolored or a one-off). The old purple bandana (`bandana-purple`, v1.14–1.20) is now the bandana's purple color: `shopDefaults` renames it in `owned`, `worn` and `goal` on load.
 
 **Board corgis.** Settings → Dress up board corgis puts the equipped hat and face item (sunglasses) on every corgi on the board (on by default for the kids, off for Default). At the win party every corgi puts them on either way, and so does the zooming Cheddar. Nothing equipped means plain corgis: there's no default party hat.
 
@@ -106,7 +108,7 @@ More items and color variants come in phase 4. Tapping an item you own wears it;
 
 **Back pay:** the first launch with the shop (per player, `db.shopV`) credits puzzles already solved at base rates: a daily at its daily rate if `solvedAt` is the puzzle's date, otherwise 3; Climb holds 2 (kids: 10 each, plus their 100). No clean bonus and no weekly back pay; weeks that already had 5 days are marked paid. A one-time "Welcome to the closet" sheet shows the total.
 
-**Data** (per player db, additive): `coins`, `paid {pid:1}`, `weeks {"2026-W46":1}`, `owned [itemId]`, `worn {head, neck, face, scene, frame}`, `scenes [sceneId]`, `frames [frameId]`, `goal` (kids' piggy-bank item), `shopV`, `settings.dressBoard`, `settings.sparkles`.
+**Data** (per player db, additive): `coins`, `paid {pid:1}`, `weeks {"2026-W46":1}`, `owned [itemId]` (colors too: `"bandana:purple"`), `worn {head, neck, face, scene, frame}`, `scenes [sceneId]`, `frames [frameId]`, `goal` (kids' piggy-bank item), `shopV`, `settings.dressBoard`, `settings.sparkles`.
 
 **Backup:** Settings → Backup. "Copy backup code" copies base64 JSON of every `corgidoku:*` key (all players). "Restore from code" checks the code, asks, replaces everything and reloads. Safari can clear a site's storage after 7 days without a visit unless it's on the Home Screen, so a backup protects the coins.
 
@@ -116,20 +118,38 @@ Scenes are pictures behind the whole app (home, play, the Climb, past days, the 
 
 | Climb | Scenes by hold | Summit frame |
 | --- | --- | --- |
-| Cozy (60) | 20 Lawn · 40 Beach · 60 Mountaintop* | Rainbow |
-| Hard (80) | 20 Ocean* · 40 Autumn forest* · 60 Lava flow · 80 Snowy peak* | Gold |
-| Extreme (120) | 20 Night sky* · 40 Aurora* · 60 Canyon* · 80 Clouds* · 100 Outer space* · 120 The Moon | Starlight |
-| Chill (40) | 10 Lawn · 20 Beach · 30 Ocean* · 40 Night sky* | Rainbow |
+| Cozy (60) | 20 Lawn · 40 Beach · 60 Mountaintop | Rainbow |
+| Hard (80) | 20 Ocean · 40 Autumn forest · 60 Lava flow · 80 Snowy peak | Gold |
+| Extreme (120) | 20 Night sky · 40 Aurora · 60 Canyon · 80 Clouds · 100 Outer space · 120 The Moon | Starlight |
+| Chill (40) | 10 Lawn · 20 Beach · 30 Ocean · 40 Night sky | Rainbow |
 
-\* coming in phase 4. Only the drawn scenes are in the catalog (`SCENES` in `shop.js`); when phase 4 adds the rest, the launch sync below hands them to anyone who already passed those holds.
+All 13 are in the catalog (`SCENES` in `shop.js`). Dark scenes: Lava flow, Night sky, Aurora, Outer space, The Moon. Kids see the 8 their climbs can give (not Aurora, Canyon, Clouds, Outer space or The Moon), and a locked scene tells a kid the Chill hold first when it has one ("Ocean: Chill Climb · hold 30").
 
 **Unlocking.** `syncUnlocks(db)` runs on every launch and after every solve. It unlocks every scene and frame whose milestone hold was ever solved (`progress[pid].solved` or `paid[pid]`, so Start over can't take one away). It's idempotent and never removes anything, so it also covered players whose back pay (`shopV`) ran before scenes existed. Found at launch: one "Climb rewards!" sheet (or a list on the first-time "Welcome to the closet" sheet). Earned by a solve: a "New scene: Lava flow!" / "New frame: Gold!" sheet with a preview and **Use it**, then the win sheet.
 
-**Drawing.** 390×844 SVG, `preserveAspectRatio="xMidYMid slice"`, flat fills with soft darker outlines (Sticker style). The board covers the middle of the play screen, so each landmark sits in the **top band** (the sun, the volcano's crater, Earth, in a top corner so they stay clear of the home subtitle and the play-screen clock) or the **bottom band** (the lava flow, the sandcastle and beach ball, the big daisies), and Cheddar sits on each scene's ground on the home screen. Regenerate with `python3 tools/scenes.py` (add `--svg out` to also write the SVGs for checking with `rsvg-convert`); `scenes.js` is its output.
+**Drawing.** 390×844 SVG, `preserveAspectRatio="xMidYMid slice"`, flat fills with soft darker outlines (Sticker style). The board covers the middle of the play screen (about y 92–460), so each landmark sits in a **top corner** (clear of the home subtitle and the play-screen clock) or the **bottom band** (under the play buttons), and Cheddar sits on each scene's ground on the home screen:
+
+| Scene | Top corner | Bottom band |
+| --- | --- | --- |
+| Lawn | sleepy sun (left) | big daisies |
+| Beach | sun (right) | sandcastle, beach ball, starfish |
+| Mountaintop | rocky peak with a pink pennant (left) | stone cairn, edelweiss |
+| Ocean | striped lighthouse (left), whale tail (right) | underwater fish, coral, starfish; Cheddar sits on a pier |
+| Autumn forest | big orange tree (right) | pumpkins, hedgehog in a leaf pile, toadstools |
+| Lava flow | volcano crater (left) | lava river |
+| Snowy peak | snow-capped peak (right) | snowman, sled, pines |
+| Night sky | sleepy crescent moon (left) | campfire, lantern, tent |
+| Aurora | aurora swirl (left) | arctic fox, cabin |
+| Canyon | striped butte (left), little sun (right) | saguaro, tumbleweed, lizard |
+| Clouds | hot-air balloon (left) | rainbow, cloud castle; Cheddar sits on the cloud sea |
+| Outer space | ringed planet (right) | rocket, UFO; Cheddar sits on a mint planet |
+| The Moon | Earth (left) | craters |
+
+Gradients or clip paths in a scene need ids unique to that scene (`cldsky`, `aurora*`, `cy*`), because the Closet shows several scenes at once. Regenerate with `python3 tools/scenes.py` (add `--svg out` to also write the SVGs for checking with `rsvg-convert`); `scenes.js` is its output.
 
 **Play screen.** The scene sits under a tint: white at 45% on light scenes, navy `rgba(28,26,58,.35)` on dark ones (`dark: true`: Lava flow, The Moon). The board, cells and yard colors never change.
 
-**Text on dark scenes.** The subtitle, bar titles, the play-screen clock and treats line, and the Climb labels turn `#F3EAFF` (`body.dark`). On-picture text also gets a soft halo, and the Climb's labels (hold sizes, summit and base camp) sit on small backings because the Climb scrolls over sky and ground alike. Measured against the scene pixels behind each text with the halo removed: everything passes 4.5:1 at 390×844 and at 390×797 (the Home Screen app). In Safari with its toolbars showing (390×664) the picture shifts about 90px, so a few spots (the lava stream, the beach sun) land behind text; the halo keeps them readable.
+**Text on scenes.** On dark scenes the subtitle, bar titles, the play-screen clock and treats line, and the Climb labels turn `#F3EAFF` (`body.dark`). On light scenes the subtitle and the clock/treats line use the full ink color (`--ink`), because the soft ink can't reach 4.5:1 on a colored sky. On-picture text also gets a soft halo; the play screen's treats/Relaxed line and clock sit on soft pills (white 72% / navy 62%), since the top corners are where landmarks live; and the Climb's labels (hold sizes, summit and base camp) sit on small backings because the Climb scrolls over sky and ground alike. Measured against the scene pixels behind each whole text box (5th percentile, halo removed, pills included), the home subtitle, the play and Closet bar titles, the clock and the Relaxed line pass 4.5:1 on all 13 scenes at 390×844 and 390×797 (the Home Screen app); the lowest is the play bar title over Outer space's ringed planet at 5.7:1. The faint version tag at the bottom of home is decorative (35% opacity) and not held to it. In Safari with its toolbars showing (390×664) the picture shifts about 90px; the halo and pills keep text readable.
 
 **Climb labels.** A milestone hold shows what it gives until it's earned: "🔒 Lava flow at hold 60", "🔒 Gold frame at hold 80".
 
