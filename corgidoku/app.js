@@ -4,7 +4,7 @@ import { ITEMS, SLOTS, item, outfit, colorsOf, baseId, ownsLine, priceFor, shopD
 
 // ---------- constants ----------
 const NAME = 'Halina'; // the Default player's name until they set their own in Settings
-const VERSION = '1.26'; // bump with CACHE in sw.js on every release
+const VERSION = '1.27'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const YARD_NAMES = ['pink', 'purple', 'blue', 'mint', 'yellow', 'orange', 'red', 'lavender', 'teal', 'lime']; // how Sniff names each yard color
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
@@ -376,6 +376,8 @@ function play(pid) {
   $('play').querySelector('.back').onclick = () => { stopClock(); P.kind === 'c' ? renderClimb() : renderHome(); };
   $('restart').onclick = () => confirmSheet('Start this puzzle over?', 'Your corgis and paw marks will be cleared.', () => { snapshot(); G.cells.fill(EMPTY); G.treats = 3; G.solved = false; persist(); drawBoard(); drawTreats(); say(''); startClock(); });
   $('undo').onclick = undo;
+  // Tapping Cheddar's bubble also puts a Sniff clue away.
+  $('play').querySelector('.bubble').onclick = () => { if (sniffShown()) dismissSniff(); };
   // Tap a color to paint with it; double-tap a color to clear that color's paws.
   let lastSw = { k: -1, t: 0 };
   document.querySelectorAll('#swatches .sw').forEach((b) => (b.onclick = () => {
@@ -477,6 +479,8 @@ function snapshot() { G.history.push({ cells: G.cells.slice(), treats: G.treats 
 // is a fact Cheddar checked, so it stays put. Treats stay eaten.
 function undo() {
   if (G.solved) return;
+  // A Sniff clue on screen: the first Undo just puts it away (nothing is charged, nothing undone).
+  if (sniffShown()) return dismissSniff();
   const now = G.cells;
   const keepFacts = (cells) => {
     const out = cells.slice();
@@ -671,6 +675,9 @@ function explain(st) {
   return { look: `What if a corgi sat on the ? spot? Follow the corgis it would force. (${name})`,
     answer: `${name}: a corgi on the ? spot would force ${d === 1 ? 'corgi 1 (the last spot in its row, column or yard)' : `corgis 1 to ${d} (each the last spot in its row, column or yard)`}, and then ${dead} would have no room. So no corgi there: paw-mark the ? spot.` };
 }
+// A Sniff clue is showing: highlights on the board, or its explanation in Cheddar's bubble.
+const sniffShown = () => !!($('board')?.querySelector('.sn-a,.glow,.sng,.snx') || $('msg')?.dataset.sn);
+function dismissSniff() { clearSniff(); say(''); }
 function clearSniff() {
   const b = $('board');
   if (!b) return;
@@ -693,7 +700,7 @@ function showLook(st, extra = '') {
   clearSniff();
   spotlight(st.look);
   if (st.level === 6) ghost(st.cells[0], '?');
-  say(explain(st).look + extra, false, true);
+  say(explain(st).look + extra, false, true, true);
 }
 function showAnswer(st) {
   clearSniff();
@@ -708,7 +715,7 @@ function showAnswer(st) {
     }
   } else if (st.type === 'place' || st.type === 'reveal') b.children[st.cells[0]].classList.add('glow');
   else for (const i of st.cells) b.children[i].insertAdjacentHTML('beforeend', `<span class="snx">${paw(false)}</span>`);
-  say(explain(st).answer, false, true);
+  say(explain(st).answer, false, true, true);
 }
 // The Sniff button: the nose, "Sniff" and the price (Hard/Extreme), or "Show me" when the
 // answer to the step already paid for is one tap away. Greyed after a free peek the player can't pay for.
@@ -737,7 +744,7 @@ function hint() {
   // Second tap on the same step: the answer (already paid for), or a reminder after a free peek.
   if (G.sn?.k === key && st.type !== 'wrong') {
     if (!G.sn.f) { G.sn.s = 2; persist(); showAnswer(st); return; }
-    if (db.coins < price) return say(`The answer costs ${price} coins and you have ${db.coins}. Solve a puzzle or two to earn more!`, false, true);
+    if (db.coins < price) return showLook(st, ` The answer costs ${price} coins and you have ${db.coins}. Solve a puzzle or two to earn more!`);
     return spendSheet(price, () => { if (!paySniff(db, G.pid)) return; save(); G.sn = { k: key, s: 2, f: false }; persist(); sniffButton(); showAnswer(st); });
   }
   const go = () => {
@@ -749,7 +756,7 @@ function hint() {
       G.sn = null; persist(); drawBoard();
       for (const i of st.cells) $('board').children[i].classList.add('glow');
       const k = st.cells.length;
-      say(`Cheddar smelled a corgi under ${k === 1 ? 'one of your paw marks' : `${k} of your paw marks`}, so he took ${k === 1 ? 'it' : 'them'} off. Look at the glowing spot${k === 1 ? '' : 's'}!`, false, true);
+      say(`Cheddar smelled a corgi under ${k === 1 ? 'one of your paw marks' : `${k} of your paw marks`}, so he took ${k === 1 ? 'it' : 'them'} off. Look at the glowing spot${k === 1 ? '' : 's'}!`, false, true, true);
       return;
     }
     G.sn = { k: key, s: 1, f: false }; persist(); sniffButton(); showLook(st);
@@ -916,10 +923,11 @@ function celebrate() {
 
 // ---------- messages & sheets ----------
 let msgTimer = null;
-function say(text, alert = false, sticky = false) {
+function say(text, alert = false, sticky = false, sniff = false) {
   const m = $('msg');
   if (!m) return;
   m.textContent = text;
+  if (sniff && text) m.dataset.sn = '1'; else delete m.dataset.sn;
   m.classList.toggle('alert', alert);
   m.classList.toggle('long', text.length > 120);
   clearTimeout(msgTimer);
@@ -948,7 +956,7 @@ function help() {
     <p>Tap for a 🐾 paw mark (“no corgi here”); tap it again to remove it. <b>Double-tap</b> to place a corgi. Drag to paw-mark lots of cells; start a drag on a paw to erase instead.</p>
     <p>Pick a paw color under the board to brainstorm "what if" ideas in different colors. Double-tap a color to clear just those paws.</p>
     <p>${isKid() ? 'Ready for more? Try <b>🌈 Cozy</b> on the home screen.' : mode() === 'extreme' ? '<b>⚡ Extreme</b> boards need a "what if": picture a corgi on a spot, follow the corgis it forces, and if a row, column or yard runs out of room, that spot is out. No guessing needed, just looking ahead.' : mode() === 'hard' ? 'Breezing through? Switch to <b>⚡ Extreme</b> on the home screen.' : 'Want more challenge? Switch to <b>🔥 Hard</b> or <b>⚡ Extreme</b> on the home screen.'}</p>
-    <p>A wrong corgi costs a treat. Stuck? Tap <b>Sniff</b>: Cheddar shows where to look, and tap again for the answer.${mode() === 'hard' || mode() === 'extreme' ? ` In ${MODES[mode()].label} a Sniff costs ${coin(mode() === 'hard' ? 25 : 50)} (free on a puzzle you already solved).` : ''}</p>
+    <p>A wrong corgi costs a treat. Stuck? Tap <b>Sniff</b>: Cheddar shows where to look, and tap again for the answer. Tap <b>Undo</b> to put a clue away.${mode() === 'hard' || mode() === 'extreme' ? ` In ${MODES[mode()].label} a Sniff costs ${coin(mode() === 'hard' ? 25 : 50)} (free on a puzzle you already solved).` : ''}</p>
     <button class="cta" id="gotit">Let's go!</button>`);
   $('gotit').onclick = () => { db.seenHelp = true; save(); closeSheet(); };
 }
