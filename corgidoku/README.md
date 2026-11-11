@@ -94,13 +94,15 @@ Prices: basic 60 · nice 150 · fancy 350 · dream 900 · color variant 40.
 
 | Slot | Items (grown-up price; kids pay half) |
 | --- | --- |
-| Head | Party hat 60 · Pom-pom beanie 60 · Flower crown 150 · Rainbow bow 150 · Pirate hat 150 · Climbing helmet 150 · Bunny ears 150 · Tiara 350 · Wizard hat 350 · Dino hood 350 · Unicorn horn 900 |
-| Neck | Bandana 60 · Bow tie 60 · Rainbow bandana 150 · Star collar 150 · Cozy scarf 150 |
-| Face | Round glasses 60 · Heart sunglasses 150 |
+| Head | Party hat 60 · Pom-pom beanie 60 · Baseball cap 60 · Flower crown 150 · Rainbow bow 150 · Pirate hat 150 · Climbing helmet 150 · Bunny ears 150 · Cowboy hat 150 · Tiara 350 · King crown 350 · Wizard hat 350 · Dino hood 350 · Unicorn horn 900 |
+| Neck | Bandana 60 · Bow tie 60 · Necktie 60 · Rainbow bandana 150 · Star collar 150 · Cozy scarf 150 |
+| Face | Round glasses 60 · Fancy mustache 60 · Heart sunglasses 150 · Cool shades 150 |
+
+Cheddar is a boy, so the catalog has both boy-coded things (baseball cap, cowboy hat, king crown, necktie, cool shades, mustache, pirate hat, dino hood) and girl-coded things (tiara, flower crown, rainbow bow, bunny ears, heart sunglasses). Anyone can wear anything.
 
 Tapping an item you own wears it; buying one wears it right away. Neck items only show on the full Cheddar (home, Closet, sheets).
 
-**Color variants.** Most items come in 3 more colors at 40 coins each (kids 20): one drawing, with its recolorable hexes (`paint`) swapped for another color from `PALETTE` in `shop.js`. A variant's id is `<item>:<color>` (`bandana:purple`, `wizard:mint`), and it's a separate thing you own. You need the item in some color before you can buy another color. In the Closet each item is one tile with little color dots; picking it shows a row of swatches above the Buy button (solid = yours, dashed = not yet, ✓ = wearing): tap one you own to wear it, or one you don't to preview it. Kids can save up for a color too. No colors for the flower crown, rainbow bow, pirate hat, rainbow bandana or unicorn horn (they're already multicolored or a one-off). The old purple bandana (`bandana-purple`, v1.14–1.20) is now the bandana's purple color: `shopDefaults` renames it in `owned`, `worn` and `goal` on load.
+**Color variants.** Most items come in 3 more colors at 40 coins each (kids 20): one drawing, with its recolorable hexes (`paint`) swapped for another color from `PALETTE` in `shop.js`. A variant's id is `<item>:<color>` (`bandana:purple`, `wizard:mint`), and it's a separate thing you own. You need the item in some color before you can buy another color. In the Closet each item is one tile with little color dots; picking it shows a row of swatches above the Buy button (solid = yours, dashed = not yet, ✓ = wearing): tap one you own to wear it, or one you don't to preview it. Kids can save up for a color too. No colors for the flower crown, rainbow bow, pirate hat, rainbow bandana, unicorn horn or mustache (they're already multicolored or a one-off). The old purple bandana (`bandana-purple`, v1.14–1.20) is now the bandana's purple color: `shopDefaults` renames it in `owned`, `worn` and `goal` on load.
 
 **Board corgis.** Settings → Dress up board corgis puts the equipped hat and face item (sunglasses) on every corgi on the board (on by default for the kids, off for Default). At the win party every corgi puts them on either way, and so does the zooming Cheddar. Nothing equipped means plain corgis: there's no default party hat.
 

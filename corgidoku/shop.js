@@ -38,11 +38,17 @@ ITEMS.push(
   { id: 'wizard', slot: 'head', name: 'Wizard hat', price: 350, thumb: '28 -24 144 100', color: 'purple', paint: ['#7B5CE0', '#4E35A8', '#B9A6FF'], colors: ['blue', 'pink', 'mint'] },
   { id: 'dino', slot: 'head', name: 'Dino hood', price: 350, thumb: '6 -26 188 188', color: 'green', paint: ['#6CCB5F', '#3E9A3A', '#C8F0B8'], colors: ['purple', 'blue', 'pink'] },
   { id: 'bunny', slot: 'head', name: 'Bunny ears', price: 150, thumb: '44 -30 122 122', color: 'pink', paint: ['#FF6FB5', '#C93F86', '#FFC6DE'], colors: ['blue', 'purple', 'mint'] },
+  { id: 'cap', slot: 'head', name: 'Baseball cap', price: 60, thumb: '46 -26 134 134', color: 'blue', paint: ['#46B3FF', '#2E7BC4', '#BFE4FF'], colors: ['mint', 'red', 'orange'] },
+  { id: 'cowboy', slot: 'head', name: 'Cowboy hat', price: 150, thumb: '8 -64 184 184', color: 'red', paint: ['#FF5A5A', '#C93636', '#FFC2C2'], colors: ['blue', 'mint', 'purple'] },
+  { id: 'crown', slot: 'head', name: 'King crown', price: 350, thumb: '34 -26 132 132', color: 'red', paint: ['#FF5A5A', '#C93636', '#FFC2C2'], colors: ['blue', 'purple', 'mint'] },
   { id: 'unicorn', slot: 'head', name: 'Unicorn horn', price: 900, thumb: '46 -30 110 110' },
   { id: 'bandana-rainbow', slot: 'neck', name: 'Rainbow bandana', price: 150, thumb: '48 113 104 104' },
   { id: 'scarf', slot: 'neck', name: 'Cozy scarf', price: 150, thumb: '38 112 124 124', color: 'red', paint: ['#FF5A5A', '#C93636', '#FFC2C2'], colors: ['blue', 'mint', 'purple'] },
+  { id: 'necktie', slot: 'neck', name: 'Necktie', price: 60, thumb: '68 142 64 64', color: 'blue', paint: ['#46B3FF', '#2E7BC4', '#BFE4FF'], colors: ['red', 'purple', 'mint'] },
   { id: 'starcollar', slot: 'neck', name: 'Star collar', price: 150, thumb: '44 114 112 112', color: 'purple', paint: ['#9B6BFF', '#6B44C9', '#D9C9FF'], colors: ['pink', 'blue', 'mint'] },
   { id: 'roundglasses', slot: 'face', name: 'Round glasses', price: 60, thumb: '16 22 168 168', color: 'black', paint: ['#3A3346', null, '#7D7590'], colors: ['pink', 'purple', 'yellow'] },
+  { id: 'shades', slot: 'face', name: 'Cool shades', price: 150, thumb: '22 68 156 156', color: 'black', paint: ['#3A3346', null, '#7D7590'], colors: ['blue', 'red', 'yellow'] },
+  { id: 'mustache', slot: 'face', name: 'Fancy mustache', price: 60, thumb: '34 58 132 132' },
 );
 export const VARIANT_PRICE = 40;
 for (const it of ITEMS) it.art = OUTFIT[it.id] || '';
