@@ -13,10 +13,13 @@
 // Hard mode file (puzzles-hard.json):
 //   node tools/generate.mjs --mode hard --start 2026-11-05
 //
+// Extreme mode file (puzzles-extreme.json), daily from the day Halina started:
+//   node tools/generate.mjs --mode extreme --start 2026-11-05 --seed 6
+//
 // Kids "Chill" file (puzzles-kids.json), for Holden and Quentin:
 //   node tools/generate.mjs --mode kids --start 2026-10-01 --days 760
 //
-// Options: --mode cozy|hard|kids  --start YYYY-MM-DD  --days 730  --campaign 60  --seed 1  --out puzzles.json  --workers N
+// Options: --mode cozy|hard|extreme|kids  --start YYYY-MM-DD  --days 730  --campaign 60  --seed 1  --out puzzles.json  --workers N
 import { Worker, isMainThread, parentPort, workerData } from 'node:worker_threads';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { cpus } from 'node:os';
@@ -28,7 +31,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 
 if (!isMainThread) {
   // ---- worker: generate boards of the requested sizes forever ----
-  const { seed, sizes } = workerData;
+  const { seed, sizes, maxLevel } = workerData;
   const rand = rng(seed);
   let wanted = sizes;
   parentPort.on('message', (m) => { if (m.sizes) wanted = m.sizes; if (m.stop) process.exit(0); });
@@ -36,7 +39,7 @@ if (!isMainThread) {
     for (let i = 0; i < 20; i++) {
       if (!wanted.length) break;
       const n = wanted[Math.floor(rand() * wanted.length)];
-      const p = generate(n, rand);
+      const p = generate(n, rand, { maxLevel });
       if (p) parentPort.postMessage(p);
     }
     setImmediate(loop);
@@ -87,6 +90,46 @@ function wantHard(date) {
 const CAMPAIGN_HARD = [
   [10, 8, ['L4']], [10, 8, ['L5']], [20, 9, ['L4']], [15, 9, ['L5']], [15, 10, ['L4']], [10, 10, ['L5']],
 ];
+// Extreme mode: built from Halina's Hard field report (86 boards, rated 2-5 of 10).
+// Nothing inside the L1-L5 ladder got past a 5, so Extreme adds level 6 "what if" chains:
+// try a corgi, follow the forced moves, hit a dead end. Tiers by chain score
+// (chains + 3 x (longest chain - 1)):
+//   X0  L5 boards with 25+ steps, the top of Hard (her 5s and slowest solves)
+//   X1  L6, score <= 2   one or two short what-ifs
+//   X2  L6, score 3-5    a few what-ifs, or one that runs two corgis deep
+//   X3  L6, score 6-11   lots of them
+//   X4  L6, score 12+    the summit
+const chainScore = (p) => (p.ch || 0) + 3 * ((p.cd || 1) - 1);
+function extremeTier(p) {
+  if (p.n < 9) return null;
+  if (p.lv === 5) return p.st >= 25 ? 'X0' : null;
+  if (p.lv !== 6) return null;
+  const sc = chainScore(p);
+  return sc <= 2 ? 'X1' : sc <= 5 ? 'X2' : sc <= 11 ? 'X3' : 'X4';
+}
+function wantExtreme(date) {
+  const dow = new Date(date + 'T00:00:00Z').getUTCDay();
+  if (date.slice(5) === '06-15') return [[9, 'X1']];
+  return {
+    1: [[9, 'X1']],
+    2: [[9, 'X1'], [10, 'X1']],
+    3: [[9, 'X2']],
+    4: [[10, 'X2'], [9, 'X2']],
+    5: [[9, 'X3']],
+    6: [[10, 'X3']],
+    0: [[10, 'X3'], [9, 'X4']],
+  }[dow];
+}
+// 120 holds: start at the ceiling of Hard, then add what-ifs until the summit.
+const CAMPAIGN_EXTREME = [
+  [10, 9, ['X0']], [10, 10, ['X0']],
+  [15, 9, ['X1']], [10, 10, ['X1']],
+  [15, 9, ['X2']], [15, 10, ['X2']],
+  [12, 9, ['X3']], [13, 10, ['X3']],
+  [8, 9, ['X4']], [12, 10, ['X4']],
+];
+const extremeKey = (p) => { const t = extremeTier(p); return t ? `${p.n}:${t}` : 'skip'; };
+
 // Chill mode for the kids: tiny boards that only need "last spot" (L1) and "confined" (L2).
 // Daily stays 5x5 most days, 6x6 on Fri-Sun.
 function wantKids(date) {
@@ -112,6 +155,12 @@ const MODES = {
   kids: { want: wantKids, plan: CAMPAIGN_KIDS, key: kidsKey, out: 'puzzles-kids.json', campaign: 40 },
   cozy: { want, plan: CAMPAIGN, key: (p) => `${p.n}:${p.g}`, out: 'puzzles.json', campaign: 60 },
   hard: { want: wantHard, plan: CAMPAIGN_HARD, key: (p) => `${p.n}:L${p.lv}`, out: 'puzzles-hard.json', campaign: 80 },
+  extreme: {
+    want: wantExtreme, plan: CAMPAIGN_EXTREME, key: extremeKey, out: 'puzzles-extreme.json', campaign: 120, maxLevel: 6,
+    // Never repeat a Hard board she has already played; ramp each block by chain score, then steps.
+    avoid: ['puzzles-hard.json'],
+    order: (a, b) => a.lv - b.lv || chainScore(a) - chainScore(b) || a.st - b.st,
+  },
 };
 
 function main() {
@@ -121,7 +170,8 @@ function main() {
   const workers = Number(arg('workers', Math.max(1, cpus().length - 1)));
   const poolSizes = arg('pool-sizes');
 
-  if (poolSizes) return runPool(poolSizes.split(',').map(Number), Number(arg('pool-count', 200)), resolve(here, '..', arg('pool-out', 'tools/pool.json')), workers, seed, arg('pool-grade', 'medium'));
+  const maxLevel = mode.maxLevel ?? 5;
+  if (poolSizes) return runPool(poolSizes.split(',').map(Number), Number(arg('pool-count', 200)), resolve(here, '..', arg('pool-out', 'tools/pool.json')), workers, seed, arg('pool-grade', 'medium'), maxLevel);
 
   const start = arg('start', '2026-11-06');
   const days = Number(arg('days', 730));
@@ -151,11 +201,17 @@ function main() {
   for (const [k, v] of need) need.set(k, Math.ceil(v * 1.5) + 5);
 
   const seen = new Set(pool.map((p) => canonicalKey(p.n, p.r)));
+  for (const f of mode.avoid || []) {
+    const d = JSON.parse(readFileSync(resolve(here, '..', f), 'utf8'));
+    for (const p of [...d.daily, ...d.campaign]) seen.add(canonicalKey(p.n, p.r));
+  }
   const sizesNeeded = () => [...new Set([...need].filter(([k, v]) => (buckets.get(k)?.length || 0) < v).map(([k]) => Number(k.split(':')[0])))];
   console.log('Need:', Object.fromEntries(need));
   const t0 = Date.now();
 
-  runWorkers(workers, seed, sizesNeeded(), (p, setSizes) => {
+  let got = 0;
+  const total = [...need.values()].reduce((a, b) => a + b, 0);
+  runWorkers(workers, seed, sizesNeeded(), maxLevel, (p, setSizes) => {
     const key = mode.key(p);
     if (!need.has(key) || (buckets.get(key)?.length || 0) >= need.get(key)) return false;
     const ck = canonicalKey(p.n, p.r);
@@ -163,6 +219,7 @@ function main() {
     seen.add(ck);
     if (!buckets.has(key)) buckets.set(key, []);
     buckets.get(key).push(p);
+    if (++got % 50 === 0) console.log(`${got}/${total}  ${((Date.now() - t0) / 1000).toFixed(0)}s  ` + [...need].map(([k, v]) => `${k} ${buckets.get(k)?.length || 0}/${v}`).join('  '));
     const sizes = sizesNeeded();
     setSizes(sizes);
     return sizes.length === 0;
@@ -185,7 +242,7 @@ function main() {
     // Within each size block, order campaign by steps so it ramps.
     let i = 0;
     for (const [count] of mode.plan) {
-      const block = campaign.slice(i, i + count).sort((a, b) => a.lv - b.lv || a.st - b.st);
+      const block = campaign.slice(i, i + count).sort(mode.order || ((a, b) => a.lv - b.lv || a.st - b.st));
       campaign.splice(i, block.length, ...block);
       i += count;
     }
@@ -201,15 +258,15 @@ function main() {
   });
 }
 
-function runPool(sizes, count, out, workers, seed, minGrade) {
-  const rank = { easy: 0, medium: 1, hard: 2 };
+function runPool(sizes, count, out, workers, seed, minGrade, maxLevel) {
+  const rank = { easy: 0, medium: 1, hard: 2, extreme: 3 };
   const existing = existsSync(out) ? JSON.parse(readFileSync(out, 'utf8')).puzzles : [];
   const seen = new Set(existing.map((p) => canonicalKey(p.n, p.r)));
   const puzzles = existing.slice();
   const t0 = Date.now();
   console.log(`Pool: ${sizes.join(',')}x, target ${count}, ${workers} workers, starting with ${existing.length}`);
   const save = () => writeFileSync(out, JSON.stringify({ version: 1, sizes, puzzles }));
-  runWorkers(workers, seed + existing.length * 7919, sizes, (p) => {
+  runWorkers(workers, seed + existing.length * 7919, sizes, maxLevel, (p) => {
     const ck = canonicalKey(p.n, p.r);
     if (seen.has(ck) || rank[p.g] < rank[minGrade]) return false; // big easy boards are dull
     seen.add(ck);
@@ -223,12 +280,12 @@ function runPool(sizes, count, out, workers, seed, minGrade) {
   }, () => { save(); console.log(`Saved ${puzzles.length} to ${out}`); });
 }
 
-function runWorkers(count, seed, sizes, onPuzzle, onDone) {
+function runWorkers(count, seed, sizes, maxLevel, onPuzzle, onDone) {
   const pool = [];
   let finished = false;
   const setSizes = (s) => pool.forEach((w) => w.postMessage({ sizes: s }));
   for (let i = 0; i < count; i++) {
-    const w = new Worker(fileURLToPath(import.meta.url), { workerData: { seed: seed * 1000 + i, sizes } });
+    const w = new Worker(fileURLToPath(import.meta.url), { workerData: { seed: seed * 1000 + i, sizes, maxLevel } });
     w.on('message', (p) => {
       if (finished) return;
       if (onPuzzle(p, setSizes)) {

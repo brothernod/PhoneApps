@@ -200,26 +200,64 @@ export function grade(n, reg, opts = {}) {
     return false;
   };
 
-  const maxLevel = opts.maxLevel ?? 5;
+  const groupLock = () => { for (let k = 3; k < n - 1; k++) if (lock(k, 5)) return true; return false; };
+
+  // Level 6, "what if": pretend a corgi sits on a spot and follow only the forced
+  // moves (last spots). If a row, column or yard then runs out of room, the spot is out.
+  // Depth = how many forced corgis it took to hit the dead end; the shortest chain wins.
+  const chainLimit = opts.chainLimit ?? 6;
+  const chainFrom = (i) => {
+    const c = cand.slice(), p = placed.slice();
+    const put = (j) => { p[j] = 1; for (const k of blockedBy(j)) c[k] = 0; };
+    put(i);
+    for (let depth = 0; ; depth++) {
+      let forced = -1;
+      for (const u of units) {
+        if (u.cells.some((x) => p[x])) continue;
+        let left = 0, last = -1;
+        for (const x of u.cells) if (c[x] && !p[x]) { left++; last = x; }
+        if (!left) return { depth, unit: u };
+        if (left === 1 && forced < 0) forced = last;
+      }
+      if (forced < 0 || depth >= chainLimit) return null;
+      put(forced);
+    }
+  };
+  const t6 = () => {
+    let best = null;
+    for (let i = 0; i < N && !(best && best.depth <= 1); i++) {
+      if (!cand[i] || placed[i]) continue;
+      const res = chainFrom(i);
+      if (res && (!best || res.depth < best.depth)) best = { i, ...res };
+    }
+    if (!best) return false;
+    cand[best.i] = 0;
+    const d = best.depth;
+    log.push({ type: 'clear', cells: [best.i], level: 6, depth: d,
+      why: `a corgi here would force ${d} more corgi${d === 1 ? '' : 's'} and leave a ${best.unit.kind} with no room` });
+    return true;
+  };
+
+  const maxLevel = opts.maxLevel ?? 6;
+  let chains = 0, maxChain = 0;
   while (count < n) {
     let lv = 0;
     if (t1()) lv = 1;
     else if (maxLevel >= 2 && t2()) lv = 2;
     else if (maxLevel >= 3 && t3()) lv = 3;
     else if (maxLevel >= 4 && lock(2, 4)) lv = 4;
-    else if (maxLevel >= 5) {
-      for (let k = 3; k < n - 1 && !lv; k++) if (lock(k, 5)) lv = 5;
-    }
+    else if (maxLevel >= 5 && groupLock()) lv = 5;
+    else if (maxLevel >= 6 && t6()) { lv = 6; chains++; maxChain = Math.max(maxChain, log.at(-1).depth); }
     if (!lv) break;
     level = Math.max(level, lv);
     steps++;
     if (opts.stopAfterPlace && log.at(-1).type === 'place') break;
   }
   const solved = count === n;
-  return { solved, level, steps, log, placed, cand };
+  return { solved, level, steps, log, placed, cand, chains, maxChain };
 }
 
-export const gradeName = (lv) => (lv <= 2 ? 'easy' : lv <= 4 ? 'medium' : 'hard');
+export const gradeName = (lv) => (lv <= 2 ? 'easy' : lv <= 4 ? 'medium' : lv <= 5 ? 'hard' : 'extreme');
 
 // ---------- generator ----------
 function randomSolution(n, rand) {
@@ -306,7 +344,7 @@ export function generate(n, rand, { maxRepairs = 40, maxLevel = 5 } = {}) {
   }
   const g = grade(n, reg, { maxLevel });
   if (!g.solved) return null;
-  return {
+  const out = {
     n,
     r: encodeRegions(reg),
     s: encodeSolution(cols),
@@ -314,6 +352,9 @@ export function generate(n, rand, { maxRepairs = 40, maxLevel = 5 } = {}) {
     lv: g.level,
     st: g.steps,
   };
+  // Extreme boards also record how many "what if" chains they need and the longest one.
+  if (g.chains) { out.ch = g.chains; out.cd = g.maxChain; }
+  return out;
 }
 
 // Canonical key so rotations and mirrors count as the same board.

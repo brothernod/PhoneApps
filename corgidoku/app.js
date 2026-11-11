@@ -3,7 +3,7 @@ import { cheddarHead, cheddarLoaf, partyHat, paw, treat } from './art.js';
 
 // ---------- constants ----------
 const NAME = 'Halina';
-const VERSION = '1.11'; // bump with CACHE in sw.js on every release
+const VERSION = '1.12'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
 const EMPTY = 0, PAW = 1, AUTO = 2, CORGI = 3, NOPE = 4; // NOPE = a wrong guess, shown as a red paw
@@ -54,17 +54,19 @@ const pretty = (iso) => new Date(iso + 'T12:00:00Z').toLocaleDateString(undefine
 const clock = (s) => `${Math.floor(s / 60)}:${pad(Math.floor(s % 60))}`;
 
 // ---------- puzzles ----------
-// Modes. Each has its own puzzle file, ids, streak and climb. Add 'extreme' here later.
+// Modes. Each has its own puzzle file, ids, streak and climb.
+// kids: only the kids see it. grownup: the kids don't.
 const MODES = {
   kids: { file: 'puzzles-kids.json', d: 'kd', c: 'kc', label: '🐣 Chill', climb: 'The Chill Climb', kids: true },
   cozy: { file: 'puzzles.json', d: 'd', c: 'c', label: '🌈 Cozy', climb: 'The Climb' },
   hard: { file: 'puzzles-hard.json', d: 'hd', c: 'hc', label: '🔥 Hard', climb: 'The Hard Climb' },
+  extreme: { file: 'puzzles-extreme.json', d: 'xd', c: 'xc', label: '⚡ Extreme', climb: 'The Extreme Climb', grownup: true },
 };
 const DATA = {};
 let PUZ;
 let daily = new Map();
-// Chill only shows up for the kids; everyone can still pick Cozy or Hard.
-const modesFor = () => Object.keys(MODES).filter((k) => !MODES[k].kids || isKid());
+// Chill only shows up for the kids and Extreme only for grown-ups; everyone can pick Cozy or Hard.
+const modesFor = () => Object.keys(MODES).filter((k) => (!MODES[k].kids || isKid()) && (!MODES[k].grownup || !isKid()));
 const mode = () => (modesFor().includes(db.settings.mode) ? db.settings.mode : isKid() ? 'kids' : 'cozy');
 const D = (k) => `${MODES[mode()].d}:${k}`;
 const C = (k) => `${MODES[mode()].c}:${k}`;
@@ -73,7 +75,10 @@ function useMode(m) {
   PUZ = DATA[m];
   daily = new Map(PUZ.daily.map((p) => [p.date, p]));
 }
-const levelName = (p) => (mode() === 'hard' ? (p.lv >= 5 ? 'very hard' : 'hard') : mode() === 'kids' ? (p.lv >= 3 ? 'a bit tricky' : 'chill') : p.g);
+// Extreme: chain score = what-if chains + 3 x (longest chain - 1), same tiers as tools/generate.mjs.
+const chainScore = (p) => (p.ch || 0) + 3 * ((p.cd || 1) - 1);
+const extremeName = (p) => { if (p.lv < 6) return 'very hard'; const sc = chainScore(p); return sc <= 5 ? 'extreme' : sc <= 11 ? 'brutal' : 'legendary'; };
+const levelName = (p) => (mode() === 'extreme' ? extremeName(p) : mode() === 'hard' ? (p.lv >= 5 ? 'very hard' : 'hard') : mode() === 'kids' ? (p.lv >= 3 ? 'a bit tricky' : 'chill') : p.g);
 function dailyFor(iso) {
   if (daily.has(iso)) return daily.get(iso);
   // Past the end of the file: wrap around so there's always a puzzle.
@@ -92,8 +97,10 @@ function load(pid) {
 // ---------- special days ----------
 function specialBanner(iso) {
   if (isKid()) return ''; // these messages are for Halina
-  if (iso === '2026-11-11') return `Thinking of you today, ${NAME} 💗<small>Cheddar is keeping your spot warm. Easy puzzles all week while you rest.</small>`;
-  if (iso > '2026-11-11' && iso <= '2026-11-17') return `Cozy rainbow week 🌈<small>Easy, gentle puzzles while you rest up. Cheddar approves.</small>`;
+  // Only Cozy goes easy during recovery week, so Hard and Extreme just point there.
+  const cozy = mode() === 'cozy';
+  if (iso === '2026-11-11') return `Thinking of you today, ${NAME} 💗<small>Cheddar is keeping your spot warm. ${cozy ? 'Easy puzzles all week while you rest.' : 'Cozy has easy puzzles all week if you want a gentle one.'}</small>`;
+  if (iso > '2026-11-11' && iso <= '2026-11-17') return `Cozy rainbow week 🌈<small>${cozy ? 'Easy, gentle puzzles while you rest up.' : 'Cozy is extra gentle this week if you want an easy one.'} Cheddar approves.</small>`;
   if (iso.slice(5) === '06-15') return `Happy Birthday, ${NAME}! 🎂🌈<small>Cheddar made you a special puzzle today.</small>`;
   return '';
 }
@@ -148,7 +155,7 @@ function renderHome() {
   $('go-past').onclick = renderPast;
   $('go-help').onclick = help;
   $('go-set').onclick = settings;
-  document.querySelectorAll('.mode').forEach((b) => (b.onclick = () => { if (b.dataset.m !== mode()) { useMode(b.dataset.m); renderHome(); } }));
+  document.querySelectorAll('.mode').forEach((b) => (b.onclick = () => { if (b.dataset.m !== mode()) { useMode(b.dataset.m); renderHome(); if (mode() === 'extreme' && !db.seenExtreme) extremeIntro(); } }));
   // Tap the version to drop any cached copy and reload fresh.
   $('ver').onclick = async () => {
     $('ver').textContent = 'refreshing…';
@@ -541,9 +548,9 @@ function report() {
     .map(([pid, p]) => ({ pid, p, raw: rawPuzzle(pid) }))
     .filter((x) => x.raw)
     .sort((a, b) => (a.p.solvedAt || '').localeCompare(b.p.solvedAt || ''));
-  const lines = rows.map(({ pid, p, raw }) => [raw.m, pid, raw.n, raw.lv, raw.st, p.best != null ? Math.round(p.best) : '', p.mistakes ?? '', p.hints ?? '', p.rating ?? '', p.solvedAt ?? ''].join(','));
+  const lines = rows.map(({ pid, p, raw }) => [raw.m, pid, raw.n, raw.lv, raw.st, p.best != null ? Math.round(p.best) : '', p.mistakes ?? '', p.hints ?? '', p.rating ?? '', p.solvedAt ?? '', raw.ch ?? '', raw.cd ?? ''].join(','));
   return { count: rows.length, rated: rows.filter((x) => x.p.rating).length,
-    text: `Corgidoku field report v${VERSION} · ${me().name} · ${todayISO()} · ${rows.length} solved\nmode,id,size,lv,steps,secs,mistakes,hints,rating,date\n${lines.join('\n')}` };
+    text: `Corgidoku field report v${VERSION} · ${me().name} · ${todayISO()} · ${rows.length} solved\nmode,id,size,lv,steps,secs,mistakes,hints,rating,date,chains,depth\n${lines.join('\n')}` };
 }
 async function sendReport() {
   const r = report();
@@ -651,10 +658,21 @@ function help() {
     </ol>
     <p>Tap for a 🐾 paw mark (“no corgi here”); tap it again to remove it. <b>Double-tap</b> to place a corgi. Drag to paw-mark lots of cells; start a drag on a paw to erase instead.</p>
     <p>Pick a paw color under the board to brainstorm "what if" ideas in different colors. Double-tap a color to clear just those paws.</p>
-    <p>${isKid() ? 'Ready for more? Try <b>🌈 Cozy</b> on the home screen.' : 'Want more challenge? Switch to <b>🔥 Hard</b> on the home screen.'}</p>
+    <p>${isKid() ? 'Ready for more? Try <b>🌈 Cozy</b> on the home screen.' : mode() === 'extreme' ? '<b>⚡ Extreme</b> boards need a "what if": picture a corgi on a spot, follow the corgis it forces, and if a row, column or yard runs out of room, that spot is out. No guessing needed, just looking ahead.' : mode() === 'hard' ? 'Breezing through? Switch to <b>⚡ Extreme</b> on the home screen.' : 'Want more challenge? Switch to <b>🔥 Hard</b> or <b>⚡ Extreme</b> on the home screen.'}</p>
     <p>A wrong corgi costs a treat. Stuck? Tap <b>Sniff</b> and Cheddar will help.</p>
     <button class="cta" id="gotit">Let's go!</button>`);
   $('gotit').onclick = () => { db.seenHelp = true; save(); closeSheet(); };
+}
+
+// First visit to Extreme: explain the one new idea.
+function extremeIntro() {
+  sheet(`<div style="width:110px;margin:0 auto">${cheddarLoaf()}</div><h3>Welcome to Extreme ⚡</h3>
+    <p>You climbed all of Hard, so Cheddar dug deeper.</p>
+    <p>These boards stall unless you look ahead. Pick a spot and ask <b>"what if a corgi went here?"</b> Follow the corgis it would force. If some row, column or yard ends up with no room, that spot is out.</p>
+    <p>Brainstorm paw colors are perfect for this: mark a what-if in blue, and double-tap blue to wipe it when you're done.</p>
+    <p>Every board still has one answer and never needs a guess. The Extreme Climb has 120 holds and starts right where Hard got tough.</p>
+    <button class="cta" id="gotx">Bring it on</button>`);
+  $('gotx').onclick = () => { db.seenExtreme = true; save(); closeSheet(); };
 }
 
 function settings() {
