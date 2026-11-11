@@ -19,6 +19,11 @@
 // Kids "Chill" file (puzzles-kids.json), for Holden and Quentin:
 //   node tools/generate.mjs --mode kids --start 2026-10-01 --days 760
 //
+// Bonus Yards (endless boards after a mode's summit), one file per mode, e.g.:
+//   node tools/generate.mjs --bonus extreme --count 300 --workers 16
+// An existing bonus file is kept and only topped up to --count, so ids players already
+// solved never change. Then: node tools/verify.mjs bonus-extreme.json
+//
 // Options: --mode cozy|hard|extreme|kids  --start YYYY-MM-DD  --days 730  --campaign 60  --seed 1  --out puzzles.json  --workers N
 import { Worker, isMainThread, parentPort, workerData } from 'node:worker_threads';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
@@ -163,7 +168,65 @@ const MODES = {
   },
 };
 
+// Bonus Yards: the top half of each Climb, cycling sizes and tiers so boards in a row differ.
+const BONUS = {
+  // Cozy by technique level: the top of the Cozy Climb is L3/L4 (L5 boards play like Hard mode).
+  cozy: { count: 500, seed: 501, key: (p) => `${p.n}:L${p.lv}`, cycle: [[8, 'L3'], [7, 'L4'], [8, 'L4'], [7, 'L3'], [8, 'L3'], [8, 'L4']] },
+  hard: { count: 500, seed: 502, cycle: [[9, 'L5'], [10, 'L4'], [10, 'L5'], [9, 'L5'], [10, 'L4']] },
+  extreme: { count: 300, seed: 503, cycle: [[9, 'X2'], [10, 'X2'], [9, 'X3'], [10, 'X3'], [10, 'X4'], [9, 'X4'], [10, 'X3'], [9, 'X2'], [10, 'X4'], [9, 'X3']] },
+  kids: { count: 400, seed: 504, cycle: [[6, 'L2'], [7, 'L2'], [6, 'L3'], [7, 'L3']] },
+};
+const ALL_FILES = ['puzzles.json', 'puzzles-hard.json', 'puzzles-extreme.json', 'puzzles-kids.json', ...Object.keys(BONUS).map((m) => `bonus-${m}.json`)];
+
+function runBonus(name, workers) {
+  const cfg = BONUS[name], mode = MODES[name];
+  if (!cfg) throw new Error('unknown --bonus mode ' + name);
+  const out = resolve(here, '..', arg('out', `bonus-${name}.json`));
+  const count = Number(arg('count', cfg.count));
+  const seed = Number(arg('seed', cfg.seed));
+  const old = existsSync(out) ? JSON.parse(readFileSync(out, 'utf8')) : null;
+  const bonus = old?.bonus?.slice() || [];
+  // Never repeat a board from any puzzle file, including the other bonus files.
+  const seen = new Set();
+  for (const f of ALL_FILES) {
+    const file = resolve(here, '..', f);
+    if (!existsSync(file)) continue;
+    const d = JSON.parse(readFileSync(file, 'utf8'));
+    for (const p of [...(d.daily || []), ...(d.campaign || []), ...(d.bonus || [])]) seen.add(canonicalKey(p.n, p.r));
+  }
+  // Slots still to fill continue the cycle where the existing file left off.
+  const slots = [];
+  for (let i = bonus.length; i < count; i++) slots.push(cfg.cycle[i % cfg.cycle.length]);
+  if (!slots.length) return console.log(`${out} already has ${bonus.length} boards`);
+  const need = new Map();
+  for (const [n, g] of slots) need.set(`${n}:${g}`, (need.get(`${n}:${g}`) || 0) + 1);
+  const buckets = new Map();
+  const sizesNeeded = () => [...new Set([...need].filter(([k, v]) => (buckets.get(k)?.length || 0) < v).map(([k]) => Number(k.split(':')[0])))];
+  console.log(`Bonus ${name}: have ${bonus.length}, adding ${slots.length}`, Object.fromEntries(need));
+  const t0 = Date.now();
+  let got = 0;
+  const keyOf = cfg.key || mode.key;
+  runWorkers(workers, seed * 31 + bonus.length, sizesNeeded(), mode.maxLevel ?? 5, (p, setSizes) => {
+    const key = keyOf(p);
+    if (!need.has(key) || (buckets.get(key)?.length || 0) >= need.get(key)) return false;
+    const ck = canonicalKey(p.n, p.r);
+    if (seen.has(ck)) return false;
+    seen.add(ck);
+    if (!buckets.has(key)) buckets.set(key, []);
+    buckets.get(key).push(p);
+    if (++got % 20 === 0) console.log(`${got}/${slots.length}  ${((Date.now() - t0) / 1000).toFixed(0)}s  ` + [...need].map(([k, v]) => `${k} ${buckets.get(k)?.length || 0}/${v}`).join('  '));
+    const sizes = sizesNeeded();
+    setSizes(sizes);
+    return sizes.length === 0;
+  }, () => {
+    for (const [n, g] of slots) bonus.push({ id: bonus.length + 1, ...buckets.get(`${n}:${g}`).shift() });
+    writeFileSync(out, JSON.stringify({ version: 1, mode: name, generatedAt: new Date().toISOString(), seed, bonus }));
+    console.log(`Wrote ${bonus.length} bonus boards to ${out} in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
+  });
+}
+
 function main() {
+  if (arg('bonus')) return runBonus(arg('bonus'), Number(arg('workers', Math.max(1, cpus().length - 1))));
   const mode = MODES[arg('mode', 'cozy')];
   const out = resolve(here, '..', arg('out', mode.out));
   const seed = Number(arg('seed', 1));

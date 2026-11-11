@@ -1,10 +1,10 @@
-import { decodeRegions, decodeSolution, grade } from './engine.js';
+import { decodeRegions, decodeSolution, grade, transformBoard } from './engine.js';
 import { cheddarHead, cheddarLoaf, partyHat, paw, treat, artDefs, coinIcon, closetIcon } from './art.js';
-import { ITEMS, SLOTS, item, outfit, colorsOf, baseId, ownsLine, priceFor, shopDefaults, payout, backPay, buy, SCENES, FRAMES, CLIMBS, scene, frame, earnable, unlockAt, milestones, syncUnlocks } from './shop.js';
+import { ITEMS, SLOTS, item, outfit, colorsOf, baseId, ownsLine, priceFor, shopDefaults, payout, backPay, buy, SCENES, FRAMES, CLIMBS, scene, frame, earnable, unlockAt, milestones, syncUnlocks, BONUS, bonusOpen } from './shop.js';
 
 // ---------- constants ----------
 const NAME = 'Halina'; // the Default player's name until they set their own in Settings
-const VERSION = '1.22'; // bump with CACHE in sw.js on every release
+const VERSION = '1.23'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
 const EMPTY = 0, PAW = 1, AUTO = 2, CORGI = 3, NOPE = 4; // NOPE = a wrong guess, shown as a red paw
@@ -87,12 +87,13 @@ const clock = (s) => `${Math.floor(s / 60)}:${pad(Math.floor(s % 60))}`;
 // Modes. Each has its own puzzle file, ids, streak and climb.
 // kids: only the kids see it. grownup: the kids don't.
 const MODES = {
-  kids: { file: 'puzzles-kids.json', d: 'kd', c: 'kc', label: '🐣 Chill', climb: 'The Chill Climb', kids: true },
-  cozy: { file: 'puzzles.json', d: 'd', c: 'c', label: '🌈 Cozy', climb: 'The Climb' },
-  hard: { file: 'puzzles-hard.json', d: 'hd', c: 'hc', label: '🔥 Hard', climb: 'The Hard Climb' },
-  extreme: { file: 'puzzles-extreme.json', d: 'xd', c: 'xc', label: '⚡ Extreme', climb: 'The Extreme Climb', grownup: true },
+  kids: { file: 'puzzles-kids.json', d: 'kd', c: 'kc', b: 'kb', label: '🐣 Chill', climb: 'The Chill Climb', kids: true },
+  cozy: { file: 'puzzles.json', d: 'd', c: 'c', b: 'b', label: '🌈 Cozy', climb: 'The Climb' },
+  hard: { file: 'puzzles-hard.json', d: 'hd', c: 'hc', b: 'hb', label: '🔥 Hard', climb: 'The Hard Climb' },
+  extreme: { file: 'puzzles-extreme.json', d: 'xd', c: 'xc', b: 'xb', label: '⚡ Extreme', climb: 'The Extreme Climb', grownup: true },
 };
 const DATA = {};
+const BDATA = {}; // Bonus Yards pools, fetched only once a mode's summit opens them
 let PUZ;
 let daily = new Map();
 // Chill only shows up for the kids and Extreme only for grown-ups; everyone can pick Cozy or Hard.
@@ -100,6 +101,38 @@ const modesFor = () => Object.keys(MODES).filter((k) => (!MODES[k].kids || isKid
 const mode = () => (modesFor().includes(db.settings.mode) ? db.settings.mode : isKid() ? 'kids' : 'cozy');
 const D = (k) => `${MODES[mode()].d}:${k}`;
 const C = (k) => `${MODES[mode()].c}:${k}`;
+const B = (k) => `${MODES[mode()].b}:${k}`;
+const kindOf = (pre) => pre.slice(-1); // 'd' daily, 'c' climb, 'b' bonus yard
+const modeOf = (pre) => Object.keys(MODES).find((k) => [MODES[k].d, MODES[k].c, MODES[k].b].includes(pre));
+
+// ---------- bonus yards ----------
+// After a mode's summit: an endless run of extra boards (bonus-<mode>.json). Past the end of the
+// pool the boards come back turned or mirrored with new yard colors, and the numbers keep going.
+const bonusUnlocked = (m = mode()) => bonusOpen(db, MODES[m].c);
+const bonusFile = (m) => `bonus-${m}.json`;
+function ensureBonus(m = mode()) {
+  if (BDATA[m] || !bonusUnlocked(m)) return Promise.resolve(BDATA[m]);
+  return (BDATA[m + ':p'] ||= fetch(bonusFile(m)).then((r) => r.json()).then((d) => (BDATA[m] = d)).catch(() => { delete BDATA[m + ':p']; }));
+}
+function bonusBoard(m, k) {
+  const list = BDATA[m]?.bonus;
+  if (!list?.length) return null;
+  const base = list[(k - 1) % list.length], lap = Math.floor((k - 1) / list.length);
+  if (!lap) return base;
+  return { ...base, ...transformBoard(base, ((lap - 1) % 7) + 1, lap % base.n) };
+}
+// The next yard to play: the first one not solved yet.
+const bonusNext = () => { let k = 1; while (prog(B(k))?.solved) k++; return k; };
+// short: the half-width card next to the Climb on home (no room for "in progress").
+function bonusCard(id = 'go-bonus', short = false) {
+  const k = bonusNext(), b = bonusBoard(mode(), k), p = prog(B(k));
+  const sub = b ? `Yard ${k} · ${b.n}×${b.n}${p && !short ? ' · in progress' : ''}` : short ? 'Fetching…' : 'Fetching the yards…';
+  return `<button class="big" id="${id}"><div class="ico" style="background:#FFF1C9">🦴</div>
+    <div><b>Bonus Yards</b><span>${sub}</span></div></button>`;
+}
+function playBonus() {
+  ensureBonus().then((d) => { if (d) play(B(bonusNext())); });
+}
 function useMode(m) {
   db.settings.mode = m; save();
   PUZ = DATA[m];
@@ -119,9 +152,9 @@ function dailyFor(iso) {
 }
 function load(pid) {
   const [pre, key] = pid.split(':');
-  const kind = pre.endsWith('d') ? 'd' : 'c';
-  const p = kind === 'd' ? dailyFor(key) : PUZ.campaign[Number(key) - 1];
-  return { pid, kind, key, n: p.n, reg: decodeRegions(p.r), sol: decodeSolution(p.s), grade: p.g };
+  const kind = kindOf(pre);
+  const p = kind === 'd' ? dailyFor(key) : kind === 'b' ? bonusBoard(modeOf(pre), Number(key)) : PUZ.campaign[Number(key) - 1];
+  return { pid, kind, key, n: p.n, r: p.r, reg: decodeRegions(p.r), sol: decodeSolution(p.s), grade: p.g };
 }
 
 // ---------- special days ----------
@@ -181,7 +214,7 @@ function streak() {
   while (prog(D(d))?.solved) { s++; d = addDays(d, -1); }
   return s;
 }
-const solvedCount = () => Object.entries(db.progress).filter(([k, p]) => p.solved && [MODES[mode()].d, MODES[mode()].c].includes(k.split(':')[0])).length;
+const solvedCount = () => Object.entries(db.progress).filter(([k, p]) => p.solved && [MODES[mode()].d, MODES[mode()].c, MODES[mode()].b].includes(k.split(':')[0])).length;
 const climbLevel = () => { let i = 1; while (i <= PUZ.campaign.length && prog(C(i))?.solved) i++; return i; };
 
 // ---------- home ----------
@@ -206,8 +239,9 @@ function renderHome() {
     <div class="menu">
       <button class="big" id="go-daily"><div class="ico" style="background:#FFE0F0">☀️</div>
         <div><b>Today's puzzle</b><span>${pretty(t)} · ${dp.n}×${dp.n} · ${p?.solved ? `solved in ${clock(p.best)} ✓` : p ? 'in progress' : levelName(dp)}</span></div></button>
-      <button class="big" id="go-climb"><div class="ico" style="background:#E6DDFF">🧗‍♀️</div>
+      ${bonusUnlocked() ? '<div class="pair">' : ''}<button class="big" id="go-climb"><div class="ico" style="background:#E6DDFF">🧗‍♀️</div>
         <div><b>${MODES[mode()].climb}</b><span>${lvl > PUZ.campaign.length ? 'Summit reached! 🏔️' : `Hold ${lvl} of ${PUZ.campaign.length}`}</span></div></button>
+      ${bonusUnlocked() ? `${bonusCard('go-bonus', true)}</div>` : ''}
     </div>
     <div class="stats">
       <div class="stat"><b>${streak()}</b><span>Day streak</span></div>
@@ -222,6 +256,8 @@ function renderHome() {
     <button class="ver" id="ver">v${VERSION}</button>`;
   $('go-daily').onclick = () => play(D(t));
   $('go-climb').onclick = renderClimb;
+  if ($('go-bonus')) $('go-bonus').onclick = playBonus;
+  if (bonusUnlocked() && !BDATA[mode()]) { const m = mode(); ensureBonus(m).then((d) => { if (d && m === mode() && $('home').classList.contains('on')) renderHome(); }); }
   $('go-past').onclick = renderPast;
   $('go-help').onclick = help;
   $('go-set').onclick = settings;
@@ -273,6 +309,8 @@ function renderClimb() {
     if ((m.kind === 'scene' ? db.scenes : db.frames).includes(m.it.id) || m.hold > total) continue;
     (byHold[m.hold] ||= []).push(m.kind === 'scene' ? m.it.name : `${m.it.name} frame`);
   }
+  // The summit also opens Bonus Yards.
+  if (!bonusUnlocked() && BONUS[MODES[mode()].c]?.summit === total) (byHold[total] ||= []).push('Bonus\u00a0Yards');
   for (const [i, names] of Object.entries(byHold)) {
     const p = pos(Number(i));
     const side = p.left > 50 ? `right:calc(${100 - p.left}% + 10px)` : `left:calc(${p.left}% + 72px)`;
@@ -281,11 +319,14 @@ function renderClimb() {
   const cp = pos(Math.min(lvl, total));
   $('climb').innerHTML = `
     <div class="bar"><button class="back">‹</button><h2>${MODES[mode()].climb}</h2><span class="ghost"></span></div>
+    ${bonusUnlocked() ? `<div class="climb-bonus">${bonusCard('go-bonus2')}</div>` : ''}
     <div class="summit">🏔️ Rainbow Summit</div>
     <div class="wall" style="height:${h + 40}px"><div class="rope"></div>${holds}
       <div class="climber" style="top:${cp.top - 46}px;left:calc(${cp.left}% + 2px)">${cheddarHead()}</div></div>
     <div class="summit">Base camp</div>`;
   $('climb').querySelector('.back').onclick = renderHome;
+  if ($('go-bonus2')) $('go-bonus2').onclick = playBonus;
+  if (bonusUnlocked() && !BDATA[mode()]) ensureBonus().then((d) => { if (d && $('climb').classList.contains('on') && $('go-bonus2')) $('go-bonus2').outerHTML = bonusCard('go-bonus2'), ($('go-bonus2').onclick = playBonus); });
   $('climb').querySelectorAll('.hold').forEach((b) => {
     b.onclick = () => { const i = Number(b.dataset.i); if (i <= lvl) play(C(i)); else sheet(`<h3>Not yet!</h3><p>Finish hold ${lvl} first, then Cheddar will climb higher.</p><button class="cta" id="okl">OK</button>`), ($('okl').onclick = closeSheet); };
   });
@@ -299,7 +340,9 @@ let tick = null;
 
 function play(pid) {
   const P = load(pid);
-  const saved = prog(pid);
+  let saved = prog(pid);
+  // A bonus yard's board can change when the pool grows (laps start later), so drop progress from another board.
+  if (P.kind === 'b' && saved?.bk && saved.bk !== P.r) saved = null;
   G = {
     ...P,
     cells: saved?.cells ? [...saved.cells].map(Number) : new Array(P.n * P.n).fill(EMPTY),
@@ -314,7 +357,7 @@ function play(pid) {
     history: [],
   };
   if (G.solved) { G.cells = G.cells.map((v, i) => (G.sol[Math.floor(i / G.n)] === i % G.n ? CORGI : v === CORGI ? EMPTY : v)); }
-  const title = P.kind === 'd' ? (P.key === todayISO() ? "Today's puzzle" : pretty(P.key)) : `Hold ${P.key}`;
+  const title = P.kind === 'd' ? (P.key === todayISO() ? "Today's puzzle" : pretty(P.key)) : P.kind === 'b' ? `Bonus yard ${P.key}` : `Hold ${P.key}`;
   $('play').innerHTML = `
     <div class="bar"><button class="back">‹</button><h2>${title}</h2><button class="back" id="restart" title="Start over">↺</button></div>
     <div class="meta"><div class="treats" id="treats"></div><div id="clock"></div></div>
@@ -420,7 +463,7 @@ function startClock() {
 function stopClock() { if (tick) clearInterval(tick); tick = null; if (G && !G.solved) persist(); }
 
 function persist() {
-  db.progress[G.pid] = { cells: G.cells.join(''), treats: G.treats, elapsed: Math.round(G.elapsed), solved: G.solved, best: G.best, mistakes: G.mistakes, hints: G.hints, rating: G.rating, solvedAt: G.solvedAt };
+  db.progress[G.pid] = { cells: G.cells.join(''), treats: G.treats, elapsed: Math.round(G.elapsed), solved: G.solved, best: G.best, mistakes: G.mistakes, hints: G.hints, rating: G.rating, solvedAt: G.solvedAt, ...(G.kind === 'b' ? { bk: G.r } : {}) };
   save();
 }
 function snapshot() { G.history.push({ cells: G.cells.slice(), treats: G.treats }); if (G.history.length > 200) G.history.shift(); }
@@ -592,6 +635,8 @@ function win() {
   if (!G.solvedAt) G.solvedAt = todayISO();
   G.best = G.best ? Math.min(G.best, G.elapsed) : G.elapsed;
   stopClock(); persist(); drawClock();
+  // The solve is already saved, so only `paid` (set by payout below) tells whether this summit opened Bonus Yards.
+  const wasOpen = bonusOpen({ paid: db.paid }, MODES[mode()].c);
   // Every puzzle pays once; a replay after Start over earns nothing new.
   const earned = payout(db, G.pid, isKid());
   const got = syncUnlocks(db); // a milestone hold unlocks a scene, a summit also a frame
@@ -602,8 +647,11 @@ function win() {
   celebrate();
   twinkle();
   say(isKid() ? `You did it, ${nm()}! 🎉` : 'Every corgi is cozy! 🎉');
-  const isClimb = G.kind === 'c', nextLvl = Number(G.key) + 1;
+  const isClimb = G.kind === 'c', isBonus = G.kind === 'b', nextLvl = Number(G.key) + 1;
   const hasNext = isClimb && nextLvl <= PUZ.campaign.length;
+  const opened = !wasOpen && bonusUnlocked(); // this was the summit: Bonus Yards just opened
+  if (opened) ensureBonus();
+  const more = isBonus || opened;
   const pid = G.pid;
   const winSheet = () => {
     if (G?.pid !== pid || !$('play').classList.contains('on')) return; // they already left the board
@@ -612,9 +660,12 @@ function win() {
       <p>${winLine()}</p>
       ${earned.coins ? `<div class="earn">${coinIcon()} +${earned.coins} coins${earned.weekly ? `<span>+${earned.weekly} weekly bonus! 5 days this week 🌟</span>` : ''}</div>` : ''}
       ${db.settings.research ? ratingRow() : ''}
+      ${opened ? `<div class="earn">🦴 Bonus Yards are open!<span>Endless extra boards, ${isKid() ? 5 : 3} coins each</span></div>` : ''}
       ${hasNext ? '<button class="cta" id="next">Next hold 🧗‍♀️</button>' : ''}
-      <button class="cta ${hasNext ? 'alt' : ''}" id="home3">Home</button>`);
+      ${more ? `<button class="cta" id="nextb">${isBonus ? 'Next bonus yard' : 'Try a bonus yard'} 🦴</button>` : ''}
+      <button class="cta ${hasNext || more ? 'alt' : ''}" id="home3">Home</button>`);
     if (hasNext) $('next').onclick = () => { closeSheet(); play(C(nextLvl)); };
+    if (more) $('nextb').onclick = () => { closeSheet(); playBonus(); };
     $('home3').onclick = () => { closeSheet(); renderHome(); };
     document.querySelectorAll('.rate button').forEach((b) => (b.onclick = () => {
       G.rating = Number(b.dataset.r); persist();
@@ -634,10 +685,10 @@ function ratingRow() {
 }
 function rawPuzzle(pid) {
   const [pre, key] = pid.split(':');
-  const m = Object.keys(MODES).find((k) => [MODES[k].d, MODES[k].c].includes(pre));
+  const m = modeOf(pre);
   const d = DATA[m];
   if (!d) return null;
-  const p = pre === MODES[m].d ? d.daily.find((x) => x.date === key) : d.campaign[Number(key) - 1];
+  const p = kindOf(pre) === 'b' ? bonusBoard(m, Number(key)) : pre === MODES[m].d ? d.daily.find((x) => x.date === key) : d.campaign[Number(key) - 1];
   return p ? { m, ...p } : null;
 }
 function report() {
@@ -1042,7 +1093,7 @@ function switchPlayer(p) {
 // ---------- boot ----------
 document.body.insertAdjacentHTML('afterbegin', artDefs); // the shared die-cut filter for every Cheddar
 Promise.all(Object.entries(MODES).map(([k, m]) => fetch(m.file).then((r) => r.json()).then((d) => { DATA[k] = d; })))
-  .then(() => { useMode(mode()); applyScene(); renderHome(); })
+  .then(() => { useMode(mode()); applyScene(); renderHome(); modesFor().forEach((m) => ensureBonus(m)); })
   .catch(() => { $('home').innerHTML = '<p style="margin-top:40vh;font-weight:800">Cheddar couldn\'t find the puzzles. Check your connection and reopen.</p>'; });
 
 document.addEventListener('visibilitychange', () => { if (document.hidden && G && !G.solved && $('play').classList.contains('on')) persist(); });

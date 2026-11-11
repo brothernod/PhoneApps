@@ -16,6 +16,7 @@ Cheddar's puzzle yard for Halina. A corgi take on Queens-style logic puzzles: on
 | `puzzles.json` | Cozy mode: 730 daily puzzles from 2026-11-05 + 60 Climb levels, all verified |
 | `puzzles-hard.json` | Hard mode: 730 daily 8×8–10×10 boards needing pair/group locks + 80-level Hard Climb |
 | `puzzles-kids.json` | Chill mode (kids only): 760 daily 5×5/6×6 boards from 2026-10-01 + 40-level Chill Climb (4×4 up to 7×7) |
+| `bonus-cozy.json`, `bonus-hard.json`, `bonus-extreme.json`, `bonus-kids.json` | Bonus Yards: extra boards per mode, opened by that mode's summit (see Bonus Yards) |
 | `tools/generate.mjs` | Builds `puzzles.json`; also hunts big boards on a strong PC |
 | `tools/verify.mjs` | Independent checker, written separately from the generator |
 | `tools/pool-9.json` | 9×9 boards used on every other Sunday |
@@ -34,6 +35,7 @@ node tools/verify.mjs
 node tools/verify.mjs puzzles-hard.json
 node tools/verify.mjs puzzles-extreme.json
 node tools/verify.mjs puzzles-kids.json
+node tools/verify.test.mjs
 ```
 
 The output is deterministic for a given `--seed`. Always run `verify.mjs` before committing.
@@ -47,6 +49,41 @@ node tools/generate.mjs --pool-sizes 9,10 --pool-grade hard --pool-count 100 --p
 ```
 
 Then rebuild with that pool (`--pool tools/pool-hard.json`), verify, and commit.
+
+## Bonus Yards
+
+Reaching a mode's summit (Cozy hold 60, Hard 80, Extreme 120, Chill 40) opens that mode's **Bonus Yards** for that player: an endless run of extra boards, so finishing the Climb doesn't mean running out. The unlock checks `progress` or `paid` for the summit hold (`bonusOpen` in `shop.js`), so Start over can't take it away. Until then, the summit's Climb tag says "+ Bonus Yards"; the summit's win sheet says they're open and offers "Try a bonus yard".
+
+- **Where:** on home, the Climb card and a Bonus Yards card share one row ("Yard 17 · 9×9"); on the Climb screen there's a full-width card above the summit. Both open the next unsolved yard. The win sheet on a bonus yard has "Next bonus yard".
+- **Order:** yards are played in order, numbered from 1. Ids are `b:<k>` (Cozy), `hb:`, `xb:`, `kb:` (Chill).
+- **Coins:** 3 (+3 clean) for grown-ups, 5 (+5 clean) for kids. Each yard pays once. Bonus yards don't count for the streak, the weekly bonus or Climb scenes, but they do count in Solved and in field reports.
+- **Pools:** one file per mode, fetched only once that mode is open for the current player (the service worker caches it after the first fetch). Each pool is the top half of its Climb, cycling sizes and tiers so boards in a row differ:
+
+| Pool | Target size | Cycle |
+| --- | --- | --- |
+| Cozy | 500 | 8×8 L3 · 7×7 L4 · 8×8 L4 · 7×7 L3 · 8×8 L3 · 8×8 L4 |
+| Hard | 500 | 9×9 L5 · 10×10 L4 · 10×10 L5 · 9×9 L5 · 10×10 L4 |
+| Extreme | 300 | 9×9 X2 · 10×10 X2 · 9×9 X3 · 10×10 X3 · 10×10 X4 · 9×9 X4 · 10×10 X3 · 9×9 X2 · 10×10 X4 · 9×9 X3 |
+| Chill | 400 | 6×6 L2 · 7×7 L2 · 6×6 L3 · 7×7 L3 (≤ 2×n steps) |
+
+No board repeats one in any other puzzle or bonus file (`canonicalKey`, so turned and mirrored copies count too).
+- **Endless laps:** after the last board of a pool, yard N+1 is board 1 again, turned or mirrored (`transformBoard` in `engine.js`) with its yard colors shifted, and the numbers keep going. Each lap uses a different turn.
+- **Growing a pool:** the generator keeps an existing bonus file and only adds boards up to `--count`, so yards players already solved keep their numbers. A lap board's number can point at a new board once the pool grows, so an unfinished bonus yard remembers its board (`bk` in its progress) and starts fresh if the board changed.
+
+Generate or top up a pool (a few minutes on the desktop PC), then verify:
+
+```
+node tools/generate.mjs --bonus cozy --workers 16
+node tools/generate.mjs --bonus hard --workers 16
+node tools/generate.mjs --bonus extreme --workers 16
+node tools/generate.mjs --bonus kids --workers 16
+node tools/verify.mjs bonus-cozy.json
+node tools/verify.mjs bonus-hard.json
+node tools/verify.mjs bonus-extreme.json
+node tools/verify.mjs bonus-kids.json
+```
+
+`--count N` overrides the target size; the cycle and seed live in `BONUS` in `tools/generate.mjs`. The v1.23 release shipped a 40-board starter pool per mode.
 
 ## Extreme mode
 
@@ -64,7 +101,7 @@ Only 9×9 and 10×10. Boards already in `puzzles-hard.json` are never reused. Th
 
 ## Players
 
-Settings → Who's playing? switches between Default, Holden and Quentin. Settings → **Kid 1 name** / **Kid 2 name** rename the two kid players (blank = Holden / Quentin) so another family can use the app; the names live in one shared key, `corgidoku:names` (`{holden, quentin}`), and are included in backups. Only the shown name changes: the player ids and storage keys stay `holden` and `quentin`, so progress is untouched. Each player has their own progress, streak, Climb and settings in localStorage (`corgidoku:v1` for Default, so existing progress is untouched; `corgidoku:v1:holden` and `corgidoku:v1:quentin` for the kids). The active player is in `corgidoku:player`.
+Settings → Who's playing? switches between Default, Holden and Quentin. Settings → **Kid 1 name** / **Kid 2 name** rename the two kid players (blank = Holden / Quentin) so another family can use the app; the names live in one shared key, `corgidoku:names` (`{holden, quentin}`), and are included in backups. Only the shown name changes: the player ids and storage keys stay `holden` and `quentin`, so progress is untouched. Each player has their own progress, streak, Climb, Bonus Yards and settings in localStorage (`corgidoku:v1` for Default, so existing progress is untouched; `corgidoku:v1:holden` and `corgidoku:v1:quentin` for the kids). The active player is in `corgidoku:player`.
 
 Each player also has their own wallet, outfits, scenes and frames. The Default player's name shows on the home screen and in Halina's banners; it's `Halina` unless changed in Settings → Your name (`db.settings.name`). The birthday and get-well banners stay with the Default player.
 
@@ -83,10 +120,11 @@ Solving puzzles earns coins; coins buy outfits for Cheddar in the **Closet** (ho
 | Today's daily, solved on its date: Cozy / Hard / Extreme | 10 / 15 / 20 |
 | Past day (any mode) | 3 |
 | Climb hold | 2 |
+| Bonus yard (after a summit) | 3 |
 | Clean solve (any of the above) | +3 |
 | Weekly: today's daily solved on 5 of 7 days, Mon–Sun, any mode | +25 |
 
-Kids (Holden, Quentin) get 10 for any solve, +5 if clean, no weekly goal. They start with 100 coins and pay half price.
+Kids (Holden, Quentin) get 10 for any daily, past day or Climb hold and 5 for a bonus yard, +5 if clean, no weekly goal. They start with 100 coins and pay half price.
 
 Prices: basic 60 · nice 150 · fancy 350 · dream 900 · color variant 40.
 

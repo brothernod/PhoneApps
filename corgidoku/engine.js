@@ -377,3 +377,20 @@ export function canonicalKey(n, rStr) {
   }
   return keys.sort()[0];
 }
+
+// Bonus Yards laps: the same board turned or mirrored (t = 1..7; 0 = as is), with the yard
+// letters shifted by `shift` so the colors change too. Returns a new { n, r, s }.
+const DIHEDRAL = [
+  (n, r, c) => [r, c], (n, r, c) => [c, n - 1 - r], (n, r, c) => [n - 1 - r, n - 1 - c], (n, r, c) => [n - 1 - c, r],
+  (n, r, c) => [r, n - 1 - c], (n, r, c) => [n - 1 - r, c], (n, r, c) => [c, r], (n, r, c) => [n - 1 - c, n - 1 - r],
+];
+export function transformBoard({ n, r, s }, t, shift = 0) {
+  const m = DIHEDRAL[((t % 8) + 8) % 8];
+  const out = new Array(n * n), sol = new Array(n);
+  for (let row = 0; row < n; row++) for (let col = 0; col < n; col++) {
+    const [rr, cc] = m(n, row, col);
+    out[rr * n + cc] = String.fromCharCode(97 + ((r.charCodeAt(row * n + col) - 97 + shift) % n));
+    if (+s[row] === col) sol[rr] = cc;
+  }
+  return { n, r: out.join(''), s: sol.join('') };
+}

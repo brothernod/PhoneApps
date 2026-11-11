@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Independent verifier for corgidoku puzzles.json (written from SPEC.md only).
-// Usage: node tools/verify.mjs [path/to/puzzles.json]
+// Usage: node tools/verify.mjs [path/to/puzzles.json | path/to/bonus-<mode>.json]
 import { readFileSync } from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import path from 'node:path';
@@ -156,7 +156,11 @@ export function checkCampaignIds(campaign) {
 // ---- driver ------------------------------------------------------------------
 export function verifyData(data) {
   const out = {};
-  for (const [name, keyOf, seqCheck] of [['daily', (e, i) => e?.date ?? `#${i}`, checkDailyDates], ['campaign', (e, i) => `id ${e?.id ?? '#' + i}`, checkCampaignIds]]) {
+  // A Bonus Yards file (bonus-<mode>.json) has only a `bonus` list, ids 1..N like the campaign.
+  const lists = Array.isArray(data?.bonus)
+    ? [['bonus', (e, i) => `id ${e?.id ?? '#' + i}`, checkCampaignIds]]
+    : [['daily', (e, i) => e?.date ?? `#${i}`, checkDailyDates], ['campaign', (e, i) => `id ${e?.id ?? '#' + i}`, checkCampaignIds]];
+  for (const [name, keyOf, seqCheck] of lists) {
     const list = Array.isArray(data?.[name]) ? data[name] : null;
     const failures = [];
     if (!list) failures.push({ key: name, msg: 'missing or not an array' });

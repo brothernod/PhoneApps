@@ -72,7 +72,11 @@ The week of 2026-11-11 (Halina's surgery) is all easy. 9×9 and 10×10 come late
 
 `puzzles-extreme.json`, same schema. 9×9 and 10×10 only, daily from 2026-11-05. Tiers by chain score (`ch + 3 × (cd − 1)`): X0 = L5 with ≥25 steps, X1 ≤ 2, X2 3–5, X3 6–11, X4 ≥ 12. Daily: Mon 9×9 X1, Tue 9×9 or 10×10 X1, Wed 9×9 X2, Thu 9×9 or 10×10 X2, Fri 9×9 X3, Sat 10×10 X3, Sun 10×10 X3 or 9×9 X4, June 15 9×9 X1. Climb (120): 10× 9×9 X0, 10× 10×10 X0, 15× 9×9 X1, 10× 10×10 X1, 15× 9×9 X2, 15× 10×10 X2, 12× 9×9 X3, 13× 10×10 X3, 8× 9×9 X4, 12× 10×10 X4. No board from `puzzles-hard.json` is reused.
 
-## Special dates
+## Bonus Yards
+
+`bonus-cozy.json`, `bonus-hard.json`, `bonus-extreme.json`, `bonus-kids.json`: `{ "version": 1, "mode": "hard", "generatedAt": "...", "seed": 502, "bonus": [ { "id": 1, "n": 9, "r": "...", "s": "...", "g": "hard", "lv": 5, "st": 24 } ] }`. Same entry fields as above; ids are 1..N with no gaps. Each mode's pool is the top half of its Climb (Cozy 7×7/8×8 L3–L4, Hard 9×9/10×10 L4–L5, Extreme 9×9/10×10 X2–X4, Chill 6×6/7×7 L2–L3 with at most 2×n steps), and no board repeats one from any other file. Past the last entry the app reuses the pool with each board turned or mirrored and its yard letters shifted, which keeps it unique and at the same grade.
+
+
 
 - 2026-11-11: get-well message.
 - Every June 15: birthday message.

@@ -88,11 +88,12 @@ export const outfit = (worn = {}) => Object.fromEntries(SLOTS.map((s) => [s, ite
 export const priceFor = (it, kid) => (kid ? Math.ceil(it.price / 2) : it.price);
 
 // ---------- earning rules ----------
-// Puzzle ids are "<prefix>:<key>": daily prefixes end in "d" (key = date), climb prefixes in "c" (key = hold).
+// Puzzle ids are "<prefix>:<key>": daily prefixes end in "d" (key = date), climb prefixes in "c" (key = hold),
+// Bonus Yards prefixes in "b" (key = yard number).
 const DAILY_RATE = { d: 10, hd: 15, xd: 20, kd: 10 }; // today's daily: Cozy / Hard / Extreme (Chill is kids-only)
-export const RATES = { pastDay: 3, climb: 2, clean: 3, weekly: 25, weeklyDays: 5, kid: 10, kidClean: 5, kidStart: 100 };
+export const RATES = { pastDay: 3, climb: 2, bonus: 3, clean: 3, weekly: 25, weeklyDays: 5, kid: 10, kidBonus: 5, kidClean: 5, kidStart: 100 };
 
-const parse = (pid) => { const [pre, key] = pid.split(':'); return { pre, key, daily: pre.endsWith('d') }; };
+const parse = (pid) => { const [pre, key] = pid.split(':'); return { pre, key, daily: pre.endsWith('d'), bonus: pre.endsWith('b') }; };
 // "Clean" = zero mistakes. Relaxed mode can't lose treats, so mistakes are what count.
 const isClean = (p) => (p.mistakes ?? 0) === 0;
 // A daily counts as "today's" when it was solved on the puzzle's own date.
@@ -100,9 +101,9 @@ const onDay = (pid, p) => { const x = parse(pid); return x.daily && p.solvedAt =
 
 // Coins for one solve, before the weekly bonus. withClean = false is used for back pay.
 export function coinsFor(pid, p, kid, withClean = true) {
-  const { pre, daily } = parse(pid);
-  if (kid) return RATES.kid + (withClean && isClean(p) ? RATES.kidClean : 0);
-  const base = daily ? (onDay(pid, p) ? DAILY_RATE[pre] ?? DAILY_RATE.d : RATES.pastDay) : RATES.climb;
+  const { pre, daily, bonus } = parse(pid);
+  if (kid) return (bonus ? RATES.kidBonus : RATES.kid) + (withClean && isClean(p) ? RATES.kidClean : 0);
+  const base = daily ? (onDay(pid, p) ? DAILY_RATE[pre] ?? DAILY_RATE.d : RATES.pastDay) : bonus ? RATES.bonus : RATES.climb;
   return base + (withClean && isClean(p) ? RATES.clean : 0);
 }
 
@@ -191,6 +192,11 @@ export function syncUnlocks(db) {
       if (!db[key].includes(it.id) && it.at.some(([c, h]) => everSolved(db, `${c}:${h}`))) { db[key].push(it.id); got.push({ kind, it }); }
   return got;
 }
+
+// Bonus Yards: an endless pool of extra boards per mode, opened by that mode's summit hold.
+// climb prefix -> { b: bonus prefix, summit: last hold }.
+export const BONUS = { kc: { b: 'kb', summit: 40 }, c: { b: 'b', summit: 60 }, hc: { b: 'hb', summit: 80 }, xc: { b: 'xb', summit: 120 } };
+export const bonusOpen = (db, climb) => !!BONUS[climb] && everSolved(db, `${climb}:${BONUS[climb].summit}`);
 
 // Pay a just-solved puzzle once. Returns { coins, weekly } (both 0 if it was paid before).
 export function payout(db, pid, kid) {

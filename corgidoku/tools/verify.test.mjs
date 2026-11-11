@@ -44,4 +44,16 @@ const seq = verifyData({ daily: [{ date: '2026-11-06', ...good }, { date: '2026-
 assert.equal(seq.daily.failures.length, 1, 'date gap flagged');
 assert.equal(seq.campaign.failures.length, 1, 'bad campaign id flagged');
 
+// Bonus Yards files: only a `bonus` list, ids 1..N, every board checked.
+const bon = verifyData({ bonus: [{ id: 1, ...good }, { id: 2, ...twoSol }, { id: 4, ...good }] });
+assert.deepEqual(Object.keys(bon), ['bonus']);
+assert.deepEqual(bon.bonus.failures.map((f) => f.key), ['id 2', 'id 4']);
+
+// Bonus laps reuse boards turned/mirrored with shifted colors: still valid and unique.
+const { transformBoard } = await import('../engine.js');
+for (let t = 0; t < 8; t++) for (const shift of [0, 1, 3]) {
+  const b = transformBoard(good, t, shift);
+  assert.deepEqual(checkEntry(b), [], `transform ${t}/${shift}`);
+}
+
 console.log('verify self-test passed');
