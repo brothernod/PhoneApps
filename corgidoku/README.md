@@ -12,13 +12,14 @@ Cheddar's puzzle yard for Halina. A corgi take on Queens-style logic puzzles: on
 | `puzzles-extreme.json` | Extreme mode (grown-ups only): 730 daily 9×9/10×10 boards from 2026-11-05 that need "what if" chains + 120-level Extreme Climb |
 | `shop.js` | Coins and the Closet: earning rules, back pay, prices, item catalog, scene and frame catalog with Climb unlock rules (pure functions, no DOM) |
 | `scenes.js` | The scene pictures (390×844 SVG strings) behind the whole app |
-| `engine.js` | Generator, exact solver, human-technique grader (shared by game and tools) |
+| `engine.js` | Generator, exact solver, human-technique grader and the Sniff hint (`findStep` is shared by the grader and the hint) |
 | `puzzles.json` | Cozy mode: 730 daily puzzles from 2026-11-05 + 60 Climb levels, all verified |
 | `puzzles-hard.json` | Hard mode: 730 daily 8×8–10×10 boards needing pair/group locks + 80-level Hard Climb |
 | `puzzles-kids.json` | Chill mode (kids only): 760 daily 5×5/6×6 boards from 2026-10-01 + 40-level Chill Climb (4×4 up to 7×7) |
 | `bonus-cozy.json`, `bonus-hard.json`, `bonus-extreme.json`, `bonus-kids.json` | Bonus Yards: extra boards per mode, opened by that mode's summit (see Bonus Yards) |
 | `tools/generate.mjs` | Builds `puzzles.json`; also hunts big boards on a strong PC |
 | `tools/verify.mjs` | Independent checker, written separately from the generator |
+| `tools/sniff.test.mjs` | Tests that every Sniff hint is a valid step and the lowest level available, on every board of all 8 files |
 | `tools/pool-9.json` | 9×9 boards used on every other Sunday |
 | `tools/scenes.py` | Draws the scenes and writes `scenes.js` |
 
@@ -36,6 +37,7 @@ node tools/verify.mjs puzzles-hard.json
 node tools/verify.mjs puzzles-extreme.json
 node tools/verify.mjs puzzles-kids.json
 node tools/verify.test.mjs
+node tools/sniff.test.mjs
 ```
 
 The output is deterministic for a given `--seed`. Always run `verify.mjs` before committing.
@@ -123,7 +125,7 @@ Placed corgis are always correct, so they're locked: tapping one does nothing, a
 
 ## Shop
 
-Solving puzzles earns coins; coins buy outfits for Cheddar in the **Closet** (home screen → Closet, or tap the coin chip). The coin and the wardrobe are drawn icons (`coinIcon()`, `closetIcon()` in `art.js`) sized to `1em` so they sit in text like the old emoji. Everything is cosmetic: hints stay free and are never sold, and nothing is time-limited. Every puzzle pays once (`db.paid`), so Start over and replays earn nothing new. "Clean" means zero mistakes (Relaxed mode can't lose treats, so mistakes are what count).
+Solving puzzles earns coins; coins buy outfits for Cheddar in the **Closet** (home screen → Closet, or tap the coin chip). The coin and the wardrobe are drawn icons (`coinIcon()`, `closetIcon()` in `art.js`) sized to `1em` so they sit in text like the old emoji. Everything is cosmetic and nothing is time-limited. Hints (Sniff) are free in Chill and Cozy and cost coins in Hard and Extreme (see Sniff). Every puzzle pays once (`db.paid`), so Start over and replays earn nothing new. "Clean" means zero mistakes (Relaxed mode can't lose treats, so mistakes are what count).
 
 | Grown-ups (Default) | Coins |
 | --- | --- |
@@ -161,6 +163,17 @@ Tapping an item you own wears it; buying one wears it right away. Neck items onl
 **Data** (per player db, additive): `coins`, `paid {pid:1}`, `weeks {"2026-W46":1}`, `owned [itemId]` (colors too: `"bandana:purple"`), `worn {head, neck, face, scene, frame}`, `scenes [sceneId]`, `frames [frameId]`, `goal` (kids' piggy-bank item), `shopV`, `settings.dressBoard`, `settings.sparkles`.
 
 **Backup:** Settings → Backup. "Copy backup code" copies base64 JSON of every `corgidoku:*` key (all players). "Restore from code" checks the code, asks, replaces everything and reloads. Safari can clear a site's storage after 7 days without a visit unless it's on the Home Screen, so a backup protects the coins.
+
+## Sniff (hints)
+
+Sniff shows the **next logical move from the board as it is**: the player's corgis, the spots they rule out, red paws and plum paw marks. Brainstorm-color paws (blue, green, orange, magenta) are what-ifs, so Sniff ignores them. `sniff()` in `engine.js` asks the grader's own step finder (`findStep`) for the lowest rung of the SPEC ladder that makes progress (last spot, confined, would block, pair lock, group lock, what if), so the grader and the hint can never disagree.
+
+- **Two taps.** Tap 1 dims the board except where to look and names the technique ("Look at the blue yard. (Confined)"). The button then says **Show me**: tap 2 shows the answer (a corgi spot ringed, or the spots to paw-mark with a dashed outline) and explains it in plain words, naming yards by color. A what-if shows see-through corgis: **?** on the spot being tested, **1, 2…** on the corgis it forces, and the row, column or yard that runs out of room striped in red. Tapping the board clears the highlights. If the board changes, the step can change, and a new step is a new Sniff.
+- **Wrong paws first.** A plum paw on a real corgi spot would make any logic built on it false, so a Sniff that finds one takes off **every** such paw at once and makes them glow. The next Sniff gives a logic step.
+- **Prices** (`sniffPrice` in `shop.js`): free in 🐣 Chill and 🌈 Cozy; 🔥 Hard **25** and ⚡ Extreme **50** coins, for kids too, in dailies, past days, Climb holds and Bonus Yards. A puzzle that already paid out (a replay after Start over) has free hints. One price covers both taps of the same step. A paid Sniff asks first ("Sniff for 25? You have 140."). The price sits under the nose on the button.
+- **Can't afford it:** the "where to look" tap is a free peek; the answer stays locked, and the button greys out with its price.
+- **Clean bonus:** hints never affect it (clean still means zero mistakes).
+- The Sniff button's icon is a drawn chibi dog nose (`sniffIcon()` in `art.js`). The last Sniff's step is saved with the puzzle's progress (`sn`), so leaving and coming back keeps a paid answer free.
 
 ## Scenes
 

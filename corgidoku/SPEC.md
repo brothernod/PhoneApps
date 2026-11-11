@@ -28,7 +28,7 @@ Candidates = cells that could still hold a corgi. Placing a corgi removes every 
 | 5 | Group lock | The same as level 4 for groups of 3 or more. |
 | 6 | What if (chain) | Pretend a corgi sits on a candidate, then keep placing only forced corgis (last spots). If some row, column or region runs out of candidates within 6 forced corgis, remove the candidate. Depth = forced corgis before the dead end; the shortest chain on the board is used. Extreme mode only. |
 
-The grader always applies the lowest level that makes progress, then starts over at level 1. Grade = highest level used: `easy` (≤2), `medium` (3–4), `hard` (5), `extreme` (6). Steps = number of technique applications. Cozy, Hard and Chill are generated with levels 1–5 only.
+The grader always applies the lowest level that makes progress, then starts over at level 1. The in-game hint (Sniff) uses the same step finder from the player's own board: it shows the lowest-level step available there. Grade = highest level used: `easy` (≤2), `medium` (3–4), `hard` (5), `extreme` (6). Steps = number of technique applications. Cozy, Hard and Chill are generated with levels 1–5 only.
 
 ## puzzles.json schema
 

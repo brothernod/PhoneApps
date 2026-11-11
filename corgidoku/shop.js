@@ -1,6 +1,6 @@
 // Corgidoku shop: coins, prices and the item catalog.
 // Pure functions only (no DOM, no storage) so tools can test the coin math in node.
-// Everything here is cosmetic. Hints are always free and are never sold.
+// Everything here is cosmetic. Hints (Sniff) are free on Chill and Cozy and cost coins on Hard and Extreme.
 import { OUTFIT } from './art.js';
 import { SCENE_ART } from './scenes.js';
 
@@ -244,5 +244,20 @@ export function buy(db, id, kid) {
   db.coins -= cost;
   db.owned.push(id);
   if (db.goal === id) delete db.goal; // a kid's piggy bank target is done once it's bought
+  return true;
+}
+
+// ---------- hint prices (Sniff) ----------
+// Free on Chill and Cozy. Hard 25 and Extreme 50 for every player (kids pay the same, Jonathan's
+// call), in dailies, past days, Climb holds and Bonus Yards alike. A puzzle that already paid out
+// (a replay after Start over) has nothing left to earn, so its hints are free.
+export const SNIFF_PRICE = { hd: 25, hc: 25, hb: 25, xd: 50, xc: 50, xb: 50 };
+export const sniffPrice = (db, pid) => (db.paid?.[pid] ? 0 : SNIFF_PRICE[String(pid).split(':')[0]] ?? 0);
+// Spend coins on one Sniff. Returns false (and spends nothing) if the player can't afford it.
+export function paySniff(db, pid) {
+  shopDefaults(db);
+  const cost = sniffPrice(db, pid);
+  if (db.coins < cost) return false;
+  db.coins -= cost;
   return true;
 }

@@ -1,11 +1,12 @@
-import { decodeRegions, decodeSolution, grade, transformBoard } from './engine.js';
-import { cheddarHead, cheddarLoaf, partyHat, paw, treat, artDefs, coinIcon, closetIcon } from './art.js';
-import { ITEMS, SLOTS, item, outfit, colorsOf, baseId, ownsLine, priceFor, shopDefaults, payout, backPay, buy, SCENES, FRAMES, CLIMBS, scene, frame, earnable, unlockAt, milestones, syncUnlocks, BONUS, bonusOpen } from './shop.js';
+import { decodeRegions, decodeSolution, transformBoard, sniff } from './engine.js';
+import { cheddarHead, cheddarLoaf, partyHat, paw, treat, artDefs, coinIcon, closetIcon, sniffIcon } from './art.js';
+import { ITEMS, SLOTS, item, outfit, colorsOf, baseId, ownsLine, priceFor, shopDefaults, payout, backPay, buy, SCENES, FRAMES, CLIMBS, scene, frame, earnable, unlockAt, milestones, syncUnlocks, BONUS, bonusOpen, sniffPrice, paySniff } from './shop.js';
 
 // ---------- constants ----------
 const NAME = 'Halina'; // the Default player's name until they set their own in Settings
-const VERSION = '1.24'; // bump with CACHE in sw.js on every release
+const VERSION = '1.25'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
+const YARD_NAMES = ['pink', 'purple', 'blue', 'mint', 'yellow', 'orange', 'red', 'lavender', 'teal', 'lime']; // how Sniff names each yard color
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
 const EMPTY = 0, PAW = 1, AUTO = 2, CORGI = 3, NOPE = 4; // NOPE = a wrong guess, shown as a red paw
 // Brainstorm paw colors. Index 0 is the normal paw (PAW); 1-4 are stored as cell values 5-8.
@@ -356,6 +357,7 @@ function play(pid) {
     hints: saved?.hints ?? 0,
     rating: saved?.rating,
     solvedAt: saved?.solvedAt,
+    sn: saved?.sn || null, // the last Sniff: { k: step key, s: 1 look / 2 answer, f: a free peek (answer not paid) }
     history: [],
   };
   if (G.solved) { G.cells = G.cells.map((v, i) => (G.sol[Math.floor(i / G.n)] === i % G.n ? CORGI : v === CORGI ? EMPTY : v)); }
@@ -368,7 +370,7 @@ function play(pid) {
     <div class="bubble"><div class="face">${cheddarHead()}</div><p id="msg"></p></div>
     <div class="tools">
       <button class="tool" id="undo"><span class="e">↩️</span>Undo</button>
-      <button class="tool" id="hint"><span class="e">👃</span>Sniff</button>
+      <button class="tool" id="hint"><span class="e">${sniffIcon()}</span><span class="lbl" id="hintlbl">Sniff</span></button>
       <button class="tool" id="clearpaws"><span class="e">🧽</span>Clear paws</button>
     </div>`;
   $('play').querySelector('.back').onclick = () => { stopClock(); P.kind === 'c' ? renderClimb() : renderHome(); };
@@ -433,6 +435,8 @@ function buildBoard() {
 }
 
 function drawBoard() {
+  clearSniff();
+  sniffButton();
   const cells = $('board').children;
   for (let i = 0; i < cells.length; i++) {
     const v = G.cells[i], el = cells[i];
@@ -465,7 +469,7 @@ function startClock() {
 function stopClock() { if (tick) clearInterval(tick); tick = null; if (G && !G.solved) persist(); }
 
 function persist() {
-  db.progress[G.pid] = { cells: G.cells.join(''), treats: G.treats, elapsed: Math.round(G.elapsed), solved: G.solved, best: G.best, mistakes: G.mistakes, hints: G.hints, rating: G.rating, solvedAt: G.solvedAt, ...(G.kind === 'b' ? { bk: G.r } : {}) };
+  db.progress[G.pid] = { cells: G.cells.join(''), treats: G.treats, elapsed: Math.round(G.elapsed), solved: G.solved, best: G.best, mistakes: G.mistakes, hints: G.hints, rating: G.rating, solvedAt: G.solvedAt, ...(G.sn ? { sn: G.sn } : {}), ...(G.kind === 'b' ? { bk: G.r } : {}) };
   save();
 }
 function snapshot() { G.history.push({ cells: G.cells.slice(), treats: G.treats }); if (G.history.length > 200) G.history.shift(); }
@@ -613,23 +617,153 @@ function outOfTreats() {
   $('home2').onclick = () => { closeSheet(); G.treats = 3; G.cells.fill(EMPTY); persist(); renderHome(); };
 }
 
+// ---------- Sniff (hints) ----------
+// Sniff finds the next logical step from the board as it is (engine.js sniff(): the lowest rung of
+// the SPEC ladder that makes progress) and shows it in two taps: first where to look and the
+// technique's name, then the answer with the cells that justify it. On Hard and Extreme a Sniff
+// costs coins (shop.js sniffPrice); one price covers both taps of the same step. A player who
+// can't afford it still gets the "where to look" tap free. Plum paws on a corgi spot come first.
+const TECH = ['', 'Last spot', 'Confined', 'Would block', 'Pair lock', 'Group lock', 'What if'];
+let snMemo = { cells: '', st: null };
+// What Sniff knows: corgis, and the cells known to be empty (red paws, auto paws, plum paws).
+// Brainstorm-color paws are what-ifs, so they're left out.
+function sniffStep() {
+  const key = G.cells.join('');
+  if (snMemo.cells !== key || snMemo.pid !== G.pid) {
+    const corgis = [], out = [];
+    G.cells.forEach((v, i) => { if (v === CORGI) corgis.push(i); else if (v === NOPE || v === AUTO || v === PAW) out.push(i); });
+    snMemo = { cells: key, pid: G.pid, st: sniff(G.n, G.reg, G.sol, { corgis, out }) };
+  }
+  return snMemo.st;
+}
+const stepKey = (st) => `${st.type}:${st.level}:${st.cells.join(',')}`;
+const yardName = (k) => YARD_NAMES[k] || 'colored';
+const andList = (a) => (a.length < 3 ? a.join(' and ') : `${a.slice(0, -1).join(', ')} and ${a.at(-1)}`);
+const theUnit = (u) => (u.kind === 'yard' ? `the ${yardName(u.i)} yard` : `this ${u.kind}`);
+const spots = (k) => `${k} glowing spot${k === 1 ? '' : 's'}`;
+function explain(st) {
+  const k = st.cells.length, name = TECH[st.level];
+  if (st.type === 'reveal') return { look: 'Sniff sniff… look here!', answer: 'Sniff sniff… try the glowing spot!' };
+  if (st.level === 1) return { look: `Look at ${theUnit(st.unit)}. (${name})`,
+    answer: `${name}: ${theUnit(st.unit)} has only one spot left that could hold a corgi. Double-tap the glowing spot!` };
+  if (st.level === 2) {
+    const u = st.unit;
+    if (u.kind === 'yard') return { look: `Look at ${theUnit(u)}. Where can its corgi go? (${name})`,
+      answer: `${name}: every spot left in ${theUnit(u)} is in this ${st.line.kind}, so its corgi takes the ${st.line.kind}. Paw-mark the rest of the ${st.line.kind}: the ${spots(k)}.` };
+    const y = `the ${yardName(st.yard)} yard`;
+    return { look: `Look at this ${u.kind}. Which yards can its corgi be in? (${name})`,
+      answer: `${name}: every spot left in this ${u.kind} is in ${y}, so ${y}'s corgi has to sit in this ${u.kind}. Paw-mark the rest of ${y}: the ${spots(k)}.` };
+  }
+  if (st.level === 3) return { look: `Look at ${theUnit(st.unit)}. Is there a spot outside it that would take away all its room? (${name})`,
+    answer: `${name}: a corgi on the glowing spot would rule out every spot left in ${theUnit(st.unit)}. So no corgi there: paw-mark it.` };
+  if (st.level === 4 || st.level === 5) {
+    const g = st.group, c = st.cover, n = g.ids.length;
+    if (g.kind === 'yard') {
+      const ys = `the ${andList(g.ids.map(yardName))} yards`;
+      return { look: `Look at ${ys} together. Which ${c.kind}s can their corgis be in? (${name})`,
+        answer: `${name}: ${ys} only fit in these ${n} ${c.kind}s, so their ${n} corgis fill them. Paw-mark everything else in those ${c.kind}s: the ${spots(k)}.` };
+    }
+    const ys = `the ${andList(c.ids.map(yardName))} yards`;
+    return { look: `Look at these ${n} ${g.kind}s together. Which yards can their corgis be in? (${name})`,
+      answer: `${name}: these ${n} ${g.kind}s only have room in ${ys}, so those yards' corgis must sit in these ${g.kind}s. Paw-mark the rest of those yards: the ${spots(k)}.` };
+  }
+  const d = st.depth, dead = st.dead.kind === 'yard' ? theUnit(st.dead) : `the striped ${st.dead.kind}`;
+  return { look: `What if a corgi sat on the ? spot? Follow the corgis it would force. (${name})`,
+    answer: `${name}: a corgi on the ? spot would force ${d === 1 ? 'corgi 1 (the last spot in its row, column or yard)' : `corgis 1 to ${d} (each the last spot in its row, column or yard)`}, and then ${dead} would have no room. So no corgi there: paw-mark the ? spot.` };
+}
+function clearSniff() {
+  const b = $('board');
+  if (!b) return;
+  b.classList.remove('spot');
+  b.querySelectorAll('.sn-a,.sn-d,.glow').forEach((el) => el.classList.remove('sn-a', 'sn-d', 'glow'));
+  b.querySelectorAll('.sng,.snx').forEach((el) => el.remove());
+}
+// Highlight cells: everything else on the board dims.
+function spotlight(cells) {
+  const b = $('board');
+  b.classList.add('spot');
+  for (const i of cells) b.children[i].classList.add('sn-a');
+}
+// A see-through corgi with a little badge ("?" for a what-if spot, 1, 2… for the corgis it forces).
+function ghost(i, label) {
+  const el = $('board').children[i];
+  el.insertAdjacentHTML('beforeend', `<span class="sng">${cheddarHead()}<b>${label}</b></span>`);
+}
+function showLook(st, extra = '') {
+  clearSniff();
+  spotlight(st.look);
+  if (st.level === 6) ghost(st.cells[0], '?');
+  say(explain(st).look + extra, false, true);
+}
+function showAnswer(st) {
+  clearSniff();
+  spotlight(st.area);
+  const b = $('board');
+  if (st.level === 6) {
+    ghost(st.cells[0], '?');
+    st.chain.forEach((x, k) => ghost(x.cell, k + 1));
+    for (let i = 0; i < G.n * G.n; i++) {
+      const r = Math.floor(i / G.n), c = i % G.n, u = st.dead;
+      if ((u.kind === 'row' && r === u.i) || (u.kind === 'column' && c === u.i) || (u.kind === 'yard' && G.reg[i] === u.i)) b.children[i].classList.add('sn-d');
+    }
+  } else if (st.type === 'place' || st.type === 'reveal') b.children[st.cells[0]].classList.add('glow');
+  else for (const i of st.cells) b.children[i].insertAdjacentHTML('beforeend', `<span class="snx">${paw(false)}</span>`);
+  say(explain(st).answer, false, true);
+}
+// The Sniff button: the nose, "Sniff" and the price (Hard/Extreme), or "Show me" when the
+// answer to the step already paid for is one tap away. Greyed after a free peek the player can't pay for.
+function sniffButton() {
+  const btn = $('hint'), lbl = $('hintlbl');
+  if (!btn || !G) return;
+  const st = G.solved ? null : sniffStep(), price = sniffPrice(db, G.pid);
+  const same = st && G.sn && G.sn.k === stepKey(st) && st.type !== 'wrong';
+  const poor = same && G.sn.f && db.coins < price;
+  btn.classList.toggle('poor', !!poor);
+  lbl.innerHTML = same && !G.sn.f ? 'Show me' : price && !G.solved ? `Sniff <small>${coin(price)}</small>` : 'Sniff';
+  btn.setAttribute('aria-label', same && !G.sn.f ? 'Show me the answer' : price ? `Sniff for ${price} coins` : 'Sniff for a hint');
+}
+function spendSheet(price, ok) {
+  sheet(`<div class="bignose">${sniffIcon()}</div><h3>Sniff for ${coin(price)}?</h3>
+    <p>You have ${coin(db.coins)}. Cheddar shows where to look first; if you need it, the answer is the next tap, free.</p>
+    <button class="cta" id="ok">Sniff ${coin(price)}</button><button class="cta alt" id="no">Not now</button>`);
+  $('ok').onclick = () => { closeSheet(); ok(); };
+  $('no').onclick = closeSheet;
+}
 function hint() {
   if (G.solved) return;
-  G.hints++; persist();
-  const { n, sol } = G;
-  // Clear any wrong paw marks on solution cells first: that's the kindest hint.
-  const badPaw = G.cells.findIndex((v, i) => isPaw(v) && sol[Math.floor(i / n)] === i % n);
-  const given = [];
-  G.cells.forEach((v, i) => { if (v === CORGI) given.push(i); });
-  const g = grade(n, G.reg, { given });
-  const next = g.log.find((s) => s.type === 'place' && s.level > 0);
-  let target = next ? next.cells[0] : sol.map((c, r) => r * n + c).find((i) => G.cells[i] !== CORGI);
-  let why = next ? `Sniff sniff… ${next.why}.` : 'Sniff sniff… try this spot!';
-  if (badPaw >= 0 && badPaw !== target && Math.random() < 0.5) { target = badPaw; why = 'Hmm, one of your paw marks is on a corgi spot. Look here!'; }
-  const el = $('board').children[target];
-  el.classList.add('glow');
-  setTimeout(() => el.classList.remove('glow'), 3500);
-  say(why);
+  const st = sniffStep();
+  if (!st) return;
+  const key = stepKey(st), price = sniffPrice(db, G.pid);
+  // Second tap on the same step: the answer (already paid for), or a reminder after a free peek.
+  if (G.sn?.k === key && st.type !== 'wrong') {
+    if (!G.sn.f) { G.sn.s = 2; persist(); showAnswer(st); return; }
+    if (db.coins < price) return say(`The answer costs ${price} coins and you have ${db.coins}. Solve a puzzle or two to earn more!`, false, true);
+    return spendSheet(price, () => { if (!paySniff(db, G.pid)) return; save(); G.sn = { k: key, s: 2, f: false }; persist(); sniffButton(); showAnswer(st); });
+  }
+  const go = () => {
+    G.hints++;
+    if (st.type === 'wrong') {
+      // Plum paws on corgi spots: take them all off, and show where they were.
+      snapshot();
+      for (const i of st.cells) G.cells[i] = EMPTY;
+      G.sn = null; persist(); drawBoard();
+      for (const i of st.cells) $('board').children[i].classList.add('glow');
+      const k = st.cells.length;
+      say(`Cheddar smelled a corgi under ${k === 1 ? 'one of your paw marks' : `${k} of your paw marks`}, so he took ${k === 1 ? 'it' : 'them'} off. Look at the glowing spot${k === 1 ? '' : 's'}!`, false, true);
+      return;
+    }
+    G.sn = { k: key, s: 1, f: false }; persist(); sniffButton(); showLook(st);
+  };
+  if (!price) return go();
+  if (db.coins < price) {
+    // Can't afford it: a free peek at where to look. The answer stays locked.
+    if (st.type === 'wrong') return say('Hmm, one of your paw marks is on a corgi spot. Check your paws!', false, true);
+    G.hints++;
+    G.sn = { k: key, s: 1, f: true }; persist(); sniffButton();
+    showLook(st, ` Free peek: the answer costs ${price} coins.`);
+    return;
+  }
+  spendSheet(price, () => { if (!paySniff(db, G.pid)) return; save(); go(); });
 }
 
 function win() {
@@ -782,14 +916,15 @@ function celebrate() {
 
 // ---------- messages & sheets ----------
 let msgTimer = null;
-function say(text, alert = false) {
+function say(text, alert = false, sticky = false) {
   const m = $('msg');
   if (!m) return;
   m.textContent = text;
   m.classList.toggle('alert', alert);
+  m.classList.toggle('long', text.length > 120);
   clearTimeout(msgTimer);
   // Alerts stay until the next message; friendly chatter fades.
-  if (text && !alert) msgTimer = setTimeout(() => { if (m.textContent === text && !G?.solved) m.textContent = ''; }, 6000);
+  if (text && !alert && !sticky) msgTimer = setTimeout(() => { if (m.textContent === text && !G?.solved) m.textContent = ''; }, 6000);
 }
 function sheet(html) { $('sheet').innerHTML = html; $('overlay').classList.add('on'); }
 function closeSheet() { $('overlay').classList.remove('on'); }
@@ -813,7 +948,7 @@ function help() {
     <p>Tap for a 🐾 paw mark (“no corgi here”); tap it again to remove it. <b>Double-tap</b> to place a corgi. Drag to paw-mark lots of cells; start a drag on a paw to erase instead.</p>
     <p>Pick a paw color under the board to brainstorm "what if" ideas in different colors. Double-tap a color to clear just those paws.</p>
     <p>${isKid() ? 'Ready for more? Try <b>🌈 Cozy</b> on the home screen.' : mode() === 'extreme' ? '<b>⚡ Extreme</b> boards need a "what if": picture a corgi on a spot, follow the corgis it forces, and if a row, column or yard runs out of room, that spot is out. No guessing needed, just looking ahead.' : mode() === 'hard' ? 'Breezing through? Switch to <b>⚡ Extreme</b> on the home screen.' : 'Want more challenge? Switch to <b>🔥 Hard</b> or <b>⚡ Extreme</b> on the home screen.'}</p>
-    <p>A wrong corgi costs a treat. Stuck? Tap <b>Sniff</b> and Cheddar will help.</p>
+    <p>A wrong corgi costs a treat. Stuck? Tap <b>Sniff</b>: Cheddar shows where to look, and tap again for the answer.${mode() === 'hard' || mode() === 'extreme' ? ` In ${MODES[mode()].label} a Sniff costs ${coin(mode() === 'hard' ? 25 : 50)} (free on a puzzle you already solved).` : ''}</p>
     <button class="cta" id="gotit">Let's go!</button>`);
   $('gotit').onclick = () => { db.seenHelp = true; save(); closeSheet(); };
 }
@@ -996,7 +1131,7 @@ function welcomeSheet() {
   const u = unlocked; unlocked = []; // scenes and frames their Climb progress already earned
   const kid = isKid();
   sheet(`<div style="width:120px;margin:0 auto">${cheddarLoaf(dressed())}</div><h3>Welcome to the closet!</h3>
-    <p>Solve puzzles to earn coins, then spend them on outfits for Cheddar. Hints are always free.</p>
+    <p>Solve puzzles to earn coins, then spend them on outfits for Cheddar. Hints are free in Chill and Cozy; in Hard and Extreme a Sniff costs ${coin(25)} / ${coin(50)}.</p>
     ${w.coins || w.start ? `<div class="earn">${coinIcon()} +${w.coins + w.start} coins${w.coins ? `<span>for ${w.puzzles} puzzle${w.puzzles === 1 ? '' : 's'} you already solved${w.start ? `, plus ${w.start} to start` : ''}</span>` : `<span>to start you off</span>`}</div>` : ''}
     <p>${kid ? 'Everything in the closet is half price for you!' : 'Every puzzle pays once. Today\'s daily pays the most.'}</p>
     ${u.length ? `<p>Your climbing also earned:</p><div class="ulist">${u.map(({ kind, it }) => `<div>${kind === 'scene' ? sceneThumb(it) : `<div class="fthumb" style="margin:0 auto 4px">${miniBoard(it, 54)}</div>`}${kind === 'scene' ? it.name : `${it.name} frame`}</div>`).join('')}</div>` : ''}
