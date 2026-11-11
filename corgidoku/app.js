@@ -3,7 +3,7 @@ import { cheddarHead, cheddarLoaf, partyHat, paw, treat } from './art.js';
 
 // ---------- constants ----------
 const NAME = 'Halina';
-const VERSION = '1.10'; // bump with CACHE in sw.js on every release
+const VERSION = '1.11'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
 const EMPTY = 0, PAW = 1, AUTO = 2, CORGI = 3, NOPE = 4; // NOPE = a wrong guess, shown as a red paw
@@ -500,8 +500,9 @@ function win() {
   stopClock(); persist(); drawClock();
   // Clear paws so the finished board shows just the corgis.
   G.cells = G.cells.map((v) => (v === CORGI ? v : EMPTY)); drawBoard();
-  [...$('board').children].forEach((el) => el.classList.add('done'));
+  boardParty();
   celebrate();
+  say(isKid() ? `You did it, ${me().name}! 🎉` : 'Every corgi is cozy! 🎉');
   const isClimb = G.kind === 'c', nextLvl = Number(G.key) + 1;
   const hasNext = isClimb && nextLvl <= PUZ.campaign.length;
   setTimeout(() => {
@@ -517,7 +518,7 @@ function win() {
       G.rating = Number(b.dataset.r); persist();
       document.querySelectorAll('.rate button').forEach((x) => x.classList.toggle('on', x === b));
     }));
-  }, 1700);
+  }, 2600); // let the board party play before the card covers it
 }
 
 // ---------- field research ----------
@@ -564,6 +565,39 @@ function winLine() {
   if (t >= '2026-11-11' && t <= '2026-11-17') return 'Rest up! Cheddar says you\'re doing amazing.';
   const lines = ['Cheddar is doing zoomies!', 'Every corgi found a cozy spot.', 'Big brain, tiny legs. Well done!', 'That\'s worth a belly rub.', 'Cheddar is so proud of you!'];
   return lines[Math.floor(Math.random() * lines.length)];
+}
+
+// Win show on the board: a rainbow wave rolls across the tiles from the top-left,
+// the corgis hop, and each corgi throws off a burst of sparkles.
+const SPARK_COLORS = ['#FF5FA8', '#FF9F45', '#FFD23C', '#3FD98B', '#46B3FF', '#9B6BFF', '#FFFFFF'];
+function boardParty() {
+  const board = $('board'), n = G.n;
+  board.classList.add('party');
+  [...board.children].forEach((el, i) => {
+    el.style.setProperty('--d', `${(Math.floor(i / n) + (i % n)) * 70}ms`);
+    el.classList.add('done', 'party');
+  });
+  setTimeout(() => board.classList.remove('party'), 3200);
+  G.cells.forEach((v, i) => {
+    if (v !== CORGI) return;
+    const r = board.children[i].getBoundingClientRect();
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const wave = (Math.floor(i / n) + (i % n)) * 70;
+    for (let k = 0; k < 10; k++) {
+      const s = document.createElement('div');
+      s.className = 'spark';
+      const ang = (k / 10) * Math.PI * 2 + Math.random() * 0.5, dist = r.width * (0.7 + Math.random() * 0.6);
+      s.style.left = cx + 'px';
+      s.style.top = cy + 'px';
+      s.style.setProperty('--dx', Math.cos(ang) * dist + 'px');
+      s.style.setProperty('--dy', Math.sin(ang) * dist + 'px');
+      s.style.setProperty('--sz', 8 + Math.random() * 10 + 'px');
+      s.style.background = SPARK_COLORS[(k + i) % SPARK_COLORS.length];
+      s.style.animationDelay = wave + 250 + Math.random() * 300 + 'ms';
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 2400);
+    }
+  });
 }
 
 function celebrate() {
