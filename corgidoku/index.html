@@ -190,7 +190,8 @@
   .ctile b{font-size:14px}
   .ctile small{font-size:12px;font-weight:800;color:var(--ink-soft)}
   .csoon{background:rgba(255,255,255,.75);border-radius:18px;padding:18px;text-align:center;font-weight:800;color:var(--ink-soft);line-height:1.4}
-  .cact{width:100%;max-width:440px;margin-top:8px}
+  .cact{width:100%;max-width:440px;margin-top:8px;position:sticky;bottom:0;z-index:3} /* Buy stays on screen however long the list gets */
+  .cact:empty{display:none}
   .cact .cta{display:block;width:100%;padding:14px;border-radius:16px;font-weight:900;font-size:18px;color:#fff;background:linear-gradient(90deg,var(--pink),var(--purple))}
   .cact .cta.alt{background:#F3EAF6;color:var(--ink)}
   /* icons drawn in art.js: the corgi coin and the wardrobe sit inline like the emoji did */

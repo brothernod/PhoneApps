@@ -4,7 +4,7 @@ import { ITEMS, SLOTS, item, outfit, priceFor, shopDefaults, payout, backPay, bu
 
 // ---------- constants ----------
 const NAME = 'Halina'; // the Default player's name until they set their own in Settings
-const VERSION = '1.16'; // bump with CACHE in sw.js on every release
+const VERSION = '1.17'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
 const EMPTY = 0, PAW = 1, AUTO = 2, CORGI = 3, NOPE = 4; // NOPE = a wrong guess, shown as a red paw
@@ -770,8 +770,8 @@ function extremeIntro() {
 }
 
 // ---------- closet ----------
-// Big Cheddar preview on top, tabs below. Tapping an item previews it; owned items can be worn,
-// others bought with coins. Scenes and frames come only from the Climb: never a Buy button.
+// Big Cheddar preview on top, tabs below. Tapping an owned item wears it; tapping one you don't
+// own previews it, with Buy at the bottom. Scenes and frames come only from the Climb: never a Buy button.
 const CLOSET_TABS = [['head', 'Head'], ['neck', 'Neck'], ['face', 'Face'], ['scenes', 'Scenes'], ['frames', 'Frames']];
 let closetTab = 'head', closetPick = undefined; // undefined = show what's worn
 function renderCloset(tab = closetTab, pickId) {
@@ -797,11 +797,8 @@ function renderCloset(tab = closetTab, pickId) {
     body = list.length ? `<div class="cgrid">${tile(null)}${list.map(tile).join('')}</div>`
       : `<p class="csoon">Cheddar's tailor is still sewing. New ${tab} things are coming soon!</p>`;
     const it = item(pick);
-    if (!list.length) action = '';
-    else if (!it) action = db.worn[slot] ? `<button class="cta" id="c-wear">Take it off</button>` : '';
-    else if (db.worn[slot] === it.id) action = `<button class="cta alt" disabled>Wearing the ${it.name.toLowerCase()} ✓</button>`;
-    else if (db.owned.includes(it.id)) action = `<button class="cta" id="c-wear">Wear it</button>`;
-    else {
+    // Owned things go on with a tap (see the tile handler), so only things to buy need a button.
+    if (it && !db.owned.includes(it.id)) {
       const cost = priceFor(it, kid);
       if (db.coins >= cost) action = `<button class="cta" id="c-buy">Buy for ${coin(cost)}</button>`;
       // Kids can't afford it yet: they can make it their piggy bank goal.
@@ -829,8 +826,6 @@ function renderCloset(tab = closetTab, pickId) {
     body = `<div class="cgrid">${tile(null)}${all.map(tile).join('')}</div>
       <p class="csoon" style="margin-top:12px">${kind === 'scene' ? 'Scenes are pictures behind the whole app. Earn them on the Climb: they can never be bought.' : 'Reach the top of a Climb to earn a sparkly frame for the board.'}</p>`;
     if (!has) action = `<button class="cta alt" disabled>🔒 Earn it at ${unlockAt(it, kid).label}</button>`;
-    else if ((it?.id || null) === (worn?.id || null)) action = `<button class="cta alt" disabled>Using ${it ? (kind === 'scene' ? it.name : `the ${it.name.toLowerCase()} frame`) : kind === 'scene' ? 'pink' : 'no frame'} ✓</button>`;
-    else action = `<button class="cta" id="c-use">${it ? 'Use it' : kind === 'scene' ? 'Use pink' : 'No frame'}</button>`;
     // Scenes preview behind the whole Closet; frames preview around a little board.
     if (kind === 'scene') applyScene(has ? it : worn);
     else preview = `<div class="cpreview fr">${miniBoard(has ? it : worn, 130)}</div>`;
@@ -844,11 +839,20 @@ function renderCloset(tab = closetTab, pickId) {
     <div class="cact">${action}</div>`;
   $('closet').querySelector('.back').onclick = () => { closetPick = undefined; applyScene(); renderHome(); };
   $('closet').querySelectorAll('.ctab').forEach((b) => (b.onclick = () => renderCloset(b.dataset.t)));
-  $('closet').querySelectorAll('.ctile').forEach((b) => (b.onclick = () => { closetPick = b.dataset.id || null; renderCloset(); }));
-  const wear = $('c-wear'), buyB = $('c-buy'), goal = $('c-goal'), use = $('c-use');
+  // Tap something you own (or Nothing / Pink / No frame) and it goes on right away, no button.
+  // Tap something you don't own yet to preview it and see Buy, Save up, or where to earn it.
+  $('closet').querySelectorAll('.ctile').forEach((b) => (b.onclick = () => {
+    const id = b.dataset.id || null;
+    const mine = !id || (slot ? db.owned : kind === 'scene' ? db.scenes : db.frames).includes(id);
+    if (mine) {
+      const key = slot || kind;
+      if (id) db.worn[key] = id; else delete db.worn[key];
+      save(); closetPick = undefined; applyScene();
+    } else closetPick = id;
+    renderCloset();
+  }));
+  const buyB = $('c-buy'), goal = $('c-goal');
   if (goal) goal.onclick = () => { db.goal = pick; save(); renderCloset(); };
-  if (wear) wear.onclick = () => { if (pick) db.worn[slot] = pick; else delete db.worn[slot]; save(); renderCloset(); };
-  if (use) use.onclick = () => { if (pick) db.worn[kind] = pick; else delete db.worn[kind]; save(); applyScene(); renderCloset(); };
   if (buyB) buyB.onclick = () => {
     const it = item(pick), cost = priceFor(it, kid);
     confirmSheet(`Buy the ${it.name.toLowerCase()}?`, `It costs ${coin(cost)}. You have ${coin(db.coins)}.`, () => {

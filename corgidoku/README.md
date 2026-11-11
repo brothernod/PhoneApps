@@ -98,7 +98,7 @@ Prices: basic 60 · nice 150 · fancy 350 · dream 900 · color variant 40.
 | Neck | Pink bandana 60 · Purple bandana 60 · Bow tie 60 |
 | Face | Heart sunglasses 150 |
 
-More items and color variants come in phase 4. Buying an item wears it right away. Neck items only show on the full Cheddar (home, Closet, sheets).
+More items and color variants come in phase 4. Tapping an item you own wears it; buying one wears it right away. Neck items only show on the full Cheddar (home, Closet, sheets).
 
 **Board corgis.** Settings → Dress up board corgis puts the equipped hat and face item (sunglasses) on every corgi on the board (on by default for the kids, off for Default). At the win party every corgi puts them on either way, and so does the zooming Cheddar. Nothing equipped means plain corgis: there's no default party hat.
 
@@ -135,7 +135,7 @@ Scenes are pictures behind the whole app (home, play, the Climb, past days, the 
 
 **Summit frames.** A 5px gradient ring around the board (rainbow, gold or starlight), a soft glow, and 4-point sparkles on the ring's corners and edges, never over the cells. They twinkle when a puzzle opens and when it's solved, and stay still otherwise. Settings → **Summit sparkles** (on by default) hides the sparkles; the ring and glow stay. `prefers-reduced-motion` turns the twinkle off.
 
-**Closet.** Scenes and Frames tabs. Earned ones have **Use it**; locked ones are grey with a lock and where to earn them ("Hard Climb · hold 60"), and never a Buy button. Tapping a scene previews it behind the whole Closet; the Frames tab previews a little solved board in the frame. Kids only see what their climbs can give (The Moon and Starlight need Extreme, so they're hidden for them).
+**Closet.** Scenes and Frames tabs. **Tapping anything you own puts it on right away** (outfits too, and Pink / No frame / Nothing), with no button to press. Tapping something you don't own previews it and shows a bar pinned to the bottom of the screen: Buy (with a confirm), Save up for kids, or for scenes and frames where to earn them. Locked scenes and frames are grey with a lock and "Hard Climb · hold 60", and never have a Buy button. The Frames tab shows a little solved board in the frame. Kids only see what their climbs can give (The Moon and Starlight need Extreme, so they're hidden for them).
 
 **Win timing.** The win sheet (and any unlock sheet) waits until the board party and Cheddar's zoomies finish: 3.5 s, up to about 4 s on a 10×10. With `prefers-reduced-motion` it's 0.7 s.
 
