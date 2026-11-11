@@ -13,7 +13,10 @@
 // Hard mode file (puzzles-hard.json):
 //   node tools/generate.mjs --mode hard --start 2026-11-05
 //
-// Options: --mode cozy|hard  --start YYYY-MM-DD  --days 730  --campaign 60  --seed 1  --out puzzles.json  --workers N
+// Kids "Chill" file (puzzles-kids.json), for Holden and Quentin:
+//   node tools/generate.mjs --mode kids --start 2026-10-01 --days 760
+//
+// Options: --mode cozy|hard|kids  --start YYYY-MM-DD  --days 730  --campaign 60  --seed 1  --out puzzles.json  --workers N
 import { Worker, isMainThread, parentPort, workerData } from 'node:worker_threads';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { cpus } from 'node:os';
@@ -84,7 +87,29 @@ function wantHard(date) {
 const CAMPAIGN_HARD = [
   [10, 8, ['L4']], [10, 8, ['L5']], [20, 9, ['L4']], [15, 9, ['L5']], [15, 10, ['L4']], [10, 10, ['L5']],
 ];
+// Chill mode for the kids: tiny boards that only need "last spot" (L1) and "confined" (L2).
+// Daily stays 5x5 most days, 6x6 on Fri-Sun.
+function wantKids(date) {
+  const dow = new Date(date + 'T00:00:00Z').getUTCDay();
+  return {
+    1: [[5, 'L1']],
+    2: [[5, 'L1']],
+    3: [[5, 'L1'], [5, 'L2']],
+    4: [[5, 'L2']],
+    5: [[6, 'L1']],
+    6: [[5, 'L2'], [6, 'L1']],
+    0: [[6, 'L1'], [6, 'L2']],
+  }[dow];
+}
+// 40 holds: 28 easy ones (4x4 -> 6x6, L1/L2 only), then a gentle ramp to mid-Cozy (7x7 with L3).
+const CAMPAIGN_KIDS = [
+  [6, 4, ['L1']], [10, 5, ['L1']], [6, 5, ['L2']], [3, 6, ['L1']], [3, 6, ['L2']],
+  [4, 6, ['L3']], [3, 7, ['L2']], [5, 7, ['L3']],
+];
+// Kids boards: few steps, so no long slogs even at L3.
+const kidsKey = (p) => (p.st <= 2 * p.n ? `${p.n}:L${p.lv}` : 'skip');
 const MODES = {
+  kids: { want: wantKids, plan: CAMPAIGN_KIDS, key: kidsKey, out: 'puzzles-kids.json', campaign: 40 },
   cozy: { want, plan: CAMPAIGN, key: (p) => `${p.n}:${p.g}`, out: 'puzzles.json', campaign: 60 },
   hard: { want: wantHard, plan: CAMPAIGN_HARD, key: (p) => `${p.n}:L${p.lv}`, out: 'puzzles-hard.json', campaign: 80 },
 };

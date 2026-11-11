@@ -11,7 +11,7 @@ const DAY = 86400000;
 export function checkSchema(e) {
   const errs = [];
   const { n, r, s } = e ?? {};
-  if (!Number.isInteger(n) || n < 5 || n > 10) return [`n must be integer 5..10 (got ${JSON.stringify(n)})`];
+  if (!Number.isInteger(n) || n < 4 || n > 10) return [`n must be integer 4..10 (got ${JSON.stringify(n)})`];
   if (typeof r !== 'string' || r.length !== n * n) errs.push(`r must be a string of length ${n * n}`);
   else {
     const letters = new Set(r);
