@@ -8,7 +8,7 @@ Cheddar's puzzle yard for Halina. A corgi take on Queens-style logic puzzles: on
 
 | File | What it does |
 | --- | --- |
-| `index.html`, `app.js`, `art.js` | The game: daily puzzle, The Climb (60 levels), past days, hints, stats |
+| `index.html`, `app.js`, `art.js` | The game: daily puzzle, The Climb (60 levels), past days, hints, stats. `art.js` has Sticker Cheddar, his outfits (`OUTFIT`) and the coin and closet icons |
 | `puzzles-extreme.json` | Extreme mode (grown-ups only): 730 daily 9×9/10×10 boards from 2026-11-05 that need "what if" chains + 120-level Extreme Climb |
 | `shop.js` | Coins and the Closet: earning rules, back pay, prices, item catalog (pure functions, no DOM) |
 | `engine.js` | Generator, exact solver, human-technique grader (shared by game and tools) |
@@ -66,7 +66,7 @@ Settings → Who's playing? switches between Default, Holden and Quentin. Each p
 
 Each player also has their own wallet, outfits and (later) scenes. The Default player's name shows on the home screen and in Halina's banners; it's `Halina` unless changed in Settings → Your name (`db.settings.name`). The birthday and get-well banners stay with the Default player.
 
-Kid players see their name next to Cheddar on the home screen, get the 🐣 Chill mode (alongside Cozy and Hard), and start with Relaxed on, the timer off and Easy double-tap on (560 ms window instead of 380 ms, plus a little finger wiggle allowed). Halina's special-date banners don't show for the kids.
+Kid players see their name next to Cheddar on the home screen, get the 🐣 Chill mode (alongside Cozy and Hard), and start with Relaxed on, the timer off, Easy double-tap on (560 ms window instead of 380 ms, plus a little finger wiggle allowed) and Dress up board corgis on. Instead of a coin number they see a piggy-bank bar (see Shop). Halina's special-date banners don't show for the kids.
 
 The Chill Climb: holds 1–6 are 4×4 "last spot" only, 7–28 stay on 5×5/6×6 with only last-spot and confined steps, then 29–40 ramp to 6×6/7×7 boards that need "would block" (about mid-Cozy). Kids boards are capped at 2×n steps.
 
@@ -74,7 +74,7 @@ Placed corgis are always correct, so they're locked: tapping one does nothing, a
 
 ## Shop
 
-Solving puzzles earns coins; coins buy outfits for Cheddar in the **Closet** (home screen → 👗 Closet, or tap the 🪙 chip). Everything is cosmetic: hints stay free and are never sold, and nothing is time-limited. Every puzzle pays once (`db.paid`), so Start over and replays earn nothing new. "Clean" means zero mistakes (Relaxed mode can't lose treats, so mistakes are what count).
+Solving puzzles earns coins; coins buy outfits for Cheddar in the **Closet** (home screen → Closet, or tap the coin chip). The coin and the wardrobe are drawn icons (`coinIcon()`, `closetIcon()` in `art.js`) sized to `1em` so they sit in text like the old emoji. Everything is cosmetic: hints stay free and are never sold, and nothing is time-limited. Every puzzle pays once (`db.paid`), so Start over and replays earn nothing new. "Clean" means zero mistakes (Relaxed mode can't lose treats, so mistakes are what count).
 
 | Grown-ups (Default) | Coins |
 | --- | --- |
@@ -86,11 +86,25 @@ Solving puzzles earns coins; coins buy outfits for Cheddar in the **Closet** (ho
 
 Kids (Holden, Quentin) get 10 for any solve, +5 if clean, no weekly goal. They start with 100 coins and pay half price.
 
-Prices: basic 60 · nice 150 · fancy 350 · dream 900 · color variant 40. Today the Closet has one item, the party hat (60); the Neck, Face, Scenes and Frames tabs are placeholders until the next phases.
+Prices: basic 60 · nice 150 · fancy 350 · dream 900 · color variant 40.
+
+**Cheddar and outfits.** Cheddar is drawn in the Sticker style (chibi, bold brown outline, white die-cut edge). One shared SVG filter (`artDefs`, added to the page once) makes the die-cut, so 10 board corgis don't each carry a copy. Outfits have three slots, worn at once: **head**, **neck** and **face**. Every outfit is drawn in Cheddar's 200×200 space, so the same drawing fits the home Cheddar, the Closet preview, the sheets and the board heads (whose viewBox leaves room above the ears for hats).
+
+| Slot | Items (grown-up price; kids pay half) |
+| --- | --- |
+| Head | Party hat 60 · Pom-pom beanie 60 · Flower crown 150 · Rainbow bow 150 · Pirate hat 150 |
+| Neck | Pink bandana 60 · Purple bandana 60 · Bow tie 60 |
+| Face | Heart sunglasses 150 |
+
+More items and color variants come in phase 4. Buying an item wears it right away. Neck items only show on the full Cheddar (home, Closet, sheets).
+
+**Board corgis.** Settings → Dress up board corgis puts the equipped hat on every corgi on the board (on by default for the kids, off for Default). At the win party every corgi puts on the equipped hat either way, and so does the zooming Cheddar.
+
+**Kids' piggy bank.** Kids don't see a coin number on the home screen. In the Closet, an item they can't afford yet has a "Save up for this" button; the home screen then shows a bar filling toward it (no numbers), which glows when they have enough. Tapping the bar opens the Closet on that item. Buying it clears the goal.
 
 **Back pay:** the first launch with the shop (per player, `db.shopV`) credits puzzles already solved at base rates: a daily at its daily rate if `solvedAt` is the puzzle's date, otherwise 3; Climb holds 2 (kids: 10 each, plus their 100). No clean bonus and no weekly back pay; weeks that already had 5 days are marked paid. A one-time "Welcome to the closet" sheet shows the total.
 
-**Data** (per player db, additive): `coins`, `paid {pid:1}`, `weeks {"2026-W46":1}`, `owned [itemId]`, `worn {head, neck, face}`, `shopV`.
+**Data** (per player db, additive): `coins`, `paid {pid:1}`, `weeks {"2026-W46":1}`, `owned [itemId]`, `worn {head, neck, face}`, `goal` (kids' piggy-bank item), `shopV`, `settings.dressBoard`.
 
 **Backup:** Settings → Backup. "Copy backup code" copies base64 JSON of every `corgidoku:*` key (all players). "Restore from code" checks the code, asks, replaces everything and reloads. Safari can clear a site's storage after 7 days without a visit unless it's on the Home Screen, so a backup protects the coins.
 

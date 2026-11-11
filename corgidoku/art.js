@@ -1,65 +1,80 @@
-// Corgidoku art: Cheddar (a tailless red-and-white Pembroke), paw marks, treats.
+// Corgidoku art: Cheddar (a tailless red-and-white Pembroke) in Sticker style, his outfits, paw marks, treats, icons.
 // All inline SVG strings so everything works offline.
 
-const RED = '#DE9A52', LINE = '#7A4A22', CREAM = '#FFF9F1', EYE = '#2B1A10', EAR_IN = '#FBEFE4', EAR_PINK = '#F4CFC6', TONGUE = '#FF8AA5', NOSE_SPOT = '#B98C88';
+const RED = '#DE9A52', LINE = '#7A4A22', CREAM = '#FFF9F1', EAR_PINK = '#F4CFC6', EYE = '#2B1A10';
+export const ART = { RED, LINE, CREAM, EYE }; // shared palette for items drawn elsewhere
 
-// Ear pieces in head space (200x200). Mirrored for the right ear.
-const earL = `<path d="M50 98 C40 72 32 44 36 22 C38 12 47 9 54 15 C68 28 82 50 90 68 Z" fill="${RED}" stroke="${LINE}" stroke-width="3.5" stroke-linejoin="round"/>
-  <path d="M54 86 C48 66 44 46 46 31 C49 26 54 27 58 32 C67 44 75 57 80 68 Z" fill="${EAR_IN}"/>
-  <path d="M58 76 C54 62 52 48 53 38 C57 44 63 54 68 64 Z" fill="${EAR_PINK}"/>
-  <path d="M50 70 L57 74 M48 60 L55 66 M47 50 L53 57" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`;
+// ---------- Sticker Cheddar ----------
+// Chibi proportions, bold brown outline, flat fills, white die-cut edge (an SVG filter).
+// Everything lives in one 200x200 space: the head (ears to chin) spans about x 22-178, y 6-154,
+// the body y 150-196. Accessories are drawn in this same space, so one drawing fits both the
+// home Cheddar and the board heads. Slots: head (on top of everything), face (over the face),
+// neck (over the body, under the head).
+const ST = `stroke="${LINE}" stroke-width="4" stroke-linejoin="round"`;
+const HEAD = 'M100 40 C142 40 174 64 176 100 C178 134 146 154 100 154 C54 154 22 134 24 100 C26 64 58 40 100 40 Z';
+const EAR = 'M40 84 C30 56 26 30 36 12 C42 4 52 6 58 12 C72 26 84 42 90 56 Z';
+const EARI = 'M46 74 C40 54 38 36 44 24 C48 20 52 22 56 26 C66 38 74 50 78 58 Z';
+const BLAZE = 'M93 41 C95 60 95 80 92 98 C76 104 62 116 62 130 C66 146 84 154 100 154 C116 154 134 146 138 130 C138 116 124 104 108 98 C105 80 105 60 107 41 Z';
 const mirror = (svg) => `<g transform="translate(200 0) scale(-1 1)">${svg}</g>`;
+const ear = `<path d="${EAR}" fill="${RED}" ${ST}/><path d="${EARI}" fill="${EAR_PINK}"/>`;
+const eyes = [64, 136].map((x) => `<ellipse cx="${x}" cy="104" rx="12" ry="14" fill="${EYE}"/><circle cx="${x + 4}" cy="98" r="5" fill="#fff"/><circle cx="${x - 4}" cy="110" r="2.2" fill="#fff"/>`).join('');
+const HEAD_ART = `${ear}${mirror(ear)}<path d="${HEAD}" fill="${RED}" ${ST}/><path d="${BLAZE}" fill="${CREAM}"/>${eyes}
+<ellipse cx="46" cy="128" rx="11" ry="7" fill="#FF8FB0" opacity=".45"/><ellipse cx="154" cy="128" rx="11" ry="7" fill="#FF8FB0" opacity=".45"/>
+<path d="M90 118 C90 112 110 112 110 118 C110 124 104 127 100 127 C96 127 90 124 90 118Z" fill="${EYE}"/>
+<path d="M100 127 L100 131 M100 131 C97 137 90 137 88 132 M100 131 C103 137 110 137 112 132" stroke="${LINE}" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="${HEAD}" fill="none" ${ST}/>`;
+const BODY_ART = `<path d="M58 150 C46 168 48 190 62 196 L138 196 C152 190 154 168 142 150 Z" fill="${RED}" ${ST}/>
+<path d="M74 152 C68 168 70 186 80 192 L120 192 C130 186 132 168 126 152 Z" fill="${CREAM}"/>
+<ellipse cx="80" cy="192" rx="15" ry="9" fill="${CREAM}" ${ST}/><ellipse cx="120" cy="192" rx="15" ry="9" fill="${CREAM}" ${ST}/>`;
 
-// Face pieces in head space.
-function face({ blink = false, happy = false } = {}) {
-  const eyes = blink
-    ? `<path d="M64 112 Q74 120 84 112" stroke="${EYE}" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M116 112 Q126 120 136 112" stroke="${EYE}" stroke-width="4" fill="none" stroke-linecap="round"/>`
-    : `<ellipse cx="74" cy="112" rx="9.5" ry="11" fill="${EYE}"/><ellipse cx="126" cy="112" rx="9.5" ry="11" fill="${EYE}"/>
-       <circle cx="77.5" cy="107.5" r="3.8" fill="#fff"/><circle cx="129.5" cy="107.5" r="3.8" fill="#fff"/>
-       <circle cx="71" cy="116.5" r="1.7" fill="#fff"/><circle cx="123" cy="116.5" r="1.7" fill="#fff"/>`;
-  const mouth = happy
-    ? `<path d="M88 141 C90 156 110 156 112 141 Z" fill="${TONGUE}" stroke="${LINE}" stroke-width="2.5" stroke-linejoin="round"/>`
-    : `<path d="M95 144 C95 152 105 152 105 144 Z" fill="${TONGUE}"/>`;
-  return `
-  <path d="M96 59 L104 59 C105 74 107 88 111 99 C124 106 138 118 152 136 C140 160 120 170 100 170 C80 170 60 160 48 136 C62 118 76 106 89 99 C93 88 95 74 96 59 Z" fill="${CREAM}"/>
-  <ellipse cx="80" cy="99" rx="8" ry="4.5" fill="${CREAM}" transform="rotate(-25 80 99)"/>
-  <ellipse cx="120" cy="99" rx="8" ry="4.5" fill="${CREAM}" transform="rotate(25 120 99)"/>
-  ${eyes}
-  <ellipse cx="57" cy="134" rx="10" ry="6" fill="#FF9DB5" opacity=".35"/><ellipse cx="143" cy="134" rx="10" ry="6" fill="#FF9DB5" opacity=".35"/>
-  ${mouth}
-  <path d="M100 136 L100 141 M100 141 C97 147 90 147 87 142 M100 141 C103 147 110 147 113 142" stroke="${LINE}" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M91 128 C91 122 109 122 109 128 C109 133 104 137 100 137 C96 137 91 133 91 128 Z" fill="${EYE}"/>
-  <ellipse cx="100" cy="125.5" rx="5" ry="2.6" fill="${NOSE_SPOT}"/><ellipse cx="94.5" cy="128" rx="1.6" ry="1.1" fill="#fff" opacity=".5"/>`;
+// The die-cut edge and soft shadow. One shared filter for the whole page (artDefs is added
+// to the document once), so 10 board corgis don't each carry their own copy.
+const DIE = 'cdk-die';
+const dieFilter = `<filter id="${DIE}" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="7" result="d"/><feFlood flood-color="#fff"/><feComposite in2="d" operator="in" result="w"/>
+<feGaussianBlur in="d" stdDeviation="3"/><feOffset dy="3" result="b"/><feFlood flood-color="#5B2A6E" flood-opacity=".22"/><feComposite in2="b" operator="in" result="sh"/><feMerge><feMergeNode in="sh"/><feMergeNode in="w"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`;
+// Not display:none: some browsers won't apply a filter defined inside a hidden svg.
+export const artDefs = `<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>${dieFilter}</defs></svg>`;
+const die = (inner) => `<g filter="url(#${DIE})">${inner}</g>`;
+
+// viewBoxes leave headroom above the ears for hats.
+export const HEAD_VIEW = '0 -24 200 200';
+export const LOAF_VIEW = '-10 -36 220 250';
+
+// Cheddar's head, for the board and the little helper face. head/face = accessory fragments.
+export function cheddarHead({ head = '', face = '' } = {}) {
+  return `<svg viewBox="${HEAD_VIEW}" class="corgi" aria-label="corgi">${die(HEAD_ART + face + head)}</svg>`;
 }
 
-const headShape = `<path d="M100 58 C128 58 150 70 160 92 C166 104 172 112 181 121 L167 126 L175 138 L158 140 C146 160 124 171 100 171 C76 171 54 160 42 140 L25 138 L33 126 L19 121 C28 112 34 104 40 92 C50 70 72 58 100 58 Z" fill="${RED}" stroke="${LINE}" stroke-width="3.5" stroke-linejoin="round"/>`;
-
-const headGroup = (opts) => `${earL}${mirror(earL)}${headShape}${face(opts)}`;
-
-// Cheddar's head. Used on the board and as the little helper face.
-export function cheddarHead(opts = {}) {
-  return `<svg viewBox="12 6 176 172" class="corgi" aria-label="corgi">${headGroup(opts)}</svg>`;
+// Full Cheddar sitting, for the home screen, the Closet and the sheets.
+// { head, neck, face } are accessory fragments; `hat` is the old name for head.
+export function cheddarLoaf({ head = '', neck = '', face = '', hat = '' } = {}) {
+  return `<svg viewBox="${LOAF_VIEW}" class="cheddar-loaf" aria-label="Cheddar the corgi">${die(BODY_ART + neck + HEAD_ART + face + (head || hat))}</svg>`;
 }
 
-// Full Cheddar sitting, for the home screen and celebrations.
-export function cheddarLoaf({ hat = '', happy = true } = {}) {
-  return `<svg viewBox="4 4 192 250" class="cheddar-loaf" aria-label="Cheddar the corgi">
-  <ellipse cx="100" cy="244" rx="80" ry="8" fill="#5B2A6E" opacity=".10"/>
-  <ellipse cx="44" cy="214" rx="32" ry="26" fill="${RED}" stroke="${LINE}" stroke-width="3.5"/>
-  <ellipse cx="156" cy="214" rx="32" ry="26" fill="${RED}" stroke="${LINE}" stroke-width="3.5"/>
-  <ellipse cx="30" cy="236" rx="18" ry="9" fill="${CREAM}" stroke="${LINE}" stroke-width="3"/>
-  <ellipse cx="170" cy="236" rx="18" ry="9" fill="${CREAM}" stroke="${LINE}" stroke-width="3"/>
-  <path d="M60 150 C42 172 44 220 58 238 L142 238 C156 220 158 172 140 150 Z" fill="${RED}" stroke="${LINE}" stroke-width="3.5" stroke-linejoin="round"/>
-  <path d="M62 150 L54 170 L66 168 L58 190 L70 188 L66 214 L134 214 L130 188 L142 190 L134 168 L146 170 L138 150 Z" fill="${CREAM}"/>
-  <path d="M70 200 C70 192 92 192 92 200 L92 232 C92 240 70 240 70 232 Z" fill="${CREAM}" stroke="${LINE}" stroke-width="3"/>
-  <path d="M108 200 C108 192 130 192 130 200 L130 232 C130 240 108 240 108 232 Z" fill="${CREAM}" stroke="${LINE}" stroke-width="3"/>
-  <path d="M77 231 L77 237 M85 231 L85 237 M115 231 L115 237 M123 231 L123 237" stroke="${LINE}" stroke-width="2.4" stroke-linecap="round"/>
-  ${headGroup({ happy })}
-  ${hat}
-</svg>`;
-}
-
-export const partyHat = `<g transform="translate(118 2) rotate(18)"><path d="M0 52 L22 0 L44 52 Z" fill="#FF6FB5" stroke="#C93F86" stroke-width="3" stroke-linejoin="round"/><circle cx="22" cy="0" r="8" fill="#FFE870" stroke="#E0B92E" stroke-width="2"/><path d="M9 36 L35 36 M14 22 L30 22" stroke="#FFE870" stroke-width="5" stroke-linecap="round"/></g>`;
+// ---------- outfits ----------
+// Each one is a fragment in Cheddar's 200x200 space. The head top is at about (100, 40), between
+// the ears (ear tips near x 36 and 164, y 8); the eyes are at y 104, x 64 and 136; the nose at
+// (100, 120); the neck/collar line at about y 140-156.
+export const OUTFIT = {
+  partyhat: `<g transform="translate(112 46) rotate(14)"><path d="M-26 0 L0 -62 L26 0 Q0 8 -26 0 Z" fill="#FF6FB5" ${ST}/><path d="M-15 -20 L15 -20 M-7 -40 L7 -40" stroke="#FFE870" stroke-width="6" stroke-linecap="round"/><circle cy="-64" r="9" fill="#FFE870" stroke="${LINE}" stroke-width="3.5"/></g>`,
+};
+// Pom-pom beanie
+OUTFIT['beanie'] = `<g> <path d="M66 52 C62 22 80 6 100 6 C120 6 138 22 134 52 Z" fill="#FF6FB5" stroke="#7A4A22" stroke-width="4" stroke-linejoin="round"/> <path d="M84 14 C80 24 79 36 80 46 M100 10 L100 46 M116 14 C120 24 121 36 120 46" stroke="#C93F86" stroke-width="3" fill="none" stroke-linecap="round"/> <path d="M76 20 C72 28 71 34 72 40" stroke="#FFC6DE" stroke-width="5" fill="none" stroke-linecap="round"/> <path d="M58 50 Q100 36 142 50 Q146 56 142 62 Q100 50 58 62 Q54 56 58 50 Z" fill="#FFC6DE" stroke="#7A4A22" stroke-width="4" stroke-linejoin="round"/> <path d="M70 48 L70 57 M82 45 L82 54 M94 44 L94 52 M106 44 L106 52 M118 45 L118 54 M130 48 L130 57" stroke="#FF6FB5" stroke-width="3" fill="none" stroke-linecap="round"/> <circle cx="100" cy="0" r="13" fill="#FFF9F1" stroke="#7A4A22" stroke-width="4" stroke-linejoin="round"/> <circle cx="95" cy="-4" r="4" fill="#fff"/> </g>`;
+// Pirate hat
+OUTFIT['pirate'] = `<g> <path d="M54 60 C48 46 46 34 50 22 Q52 18 56 21 C63 27 71 28 77 21 C84 6 91 -4 100 -4 C109 -4 116 6 123 21 C129 28 137 27 144 21 Q148 18 150 22 C154 34 152 46 146 60 Q100 44 54 60 Z" fill="#3B2A5C" stroke="#7A4A22" stroke-width="4" stroke-linejoin="round"/> <path d="M56 29 C64 35 74 35 81 28 C88 14 94 5 100 5 C106 5 112 14 119 28 C126 35 136 35 144 29" stroke="#6B44C9" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/> <path d="M57 55 Q100 41 143 55" stroke="#FFC93C" stroke-width="7" fill="none" stroke-linecap="round"/> <path d="M86 41 L114 23 M86 23 L114 41" stroke="#fff" stroke-width="6" stroke-linecap="round"/> <circle cx="100" cy="28" r="10.5" fill="#fff"/> <rect x="94" y="32" width="12" height="8" rx="3" fill="#fff"/> <circle cx="96" cy="28" r="2.8" fill="#3B2A5C"/><circle cx="104" cy="28" r="2.8" fill="#3B2A5C"/> </g>`;
+// Flower crown
+OUTFIT['flowercrown'] = `<g><path transform="translate(36 78) rotate(145)" d="M0 0 C7 -7.6 15 -6 20 0 C15 6 7 7.6 0 0 Z" fill="#5DB466" stroke="#7A4A22" stroke-width="3" stroke-linejoin="round"/><path transform="translate(164 78) rotate(35)" d="M0 0 C7 -7.6 15 -6 20 0 C15 6 7 7.6 0 0 Z" fill="#5DB466" stroke="#7A4A22" stroke-width="3" stroke-linejoin="round"/><path transform="translate(56 52) rotate(240)" d="M0 0 C7.699999999999999 -8.36 16.5 -6.6 22 0 C16.5 6.6 7.699999999999999 8.36 0 0 Z" fill="#3FD98B" stroke="#7A4A22" stroke-width="3" stroke-linejoin="round"/><path transform="translate(144 52) rotate(-60)" d="M0 0 C7.699999999999999 -8.36 16.5 -6.6 22 0 C16.5 6.6 7.699999999999999 8.36 0 0 Z" fill="#3FD98B" stroke="#7A4A22" stroke-width="3" stroke-linejoin="round"/><path transform="translate(58 68) rotate(100)" d="M0 0 C7 -7.6 15 -6 20 0 C15 6 7 7.6 0 0 Z" fill="#3FD98B" stroke="#7A4A22" stroke-width="3" stroke-linejoin="round"/><path transform="translate(142 68) rotate(80)" d="M0 0 C7 -7.6 15 -6 20 0 C15 6 7 7.6 0 0 Z" fill="#3FD98B" stroke="#7A4A22" stroke-width="3" stroke-linejoin="round"/><path transform="translate(86 46) rotate(250)" d="M0 0 C5.6 -6.08 12 -4.8 16 0 C12 4.8 5.6 6.08 0 0 Z" fill="#5DB466" stroke="#7A4A22" stroke-width="3" stroke-linejoin="round"/><path transform="translate(114 46) rotate(-70)" d="M0 0 C5.6 -6.08 12 -4.8 16 0 C12 4.8 5.6 6.08 0 0 Z" fill="#5DB466" stroke="#7A4A22" stroke-width="3" stroke-linejoin="round"/><g><circle cx="45.0" cy="60.8" r="7.8" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="51.8" cy="65.8" r="7.8" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="49.2" cy="73.8" r="7.8" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="40.8" cy="73.8" r="7.8" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="38.2" cy="65.8" r="7.8" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="45.0" cy="60.8" r="7.8" fill="#C9AEFF"/><circle cx="51.8" cy="65.8" r="7.8" fill="#C9AEFF"/><circle cx="49.2" cy="73.8" r="7.8" fill="#C9AEFF"/><circle cx="40.8" cy="73.8" r="7.8" fill="#C9AEFF"/><circle cx="38.2" cy="65.8" r="7.8" fill="#C9AEFF"/><path d="M47.6 64.4 L50.5 60.5 M49.3 69.4 L53.8 70.9 M45.0 72.5 L45.0 77.3 M40.7 69.4 L36.2 70.9 M42.4 64.4 L39.5 60.5" stroke="#7A4A22" stroke-width="2.5" stroke-linecap="round" opacity=".45"/><circle cx="45.0" cy="68.0" r="4.8" fill="#FFE870" stroke="#7A4A22" stroke-width="3"/></g><g><circle cx="71.0" cy="46.3" r="8.3" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="78.3" cy="51.6" r="8.3" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="75.5" cy="60.2" r="8.3" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="66.5" cy="60.2" r="8.3" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="63.7" cy="51.6" r="8.3" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="71.0" cy="46.3" r="8.3" fill="#FF6FB5"/><circle cx="78.3" cy="51.6" r="8.3" fill="#FF6FB5"/><circle cx="75.5" cy="60.2" r="8.3" fill="#FF6FB5"/><circle cx="66.5" cy="60.2" r="8.3" fill="#FF6FB5"/><circle cx="63.7" cy="51.6" r="8.3" fill="#FF6FB5"/><path d="M73.8 50.1 L76.8 46.0 M75.6 55.5 L80.4 57.1 M71.0 58.8 L71.0 63.9 M66.4 55.5 L61.6 57.1 M68.2 50.1 L65.2 46.0" stroke="#7A4A22" stroke-width="2.5" stroke-linecap="round" opacity=".45"/><circle cx="71.0" cy="54.0" r="5.1" fill="#FFE870" stroke="#7A4A22" stroke-width="3"/></g><g><circle cx="100.0" cy="39.8" r="8.8" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="107.8" cy="45.5" r="8.8" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="104.8" cy="54.6" r="8.8" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="95.2" cy="54.6" r="8.8" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="92.2" cy="45.5" r="8.8" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="100.0" cy="39.8" r="8.8" fill="#FFF9F1"/><circle cx="107.8" cy="45.5" r="8.8" fill="#FFF9F1"/><circle cx="104.8" cy="54.6" r="8.8" fill="#FFF9F1"/><circle cx="95.2" cy="54.6" r="8.8" fill="#FFF9F1"/><circle cx="92.2" cy="45.5" r="8.8" fill="#FFF9F1"/><path d="M103.0 43.9 L106.2 39.5 M104.9 49.6 L110.0 51.3 M100.0 53.1 L100.0 58.5 M95.1 49.6 L90.0 51.3 M97.0 43.9 L93.8 39.5" stroke="#7A4A22" stroke-width="2.5" stroke-linecap="round" opacity=".45"/><circle cx="100.0" cy="48.0" r="5.4" fill="#FFE870" stroke="#7A4A22" stroke-width="3"/></g><g><circle cx="129.0" cy="46.3" r="8.3" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="136.3" cy="51.6" r="8.3" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="133.5" cy="60.2" r="8.3" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="124.5" cy="60.2" r="8.3" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="121.7" cy="51.6" r="8.3" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="129.0" cy="46.3" r="8.3" fill="#FF6FB5"/><circle cx="136.3" cy="51.6" r="8.3" fill="#FF6FB5"/><circle cx="133.5" cy="60.2" r="8.3" fill="#FF6FB5"/><circle cx="124.5" cy="60.2" r="8.3" fill="#FF6FB5"/><circle cx="121.7" cy="51.6" r="8.3" fill="#FF6FB5"/><path d="M131.8 50.1 L134.8 46.0 M133.6 55.5 L138.4 57.1 M129.0 58.8 L129.0 63.9 M124.4 55.5 L119.6 57.1 M126.2 50.1 L123.2 46.0" stroke="#7A4A22" stroke-width="2.5" stroke-linecap="round" opacity=".45"/><circle cx="129.0" cy="54.0" r="5.1" fill="#FFE870" stroke="#7A4A22" stroke-width="3"/></g><g><circle cx="155.0" cy="60.8" r="7.8" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="161.8" cy="65.8" r="7.8" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="159.2" cy="73.8" r="7.8" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="150.8" cy="73.8" r="7.8" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="148.2" cy="65.8" r="7.8" fill="#7A4A22" stroke="#7A4A22" stroke-width="8"/><circle cx="155.0" cy="60.8" r="7.8" fill="#C9AEFF"/><circle cx="161.8" cy="65.8" r="7.8" fill="#C9AEFF"/><circle cx="159.2" cy="73.8" r="7.8" fill="#C9AEFF"/><circle cx="150.8" cy="73.8" r="7.8" fill="#C9AEFF"/><circle cx="148.2" cy="65.8" r="7.8" fill="#C9AEFF"/><path d="M157.6 64.4 L160.5 60.5 M159.3 69.4 L163.8 70.9 M155.0 72.5 L155.0 77.3 M150.7 69.4 L146.2 70.9 M152.4 64.4 L149.5 60.5" stroke="#7A4A22" stroke-width="2.5" stroke-linecap="round" opacity=".45"/><circle cx="155.0" cy="68.0" r="4.8" fill="#FFE870" stroke="#7A4A22" stroke-width="3"/></g></g>`;
+// Rainbow bow
+OUTFIT['rainbowbow'] = `<g transform="translate(114 36) rotate(10)"><path d="M-2 2 L-22 32 L-13 30 L-8 40 L8 8 Z" fill="#9B6BFF" stroke="#7A4A22" stroke-width="4" stroke-linejoin="round"/><path d="M2 2 L24 30 L14 30 L10 40 L-8 8 Z" fill="#3FD98B" stroke="#7A4A22" stroke-width="4" stroke-linejoin="round"/><g transform=""><path d="M0 0 C6 -32 50 -40 52 -10 C54 16 16 17 0 0 Z" transform="scale(1)" fill="#FF5FA8" stroke="#7A4A22" stroke-width="4" stroke-linejoin="round"/><path d="M0 0 C6 -32 50 -40 52 -10 C54 16 16 17 0 0 Z" transform="scale(0.84)" fill="#FF9F45"/><path d="M0 0 C6 -32 50 -40 52 -10 C54 16 16 17 0 0 Z" transform="scale(0.68)" fill="#FFD23C"/><path d="M0 0 C6 -32 50 -40 52 -10 C54 16 16 17 0 0 Z" transform="scale(0.52)" fill="#46B3FF"/><path d="M0 0 C6 -32 50 -40 52 -10 C54 16 16 17 0 0 Z" fill="none" stroke="#7A4A22" stroke-width="4" stroke-linejoin="round"/></g><g transform="scale(-1 1)"><path d="M0 0 C6 -32 50 -40 52 -10 C54 16 16 17 0 0 Z" transform="scale(1)" fill="#FF5FA8" stroke="#7A4A22" stroke-width="4" stroke-linejoin="round"/><path d="M0 0 C6 -32 50 -40 52 -10 C54 16 16 17 0 0 Z" transform="scale(0.84)" fill="#FF9F45"/><path d="M0 0 C6 -32 50 -40 52 -10 C54 16 16 17 0 0 Z" transform="scale(0.68)" fill="#FFD23C"/><path d="M0 0 C6 -32 50 -40 52 -10 C54 16 16 17 0 0 Z" transform="scale(0.52)" fill="#46B3FF"/><path d="M0 0 C6 -32 50 -40 52 -10 C54 16 16 17 0 0 Z" fill="none" stroke="#7A4A22" stroke-width="4" stroke-linejoin="round"/></g><rect x="-10" y="-11" width="20" height="22" rx="8" fill="#FF5FA8" stroke="#7A4A22" stroke-width="4" stroke-linejoin="round"/><path d="M-4 -5 Q0 -7 4 -5" stroke="#FFC6DE" stroke-width="3" fill="none" stroke-linecap="round"/></g>`;
+// Bow tie
+OUTFIT['bowtie'] = `<g transform="translate(0 3)"><path d="M92 156 C82 145 70 140 63 145 C57 152 57 167 63 173 C70 178 82 172 92 166 Z" fill="#9B6BFF" stroke="#7A4A22" stroke-width="4" stroke-linejoin="round"/><path d="M92 155 C84 152 77 155 75 161 C77 167 84 170 92 167 Z" fill="#6B44C9"/><circle cx="70" cy="153" r="3.2" fill="#fff"/><circle cx="69" cy="168" r="3.2" fill="#fff"/><circle cx="80" cy="150" r="2.6" fill="#fff"/><path d="M92 156 C82 145 70 140 63 145 C57 152 57 167 63 173 C70 178 82 172 92 166 Z" fill="none" stroke="#7A4A22" stroke-width="4" stroke-linejoin="round"/><g transform="translate(200 0) scale(-1 1)"><path d="M92 156 C82 145 70 140 63 145 C57 152 57 167 63 173 C70 178 82 172 92 166 Z" fill="#9B6BFF" stroke="#7A4A22" stroke-width="4" stroke-linejoin="round"/><path d="M92 155 C84 152 77 155 75 161 C77 167 84 170 92 167 Z" fill="#6B44C9"/><circle cx="70" cy="153" r="3.2" fill="#fff"/><circle cx="69" cy="168" r="3.2" fill="#fff"/><circle cx="80" cy="150" r="2.6" fill="#fff"/><path d="M92 156 C82 145 70 140 63 145 C57 152 57 167 63 173 C70 178 82 172 92 166 Z" fill="none" stroke="#7A4A22" stroke-width="4" stroke-linejoin="round"/></g><rect x="87" y="151" width="26" height="22" rx="8" fill="#9B6BFF" stroke="#7A4A22" stroke-width="4" stroke-linejoin="round"/><path d="M92 166 Q100 170 108 166" stroke="#6B44C9" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="94" cy="160" r="2.4" fill="#fff"/></g>`;
+// Heart sunglasses
+OUTFIT['heartglasses'] = `<g><path d="M24 92 L40 96" stroke="#7A4A22" stroke-width="11" fill="none" stroke-linecap="round"/><path d="M24 92 L40 96" stroke="#FF6FB5" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M176 92 L160 96" stroke="#7A4A22" stroke-width="11" fill="none" stroke-linecap="round"/><path d="M176 92 L160 96" stroke="#FF6FB5" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M86 96 Q100 88 114 96" stroke="#7A4A22" stroke-width="11" fill="none" stroke-linecap="round"/><path d="M86 96 Q100 88 114 96" stroke="#FF6FB5" stroke-width="4" fill="none" stroke-linecap="round"/><g transform="translate(64 106)"><path d="M0 20 C-10 12 -26 2 -26 -10 C-26 -22 -12 -26 0 -14 C12 -26 26 -22 26 -10 C26 2 10 12 0 20 Z" fill="#FF6FB5" stroke="#7A4A22" stroke-width="4" stroke-linejoin="round"/><g transform="scale(.68) translate(0 -1)"><path d="M0 20 C-10 12 -26 2 -26 -10 C-26 -22 -12 -26 0 -14 C12 -26 26 -22 26 -10 C26 2 10 12 0 20 Z" fill="#7A2A5E"/></g><ellipse cx="-10" cy="-8" rx="5.5" ry="3.5" transform="rotate(-35 -10 -8)" fill="#fff"/><circle cx="-3" cy="-13" r="1.8" fill="#fff"/></g><g transform="translate(136 106)"><path d="M0 20 C-10 12 -26 2 -26 -10 C-26 -22 -12 -26 0 -14 C12 -26 26 -22 26 -10 C26 2 10 12 0 20 Z" fill="#FF6FB5" stroke="#7A4A22" stroke-width="4" stroke-linejoin="round"/><g transform="scale(.68) translate(0 -1)"><path d="M0 20 C-10 12 -26 2 -26 -10 C-26 -22 -12 -26 0 -14 C12 -26 26 -22 26 -10 C26 2 10 12 0 20 Z" fill="#7A2A5E"/></g><ellipse cx="-10" cy="-8" rx="5.5" ry="3.5" transform="rotate(-35 -10 -8)" fill="#fff"/><circle cx="-3" cy="-13" r="1.8" fill="#fff"/></g></g>`;
+// Bandana: the approved Sticker drawing, in any color, with a little white heart.
+const bandana = (fill) => `<path d="M56 140 Q100 156 144 140 L106 186 Q100 192 94 186 Z" fill="${fill}" ${ST}/><path d="M100 172 C92 166 92 158 98 160 C99 160 100 161 100 162 C100 161 101 160 102 160 C108 158 108 166 100 172 Z" fill="#fff"/>`;
+OUTFIT.bandana = bandana('#FF6FB5');
+OUTFIT['bandana-purple'] = bandana('#9B6BFF');
+export const partyHat = OUTFIT.partyhat;
 
 export function paw(auto = false, color = null) {
   return `<svg viewBox="0 0 40 40" class="paw${auto ? ' auto' : ''}${color ? ' tinted' : ''}" aria-label="paw mark"${color ? ` style="fill:${color}"` : ''}>
@@ -72,3 +87,16 @@ export function treat(full = true) {
   <rect x="10" y="8" width="28" height="8" rx="3"/><circle cx="10" cy="7.5" r="5"/><circle cx="10" cy="16.5" r="5"/><circle cx="38" cy="7.5" r="5"/><circle cx="38" cy="16.5" r="5"/>
 </svg>`;
 }
+
+// ---------- icons (replace the coin and closet emoji) ----------
+// Sized with CSS (.ic: height 1em, sitting on the text baseline) so they flow inside sentences.
+const COIN_SMALL = `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28.5" fill="#E0A21E" stroke="#7A4A22" stroke-width="4"/><circle cx="32" cy="32" r="22.5" fill="#FFD23C"/><g transform="translate(10.5 16.8) scale(0.215)"><path d="M40 84 C30 56 26 30 36 12 C42 4 52 6 58 12 C72 26 84 42 90 56 Z" fill="#C27C0C"/><g transform="translate(200 0) scale(-1 1)"><path d="M40 84 C30 56 26 30 36 12 C42 4 52 6 58 12 C72 26 84 42 90 56 Z" fill="#C27C0C"/></g><path d="M100 40 C142 40 174 64 176 100 C178 134 146 154 100 154 C54 154 22 134 24 100 C26 64 58 40 100 40 Z" fill="#C27C0C"/><path d="M93 41 C95 60 95 80 92 98 C76 104 62 116 62 130 C66 146 84 154 100 154 C116 154 134 146 138 130 C138 116 124 104 108 98 C105 80 105 60 107 41 Z" fill="#FFEFC2"/></g><path d="M14.5 25 A18.5 18.5 0 0 1 23 14.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg>`;
+const COIN_BIG = `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="29" fill="#E0A21E" stroke="#7A4A22" stroke-width="2.2"/><circle cx="32" cy="32" r="24" fill="#FFC93C" stroke="#C2850F" stroke-width="1.2"/><g transform="translate(12 17) scale(0.2)"><path d="M40 84 C30 56 26 30 36 12 C42 4 52 6 58 12 C72 26 84 42 90 56 Z" fill="#E3A21C" stroke="#C2850F" stroke-width="7" stroke-linejoin="round"/><g transform="translate(200 0) scale(-1 1)"><path d="M40 84 C30 56 26 30 36 12 C42 4 52 6 58 12 C72 26 84 42 90 56 Z" fill="#E3A21C" stroke="#C2850F" stroke-width="7" stroke-linejoin="round"/></g><path d="M100 40 C142 40 174 64 176 100 C178 134 146 154 100 154 C54 154 22 134 24 100 C26 64 58 40 100 40 Z" fill="#E3A21C" stroke="#C2850F" stroke-width="7" stroke-linejoin="round"/><path d="M93 41 C95 60 95 80 92 98 C76 104 62 116 62 130 C66 146 84 154 100 154 C116 154 134 146 138 130 C138 116 124 104 108 98 C105 80 105 60 107 41 Z" fill="#FFE9A8"/><ellipse cx="64" cy="104" rx="11" ry="13" fill="#C2850F"/><ellipse cx="136" cy="104" rx="11" ry="13" fill="#C2850F"/><path d="M90 118 C90 112 110 112 110 118 C110 124 104 127 100 127 C96 127 90 124 90 118Z" fill="#C2850F"/></g><path d="M13.5 26 A19.5 19.5 0 0 1 24 13.8" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>`;
+const CLOSET = `<svg viewBox="0 0 64 64"><rect x="11" y="52" width="7" height="8" rx="2" fill="#9B6BFF" stroke="#7A4A22" stroke-width="2.2"/><rect x="36" y="52" width="7" height="8" rx="2" fill="#9B6BFF" stroke="#7A4A22" stroke-width="2.2"/><path d="M15 13 Q27 2 39 13 Z" fill="#9B6BFF" stroke="#7A4A22" stroke-width="2.2" stroke-linejoin="round"/><circle cx="27" cy="7.5" r="2.3" fill="#FFE870" stroke="#7A4A22" stroke-width="1.6"/><rect x="7" y="12" width="40" height="43" rx="4" fill="#C9AEFF" stroke="#7A4A22" stroke-width="2.2"/><rect x="27" y="17" width="16" height="34" fill="#6B44C9"/><path d="M28 21 H42" stroke="#4A2C94" stroke-width="1.6" stroke-linecap="round"/><path d="M35 21 V24 M30 27.5 L35 24 L40 27.5 Z" fill="none" stroke="#FFF9F1" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/><path d="M27.5 27.5 H42.5 L35 44 Z" fill="#FF6FB5" stroke="#7A4A22" stroke-width="1.8" stroke-linejoin="round"/><path d="M35 31.2 c-1.2 -1.3 -3 0 -1.7 1.4 l1.7 1.6 l1.7 -1.6 c1.3 -1.4 -.5 -2.7 -1.7 -1.4z" fill="#fff"/><rect x="11" y="17" width="16" height="34" rx="1.5" fill="#FF6FB5" stroke="#7A4A22" stroke-width="2"/><rect x="14" y="21" width="10" height="11" rx="2" fill="none" stroke="#C93F86" stroke-width="1.4"/><rect x="14" y="36" width="10" height="11" rx="2" fill="none" stroke="#C93F86" stroke-width="1.4"/><circle cx="23.5" cy="34" r="1.9" fill="#FFE870" stroke="#7A4A22" stroke-width="1.3"/><path d="M43 17 L57 13 L57 55 L43 51 Z" fill="#FFC6DE" stroke="#7A4A22" stroke-width="2.2" stroke-linejoin="round"/><path d="M46 22 L54 20 L54 48 L46 46 Z" fill="none" stroke="#FF6FB5" stroke-width="1.4" stroke-linejoin="round"/></svg>`;
+// Decorative: the words next to them ("+13 coins", "Closet") carry the meaning.
+const icon = (svg, cls) => svg.replace('<svg ', `<svg class="ic ${cls}" aria-hidden="true" focusable="false" `);
+// The corgi coin. big = the detailed version (Cheddar's face) for 32px and up; the small one
+// drops the eyes and inner ring so it still reads as a coin with a corgi head at text size.
+export const coinIcon = (big = false) => icon(big ? COIN_BIG : COIN_SMALL, 'coin');
+// The wardrobe: one door ajar with a pink bandana peeking out.
+export const closetIcon = () => icon(CLOSET, 'closet');

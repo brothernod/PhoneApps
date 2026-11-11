@@ -1,10 +1,10 @@
 import { decodeRegions, decodeSolution, grade } from './engine.js';
-import { cheddarHead, cheddarLoaf, partyHat, paw, treat } from './art.js';
-import { ITEMS, SLOTS, item, priceFor, shopDefaults, payout, backPay, buy } from './shop.js';
+import { cheddarHead, cheddarLoaf, partyHat, paw, treat, artDefs, coinIcon, closetIcon } from './art.js';
+import { ITEMS, SLOTS, item, outfit, priceFor, shopDefaults, payout, backPay, buy } from './shop.js';
 
 // ---------- constants ----------
 const NAME = 'Halina'; // the Default player's name until they set their own in Settings
-const VERSION = '1.13'; // bump with CACHE in sw.js on every release
+const VERSION = '1.14'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
 const EMPTY = 0, PAW = 1, AUTO = 2, CORGI = 3, NOPE = 4; // NOPE = a wrong guess, shown as a red paw
@@ -29,12 +29,19 @@ const me = () => PLAYERS[player];
 const isKid = () => !!me().kid;
 // Shown name: kids have fixed names; the Default player can set theirs in Settings.
 const nm = () => (isKid() ? me().name : (db.settings.name || '').trim() || NAME);
+// Coin amounts with the corgi coin icon in front, e.g. coin(245).
+const coin = (n) => `${coinIcon()}&#8239;${n}`;
+// Cheddar in what the player has on (the Closet passes a preview look instead).
+const dressed = (worn = db.worn) => outfit(worn);
+// The equipped hat, for board corgis (when dressed up) and the win party.
+const hatArt = () => item(db.worn.head)?.art || '';
+const boardHead = () => cheddarHead(db.settings.dressBoard ? { head: hatArt() } : {});
 const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
 // ---------- storage ----------
-const defaults = { progress: {}, settings: { autoPaws: true, relaxed: false, timer: true, mode: 'cozy', research: false, pawColor: 0, easyTap: false }, seenHelp: false };
-// Kids start in Chill, with no treat penalty, no clock and the forgiving double-tap.
-const kidDefaults = { mode: 'kids', relaxed: true, timer: false, easyTap: true };
+const defaults = { progress: {}, settings: { autoPaws: true, relaxed: false, timer: true, mode: 'cozy', research: false, pawColor: 0, easyTap: false, dressBoard: false }, seenHelp: false };
+// Kids start in Chill, with no treat penalty, no clock, the forgiving double-tap and dressed-up board corgis.
+const kidDefaults = { mode: 'kids', relaxed: true, timer: false, easyTap: true, dressBoard: true };
 let db;
 function loadDb() {
   const base = structuredClone(defaults);
@@ -136,14 +143,16 @@ function renderHome() {
   const lvl = climbLevel();
   const banner = specialBanner(t);
   const birthday = !isKid() && t.slice(5) === '06-15';
-  const hat = item(db.worn.head)?.art || (birthday ? partyHat : '');
+  const look = dressed();
+  if (!look.head && birthday) look.head = partyHat;
   $('home').innerHTML = `
-    <button class="coins" id="go-coins" aria-label="coins">🪙 ${db.coins}</button>
+    ${isKid() ? '' : `<button class="coins" id="go-coins" aria-label="${db.coins} coins">${coin(db.coins)}</button>`}
     <div class="title">Corgidoku</div>
     <div class="subtitle">Cheddar's puzzle yard for ${esc(nm())}</div>
     <div class="modes${modesFor().length > 2 ? ' three' : ''}">${modesFor().map((k) => `<button class="mode${k === mode() ? ' on' : ''}" data-m="${k}">${MODES[k].label}</button>`).join('')}</div>
     <div class="hero-row">${isKid() ? `<div class="kidname" style="--kc:${me().color}">${nm()}</div>` : ''}
-      <div class="hero${isKid() ? ' kid' : ''}">${cheddarLoaf({ hat })}</div></div>
+      <div class="hero${isKid() ? ' kid' : ''}">${cheddarLoaf(look)}</div></div>
+    ${isKid() ? piggyBank() : ''}
     ${banner ? `<div class="banner">${banner}</div>` : ''}
     <div class="menu">
       <button class="big" id="go-daily"><div class="ico" style="background:#FFE0F0">☀️</div>
@@ -158,7 +167,7 @@ function renderHome() {
     <div class="row">
       <button class="pill" id="go-past"><span class="e">📅</span>Past days</button>
       <button class="pill" id="go-help"><span class="e">❓</span>How to play</button>
-      <button class="pill" id="go-closet"><span class="e">👗</span>Closet</button>
+      <button class="pill" id="go-closet"><span class="e">${closetIcon()}</span>Closet</button>
       <button class="pill gear" id="go-set" aria-label="Settings">⚙️</button>
     </div>
     <button class="ver" id="ver">v${VERSION}</button>`;
@@ -167,7 +176,9 @@ function renderHome() {
   $('go-past').onclick = renderPast;
   $('go-help').onclick = help;
   $('go-set').onclick = settings;
-  $('go-closet').onclick = $('go-coins').onclick = () => renderCloset();
+  $('go-closet').onclick = () => renderCloset();
+  if ($('go-coins')) $('go-coins').onclick = () => renderCloset();
+  if ($('go-piggy')) $('go-piggy').onclick = () => { const g = item(db.goal); g && !db.owned.includes(g.id) ? renderCloset(g.slot, g.id) : renderCloset(); };
   document.querySelectorAll('.mode').forEach((b) => (b.onclick = () => { if (b.dataset.m !== mode()) { useMode(b.dataset.m); renderHome(); if (mode() === 'extreme' && !db.seenExtreme) extremeIntro(); } }));
   // Tap the version to drop any cached copy and reload fresh.
   $('ver').onclick = async () => {
@@ -322,7 +333,7 @@ function drawBoard() {
     if (el.dataset.v === want) continue;
     el.dataset.v = want;
     el.classList.toggle('nope', v === NOPE);
-    el.innerHTML = v === CORGI ? cheddarHead() : v === NOPE ? paw(false) : isPaw(v) ? paw(false, PAW_COLORS[v >= 5 ? v - 4 : 0]) : v === AUTO ? paw(true) : '';
+    el.innerHTML = v === CORGI ? boardHead() : v === NOPE ? paw(false) : isPaw(v) ? paw(false, PAW_COLORS[v >= 5 ? v - 4 : 0]) : v === AUTO ? paw(true) : '';
   }
 }
 
@@ -469,7 +480,7 @@ function placeCorgi(i) {
     // Show the corgi shaking on the spot, then swap it for the red paw.
     const el = $('board').children[i];
     el.dataset.v = 'c';
-    el.innerHTML = cheddarHead();
+    el.innerHTML = boardHead();
     el.classList.remove('wrong'); void el.offsetWidth; el.classList.add('wrong');
     setTimeout(() => { el.classList.remove('wrong'); drawBoard(); }, 650);
     if (navigator.vibrate) navigator.vibrate(60);
@@ -488,7 +499,7 @@ function placeCorgi(i) {
 
 function outOfTreats() {
   stopClock();
-  sheet(`<div style="width:120px;margin:0 auto">${cheddarLoaf()}</div><h3>Snack break!</h3>
+  sheet(`<div style="width:120px;margin:0 auto">${cheddarLoaf(dressed())}</div><h3>Snack break!</h3>
     <p>Cheddar ate all the treats. Want to try this puzzle again from the start?</p>
     <button class="cta" id="again">Try again</button><button class="cta alt" id="home2">Home</button>`);
   $('again').onclick = () => { closeSheet(); G.cells.fill(EMPTY); G.treats = 3; G.history = []; persist(); drawBoard(); drawTreats(); say('Fresh start! You\'ve got this.'); startClock(); };
@@ -529,10 +540,10 @@ function win() {
   const isClimb = G.kind === 'c', nextLvl = Number(G.key) + 1;
   const hasNext = isClimb && nextLvl <= PUZ.campaign.length;
   setTimeout(() => {
-    sheet(`<div style="width:150px;margin:0 auto">${cheddarLoaf()}</div><h3>Pawsome! 🎉</h3>
+    sheet(`<div style="width:150px;margin:0 auto">${cheddarLoaf(dressed())}</div><h3>Pawsome! 🎉</h3>
       <p>Solved in <b>${clock(G.elapsed)}</b>${G.kind === 'd' ? ` · streak <b>${streak()}</b> 🔥` : ''}</p>
       <p>${winLine()}</p>
-      ${earned.coins ? `<div class="earn">🪙 +${earned.coins} coins${earned.weekly ? `<span>+${earned.weekly} weekly bonus! 5 days this week 🌟</span>` : ''}</div>` : ''}
+      ${earned.coins ? `<div class="earn">${coinIcon()} +${earned.coins} coins${earned.weekly ? `<span>+${earned.weekly} weekly bonus! 5 days this week 🌟</span>` : ''}</div>` : ''}
       ${db.settings.research ? ratingRow() : ''}
       ${hasNext ? '<button class="cta" id="next">Next hold 🧗‍♀️</button>' : ''}
       <button class="cta ${hasNext ? 'alt' : ''}" id="home3">Home</button>`);
@@ -602,8 +613,11 @@ function boardParty() {
     el.classList.add('done', 'party');
   });
   setTimeout(() => board.classList.remove('party'), 3200);
+  // Party time: every corgi puts on the equipped hat (even with board dress-up off).
+  const hat = hatArt();
   G.cells.forEach((v, i) => {
     if (v !== CORGI) return;
+    if (hat) board.children[i].innerHTML = cheddarHead({ head: hat });
     const r = board.children[i].getBoundingClientRect();
     const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
     const wave = (Math.floor(i / n) + (i % n)) * 70;
@@ -627,7 +641,7 @@ function boardParty() {
 function celebrate() {
   const z = document.createElement('div');
   z.className = 'zoom';
-  z.innerHTML = cheddarHead();
+  z.innerHTML = cheddarHead({ head: hatArt() });
   document.body.appendChild(z);
   setTimeout(() => z.remove(), 2400);
   const emoji = ['💖', '🌈', '💜', '🧡', '✨', '🩷', '💛'];
@@ -665,7 +679,7 @@ function confirmSheet(title, body, ok) {
 }
 
 function help() {
-  sheet(`<div style="width:110px;margin:0 auto">${cheddarLoaf()}</div><h3>How to play</h3>
+  sheet(`<div style="width:110px;margin:0 auto">${cheddarLoaf(dressed())}</div><h3>How to play</h3>
     <p>Give every corgi a cozy spot:</p>
     <ol>
       <li>One corgi in every <b>row</b></li>
@@ -683,7 +697,7 @@ function help() {
 
 // First visit to Extreme: explain the one new idea.
 function extremeIntro() {
-  sheet(`<div style="width:110px;margin:0 auto">${cheddarLoaf()}</div><h3>Welcome to Extreme ⚡</h3>
+  sheet(`<div style="width:110px;margin:0 auto">${cheddarLoaf(dressed())}</div><h3>Welcome to Extreme ⚡</h3>
     <p>You climbed all of Hard, so Cheddar dug deeper.</p>
     <p>These boards stall unless you look ahead. Pick a spot and ask <b>"what if a corgi went here?"</b> Follow the corgis it would force. If some row, column or yard ends up with no room, that spot is out.</p>
     <p>Brainstorm paw colors are perfect for this: mark a what-if in blue, and double-tap blue to wipe it when you're done.</p>
@@ -697,8 +711,9 @@ function extremeIntro() {
 // others bought with coins. Scenes and frames come only from the Climb (phase 3).
 const CLOSET_TABS = [['head', 'Head'], ['neck', 'Neck'], ['face', 'Face'], ['scenes', 'Scenes'], ['frames', 'Frames']];
 let closetTab = 'head', closetPick = undefined; // undefined = show what's worn
-function renderCloset(tab = closetTab) {
+function renderCloset(tab = closetTab, pickId) {
   if (tab !== closetTab) closetPick = undefined;
+  if (pickId !== undefined) closetPick = pickId;
   closetTab = tab;
   const slot = SLOTS.includes(tab) ? tab : null;
   const pick = slot ? (closetPick !== undefined ? closetPick : db.worn[slot] || null) : null;
@@ -707,7 +722,7 @@ function renderCloset(tab = closetTab) {
   const kid = isKid();
   const tile = (it) => {
     const owned = !it || db.owned.includes(it.id), worn = it ? db.worn[it.slot] === it.id : !db.worn[slot];
-    const sub = worn ? 'Wearing' : owned ? (it ? 'Yours' : '') : `🪙 ${priceFor(it, kid)}`;
+    const sub = worn ? 'Wearing' : owned ? (it ? 'Yours' : '') : coin(priceFor(it, kid)) + (kid && db.goal === it.id ? ' ⭐' : '');
     return `<button class="ctile${(it ? it.id : null) === pick ? ' on' : ''}" data-id="${it ? it.id : ''}">
       <div class="cthumb">${it ? `<svg viewBox="${it.thumb}">${it.art}</svg>` : '<span>🚫</span>'}</div>
       <b>${it ? it.name : 'Nothing'}</b><small>${sub}</small></button>`;
@@ -724,26 +739,30 @@ function renderCloset(tab = closetTab) {
     else if (db.owned.includes(it.id)) action = `<button class="cta" id="c-wear">Wear it</button>`;
     else {
       const cost = priceFor(it, kid);
-      action = db.coins >= cost ? `<button class="cta" id="c-buy">Buy for 🪙 ${cost}</button>`
-        : `<button class="cta alt" disabled>🪙 ${cost} · ${cost - db.coins} more coins to go</button>`;
+      if (db.coins >= cost) action = `<button class="cta" id="c-buy">Buy for ${coin(cost)}</button>`;
+      // Kids can't afford it yet: they can make it their piggy bank goal.
+      else if (kid) action = db.goal === it.id ? `<button class="cta alt" disabled>⭐ Saving up for this · ${cost - db.coins} more to go</button>`
+        : `<button class="cta" id="c-goal">⭐ Save up for this</button>`;
+      else action = `<button class="cta alt" disabled>${coin(cost)} · ${cost - db.coins} more coins to go</button>`;
     }
   } else {
     body = `<p class="csoon">${tab === 'scenes' ? 'Scenes are pictures behind the whole app. You earn them in the Climb, and they can never be bought. Coming soon!' : 'Reach the top of a Climb to earn a sparkly summit frame for the board. Coming soon!'}</p>`;
   }
   $('closet').innerHTML = `
-    <div class="bar"><button class="back">‹</button><h2>Closet</h2><span class="coins still">🪙 ${db.coins}</span></div>
-    <div class="cpreview">${cheddarLoaf({ hat: item(look.head)?.art || '' })}</div>
+    <div class="bar"><button class="back">‹</button><h2>Closet</h2><span class="coins still">${coin(db.coins)}</span></div>
+    <div class="cpreview">${cheddarLoaf(dressed(look))}</div>
     <div class="ctabs">${CLOSET_TABS.map(([k, l]) => `<button class="ctab${k === tab ? ' on' : ''}" data-t="${k}">${l}</button>`).join('')}</div>
     <div class="cbody">${body}</div>
     <div class="cact">${action}</div>`;
   $('closet').querySelector('.back').onclick = () => { closetPick = undefined; renderHome(); };
   $('closet').querySelectorAll('.ctab').forEach((b) => (b.onclick = () => renderCloset(b.dataset.t)));
   $('closet').querySelectorAll('.ctile').forEach((b) => (b.onclick = () => { closetPick = b.dataset.id || null; renderCloset(); }));
-  const wear = $('c-wear'), buyB = $('c-buy');
+  const wear = $('c-wear'), buyB = $('c-buy'), goal = $('c-goal');
+  if (goal) goal.onclick = () => { db.goal = pick; save(); renderCloset(); };
   if (wear) wear.onclick = () => { if (pick) db.worn[slot] = pick; else delete db.worn[slot]; save(); renderCloset(); };
   if (buyB) buyB.onclick = () => {
     const it = item(pick), cost = priceFor(it, kid);
-    confirmSheet(`Buy the ${it.name.toLowerCase()}?`, `It costs 🪙 ${cost}. You have 🪙 ${db.coins}.`, () => {
+    confirmSheet(`Buy the ${it.name.toLowerCase()}?`, `It costs ${coin(cost)}. You have ${coin(db.coins)}.`, () => {
       if (buy(db, it.id, kid)) { db.worn[slot] = it.id; save(); }
       renderCloset();
     });
@@ -751,15 +770,27 @@ function renderCloset(tab = closetTab) {
   show('closet');
 }
 
+// Kids' piggy bank on the home screen: a bar that fills toward the item they picked to save for,
+// instead of a coin number. No goal yet (or it's bought): a nudge to pick one in the Closet.
+function piggyBank() {
+  const g = item(db.goal);
+  if (!g || db.owned.includes(g.id)) return `<button class="piggy" id="go-piggy"><span class="pthumb">${coinIcon(true)}</span>
+    <div><b>Pick something to save up for!</b><small>Tap to visit the closet</small></div></button>`;
+  const cost = priceFor(g, true), ready = db.coins >= cost, pct = Math.min(100, Math.round((db.coins / cost) * 100));
+  return `<button class="piggy${ready ? ' ready' : ''}" id="go-piggy" aria-label="Saving for the ${g.name.toLowerCase()}, ${pct}% there">
+    <span class="pthumb"><svg viewBox="${g.thumb}">${g.art}</svg></span>
+    <div><b>${ready ? `You can get the ${g.name.toLowerCase()}! 🎉` : `Saving up for the ${g.name.toLowerCase()}`}</b><div class="pbar"><i style="width:${pct}%"></i></div></div>${coinIcon(true)}</button>`;
+}
+
 // One time per player, the first launch with the shop: show the back pay.
 function welcomeSheet() {
   const w = welcome; welcome = null;
   const kid = isKid();
-  sheet(`<div style="width:120px;margin:0 auto">${cheddarLoaf()}</div><h3>Welcome to the closet!</h3>
+  sheet(`<div style="width:120px;margin:0 auto">${cheddarLoaf(dressed())}</div><h3>Welcome to the closet!</h3>
     <p>Solve puzzles to earn coins, then spend them on outfits for Cheddar. Hints are always free.</p>
-    ${w.coins || w.start ? `<div class="earn">🪙 +${w.coins + w.start} coins${w.coins ? `<span>for ${w.puzzles} puzzle${w.puzzles === 1 ? '' : 's'} you already solved${w.start ? `, plus ${w.start} to start` : ''}</span>` : `<span>to start you off</span>`}</div>` : ''}
+    ${w.coins || w.start ? `<div class="earn">${coinIcon()} +${w.coins + w.start} coins${w.coins ? `<span>for ${w.puzzles} puzzle${w.puzzles === 1 ? '' : 's'} you already solved${w.start ? `, plus ${w.start} to start` : ''}</span>` : `<span>to start you off</span>`}</div>` : ''}
     <p>${kid ? 'Everything in the closet is half price for you!' : 'Every puzzle pays once. Today\'s daily pays the most.'}</p>
-    <button class="cta" id="w-open">Open the closet 👗</button><button class="cta alt" id="w-later">Later</button>`);
+    <button class="cta" id="w-open">Open the closet ${closetIcon()}</button><button class="cta alt" id="w-later">Later</button>`);
   $('w-open').onclick = () => { closeSheet(); renderCloset('head'); };
   $('w-later').onclick = closeSheet;
 }
@@ -816,6 +847,7 @@ function settings() {
     <label class="toggle"><div>Relaxed mode<small>Mistakes never cost treats</small></div><input type="checkbox" id="s-relax" ${s.relaxed ? 'checked' : ''}></label>
     <label class="toggle"><div>Show timer</div><input type="checkbox" id="s-timer" ${s.timer ? 'checked' : ''}></label>
     <label class="toggle"><div>Easy double-tap<small>More time between taps, and a little finger wiggle is OK</small></div><input type="checkbox" id="s-easytap" ${s.easyTap ? 'checked' : ''}></label>
+    <label class="toggle"><div>Dress up board corgis<small>Corgis on the board wear ${isKid() ? 'your' : 'Cheddar\'s'} hat</small></div><input type="checkbox" id="s-dress" ${s.dressBoard ? 'checked' : ''}></label>
     <label class="toggle"><div>Field research mode 🔬<small>Rate how hard each puzzle felt, 1–10, to help tune the game</small></div><input type="checkbox" id="s-research" ${s.research ? 'checked' : ''}></label>
     <button class="cta alt" id="s-report">📤 Send report <small>(${report().count} solved, ${report().rated} rated)</small></button>
     <div class="backup"><b>Backup</b><small>Keeps coins and progress safe if Safari clears the site. Adding Corgidoku to the Home Screen helps too.</small>
@@ -825,7 +857,7 @@ function settings() {
   $('s-restore').onclick = () => restoreSheet();
   $('s-report').onclick = () => { s.research = $('s-research').checked; save(); sendReport(); };
   const apply = () => {
-    s.autoPaws = $('s-auto').checked; s.relaxed = $('s-relax').checked; s.timer = $('s-timer').checked; s.research = $('s-research').checked; s.easyTap = $('s-easytap').checked;
+    s.autoPaws = $('s-auto').checked; s.relaxed = $('s-relax').checked; s.timer = $('s-timer').checked; s.research = $('s-research').checked; s.easyTap = $('s-easytap').checked; s.dressBoard = $('s-dress').checked;
     if ($('s-name')) s.name = $('s-name').value.trim();
     save();
   };
@@ -845,6 +877,7 @@ function switchPlayer(p) {
 }
 
 // ---------- boot ----------
+document.body.insertAdjacentHTML('afterbegin', artDefs); // the shared die-cut filter for every Cheddar
 Promise.all(Object.entries(MODES).map(([k, m]) => fetch(m.file).then((r) => r.json()).then((d) => { DATA[k] = d; })))
   .then(() => { useMode(mode()); renderHome(); })
   .catch(() => { $('home').innerHTML = '<p style="margin-top:40vh;font-weight:800">Cheddar couldn\'t find the puzzles. Check your connection and reopen.</p>'; });

@@ -87,7 +87,7 @@
   .cell{position:relative;min-width:0;min-height:0;overflow:hidden;border:.5px solid rgba(255,255,255,.75)}
   .cell.bt{border-top:1.25px solid rgba(91,42,110,.42)}.cell.bb{border-bottom:1.25px solid rgba(91,42,110,.42)}.cell.bl{border-left:1.25px solid rgba(91,42,110,.42)}.cell.br{border-right:1.25px solid rgba(91,42,110,.42)}
   .cell svg{position:absolute;pointer-events:none}
-  .cell svg.corgi{left:8%;top:8%;width:84%;height:84%;animation:pop .28s cubic-bezier(.3,1.6,.5,1)}
+  .cell svg.corgi{left:2%;top:2%;width:96%;height:96%;animation:pop .28s cubic-bezier(.3,1.6,.5,1)}
   .cell svg.paw{left:26%;top:26%;width:48%;height:48%;fill:var(--edge);opacity:.5}
   .cell svg.paw.tinted{opacity:.9}
   .swatches{display:flex;gap:10px;justify-content:center;margin-top:12px}
@@ -193,6 +193,24 @@
   .cact{width:100%;max-width:440px;margin-top:8px}
   .cact .cta{display:block;width:100%;padding:14px;border-radius:16px;font-weight:900;font-size:18px;color:#fff;background:linear-gradient(90deg,var(--pink),var(--purple))}
   .cact .cta.alt{background:#F3EAF6;color:var(--ink)}
+  /* icons drawn in art.js: the corgi coin and the wardrobe sit inline like the emoji did */
+  .ic{display:inline-block;height:1em;width:1em;vertical-align:-.14em;overflow:visible}
+  .row .pill .e .ic{height:22px;width:22px;vertical-align:top}
+  .sheet .cta .ic{height:1.15em;width:1.15em;vertical-align:-.2em}
+  /* kids' piggy bank: a bar that fills toward the item they're saving for */
+  .piggy{display:flex;align-items:center;gap:12px;width:100%;max-width:440px;margin-top:8px;padding:10px 14px;border-radius:20px;background:#fff;text-align:left;
+    box-shadow:0 6px 0 rgba(91,42,110,.12),0 10px 24px rgba(91,42,110,.10)}
+  .piggy>div{flex:1;min-width:0}
+  .piggy b{display:block;font-size:16px;line-height:1.2}
+  .piggy small{display:block;color:var(--ink-soft);font-weight:700}
+  .piggy .pthumb{width:50px;height:50px;flex:none;display:grid;place-items:center;background:#FFF5D6;border-radius:14px}
+  .piggy .pthumb svg{width:42px;height:42px}
+  .piggy>.ic{height:30px;width:30px;flex:none}
+  .pbar{height:18px;border-radius:999px;background:#F3EAF6;margin-top:6px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(91,42,110,.18)}
+  .pbar i{display:block;height:100%;min-width:18px;border-radius:999px;background:linear-gradient(90deg,#FFD23C,#FF9F45);transition:width .6s}
+  .piggy.ready{animation:readyglow 1.6s ease-in-out infinite}
+  @keyframes readyglow{50%{box-shadow:0 6px 0 rgba(91,42,110,.12),0 0 0 4px #FFD23C,0 0 22px #FFD23C}}
+  @media (prefers-reduced-motion: reduce){.piggy.ready{animation:none;box-shadow:0 0 0 4px #FFD23C}}
   .toggle input.name{width:150px;height:auto;padding:8px 10px;border-radius:12px;border:2px solid #F1E6F3;font:inherit;font-weight:800;color:var(--ink);text-align:right;-webkit-user-select:text;user-select:text}
   .backup{padding:12px 4px;border-bottom:1px solid #F1E6F3;text-align:left}
   .backup b{display:block}

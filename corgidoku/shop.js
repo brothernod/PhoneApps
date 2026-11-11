@@ -1,16 +1,28 @@
 // Corgidoku shop: coins, prices and the item catalog.
 // Pure functions only (no DOM, no storage) so tools can test the coin math in node.
 // Everything here is cosmetic. Hints are always free and are never sold.
-import { partyHat } from './art.js';
+import { OUTFIT } from './art.js';
 
 // ---------- catalog ----------
-// slot: head | neck | face. art: an SVG fragment in Cheddar's loaf space (viewBox "4 4 192 250").
+// slot: head | neck | face. art: an SVG fragment in Cheddar's 200x200 space (see OUTFIT in art.js).
 // thumb: the viewBox that frames the item on its own for the Closet tile.
+// Grown-up prices: basic 60 · nice 150 · fancy 350 · dream 900. Kids pay half.
 export const ITEMS = [
-  { id: 'partyhat', slot: 'head', name: 'Party hat', price: 60, art: partyHat, thumb: '83 -7 80 80' },
+  { id: 'partyhat', slot: 'head', name: 'Party hat', price: 60, thumb: '66 -30 96 96' },
+  { id: 'beanie', slot: 'head', name: 'Pom-pom beanie', price: 60, thumb: '50 -25 100 100' },
+  { id: 'flowercrown', slot: 'head', name: 'Flower crown', price: 150, thumb: '22 -12 156 156' },
+  { id: 'rainbowbow', slot: 'head', name: 'Rainbow bow', price: 150, thumb: '58 -16 112 112' },
+  { id: 'pirate', slot: 'head', name: 'Pirate hat', price: 150, thumb: '44 -24 112 112' },
+  { id: 'bandana', slot: 'neck', name: 'Pink bandana', price: 60, thumb: '50 115 100 100' },
+  { id: 'bandana-purple', slot: 'neck', name: 'Purple bandana', price: 60, thumb: '50 115 100 100' },
+  { id: 'bowtie', slot: 'neck', name: 'Bow tie', price: 60, thumb: '55 118 90 90' },
+  { id: 'heartglasses', slot: 'face', name: 'Heart sunglasses', price: 150, thumb: '14 20 172 172' },
 ];
+for (const it of ITEMS) it.art = OUTFIT[it.id] || '';
 export const SLOTS = ['head', 'neck', 'face'];
 export const item = (id) => ITEMS.find((x) => x.id === id) || null;
+// The art for what a player has on: { head, neck, face } fragments ('' for an empty slot).
+export const outfit = (worn = {}) => Object.fromEntries(SLOTS.map((s) => [s, item(worn[s])?.art || '']));
 // Kids pay half price.
 export const priceFor = (it, kid) => (kid ? Math.ceil(it.price / 2) : it.price);
 
@@ -98,5 +110,6 @@ export function buy(db, id, kid) {
   if (db.coins < cost) return false;
   db.coins -= cost;
   db.owned.push(id);
+  if (db.goal === id) delete db.goal; // a kid's piggy bank target is done once it's bought
   return true;
 }
