@@ -6,10 +6,11 @@ map: [112, 78]      # where it sits on the map picture
 
 # Each slot is one puzzle moment in old-san-juan.ink ("# slot: cart").
 # The dealer picks one of the slot's puzzles each run, favoring kinds that
-# haven't come up lately. Still to come: trading_post at the cart and
-# hola_y_gracias at the doors.
+# haven't come up lately. who: is the person talking in hola_y_gracias.
 slots:
   cart:
+    - { puzzle: trading_post, topic: piraguas }
     - { puzzle: dragon_hoard, topic: piraguas }
   doors:
     - { puzzle: colores, topic: colors }
+    - { puzzle: hola_y_gracias, topic: street, who: The neighbor }

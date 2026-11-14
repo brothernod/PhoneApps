@@ -4,10 +4,10 @@ role: place
 drive: 10           # minutes on the clock to get here
 map: [40, 52]       # where it sits on the map picture
 
-# Still to come: egg_crates or stepping_stones at the cannonballs, and
-# picky_bridge at the sign.
+# Still to come: egg_crates at the cannonballs and picky_bridge at the sign.
 slots:
   cannon:
     - { puzzle: dragon_hoard, topic: cannonballs }
+    - { puzzle: stepping_stones, topic: cannonballs }
   sign:
     - { puzzle: fact_or_fib, topic: forts }
