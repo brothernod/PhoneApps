@@ -1,0 +1,24 @@
+# EL MORRO'S SUNNIEST WALL: the anole dragon's lair.
+name: El Morro's sunniest wall
+role: lair
+drive: 10
+map: [54, 74]
+
+slots:
+  rescue:
+    - { puzzle: rescue, topic: calls }
+
+# Toys: small things to do with the picture. Nothing is scored.
+#   taps: watch the creature move, count, then tap the same number.
+#         count: [fewest, most]. The picture is drawn with pose 1, then pose 0.
+toys:
+  pushups:
+    kind: taps
+    pic: wall-dragon
+    count: [3, 6]
+    watch: "WATCH AND COUNT THE PUSH-UPS..."
+    turn: "YOUR TURN! ONE TAP FOR EACH PUSH-UP"
+    key: "PUSH-UP!"
+    done: "DONE"
+    again: "NOT THE SAME NUMBER. WATCH AGAIN..."
+    cue: find

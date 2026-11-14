@@ -1,7 +1,8 @@
 // THE BIG PLAZA TREE: the iguana dragon's lair. A lair belongs to one
-// creature, so this card may name it. Tags are listed at the top of museum.ink.
+// creature, so this card may name it. Slot: rescue. Toy: tail.
+// Tags are listed at the top of museum.ink.
 
-At the top of the hill is a little plaza with a big shady tree. # clear # pic: plaza
+The van stops at a little plaza with a big shady tree. # clear # pic: plaza
 A street cat on the bench puffs up and HISSES at {pet}.
 * [GO AROUND the CAT]
     You take the long way around the plaza.
@@ -9,46 +10,29 @@ A street cat on the bench puffs up and HISSES at {pet}.
 * [Let {pet} SAY HELLO]
     {pet} lies down flat and wags his stubby tail.
     The cat sniffs his nose... and purrs. A new friend!
-- Something rustles high in the tree. Leaves drift down. A long tail swishes.
-{pet} sits, stares up, and looks very serious. He has something to tell you. # slot: sniff
-+ [@pass] -> sniff_pass
-+ [@fail] -> sniff_fail
-
-= sniff_pass
-"Good boy!" {pet} was right, and now you know what kind of animal to look for. # cue: find
--> found
-
-= sniff_fail
-{pet} lets out a very big corgi sigh.
-~ minutes += 15
+- Leaves drift down, but there is no wind. Something is up in that tree. # toy: tail
+A long green TAIL swishes between the leaves. You spotted it! # cue: find
 -> found
 
 = found
-You look up. Way, way up. # clear # pic: dragon
-On a sunny branch sits a little green dragon with spikes down its back.
-It bobs its head and does three tiny push-ups.
-Green scales. Sunny treetops. Nibbled flowers. It's an IGUANA DRAGON!
-It looks scared, and it doesn't seem to understand English.
-"Hatchlings only know Spanish!" Doña Luz calls from the van. "Call it down!"
--> call
+You look up. Way, way up. # clear # pic: dragon # cue: hatch
+On a sunny branch sits a little green dragon with spikes down its back. It nods its head: yes, yes, yes.
+It's the IGUANA DRAGON, just like your clues said!
+But it looks scared, and it doesn't understand English.
+"Hatchlings only know Spanish!" Doña Luz whispers. She opens the travel basket. # slot: rescue
++ [@pass] -> rescue_pass
++ [@fail] -> rescue_fail
 
-= call
-+ [Say "¡VEN!"] -> ven
-+ [Say "¡DUERME!"] -> duerme
-+ [Say "¡VUELA!"] -> vuela
+= rescue_pass
+The dragon tilts its head... then scrambles down the trunk!
+-> herd
 
-= duerme
-DUERME means SLEEP. The dragon yawns, curls up on the branch, and snores. # cue: miss
-{sibling} giggles. You wait for it to wake up.
+= rescue_fail
+The dragon darts back into the leaves to hide. You wait, very quietly, until it peeks out again.
 ~ minutes += 10
--> call
+Doña Luz helps you say it, and this time the dragon scrambles down the trunk.
+-> herd
 
-= vuela
-VUELA means FLY. The dragon flaps its tiny wings, loops once around the tree, and lands on the very same branch. Show-off. # cue: miss
-~ minutes += 5
--> call
-
-= ven
-VEN means COME. The dragon tilts its head... then scrambles down the trunk! # cue: right
-{pet} trots in a careful circle around it and herds it to the van, just like corgis herd cows.
+= herd
+{pet} trots in a careful circle around it and herds it into the basket, just like corgis herd cows. # cue: find
 -> DONE

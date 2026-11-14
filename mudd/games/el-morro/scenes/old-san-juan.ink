@@ -1,5 +1,6 @@
 // OLD SAN JUAN STREETS. Slots: cart (Don Tito needs help), doors (which door?).
-// Tags are listed at the top of museum.ink.
+// A place gives one clue and one lock number: here the cart earns the clue
+// and the doors earn the number. Tags are listed at the top of museum.ink.
 
 Old San Juan. Blue cobblestones, houses painted every color, and the smell of the sea. # clear # pic: old-san-juan
 The footprints are faint here. {pet} pulls toward a little cart with a striped umbrella.
@@ -14,19 +15,19 @@ The footprints are faint here. {pet} pulls toward a little cart with a striped u
 = tito
 "A little dragon? ¡Sí! It ran right past me," says Don Tito. "And look what happened!" # pic: cart
 {pet} has his front paws, the white ones, up on the cart. Uh oh.
-"Help me out," Don Tito laughs, "and I'll show you what your dragon left behind." # slot: cart
+"Help me out," Don Tito laughs, "and I'll show you which way it went." # slot: cart
 + [@pass] -> tito_pass
 + [@fail] -> tito_fail
 
 = tito_pass
 "¡Perfecto! ¡Gracias!" Don Tito gives everyone a cherry piragua. # cue: find
-"Your hatchling hopped up on my cart," he says, "and it dropped this." # clue
+He points behind his cart. "It stopped right there. Take a look!" # clue
 -> choose
 
 = tito_fail
 Don Tito works it out with you, step by step. That takes a while.
 ~ minutes += 15
-"Your hatchling hopped up on my cart," he says, "and it dropped this." # clue
+He points behind his cart. "Your dragon stopped right there. Take a look!" # clue
 -> choose
 
 = houses
@@ -38,15 +39,15 @@ But which one? You'll need your Spanish. # slot: doors
 
 = houses_pass
 The door creaks open onto a sunny courtyard. # cue: find
-Muddy footprints cross the tiles, and {sibling} picks something up. # clue
+Muddy footprints cross the tiles and stop at the wall. # digit
 -> choose
 
 = houses_fail
 You knock on the wrong doors. A grandma gives {pet} a cookie. Nice, but slow.
 ~ minutes += 15
-At last you find the right door. In the courtyard, {sibling} picks something up. # clue
+At last you find the right door. In the courtyard, footprints stop at the wall. # digit
 -> choose
 
 = leave
-The footprints head on up the hill. {pet} is already pulling on the leash.
+The footprints head on, out of the old streets. {pet} is already pulling on the leash.
 -> DONE

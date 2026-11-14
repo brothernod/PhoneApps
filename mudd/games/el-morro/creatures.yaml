@@ -1,26 +1,199 @@
-# The creatures that can hatch. The dealer picks one per run, always a kind
-# that hasn't been caught yet until all of them have been.
+# The creatures. All of them are in the casebook lineup from the first run.
+# The dealer picks one per run from the ones that have a lair card, always a
+# kind that hasn't been caught yet until all of them have been.
 #
-# traits:  what the clues reveal, one trait per "# clue" tag in a scene card.
-#          found: what turns up, written to fit any place
-#          clue:  the line added to the clue count
-# lair:    the scene card for this creature's finale
+# traits:  one value for each trait in game.yaml (is:), and the line that
+#          turns up when a clue reveals it (found:). Write found: lines to fit
+#          any place, and don't let one give away more than its trait does.
+# sign:    one extra thing the hero's sibling notices, for runs with more clue
+#          moments than traits
+# sprite:  shape is a drawing in pics/drawn.js; the rest are its colors
+# lair:    the scene card for this creature's finale. Leave it out until the
+#          card is written; the creature can't hatch until then
+# detour:  what happens when it is named by mistake: a trip to where it
+#          lives, a real animal, and a true fact (with its source)
 # The rest fills the Field Guide ({name}, {based_on}, {fact}, {source}, ...).
+# Every fact needs a source. The game never shows a detour's source; it is
+# here for a grown-up to check before release.
+
+coqui:
+  name: COQUÍ DRAGON
+  based_on: coquí frog
+  color_es: MARRÓN
+  sprite: { shape: frog, body: "#c8964e", dark: "#8a6230", belly: "#f2e2b4", trim: "#e8734a", wing: "#e0b070" }
+  traits:
+    covering: { is: smooth, found: "{sibling} finds a tiny handprint with no claw marks at all. Whatever made it has soft, SMOOTH skin." }
+    spot:     { is: wet,    found: "A line of little puddles leads away, and {pet} laps one up. The hatchling went looking for WATER." }
+    habit:    { is: noisy,  found: "{sibling} cups his ears. Somewhere close, a tiny voice sings two notes, over and over, loud as a whistle." }
+  sign: "it only started singing when the light got dim"
+  detour:
+    place: A mossy stream in El Yunque
+    pic: la-coca
+    map: [236, 140]
+    drive: 60
+    lines:
+      - "The van climbs into the rainforest of El Yunque. By a mossy stream you stop and listen. No hatchling."
+      - "But a tiny real coquí frog sits on a wet leaf, singing its own name: co-KEE!"
+    fact: "REAL FACT: A coquí dad guards the eggs until they hatch."
+    source: "eLife"
+  fact: "Baby coquí frogs skip the tadpole stage. They hatch as tiny froglets."
+  source: "eLife"
+
+parrot:
+  name: PARROT DRAGON
+  based_on: Puerto Rican parrot
+  color_es: VERDE
+  sprite: { shape: bird, body: "#3fae4a", dark: "#2a7a34", belly: "#9ade6e", trim: "#d23a32", wing: "#2f6fd1" }
+  traits:
+    covering: { is: fluffy, found: "{sibling} holds up something soft and light as air. It tickles {pet}'s nose, and he sneezes." }
+    spot:     { is: high,   found: "{pet} barks at the sky. There are tiny claw marks way up on the highest ledge." }
+    habit:    { is: noisy,  found: "SQUAWK! Something shrieks close by, so loud that {pet} hides behind your legs." }
+  sign: "a flash of blue as something flew off"
+  detour:
+    place: A tall old tree in El Yunque
+    pic: lookout
+    map: [254, 126]
+    drive: 60
+    lines:
+      - "The van climbs into the rainforest of El Yunque. You look up into a tall old tree. No hatchling."
+      - "But a real Puerto Rican parrot peeks out of a hollow: bright green, with a red forehead."
+    fact: "REAL FACT: In 1975 only 13 of these parrots were left in the wild. People have been helping them ever since."
+    source: "U.S. Forest Service"
+  fact: "The Puerto Rican parrot is green with a red forehead and blue wing feathers."
+  source: "BirdsCaribbean"
+
+glow:
+  name: GLOW DRAGON
+  based_on: glowing plankton
+  color_es: AZUL
+  sprite: { shape: wisp, body: "#3f7fc0", dark: "#28558c", belly: "#8fd8f0", trim: "#b8fff0", wing: "#5fb0e0" }
+  traits:
+    covering: { is: smooth, found: "{sibling} pokes a shiny smear on the ground. It's SMOOTH and slippery, like jelly." }
+    spot:     { is: wet,    found: "The footprints go from puddle to puddle to puddle. The hatchling never touched a dry spot." }
+    habit:    { is: trail,  found: "A faint sparkly line runs along the ground, like someone dragged a wet paintbrush." }
+  sign: "the puddle flashed blue-green when {pet} stepped in it"
+  detour:
+    place: The glowing bay
+    map: [300, 104]
+    drive: 75
+    lines:
+      - "The van drives a long way east, to a quiet bay ringed with mangrove trees. No hatchling."
+      - "But the water is full of real glowing plankton, each one too tiny to see."
+    fact: "REAL FACT: The plankton flash blue-green light when the water around them moves."
+    source: "UT Marine Science Institute"
+  fact: "Mangrove trees help feed the glowing plankton in Puerto Rico's bays."
+  source: "Scientific American"
+
+turtle:
+  name: TURTLE DRAGON
+  based_on: leatherback sea turtle
+  color_es: GRIS
+  sprite: { shape: turtle, body: "#5a7a8a", dark: "#2e3e4e", belly: "#c8d4dc", trim: "#7a94a4", wing: "#5a7a8a" }
+  traits:
+    covering: { is: smooth, found: "{sibling} rubs a mark on the stone. It's SMOOTH as a bar of soap. No scales, no fluff." }
+    spot:     { is: sunny,  found: "{pet} flops down on a warm patch of ground. Something small lay right here, soaking up the SUN." }
+    habit:    { is: trail,  found: "Two wavy lines are swept in the dust, side by side, as if tiny oars went by." }
+  sign: "a little pit dug in the dirt, with a paddle mark on each side"
+  detour:
+    place: A quiet beach on the north coast
+    pic: beach
+    map: [178, 100]
+    drive: 40
+    lines:
+      - "The van stops at a quiet beach. You search the warm sand. No hatchling."
+      - "But there are real turtle tracks, where a leatherback crawled up from the sea to nest."
+    fact: "REAL FACT: Warmer sand makes more girl turtles hatch."
+    source: "Global Voices"
+  fact: "Leatherback sea turtles nest on Puerto Rico's beaches."
+  source: "Global Voices"
+
+bat:
+  name: BAT DRAGON
+  based_on: bat
+  color_es: MARRÓN
+  sprite: { shape: bat, body: "#7a5a44", dark: "#4a3426", belly: "#b89a80", trim: "#e8b0a0", wing: "#5a4034" }
+  traits:
+    covering: { is: fluffy, found: "{sibling} holds up a tuft of something soft and FLUFFY. It was stuck to a splinter." }
+    spot:     { is: dark,   found: "The footprints skip every sunny patch. They stay in the SHADE, close to the walls." }
+    habit:    { is: noisy,  found: "{sibling} hears it first: click, click, click, like a tiny clock. Then it stops." }
+  sign: "it was hanging UPSIDE DOWN, fast asleep"
+  detour:
+    place: The lantern tunnel, San Cristóbal
+    pic: tunnel
+    map: [128, 58]
+    drive: 25
+    lines:
+      - "The van stops at the old fort of San Cristóbal. You tiptoe down the lantern tunnel. No hatchling."
+      - "But real bats are asleep on the ceiling, hanging by their toes."
+    fact: "REAL FACT: Puerto Rico has 13 kinds of bats."
+    source: "U.S. Forest Service"
+  fact: "Bats are Puerto Rico's only native land mammals."
+  source: "U.S. Forest Service"
+
+boa:
+  name: BOA DRAGON
+  based_on: Puerto Rican boa
+  color_es: MARRÓN
+  sprite: { shape: snake, body: "#c09a62", dark: "#6e4a2a", belly: "#ecd9a8", trim: "#c09a62", wing: "#c09a62" }
+  traits:
+    covering: { is: scaly, found: "{sibling} holds up a strip of papery skin with tiny SCALES printed all over it." }
+    spot:     { is: dark,  found: "The trail slips under a bench, then into a pipe. It always picks the DARKEST spot." }
+    habit:    { is: trail, found: "One long wiggly line crosses the dust. {pet} follows it, nose down. No footprints at all." }
+  sign: "a vine that turned out not to be a vine"
+  detour:
+    place: A cave in the hills
+    map: [214, 152]
+    drive: 45
+    lines:
+      - "The van bumps up a hill road to a cave hung with vines. No hatchling."
+      - "But one of the vines is a real Puerto Rican boa, holding very, very still."
+    fact: "REAL FACT: The Puerto Rican boa hangs at cave mouths to catch bats as they fly out in the evening."
+    source: "U.S. Fish and Wildlife Service"
+  fact: "The Puerto Rican boa is the island's biggest snake."
+  source: "U.S. Fish and Wildlife Service"
+
+anole:
+  name: ANOLE DRAGON
+  based_on: anole lizard
+  color_es: MARRÓN
+  lair: sunny-wall
+  sprite: { shape: anole, body: "#b8935a", dark: "#7a5c30", belly: "#efe0b4", trim: "#f28a2c", wing: "#d8b070" }
+  traits:
+    covering: { is: scaly, found: "{sibling} holds up a tiny SCALE, thin as paper." }
+    spot:     { is: sunny, found: "{pet} sniffs a warm stone. A little shape in the dust shows where something lay down in the SUN." }
+    habit:    { is: bobs,  found: "There are little marks in the dust: up, down, up, down. Something was BOBBING its head." }
+  sign: "an orange flash under its chin, like a tiny flag"
+  detour:
+    place: El Morro's sunniest wall
+    pic: wall
+    drive: 20
+    lines:
+      - "The van stops under El Morro's sunniest wall. The stones are hot. No hatchling."
+      - "But a real anole, small as your finger, is doing push-ups on a rock."
+    fact: "REAL FACT: Scientists built robot lizards to learn why anoles do push-ups."
+    source: "UC Davis"
+  fact: "Puerto Rican anole lizards do push-ups to get attention."
+  source: "UC Davis"
 
 iguana:
   name: IGUANA DRAGON
   based_on: green iguana
   color_es: VERDE
   lair: plaza-tree
+  sprite: { shape: lizard, body: "#4cae4f", dark: "#2f7d33", belly: "#b2dc74", trim: "#f2b630", wing: "#3aa6a0" }
   traits:
-    covering:
-      found: "It's a tiny green SCALE with a spike on it, still warm."
-      clue: "CLUE: the hatchling has spiky GREEN SCALES."
-    spot:
-      found: "It's a leaf from the very top of a tree, warm as toast from the sun."
-      clue: "CLUE: the hatchling loves SUNNY TREETOPS."
-    giveaway:
-      found: "It's a flower with tiny BITES taken out of every petal."
-      clue: "CLUE: the hatchling NIBBLES leaves and flowers."
-  fact: "Green iguanas came to Puerto Rico as pets in the 1970s. People there call them gallina de palo, chicken of the trees."
-  source: "IUCN Iguana Specialist Group; Global Voices"
+    covering: { is: scaly, found: "{sibling} holds up a tiny SCALE with a little spike on it, still warm." }
+    spot:     { is: high,  found: "Leaves keep drifting down, but there's no wind. Something climbed UP HIGH." }
+    habit:    { is: bobs,  found: "{pet} finds claw marks on a fence post. Something sat on top, NODDING: yes, yes, yes." }
+  sign: "a flower with tiny BITES taken out of every petal"
+  detour:
+    place: The big plaza tree
+    pic: plaza
+    drive: 20
+    lines:
+      - "The van stops by the big plaza tree. You look up, and up. No hatchling."
+      - "But a real green iguana is sunning on a branch, nodding its head at you."
+    fact: "REAL FACT: People in Puerto Rico call the iguana gallina de palo, chicken of the trees."
+    source: "Global Voices"
+  fact: "Green iguanas aren't from Puerto Rico. They came as pets in the 1970s."
+  source: "IUCN Iguana Specialist Group"

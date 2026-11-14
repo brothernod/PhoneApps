@@ -1,18 +1,24 @@
-// MUSEO DE LEYENDAS: the hub. A run starts at the top of this card and
-// comes back to "= home" at the end.
+// MUSEO DE LEYENDAS: the hub. A run starts at the top of this card, comes
+// back to "= casefile" after the last place, and ends at "= home".
 //
-// A scene card is plain ink. It never names the creature or a puzzle:
+// A scene card is plain ink. A place card never names the creature or a
+// puzzle (a lair belongs to one creature, so it may name that one):
 //   # slot: <name>   the dealer's puzzle for that slot (see the .yaml);
 //                    it must be followed by [@pass] and [@fail] choices
 //   # clue           reveal the next clue about this run's creature
+//   # digit          reveal the next number of the lock (one per place)
+//   # toy: <name>    play a lair toy from the .yaml (tap a spot, count taps)
 //   # caught         add the creature to the Field Guide
+//   # rate           count up the run and award its egg
 //   # clear          wipe the text window
 //   # pic: <name>    show a picture
 //   # tune: <name>   play a tune from banks.yaml
 //   # cue: <name>    play a short sound (right, miss, find, hatch, disk)
-// The engine sets: {hero} {sibling} {pet}, minutes, sunset, clues,
-// runs (quests finished before this one), and caught (creatures found so far).
-// End a card with -> DONE. The engine drives to the next place.
+// The engine sets: {hero} {sibling} {pet}, minutes, sunset, clues, stars,
+// detours (wrong picks in the case file), egg (after "# rate": 1 is the
+// lowest egg), runs (quests finished before this one), and caught
+// (creatures found so far). Don't name a "= part" after one of those.
+// End a card with -> DONE. The engine drives to the next stop.
 
 { runs == 0:
     ¡Hola, {hero}! Welcome to the Museo de Leyendas. # clear # pic: museum
@@ -33,18 +39,20 @@
 Museo de Leyendas, Old San Juan. A quiet morning. # clear # pic: museum
 Doña Luz, the curator, hurries over with her keys jingling. "¡Ay, bendito! Look at the Sleeping Egg!"
 The glass case is open. The stone-gray egg is cracked... and EMPTY.
-Tiny clawed FOOTPRINTS lead out the door. {pet} sniffs them and wags.
+Tiny FOOTPRINTS lead out the door. {pet} sniffs them and wags.
 "The legend says a hatchling must be back in its nest by sunset," says Doña Luz, "or it flies off to sea!"
+She presses a little notebook into your hands. "Your CASEBOOK. Every clue goes in it. Tap CASEBOOK any time to read it."
 -> look
 
 = look
-* [LOOK at the EGG] -> egg
+* [LOOK at the EGG] -> shell
 * [READ the SIGN] -> sign
-+ [FOLLOW the FOOTPRINTS] -> leave
+* {shell} [FOLLOW the FOOTPRINTS] -> leave
 
-= egg
-{sibling} peeks around the empty shell and spots something the hatchling left behind. # cue: find
-{pet} sneezes on it. # clue
+= shell
+{sibling} crouches by the empty shell, very still. He has noticed something. # cue: find
+"Your first clue!" says Doña Luz. # clue
+"The rest are out there, wherever the hatchling went."
 -> look
 
 = sign
@@ -54,18 +62,50 @@ It crossed the ocean on a ship in the 1500s. Sailors said it would hatch on the 
 -> look
 
 = leave
-"I'll get the van!" says Doña Luz. "The footprints point toward the old streets."
+"I'll get the van!" says Doña Luz. "The footprints go out the door and down the street."
+She unfolds a MAP on the hood. "You pick the way, {hero}."
+-> DONE
+
+= casefile
+Everyone piles back into the van, and {pet} takes the front seat. # clear # pic: casefile
+Doña Luz turns around. "That's every clue, {hero}. So which dragon hatched?"
+"Open the CASE FILE and check each dragon against your clues. Pick the wrong one, and we drive to the wrong place!"
 -> DONE
 
 = home
-Back at the Museo de Leyendas. # clear # pic: nest
-The little dragon climbs into its nest and curls up inside the warm eggshell.
-{ minutes <= sunset - 30:
-    Doña Luz claps her hands. "Home long before sunset! ¡Gracias, {hero}!"
+{ minutes > sunset:
+    Back at the Museo de Leyendas. The sun is down and the first stars are out. # clear # pic: museum
+    The hatchling is fast asleep in its basket.
 - else:
-    It falls asleep before you can even close the case.
+    Back at the Museo de Leyendas. # clear # pic: museum
+    The hatchling peeks out of its basket and squeaks at the empty nest.
 }
+But the glass case has snapped shut, and there's a LOCK on it.
+{sibling} points at your casebook. "The numbers!" # slot: lock
++ [@pass] -> nest
++ [@fail] -> slow
+
+= slow
+Doña Luz reads the numbers from your casebook with you, one at a time.
+~ minutes += 5
+-> nest
+
+= nest
+The glass case swings open. # clear # pic: nest
+{ minutes > sunset:
+    Doña Luz lifts the sleeping dragon into its nest, under the stars in the window. It doesn't even wake up.
+    "Home at last," she whispers. "Next time, let's beat the sunset."
+- else:
+    { minutes > sunset - 30:
+        The little dragon tumbles into its nest and is asleep before you can close the case. That was close!
+    - else:
+        The little dragon climbs into its nest and curls up inside the warm eggshell.
+        Doña Luz claps her hands. "Home long before sunset! ¡Gracias, {hero}!"
+    }
+}
+{ detours > 0: "And we saw some real animals on the way," she laughs. "Even if we didn't mean to." }
 A new page fills itself in, in your Dragon Field Guide. # caught # cue: hatch
-Then, in the case next door, another egg starts to WOBBLE... # tune: ending
-THE END of the demo. More places coming soon!
+Doña Luz counts up your quest. # rate
+She sets the egg on the shelf beside the nest. # tune: ending
+Then, in the case next door, another egg starts to WOBBLE...
 -> DONE

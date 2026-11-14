@@ -6,14 +6,14 @@
 import { Screen } from './screen.js';
 import { Sound } from './sound.js';
 import { Pictures } from './art.js';
-import { loadPack, checkPack, compileStory } from './pack.js';
+import { loadPack, checkPack, compileStory, hatchable } from './pack.js';
 import { deal } from './dealer.js';
 import { ARCHETYPES } from './puzzles.js';
-import { runQuest, newQuestState, startStory } from './quest.js';
+import { runQuest, newQuestState, startStory, casebook, toggleCrossed, TOYS } from './quest.js';
 import { clock, fill, store } from './util.js';
 
 const VERSION = 'MUDD 0.2';
-const SAVE_VERSION = 2;
+const SAVE_VERSION = 3;
 
 // Which game: ?game=<folder> in the address, or data-game on the page.
 const asked = new URLSearchParams(location.search).get('game') || document.documentElement.dataset.game || '';
@@ -42,7 +42,7 @@ const word = (key, fallback) => (pack && pack.words[key]) || fallback;
 /** Everything that carries across runs. It stays on this device only. */
 function defaultProfile() {
   return {
-    caught: {},   // creature id -> { n: times caught, first: when, last: when }
+    caught: {},   // creature id -> { n: times caught, first: when, last: when, egg: best rating }
     recent: [],   // the last dozen puzzle kinds played, so the dealer can vary them
     skills: {},
     log: [],
@@ -93,11 +93,16 @@ async function loadGame() {
 
   // Pictures: scenes the pack draws in code, then its PNGs.
   const pics = pack.game.pics || {};
-  if (pics.drawn) pictures.drawn = (await import(new URL(pics.drawn, BASE).href)).scenes || {};
+  if (pics.drawn) {
+    const art = await import(new URL(pics.drawn, BASE).href);
+    pictures.drawn = art.scenes || {};
+    pictures.creature = art.creature || null;
+    if (art.creatureBox) pictures.creatureBox = art.creatureBox;
+  }
   await pictures.loadImages(pack.pngs, (name) => new URL(`pics/${name}.png`, BASE).href);
 
   // Fail early, on the boot screen, if the pack or its ink has a mistake.
-  const problems = checkPack(pack, { archetypes: ARCHETYPES, pictures: pictures.names });
+  const problems = checkPack(pack, { archetypes: ARCHETYPES, toys: TOYS, pictures: pictures.names });
   if (problems.length) throw new Error(problems.join('\n'));
   compileStory(pack, inkjs);
   keepOffline();
@@ -140,6 +145,51 @@ function recordCaught(id) {
   saveProfile();
 }
 
+/** Keep the best egg a creature's runs have earned. */
+function recordRating(id, rating) {
+  const c = profile.caught[id];
+  if (!c) return;
+  c.egg = Math.max(Number(c.egg) || 0, rating.rank);
+  saveProfile();
+}
+
+/** The egg with this rank (1 is the lowest), from rating.eggs in game.yaml. */
+function eggOfRank(rank) {
+  const eggs = (pack.game.rating || {}).eggs || [];
+  return eggs[eggs.length - rank] || null;
+}
+
+// ---------------------------------------------------------------------------
+// The casebook: clues, lock numbers, stars, and the lineup. The player can
+// open it any time during a run; the case file is the same page with a key
+// on each creature.
+
+/** The run being played, if any. @type {{ plan: import('./dealer.js').Plan, state: import('./quest.js').QuestState } | null} */
+let live = null;
+
+const bookWords = () => ({
+  clues: word('book_clues', 'CLUES'),
+  lock: word('book_lock', 'LOCK'),
+  stars: word('book_stars', 'STARS'),
+  book_hint: word('book_hint', 'Tap one to cross it out. Tap again to bring it back.'),
+  case_hint: word('case_hint', 'Check each one against your clues. Tap one to cross it out.'),
+  case_pick: word('case_pick', 'THIS ONE!'),
+  case_not: word('case_not', 'NOT THIS ONE'),
+});
+
+/** Cross a creature out or bring it back. Says whether it is crossed out now. */
+function crossOut(id) {
+  if (!live) return false;
+  toggleCrossed(live.state, id);
+  return live.state.crossed.includes(id);
+}
+
+function openBook() {
+  if (!live || screen.overlay.querySelector('.pagebox')) return;
+  const { plan, state } = live;
+  screen.page(word('book', 'CASEBOOK'), (body) => screen.bookBody(body, casebook(pack, plan, state), { words: bookWords(), toggle: crossOut }));
+}
+
 // ---------------------------------------------------------------------------
 // One quest
 
@@ -153,6 +203,9 @@ async function playQuest(run) {
   if (run.ink) story.state.LoadJson(run.ink);
   else startStory(story, pack, { runs: profile.runs, caught: caughtCount() });
 
+  live = { plan: run.plan, state };
+  // Pictures are told which creature hatched, so the nest and the lair show it.
+  screen.picBase = { who: pack.creatures[run.plan.creature].sprite || null };
   screen.hideOverlay();
   screen.clearText();
   screen.showPic(run.pic || '');
@@ -170,6 +223,14 @@ async function playQuest(run) {
       if (labels.length === 1) { await screen.waitTap(labels[0]); return 0; }
       return screen.choose(labels, { paged: true });
     },
+    map: async (view) => { await screen.waitIfUnread(); return screen.map(view); },
+    lineup: async (view) => {
+      if (screen.unread) await screen.waitTap(word('case_open', 'OPEN THE CASE FILE'));
+      return screen.page(word('case', 'CASE FILE'), (body, el, done) => {
+        screen.bookBody(body, view, { words: bookWords(), toggle: crossOut, pick: done });
+      }, { back: '' });
+    },
+    toy: (toy) => screen.toy(toy, (name) => sound.play(name)),
     status: ({ quest, minutes, clues }) => screen.setStatus({
       quest: `${word('quest', 'QUEST')} #${quest}`,
       time: clock(minutes),
@@ -192,6 +253,7 @@ async function playQuest(run) {
       learned: (kind, id) => { (kind === 'spanish' ? profile.spanish : profile.facts)[id] = true; },
       result: recordResult,
       caught: recordCaught,
+      rated: recordRating,
       checkpoint: () => {
         store.set(SAVE_KEY, { v: SAVE_VERSION, plan: run.plan, state, ink: story.state.ToJson(), pic: screen.currentPic, lines: screen.transcript() });
         saveProfile();
@@ -206,12 +268,15 @@ async function playQuest(run) {
   profile.runs++;
   saveProfile();
   await screen.waitTap('PLAY AGAIN');
+  live = null;
+  screen.picBase = {};
 }
 
 /** A saved game this version can pick back up, or null. */
 function savedGame() {
   const s = store.get(SAVE_KEY);
-  if (s && s.v === SAVE_VERSION && s.plan && pack.creatures[s.plan.creature] && s.plan.places.every((p) => pack.scenes[p])) return s;
+  const okSave = s && s.v === SAVE_VERSION && s.plan && s.state && Array.isArray(s.plan.deck);
+  if (okSave && hatchable(pack).includes(s.plan.creature) && [...s.plan.deck, ...s.state.route].every((p) => pack.scenes[p])) return s;
   if (s) store.remove(SAVE_KEY); // from an older version of the game
   return null;
 }
@@ -222,19 +287,27 @@ function savedGame() {
 function fieldGuide() {
   return screen.page(word('guide', 'FIELD GUIDE'), (body, el) => {
     const ids = Object.keys(pack.creatures);
-    body.appendChild(el('p', 'dim', fill(word('guide_count', '{found} of {total} found.'), { found: String(caughtCount()), total: String(ids.length) })));
+    const counts = { found: String(caughtCount()), total: String(ids.length), ready: String(hatchable(pack).length) };
+    body.appendChild(el('p', 'dim', fill(word('guide_count', '{found} of {total} found.'), counts)));
     for (const id of ids) {
       const c = pack.creatures[id];
       const got = profile.caught[id];
       const card = el('div', 'card' + (got ? '' : ' locked'));
+      if (got) {
+        const face = /** @type {HTMLCanvasElement} */ (el('canvas', 'face'));
+        pictures.portrait(face, c.sprite);
+        card.appendChild(face);
+      }
       card.appendChild(el('h3', '', got ? c.name : '? ? ?'));
       if (got) {
         const names = { ...pack.cast };
         for (const [k, v] of Object.entries(c)) if (typeof v === 'string') names[k] = v;
+        const egg = eggOfRank(Number(got.egg) || 0);
+        if (egg) card.appendChild(el('p', `egg egg-${egg.id || ''}`, egg.name));
         if (pack.words.guide_entry) card.appendChild(el('p', '', fill(pack.words.guide_entry, names)));
         if (c.fact) card.appendChild(el('p', '', c.fact));
         if (pack.words.guide_source) card.appendChild(el('p', 'dim', fill(pack.words.guide_source, names)));
-        if (got.n > 1) card.appendChild(el('p', 'dim', `Found ${got.n} times.`));
+        if (got.n > 1) card.appendChild(el('p', 'dim', fill(word('guide_times', 'Found {n} times.'), { n: String(got.n) })));
       } else card.appendChild(el('p', 'dim', word('guide_locked', 'Not found yet.')));
       body.appendChild(card);
     }
@@ -250,6 +323,11 @@ function pictureCheck() {
       pictures.draw(c, name);
       body.append(c, el('p', 'dim', `${name}${name in pictures.drawn ? ' (drawn)' : '.png'}`));
     }
+    for (const [id, creature] of Object.entries(pack.creatures)) {
+      const face = /** @type {HTMLCanvasElement} */ (el('canvas', 'face'));
+      pictures.portrait(face, creature.sprite, { scale: 3 });
+      body.append(face, el('p', 'dim', `${id} (creature)`));
+    }
   });
 }
 
@@ -259,7 +337,10 @@ function grownUp() {
     const mins = Math.round(profile.playMs / 60000);
     body.appendChild(el('p', '', `Time played: ${mins} min. Runs finished: ${profile.runs}.`));
     if (pack) {
-      const got = Object.keys(pack.creatures).filter((id) => profile.caught[id]).map((id) => `${pack.creatures[id].name} x${profile.caught[id].n}`);
+      const got = Object.keys(pack.creatures).filter((id) => profile.caught[id]).map((id) => {
+        const egg = eggOfRank(Number(profile.caught[id].egg) || 0);
+        return `${pack.creatures[id].name} x${profile.caught[id].n}${egg ? ` (${egg.name})` : ''}`;
+      });
       body.appendChild(el('p', '', `Caught: ${got.length ? got.join(', ') : 'none yet'}.`));
     }
     const table = el('table');
@@ -329,6 +410,8 @@ function setupCorners() {
   corner?.addEventListener('pointerup', stop);
   corner?.addEventListener('pointerleave', stop);
   corner?.addEventListener('pointercancel', stop);
+  document.getElementById('st-clues')?.addEventListener('click', openBook);
+  document.getElementById('card-book')?.addEventListener('click', openBook);
   document.getElementById('mute')?.addEventListener('click', () => {
     sound.unlock();
     profile.settings.muted = !profile.settings.muted;

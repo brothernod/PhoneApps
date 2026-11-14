@@ -1,8 +1,18 @@
 # THE BIG PLAZA TREE: the iguana dragon's lair.
 name: The big plaza tree
 role: lair
-drive: 5
+drive: 10
+map: [70, 66]
 
 slots:
-  sniff:
-    - { puzzle: fact_or_fib, topic: iguana }
+  rescue:
+    - { puzzle: rescue, topic: calls }
+
+# Toys: small things to do with the picture. Nothing is scored.
+#   spot: find something in the picture and tap it. at: [x, y, width, height]
+toys:
+  tail:
+    kind: spot
+    at: [209, 90, 12, 22]
+    prompt: "TAP what is hiding in the TREE"
+    miss: "Not there. Look for something long and green."

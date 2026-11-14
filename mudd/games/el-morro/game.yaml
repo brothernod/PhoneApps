@@ -1,17 +1,17 @@
 # THE DRAGON OF EL MORRO: the game's settings.
 # A game is this one folder. The engine holds no places, creatures, or names.
 #
-#   game.yaml        this file: title, cast, run shape, clock, words, pictures
+#   game.yaml        this file: title, cast, run shape, clock, traits, rating, words, pictures
 #   scenes/          one scene card per place: <id>.ink (prose) + <id>.yaml (data)
-#   creatures.yaml   the collectibles: traits, clue lines, lair, Field Guide entry
-#   banks.yaml       word problems, Spanish words, facts and fibs, tunes
-#   pics/            scene art: 320x200 PNGs, plus drawn.js for scenes drawn in code
+#   creatures.yaml   the collectibles: traits, clue lines, sprite, lair, detour, Field Guide entry
+#   banks.yaml       word problems, Spanish words and sentences, facts and fibs, tunes
+#   pics/            scene art: 320x200 PNGs, plus drawn.js for scenes and creatures drawn in code
 
 title: THE DRAGON OF EL MORRO
 studio: HOLDEN A GAME STUDIO
 # Shown small on the title screen, so you can tell which build a device has.
 # Bump it with every push: 0.<phase>.<fix>.
-version: "0.1.1"
+version: "0.2.0"
 
 # The heroes. Scene cards use these as {hero}, {sibling}, and {pet}.
 cast:
@@ -24,35 +24,114 @@ clock:
   start: 540
   sunset: 1125
 
-# The shape of one run. The dealer picks the creature, then places_per_run
-# places from the pool, then a puzzle for every slot, all from the quest number.
-# While the pool is smaller than places_per_run, a run visits the whole pool.
+# The shape of one run: the hub, then places_per_run places chosen on the map
+# from the pool, then the case file, the creature's lair, and the hub again.
+# The dealer shuffles the pool and deals a puzzle for every slot, all from the
+# quest number. While the pool is smaller than places_per_run, a run visits
+# the whole pool.
 run:
   hub: museum            # every run starts and ends at this card
-  pool:                  # places the dealer chooses from
+  pool:                  # places the map can offer
     - old-san-juan
+    - garita
   places_per_run: 3
 
-# Words the engine shows around the story.
+# What a clue can reveal. Every creature in creatures.yaml has one value for
+# each trait, and no two creatures share all of them, so the clues name
+# exactly one. A value shared by several creatures makes a better clue.
+#   label: what the lineup shows
+#   clue:  how a sentence about it ends: "the hatchling <clue>"
+traits:
+  covering:
+    title: SKIN
+    values:
+      scaly:  { label: SCALES,      clue: has SCALES }
+      smooth: { label: SMOOTH SKIN, clue: has SMOOTH SKIN }
+      fluffy: { label: FLUFFY,      clue: is FLUFFY }
+  spot:
+    title: HOME
+    values:
+      sunny: { label: SUNNY SPOTS, clue: loves warm SUNNY SPOTS }
+      high:  { label: UP HIGH,     clue: lives UP HIGH }
+      dark:  { label: DARK PLACES, clue: hides in DARK PLACES }
+      wet:   { label: WET PLACES,  clue: loves WET PLACES }
+  habit:
+    title: HABIT
+    values:
+      noisy: { label: MAKES NOISE,    clue: MAKES NOISE }
+      trail: { label: LEAVES A TRAIL, clue: LEAVES A TRAIL }
+      bobs:  { label: BOBS ITS HEAD,  clue: BOBS ITS HEAD }
+
+# How a run is rated. The game checks the eggs from the top and gives the
+# first one the run earned; the last egg has no conditions, so every run gets
+# one. The best egg for each creature is kept in the Field Guide.
+#   stars:          share of puzzles solved on the first try (0.8 is 8 in 10)
+#   first_pick:     named the right creature on the first pick
+#   before_sunset:  home before clock.sunset
+rating:
+  eggs:
+    - { id: gold,   name: GOLD EGG,   pic: egg-gold,   stars: 0.8, first_pick: true, before_sunset: true }
+    - { id: silver, name: SILVER EGG, pic: egg-silver, stars: 0.5, before_sunset: true }
+    - { id: bronze, name: BRONZE EGG, pic: egg-bronze }
+
+# Words the engine shows around the story. Leave one out and the engine uses
+# plain wording of its own.
 words:
   quest: QUEST
-  clues: CLUES
+  clues: CASEBOOK        # the button in the status bar; the clue count follows it
   new: NEW QUEST
   continue: CONTINUE QUEST
   guide: DRAGON FIELD GUIDE
-  guide_count: "{found} of {total} found in this demo. Eight kinds will hatch in the full game."
+  guide_count: "{found} of {total} found. In this build {ready} kinds can hatch."
   guide_entry: "Based on the {based_on}. Color: {color_es}."
   guide_source: "Source: {source}. Discovered by {hero}."
   guide_locked: Not discovered yet.
+  guide_times: "Found {n} times."
   # Typed when the story reaches a "# caught" tag.
   caught:
     - "{name}. Based on the {based_on}. Discovered by {hero}."
     - "REAL FACT: {fact}"
 
+  # Clues, lock numbers, and stars, as they are found.
+  clue: "CLUE: the hatchling {clue}."
+  sign: "{sibling} SPOTS ONE MORE THING: {sign}."
+  digit: "Tiny claws scratched a number here: {digit}. That's lock number {n} of {total}."
+  star: "★ FIRST TRY! You earned a star."
+
+  # The map.
+  map_prompt: "WHERE NEXT? PICK A PLACE"
+  map_place: "{name}: {drive} MIN"
+  map_lair: "THE VAN IS READY"
+
+  # The casebook and the case file.
+  book: CASEBOOK
+  book_clues: CLUES
+  book_lock: LOCK
+  book_stars: STARS
+  book_hint: "TAP a dragon to cross it out. TAP again to bring it back."
+  case: "CASE FILE: WHICH DRAGON?"
+  case_open: OPEN THE CASE FILE
+  case_hint: "Check each dragon against your clues. TAP one to cross it out."
+  case_pick: "IT'S THIS ONE!"
+  case_not: NOT THIS ONE
+  case_free: "{pet} sniffs out the clue you were missing."
+  case_right: "Every clue fits. It's the {name}! Doña Luz starts the van."
+  case_wrong: "The {name} {theirs}. But your clue says the hatchling {yours}. Wrong lair!"
+  case_back: BACK TO THE CASE FILE
+
+  # The rating, typed when the story reaches a "# rate" tag.
+  rate_stars: "★ FIRST-TRY STARS: {stars} of {puzzles}"
+  rate_pick_yes: "NAMED THE DRAGON ON THE FIRST PICK: ¡SÍ!"
+  rate_pick_no: "NAMED THE DRAGON ON THE FIRST PICK: not this time"
+  rate_early: "HOME {left} BEFORE SUNSET"
+  rate_late: "HOME AFTER SUNSET, under the stars"
+  rate_egg: "YOU EARNED A {egg}!"
+
 # Pictures. "# pic: <name>" in a scene card shows a scene drawn in code
 # (pics/drawn.js) or, failing that, the PNG pics/<name>.png listed here.
 pics:
   title: title
+  map: map               # the picture the map screen puts its flags on
   drawn: pics/drawn.js
   png:
     - old-san-juan

@@ -1,7 +1,8 @@
 // @ts-check
 // Scenes drawn in code for THE DRAGON OF EL MORRO. Places with a trip photo
 // use the PNG in this folder instead (see pics: in game.yaml).
-// Each scene is a function that paints a 320x200 framebuffer.
+// Each scene is a function that paints a 320x200 framebuffer. The hatchlings
+// are drawn here too: the engine asks for one with creature().
 
 import { W, H, shade } from '../../../engine/art.js';
 
@@ -146,6 +147,117 @@ const DRAGON = [
 const DRAGON_PAL = { g: '#4cae4f', G: '#2f7d33', L: '#b2dc74', y: '#f2b630', b: '#3aa6a0', e: '#1e1414', o: '#ec8a2c' };
 
 // ---------------------------------------------------------------------------
+// The hatchlings. Each kind is one shape, painted with the colors from its
+// sprite: in creatures.yaml: b body, d dark, l belly, t trim, w wing.
+// Every shape faces left and fits in creatureBox.
+
+export const SHAPES = {
+  // iguana dragon: the dragon in the museum painting
+  lizard: DRAGON.map((row) => row.replace(/[gGLybo]/g, (c) => ({ g: 'b', G: 'd', L: 'l', y: 't', b: 'w', o: 't' }[c]))),
+  // anole dragon: slim, long tail, a bright flag under the chin
+  anole: [
+    '..........ww..........',
+    '..bbbb...wwww.........',
+    '.bebbbbbbbwwbb........',
+    'bbbbbbddbbbbbbbb......',
+    '.ttbbbllllllbbbbbb....',
+    '.ttt.bbllllbb..bbbbb..',
+    '..t..bb....bb.....bbbb',
+    '....bbb....bbb......bb',
+  ],
+  // coquí dragon: round and squat, with big eyes
+  frog: [
+    '..bbb....bbb......',
+    '.bwebb..bbewb.....',
+    '.bbbbbbbbbbbb.ww..',
+    'bbbbbbbbbbbbbbwww.',
+    'bbllllllllbbbbbww.',
+    '.bllllllllbbbbbbb.',
+    '.bbbllllbbbddbbbbb',
+    'bbb.bb..bb.bbb.bbb',
+    'tt..tt..tt.....ttt',
+  ],
+  // parrot dragon: red forehead, blue wing feathers
+  bird: [
+    '....tttt..........',
+    '...tbbbbb.........',
+    '.llbbebbbb........',
+    'lll.bbbbbbbb......',
+    '.l..bbbwwwwbbb....',
+    '....bblwwwwwbbbb..',
+    '.....bllwwwwbbbbbb',
+    '......bllbb...bbbb',
+    '......d..d.......b',
+    '.....dd.dd........',
+  ],
+  // glow dragon: a see-through drop with sparks around it
+  wisp: [
+    '....t.........t...',
+    '...bbbb...........',
+    '..bbllbbb...t.....',
+    '.bbelllbbbb.......',
+    '.bbllllbbbbbb.....',
+    '.bblllbbbwwbbbb...',
+    '..bbbbbbwwwbbbbbb.',
+    '...bbbbbbwbb..bbbb',
+    '.t..bb...bb.....bb',
+    '.........t........',
+  ],
+  // turtle dragon: a ridged shell and paddle feet
+  turtle: [
+    '.......dddddd.......',
+    '.....ddbbbbbbdd.....',
+    '....dbbdbbbbdbbd....',
+    '.bbbdbbdbbbbdbbbd...',
+    'bebbdbbdbbbbdbbbd.b.',
+    'bbbbllllllllllllbbb.',
+    '..wwwwl......lwwww..',
+    '.wwww..........wwww.',
+  ],
+  // bat dragon: big ears and wide wings
+  bat: [
+    '.b...b................',
+    '.bb.bb.....ww.....ww..',
+    '.bbbbb...wwwww..wwwww.',
+    'bebbebbwwwwwwwwwwwwwww',
+    'bbttbbbbbwwwwwwwwwwwww',
+    '.bbbbbbbbbbwwdwwwdwww.',
+    '..blllbbbbb.w..w..w...',
+    '..bb..bb..............',
+  ],
+  // boa dragon: no legs at all
+  snake: [
+    '..bbbb................',
+    '.bebbbb......ww.......',
+    '.bbbbbb....bbwwwb.....',
+    't..lbbb...bbdbbdbb....',
+    '...lbbbb.bbdb..bdbb...',
+    '....lbbbbbdb....bbdb..',
+    '.....llbbbb......bbbbb',
+    '..................bbb.',
+  ],
+};
+
+/** The largest shape, so a portrait can be sized to hold any of them. */
+export const creatureBox = [22, 10];
+
+const PLAIN = { shape: 'lizard', body: '#4cae4f', dark: '#2f7d33', belly: '#b2dc74', trim: '#f2b630', wing: '#3aa6a0' };
+
+/**
+ * Paint one hatchling. parts is its sprite: from creatures.yaml.
+ * pose 1 is a push-up: the body drops and the legs fold.
+ */
+export function creature(p, parts, x, y, { scale = 1, flip = false, outline = '#1a1a2a', pose = 0 } = {}) {
+  const k = { ...PLAIN, ...(parts || {}) };
+  const grid = SHAPES[k.shape] || SHAPES.lizard;
+  const pal = { b: k.body, d: k.dark, l: k.belly, t: k.trim, w: k.wing, e: '#1e1414' };
+  const rows = pose ? grid.slice(0, -1) : grid;
+  // center the shape in the box, feet on the bottom edge
+  const dx = Math.floor((creatureBox[0] - grid[0].length) / 2), dy = creatureBox[1] - grid.length;
+  p.sprite(rows, pal, x + dx * scale, y + (dy + (pose ? 1 : 0)) * scale, { scale, flip, outline });
+}
+
+// ---------------------------------------------------------------------------
 // Scene pieces
 
 function sky(p, h, cols = ['#3b6fd1', '#5d93e6', '#8fc0f2', '#cfe6fa']) {
@@ -204,7 +316,7 @@ function house(p, x, y, w, h, wall, trim, door) {
 // ---------------------------------------------------------------------------
 // Scenes
 
-function museum(p, { egg = 'cracked' } = {}) {
+function museum(p, { egg = 'cracked', who = null } = {}) {
   p.grad(0, 0, W, 118, ['#f0d6a8', '#e2bd88', '#c99d6a']);
   // arches along the back wall
   for (let ax = 8; ax < W; ax += 78) {
@@ -259,7 +371,7 @@ function museum(p, { egg = 'cracked' } = {}) {
     }
   } else {
     p.blob(156, 96, 7, 6, '#5c5a58', '#8e8b88', '#c4c0bc');
-    p.sprite(DRAGON, DRAGON_PAL, 146, 90, { outline: '#1a2a1a' });
+    creature(p, who, 147, 88, { outline: '#1a2a1a' });
     // the egg next door, wobbling
     p.rect(198, 128, 26, 4, '#a7a39d');
     p.blob(211, 118, 7, 9, '#7a5a8a', '#a07ab8', '#d6b8ea');
@@ -360,7 +472,7 @@ function plaza(p) {
   p.sprite(PUP, PUP_PAL, 112, 166, { flip: true });
 }
 
-function dragonUp(p) {
+function dragonUp(p, { who = null } = {}) {
   sky(p, H, ['#2f63c4', '#4f86de', '#86b8f0', '#c9e4fa']);
   p.blob(270, 34, 16, 16, '#f2b630', '#ffd95a', '#fff2b0');
   // leaves around the edges
@@ -371,7 +483,7 @@ function dragonUp(p) {
     const y = 132 - Math.floor(x * 0.12);
     p.rect(x, y, 1, 12, '#5a3a22'); p.rect(x, y, 1, 3, '#7a5232'); p.rect(x, y + 10, 1, 2, '#3e2716');
   }
-  p.sprite(DRAGON, DRAGON_PAL, 100, 86, { scale: 4, outline: '#14240f' });
+  creature(p, who, 100, 82, { scale: 4, outline: '#14240f' });
 }
 
 function title(p) {
@@ -395,13 +507,150 @@ function title(p) {
 }
 
 
-/** Scene name -> painter. A name here wins over a PNG with the same name. */
+/**
+ * The map: Old San Juan on its little island at the top left, the north
+ * coast running east, the rainforest hills, and the bay at the far right.
+ * The engine puts the flags on; map: [x, y] in each card says where.
+ */
+function map(p) {
+  // sea
+  p.grad(0, 0, W, H, ['#1d4f86', '#2a6fb0', '#3b82c4']);
+  for (let y = 6; y < 110; y += 9) for (let x = (y * 7) % 23; x < W; x += 23) p.rect(x, y, 4, 1, '#5d9bd6');
+  // the big island: everything under the coast line
+  const coast = (x) => 104 + Math.round(Math.sin(x / 31) * 5 + Math.sin(x / 9) * 2) - Math.round(x / 40);
+  for (let x = 0; x < W; x++) {
+    const y = coast(x);
+    p.rect(x, y, 1, 3, '#f0dc9c');                       // beach
+    p.rect(x, y + 3, 1, H - y - 3, '#5fae54');
+    if ((x + y) & 1) p.set(x, y + 3, '#f0dc9c');
+  }
+  for (let y = 112; y < H; y += 6) for (let x = (y * 5) % 17; x < W; x += 17) if (y > coast(x) + 8) p.rect(x, y, 2, 1, '#4c9646');
+  // the bay at the far right: a pocket of water behind mangroves
+  p.ellipse(300, 106, 13, 7, '#1d4f86'); p.ellipse(300, 105, 11, 5, '#2a6fb0');
+  p.set(296, 104, '#b8fff0'); p.set(303, 106, '#b8fff0'); p.set(300, 102, '#b8fff0');
+  p.blob(286, 110, 4, 3, '#1e5a2a', '#2f7d33', '#4cae4f'); p.blob(312, 112, 4, 3, '#1e5a2a', '#2f7d33', '#4cae4f');
+  // the rainforest hills
+  const hill = (x, y, r) => p.blob(x, y, r, Math.round(r * 0.7), '#1e5a2a', '#2f7d33', '#4cae4f');
+  hill(226, 150, 22); hill(262, 146, 24); hill(244, 132, 20); hill(250, 160, 26); hill(206, 160, 14);
+  p.rect(241, 114, 6, 8, '#8a94a0'); p.rect(242, 110, 4, 5, '#a8b2be'); p.rect(240, 109, 8, 2, '#6a7480'); // the tower
+  p.ellipse(214, 154, 4, 3, '#1a1a2a');                                                                    // a cave
+  // the road east, dashed
+  for (let x = 150; x < 296; x += 7) p.rect(x, 118 + Math.round(Math.sin(x / 40) * 6), 4, 1, '#f4f1e8');
+  // Old San Juan: a small island by itself, with a bridge
+  p.ellipse(84, 66, 66, 27, '#f0dc9c');
+  p.ellipse(84, 65, 63, 24, '#d8c9a0');
+  p.dith(40, 56, 88, 20, '#d8c9a0', '#cdbd92');
+  p.rect(142, 80, 14, 3, '#8a8a8a'); p.rect(142, 83, 2, 14, '#8a8a8a'); p.rect(154, 83, 2, 12, '#8a8a8a');
+  // the old fort on the west point, and the big fort to the east
+  const fort = (x, y) => {
+    p.rect(x, y, 18, 9, '#8a7e6a'); p.rect(x, y, 18, 2, '#b0a48e');
+    for (let i = 0; i < 18; i += 4) p.rect(x + i, y - 2, 2, 2, '#8a7e6a');
+    p.rect(x - 3, y + 2, 4, 5, '#8a7e6a'); p.ellipse(x - 1, y + 1, 2, 2, '#b0a48e');
+  };
+  fort(26, 54); fort(120, 52);
+  p.rect(22, 68, 44, 3, '#b0a48e');                                           // the long sunny wall
+  // houses in every color
+  ['#d23a32', '#2f6fd1', '#f2c531', '#3f9e4a', '#f08cb4', '#ec8a2c', '#4fb3c8'].forEach((c, i) => {
+    const hx = 92 + (i % 4) * 9 + (i > 3 ? 4 : 0), hy = i > 3 ? 80 : 72;
+    p.rect(hx, hy, 7, 6, c); p.rect(hx, hy, 7, 1, '#ffffff');
+  });
+  p.rect(82, 60, 12, 8, '#7b4aa8'); p.rect(81, 58, 14, 2, '#e8c66a'); p.rect(87, 63, 2, 5, '#fff2c8');   // the museum
+  p.blob(70, 62, 5, 4, '#1e5a2a', '#2f7d33', '#4cae4f'); p.rect(69, 66, 2, 4, '#5a3a22');                // the plaza tree
+  // compass
+  p.ellipse(22, 176, 12, 12, '#1a1a2a'); p.ellipse(22, 176, 10, 10, '#f4f1e8');
+  p.rect(21, 167, 2, 9, '#d23a32'); p.rect(21, 176, 2, 9, '#2a2a30'); p.rect(13, 175, 18, 2, '#8a8aa8');
+  for (const [dx, dy] of [[0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [1, 1], [2, 2], [3, 3], [4, 0], [4, 1], [4, 2], [4, 3], [4, 4]]) p.set(20 + dx, 156 + dy, '#f4f1e8'); // N
+}
+
+/** El Morro's sunniest wall, from below. With a hatchling on it once it has been found. */
+function wall(p, { who = null, pose = 0, dragon = false } = {}) {
+  sky(p, 168, ['#3b6fd1', '#6aa0ea', '#bfe0fa', '#d8ecfa']);
+  cloud(p, 60, 22, 0.8);
+  p.blob(286, 26, 14, 14, '#f2b630', '#ffd95a', '#fff2b0');
+  // the wall leans back as it climbs
+  for (let y = 40; y < 168; y++) {
+    const x0 = Math.round((168 - y) * 0.22);
+    p.rect(x0, y, W - x0, 1, '#d9b98a');
+  }
+  let s = 7;
+  const rnd = () => ((s = (s * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff);
+  for (let y = 44, row = 0; y < 164; y += 12, row++) {
+    const x0 = Math.round((168 - y) * 0.22);
+    for (let x = x0 + (row % 2) * 14; x < W; x += 28) {
+      p.rect(x + 1, y + 1, 26, 10, ['#e6c898', '#dcbc8a', '#eed4a6', '#d2b07e'][Math.floor(rnd() * 4)]);
+      p.rect(x + 1, y + 1, 26, 1, '#f6e4c0');
+    }
+  }
+  for (let x = 26; x < W; x += 10) p.rect(x, 36, 6, 5, '#d9b98a');   // the top edge
+  // a sentry box on the corner
+  p.rect(292, 14, 16, 24, '#c9a878'); p.ellipse(300, 13, 9, 5, '#b08e60'); p.rect(299, 4, 2, 6, '#b08e60'); p.rect(297, 22, 5, 8, '#3a2a20');
+  // grass and the cast, looking up
+  p.grad(0, 164, W, 36, ['#5fae54', '#3f8e3e']);
+  for (let x = 3; x < W; x += 7) p.rect(x, 162 - (x % 3), 1, 4, '#4c9646');
+  p.sprite(HERO, HERO_PAL, 60, 158);
+  p.sprite(SIDEKICK, SIDEKICK_PAL, 82, 164);
+  p.sprite(PUP, PUP_PAL, 104, 178);
+  if (dragon) creature(p, who || { shape: 'anole', body: '#b8935a', dark: '#7a5c30', belly: '#efe0b4', trim: '#f28a2c', wing: '#d8b070' }, 150, 74, { scale: 4, pose, outline: '#3a2a20' });
+  else { p.rect(196, 106, 5, 1, '#6e8a3a'); p.rect(194, 105, 2, 1, '#6e8a3a'); p.rect(201, 107, 4, 1, '#6e8a3a'); } // a real anole, small as your finger
+}
+
+/** The open casebook on the van seat. */
+function casefile(p) {
+  p.grad(0, 0, W, H, ['#5a4a6a', '#3e3350', '#2a2238']);
+  for (let x = 0; x < W; x += 16) p.rect(x, 0, 1, H, '#4a3c5c');      // seat stitching
+  p.rect(48, 34, 224, 136, '#5a3a22'); p.rect(52, 38, 216, 128, '#7a5232');
+  p.rect(58, 42, 100, 120, '#fbf6ee'); p.rect(162, 42, 100, 120, '#fbf6ee');
+  p.rect(158, 42, 4, 120, '#cfcabb');
+  for (let y = 56; y < 150; y += 12) { p.rect(66, y, 84 - ((y * 7) % 30), 2, '#8a8aa8'); }
+  // three question marks waiting for an answer
+  const q = ['.###.', '#...#', '...#.', '..#..', '.....', '..#..'];
+  [176, 204, 232].forEach((qx, i) => {
+    p.rect(qx - 4, 58, 26, 34, '#e8e2d2'); p.rect(qx - 4, 58, 26, 2, '#cfcabb');
+    q.forEach((row, ry) => [...row].forEach((c, rx) => { if (c === '#') p.rect(qx + rx * 3 + 1, 64 + ry * 4, 3, 4, ['#d23a32', '#2f6fd1', '#3f9e4a'][i]); }));
+  });
+  p.rect(176, 110, 72, 2, '#8a8aa8'); p.rect(176, 122, 56, 2, '#8a8aa8'); p.rect(176, 134, 66, 2, '#8a8aa8');
+  // magnifying glass
+  p.ellipse(116, 118, 20, 20, '#2a2a30'); p.ellipse(116, 118, 16, 16, '#cfe8ee'); p.ellipse(110, 112, 5, 4, '#ffffff');
+  for (let i = 0; i < 26; i++) p.rect(130 + i, 132 + i, 5, 5, '#2a2a30');
+  p.sprite(PUP, PUP_PAL, 8, 150, { scale: 3, flip: false });
+}
+
+/** The egg a run earns. */
+function eggPic(dark, base, light) {
+  return (p) => {
+    p.grad(0, 0, W, H, ['#2a1a4a', '#3e2a6a', '#5a3a7a']);
+    for (let i = 0; i < 60; i++) p.set((i * 73) % W, (i * 41) % 120, '#ffe8f0');
+    p.rect(0, 150, W, 50, '#7a4a2a'); p.rect(0, 150, W, 3, '#a86e44');
+    p.ellipse(160, 152, 60, 12, '#7a5a2a'); p.ellipse(160, 150, 52, 9, '#a07a3c');
+    for (let x = 108; x < 212; x += 5) p.rect(x, 146 + ((x >> 1) & 3), 3, 1, '#c9a35a');
+    p.blob(160, 100, 40, 52, dark, base, light);
+    p.ellipse(146, 78, 6, 10, '#ffffff');
+    for (const [sx, sy] of [[96, 60], [226, 72], [110, 128], [214, 122], [160, 34]]) {
+      p.rect(sx - 4, sy, 9, 1, '#ffffff'); p.rect(sx, sy - 4, 1, 9, '#ffffff');
+    }
+  };
+}
+
+
+/**
+ * Scene name -> painter. A name here wins over a PNG with the same name.
+ * A painter is called as fn(p, t): t.who is the sprite: of the hatchling
+ * this run is after, t.frame counts up for a scene that moves (set fn.fps),
+ * and t.pose comes from a lair toy.
+ */
 export const scenes = {
   museum,
-  nest: (p) => museum(p, { egg: 'dragon' }),
+  nest: (p, t) => museum(p, { egg: 'dragon', who: t.who }),
+  casefile,
+  map,
   cart,
   houses: housesUphill,
   plaza,
   dragon: dragonUp,
+  wall,
+  'wall-dragon': (p, t) => wall(p, { who: t.who, pose: t.pose, dragon: true }),
+  'egg-gold': eggPic('#b8862a', '#f2c531', '#fff2b0'),
+  'egg-silver': eggPic('#7a8490', '#c4ccd4', '#ffffff'),
+  'egg-bronze': eggPic('#7a4a2a', '#c98a4e', '#f0c8a0'),
   title,
 };

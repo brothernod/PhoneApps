@@ -1,12 +1,15 @@
 // @ts-check
 // The dealer. From one quest number it deals a whole run: which creature
-// hatched, which places to visit, which puzzle sits in each slot, and the
-// order the clues come out. Same number and same history, same run.
+// hatched, the order places come up on the map, which puzzle sits in each
+// slot, the order the clues come out, and the lock digits. Same number and
+// same history, same run. The player's own choices (which place, which
+// creature he names) are not dealt; the quest keeps those.
 
 import { makeRng, pickWeighted } from './util.js';
+import { hatchable, traitKeys } from './pack.js';
 
 /**
- * @typedef {{ seed: number, creature: string, places: string[],
+ * @typedef {{ seed: number, creature: string, stops: number, deck: string[],
  *   slots: Record<string, Record<string, any>>, clues: string[], lock: number[] }} Plan
  */
 
@@ -14,22 +17,28 @@ import { makeRng, pickWeighted } from './util.js';
  * @param {import('./pack.js').Pack} pack
  * @param {number} seed
  * @param {{ caught?: Record<string, any>, recent?: string[] }} [history]  what the player has done before
- * @param {{ creature?: string, places?: string[], slots?: Record<string, Record<string, number>> }} [force]
+ * @param {{ creature?: string, deck?: string[], slots?: Record<string, Record<string, number>> }} [force]
  *   fixed picks, for replaying or testing one combination
  * @returns {Plan}
  */
 export function deal(pack, seed, history = {}, force = {}) {
   const rng = makeRng(seed);
   const run = pack.game.run || {};
+  const caught = history.caught || {};
 
-  // 1. A creature not caught yet. Once all are caught, any of them.
-  const all = Object.keys(pack.creatures).filter((id) => pack.scenes[pack.creatures[id].lair]);
-  const fresh = all.filter((id) => !(history.caught || {})[id]);
-  const creature = force.creature || rng.pick(fresh.length ? fresh : all);
+  // 1. A creature not caught yet. Once all are caught, one whose egg could
+  //    still be better, so a replay can turn it gold.
+  const all = hatchable(pack);
+  const fresh = all.filter((id) => !caught[id]);
+  const eggOf = (id) => Number((caught[id] || {}).egg) || 1;
+  const lowest = Math.min(...all.map(eggOf));
+  const creature = force.creature || rng.pick(fresh.length ? fresh : all.filter((id) => eggOf(id) === lowest));
 
-  // 2. Places from the pool.
-  const count = Math.min(Number(run.places_per_run) || 1, (run.pool || []).length);
-  const places = force.places || rng.shuffle(run.pool || []).slice(0, count);
+  // 2. The pool, shuffled. The map offers two places at a time off the top
+  //    (see offers), so a run can reach the first stops + 1 places of the deck.
+  const deck = force.deck || rng.shuffle(run.pool || []);
+  const stops = Math.min(Number(run.places_per_run) || 1, deck.length);
+  const reachable = deck.slice(0, stops + 1);
 
   // 3. One puzzle per slot, leaning away from kinds played lately or
   //    already dealt into this run.
@@ -38,7 +47,7 @@ export function deal(pack, seed, history = {}, force = {}) {
   const dealt = {};
   /** @type {Record<string, Record<string, any>>} */
   const slots = {};
-  for (const id of [run.hub, ...places, pack.creatures[creature].lair]) {
+  for (const id of [run.hub, ...reachable, pack.creatures[creature].lair]) {
     const card = pack.scenes[id];
     if (!card) continue;
     slots[id] = {};
@@ -52,29 +61,28 @@ export function deal(pack, seed, history = {}, force = {}) {
   }
 
   // 4. The order the creature's traits come out as clues, and one lock digit
-  //    per place for the finale.
-  const clues = rng.shuffle(Object.keys(pack.creatures[creature].traits || {}));
-  const lock = places.map(() => rng.int(1, 9));
+  //    per stop, in the order the places are visited.
+  const clues = rng.shuffle(traitKeys(pack));
+  const lock = Array.from({ length: stops }, () => rng.int(1, 9));
 
-  return { seed, creature, places, slots, clues, lock };
+  return { seed, creature, stops, deck, slots, clues, lock };
 }
 
 /**
- * The stops of a run, in order: hub, each place, the creature's lair, and the
- * hub again for the ending.
- * @param {import('./pack.js').Pack} pack
+ * The places on offer for the next stop, given where the run has been. Two
+ * come off the top of the deck; the one not chosen stays on offer next time
+ * beside a new one.
  * @param {Plan} plan
- * @returns {{ scene: string, path: string }[]}
+ * @param {string[]} route  places visited so far, in order
+ * @returns {string[]}
  */
-export function itinerary(pack, plan) {
-  const hub = pack.scenes[pack.game.run.hub];
-  const stop = (id) => ({ scene: id, path: pack.scenes[id].knot });
-  return [
-    stop(hub.id),
-    ...plan.places.map(stop),
-    stop(pack.creatures[plan.creature].lair),
-    { scene: hub.id, path: `${hub.knot}.${hub.finish}` },
-  ];
+export function offers(plan, route) {
+  let pair = plan.deck.slice(0, 2), next = 2;
+  for (const went of route) {
+    pair = [...pair.filter((p) => p !== went), ...plan.deck.slice(next, next + 1)];
+    next++;
+  }
+  return pair;
 }
 
 /** Every way to fill a card's slots, as lists of option numbers. For the bot. */

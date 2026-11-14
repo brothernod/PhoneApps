@@ -25,6 +25,20 @@ wording:
     right: "RIGHT! That's the fib. {pet} wags."
     miss: "That one is TRUE! HINT: {hint}"
     reveal: "That one is true too! The FIB was: \"{fib}\""
+  rescue:
+    ask: "{goal} What do you say?"
+    prompt: SAY IT IN SPANISH
+    retry: TRY ANOTHER ONE
+    right: "{praise} \"{es}\" means \"{en}\""
+    miss: "\"{pick_es}\" means \"{pick_en}\" {oops} HINT: {hint}"
+    reveal: "\"{es}\" means \"{en}\""
+  code_lock:
+    ask: "The nest case is LOCKED. Type your lock numbers, in the order you found them."
+    prompt: TYPE THE CODE
+    retry: TRY AGAIN
+    right: "CLICK! The lock pops open."
+    miss: "{guess}? The lock stays shut. HINT: tap CASEBOOK and read the LOCK numbers, first to last."
+    reveal: "The code is {answer}. Doña Luz turns the dials with you."
 
 # ---------------------------------------------------------------------------
 # DRAGON HOARD: story word problems (Common Core 3.OA.D.8, two-step problems)
@@ -81,6 +95,52 @@ dragon_hoard:
       explain: "{a*b} ÷ {a} = {answer}, because {a} x {answer} = {a*b}."
       answer: "b"
 
+  cannonballs:
+    - level: 1
+      vars: { a: [2, 4], b: [2, 5], c: [1, 4] }
+      where: "a * b > c"
+      text: "The cannonballs sit in {a} rows, with {b} in each row. {pet} rolls {c} of them away. How many are left in the rows?"
+      hint: "First find how many there were: {a} rows of {b}. Then take away the {c} that rolled off."
+      explain: "{a} x {b} = {a*b} cannonballs. Take away {c}: {a*b} - {c} = {answer}."
+      answer: "a * b - c"
+
+    - level: 1
+      vars: { a: [3, 9], b: [2, 9], c: [2, 6] }
+      text: "You count {a} cannons on the top wall and {b} on the wall below. {sibling} counts {c} seagulls. How many cannons in all?"
+      hint: "Seagulls aren't cannons! Just add the top wall and the wall below."
+      explain: "{a} + {b} = {answer}. The seagulls were a trick!"
+      answer: "a + b"
+
+    - level: 2
+      vars: { a: [6, 9], b: [2, 5], c: [3, 9] }
+      text: "Each level of the fort has {a} steps. You climb {b} levels, then {c} more steps to the sentry box. How many steps is that?"
+      hint: "Find the steps for the levels first: {b} groups of {a}. Then add the last {c}."
+      explain: "{b} x {a} = {a*b} steps. Then {a*b} + {c} = {answer}."
+      answer: "a * b + c"
+
+    - level: 2
+      vars: { a: [3, 6], b: [4, 9], c: [3, 12] }
+      where: "a * b > c"
+      text: "{sibling} stacks {a} rows of cannonballs, {b} in each row. {pet} bumps the pile and {c} roll away. How many are left?"
+      hint: "Rows times cannonballs in each row gives the total. Then subtract the ones that rolled away."
+      explain: "{a} x {b} = {a*b}. Then {a*b} - {c} = {answer}."
+      answer: "a * b - c"
+
+    - level: 3
+      vars: { a: [3, 6], b: [3, 8] }
+      where: "a * b <= 48"
+      text: "There are {a*b} cannonballs. You stack them in {a} equal piles. How many cannonballs are in each pile?"
+      hint: "Share {a*b} cannonballs into {a} equal groups. What times {a} makes {a*b}?"
+      explain: "{a*b} ÷ {a} = {answer}, because {a} x {answer} = {a*b}."
+      answer: "b"
+
+    - level: 3
+      vars: { a: [4, 8], b: [6, 9], c: [2, 5] }
+      text: "The fort wall has {a} lookout windows on each of {b} sides. {c} are bricked up. How many windows are still open?"
+      hint: "Find all the windows: {a} x {b}. Then take away the {c} bricked-up ones."
+      explain: "{a} x {b} = {a*b}. {a*b} - {c} = {answer}."
+      answer: "a * b - c"
+
 # ---------------------------------------------------------------------------
 # COLORES: Spanish words (grade 1)
 # say: a sound-it-out hint, since the game has no speech
@@ -95,6 +155,38 @@ spanish:
     - { es: ANARANJADO, en: ORANGE, hex: "#ec8a2c", say: ah-nah-rahn-HAH-doh, hint: "Like an orange, the fruit!" }
 
 # ---------------------------------------------------------------------------
+# THE RESCUE: Spanish sentences for calling the hatchling (grade 2).
+# A sentence with a goal: can be the right answer; goal: is what the hero
+# wants, and it becomes the question. Every sentence can turn up as a wrong
+# answer, and oops: says what the hatchling does when it hears it.
+rescue:
+  calls:
+    - es: "Ven aquí, por favor."
+      en: "Come here, please."
+      goal: "The hatchling is scared. You want it to COME to you."
+      hint: "VEN means COME. AQUÍ means HERE."
+      oops: "It takes one step closer, then stops."
+    - es: "Sube a la canasta."
+      en: "Climb into the basket."
+      goal: "The travel basket is open. You want the hatchling to CLIMB IN."
+      hint: "SUBE means CLIMB UP. LA CANASTA is THE BASKET."
+      oops: "It sniffs the basket and backs away."
+    - es: "No tengas miedo."
+      en: "Don't be afraid."
+      goal: "The hatchling is shaking. You want to tell it NOT to be AFRAID."
+      hint: "MIEDO means FEAR. NO TENGAS MIEDO: don't have fear."
+      oops: "It blinks at you and stops shaking."
+    - es: "Duerme ahora."
+      en: "Sleep now."
+      oops: "It yawns, curls up, and starts to snore."
+    - es: "Vuela muy alto."
+      en: "Fly very high."
+      oops: "It flaps its tiny wings and loops up out of reach. Show-off."
+    - es: "Corre muy rápido."
+      en: "Run very fast."
+      oops: "It zooms in a circle and hides again."
+
+# ---------------------------------------------------------------------------
 # FACT OR FIB: two real facts and one fib. Every fact needs a source.
 # The game never shows the source. It's here so a grown-up can check each
 # fact before release, and the bot playtest fails on a fact without one.
@@ -104,6 +196,13 @@ facts:
       source: "IUCN Iguana Specialist Group"
     - text: "People in Puerto Rico call the iguana gallina de palo: chicken of the trees."
       source: "Global Voices"
+  forts:
+    - text: "El Morro has six levels."
+      source: "National Park Service"
+    - text: "San Cristóbal is the biggest fort Spain built in the Americas."
+      source: "National Park Service"
+    - text: "People fly kites, called chiringas, on El Morro's big lawn."
+      source: "National Parks Traveler"
   island:
     - text: "Baby coquí frogs skip the tadpole stage. They hatch as tiny froglets."
       source: "eLife"
@@ -122,6 +221,14 @@ fibs:
       hint: "An iguana is about as long as your arm. Could its egg be THAT big?"
     - text: "Iguanas grow up as tadpoles that swim in puddles."
       hint: "Tadpoles grow into frogs, not lizards."
+
+  forts:
+    - text: "El Morro was built in one afternoon."
+      hint: "Thick stone walls take a very long time to build."
+    - text: "El Morro floats, so it sails to a new island every year."
+      hint: "Could a fort made of heavy stone float?"
+    - text: "The fort's walls are made of hard candy."
+      hint: "What would happen to candy walls in the rain?"
 
 # ---------------------------------------------------------------------------
 # TUNES: note lists. Each note is NAME+OCTAVE, then :length in eighth notes.

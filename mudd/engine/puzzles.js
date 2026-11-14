@@ -21,6 +21,7 @@ import { evalExpr, fill } from './util.js';
  *   banks: any,
  *   names: Record<string,string>,
  *   level: (skill: string) => number,
+ *   run?: { digits: number[] },
  * }} MakeCtx
  *
  * One made puzzle. `screen` says which answer screen runs it.
@@ -33,6 +34,7 @@ import { evalExpr, fill } from './util.js';
  *   options?: { label: string, color?: string, correct: boolean, miss: string }[],
  *   miss?: (guess: number) => string,
  *   right: string, reveal: string,
+ *   maxLines?: number,
  *   learned?: [string, string][],
  * }} Puzzle
  */
@@ -63,6 +65,23 @@ const WORDS = {
     miss: 'That one is TRUE! HINT: {hint}',
     reveal: 'That one is true too! The FIB was: "{fib}"',
     hint: 'Which one sounds too wild to be real?',
+  },
+  rescue: {
+    ask: '{goal} What do you say?',
+    prompt: 'PICK WHAT TO SAY',
+    retry: 'TRY ANOTHER ONE',
+    right: '{praise} "{es}" means "{en}"',
+    miss: '"{pick_es}" means "{pick_en}" {oops} HINT: {hint}',
+    reveal: '"{es}" means "{en}"',
+    hint: 'Sound each one out.',
+  },
+  code_lock: {
+    ask: 'It is LOCKED. Type the code: your lock numbers, in the order you found them.',
+    prompt: 'TYPE THE CODE',
+    retry: 'TRY AGAIN',
+    right: 'CLICK! The lock opens.',
+    miss: '{guess}? The lock stays shut. HINT: open your CASEBOOK and read the lock numbers, first to last.',
+    reveal: 'The code is {answer}.',
   },
 };
 
@@ -242,6 +261,7 @@ const factOrFib = {
       screen: 'pick',
       skill: 'science_facts',
       question: say(w.ask),
+      maxLines: 1, // the three statements are the keys, so the question gets one line
       prompt: say(w.prompt), retry: say(w.retry),
       options: rng.shuffle([
         ...truths.map((f) => ({ label: fill(f.text, names), correct: false, miss: say(w.miss) })),
@@ -275,10 +295,112 @@ const factOrFib = {
   },
 };
 
+// ---------------------------------------------------------------------------
+// THE RESCUE: say the right Spanish sentence to the creature. Pick one.
+// A bank entry with a goal: can be the right answer; any entry can be a
+// wrong one, and its oops: says what the creature does when it hears it.
+
+const callBank = (spec, banks) => ((banks.rescue || {})[spec.topic || 'calls'] || []);
+
+const rescue = {
+  screen: 'pick',
+  skill: (spec) => `spanish_${spec.topic || 'calls'}`,
+  label: 'Spanish sentences',
+
+  /** @param {Spec} spec @param {MakeCtx} ctx @returns {Puzzle} */
+  make(spec, ctx) {
+    const { rng, banks, names } = ctx;
+    const w = wording(banks, 'rescue');
+    const skill = rescue.skill(spec);
+    const all = callBank(spec, banks);
+    const target = rng.pick(all.filter((x) => x.goal));
+    const count = Math.min(all.length, ctx.level(skill) >= 2 ? 4 : 3);
+    const others = rng.shuffle(all.filter((x) => x !== target)).slice(0, count - 1);
+    const base = {
+      ...names, praise: praise(ctx), goal: fill(target.goal, names),
+      es: target.es, en: target.en, say: target.say || '', hint: fill(target.hint || w.hint, names),
+    };
+    const say = (text, more = {}) => fill(text, { ...base, ...more }).trim();
+    return {
+      screen: 'pick',
+      skill,
+      question: say(w.ask),
+      maxLines: 3,
+      prompt: say(w.prompt), retry: say(w.retry),
+      options: rng.shuffle([target, ...others]).map((x) => ({
+        label: x.es,
+        correct: x === target,
+        miss: say(w.miss, { pick_es: x.es, pick_en: x.en, oops: fill(x.oops || '', names) }),
+      })),
+      right: say(w.right),
+      reveal: say(w.reveal),
+      learned: [['spanish', target.es]],
+    };
+  },
+
+  check(spec, banks) {
+    const all = callBank(spec, banks);
+    const at = `rescue.${spec.topic || 'calls'}`;
+    const out = [];
+    if (all.length < 3) out.push(`${at} needs at least 3 sentences in banks.yaml`);
+    if (!all.some((x) => x.goal)) out.push(`${at} needs at least one sentence with a goal:`);
+    for (const x of all) if (!x.es || !x.en) out.push(`${at}: "${x.es || '?'}" needs es and en`);
+    return out;
+  },
+
+  longest(spec, banks, names) {
+    const w = wording(banks, 'rescue');
+    const all = callBank(spec, banks);
+    return all.filter((x) => x.goal).map((x) => ({
+      what: `rescue "${x.es}"`,
+      question: fill(w.ask, { ...names, goal: fill(x.goal, names) }),
+      maxLines: 3,
+      keys: all.map((y) => y.es),
+      maxKeyLines: 1,
+    }));
+  },
+};
+
+// ---------------------------------------------------------------------------
+// CODE LOCK: the lock digits noted along the way, typed in order. Number pad.
+
+const codeLock = {
+  screen: 'numpad',
+  skill: () => 'code_lock',
+  label: 'Code lock',
+
+  /** @param {Spec} spec @param {MakeCtx} ctx @returns {Puzzle} */
+  make(spec, ctx) {
+    const w = wording(ctx.banks, 'code_lock');
+    const digits = (ctx.run && ctx.run.digits) || [];
+    const answer = Number(digits.join('')) || 0;
+    const base = { ...ctx.names, praise: praise(ctx), answer: String(answer), digits: digits.join(', then ') };
+    const say = (text, more = {}) => fill(text, { ...base, ...more }).trim();
+    return {
+      screen: 'numpad',
+      skill: 'code_lock',
+      question: say(w.ask),
+      prompt: say(w.prompt), retry: say(w.retry),
+      answer,
+      miss: (guess) => say(w.miss, { guess: String(guess) }),
+      right: say(w.right),
+      reveal: say(w.reveal),
+    };
+  },
+
+  check() { return []; },
+
+  longest(spec, banks, names) {
+    return [{ what: 'code_lock', question: fill(wording(banks, 'code_lock').ask, names) }];
+  },
+};
+
 export const ARCHETYPES = {
   dragon_hoard: dragonHoard,
   colores,
   fact_or_fib: factOrFib,
+  rescue,
+  code_lock: codeLock,
 };
 
 // ---------------------------------------------------------------------------

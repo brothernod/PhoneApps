@@ -106,19 +106,30 @@ export class Pix {
 /**
  * Every picture a game pack owns. Drawn scenes are functions that paint a Pix;
  * photo scenes are 320x200 PNGs loaded ahead of time.
+ *
+ * A drawn scene is called as fn(pix, t). t.frame counts up while the picture
+ * is on screen if the scene moves (give the function an fps: fn.fps = 6).
+ * t.who is the sprite: of the creature that hatched this run, and t.pose is
+ * set by a lair toy.
  */
 export class Pictures {
   constructor() {
-    /** @type {Record<string, (p: Pix) => void>} */
+    /** @type {Record<string, ((p: Pix, t: Record<string, any>) => void) & { fps?: number }>} */
     this.drawn = {};
     /** @type {Record<string, CanvasImageSource>} */
     this.images = {};
+    /** The pack's creature painter and the box it needs, for portraits. */
+    this.creature = /** @type {null | ((p: Pix, parts: any, x: number, y: number, opts?: any) => void)} */ (null);
+    this.creatureBox = [28, 16];
   }
 
   /** Names of every picture, drawn first. */
   get names() { return [...new Set([...Object.keys(this.drawn), ...Object.keys(this.images)])]; }
 
   has(name) { return name in this.drawn || name in this.images; }
+
+  /** Frames per second for a picture that moves, or 0. */
+  fps(name) { return (this.drawn[name] && this.drawn[name].fps) || 0; }
 
   /** Load PNGs by name. A missing or broken file is an error, not a blank scene. */
   async loadImages(names, urlFor) {
@@ -135,13 +146,13 @@ export class Pictures {
   }
 
   /** Draw a picture by name onto a 320x200 canvas. Unknown names draw nothing. */
-  draw(canvas, name) {
+  draw(canvas, name, t = {}) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return false;
     const fn = this.drawn[name];
     if (fn) {
       const p = new Pix();
-      fn(p);
+      fn(p, { frame: 0, ...t });
       p.flush(ctx);
       return true;
     }
@@ -152,5 +163,29 @@ export class Pictures {
       return true;
     }
     return false;
+  }
+
+  /**
+   * Draw one creature, by its sprite: parts, to fill a small canvas. Used by
+   * the lineup, the casebook, and the Field Guide. The canvas is shown at a
+   * whole number of screen pixels per art pixel, so it stays sharp.
+   */
+  portrait(canvas, parts, { scale = 2, zoom = 2, back = '#e8e2d2' } = {}) {
+    const [bw, bh] = this.creatureBox;
+    const w = bw * scale + 8, h = bh * scale + 8;
+    canvas.width = w; canvas.height = h;
+    canvas.style.width = `${w * zoom}px`;
+    canvas.style.height = `${h * zoom}px`;
+    const ctx = canvas.getContext('2d');
+    if (!ctx || !this.creature) return;
+    const p = new Pix();
+    p.rect(0, 0, w, h, back);
+    this.creature(p, parts || {}, 4, 4, { scale });
+    const full = document.createElement('canvas');
+    full.width = W; full.height = H;
+    const fctx = full.getContext('2d');
+    if (!fctx) return;
+    p.flush(fctx);
+    ctx.drawImage(full, 0, 0, w, h, 0, 0, w, h);
   }
 }

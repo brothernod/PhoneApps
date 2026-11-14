@@ -1,0 +1,13 @@
+# THE SENTRY BOX, EL MORRO: a pool place. A sentry box is la garita.
+name: The sentry box, El Morro
+role: place
+drive: 10           # minutes on the clock to get here
+map: [40, 52]       # where it sits on the map picture
+
+# Still to come: egg_crates or stepping_stones at the cannonballs, and
+# picky_bridge at the sign.
+slots:
+  cannon:
+    - { puzzle: dragon_hoard, topic: cannonballs }
+  sign:
+    - { puzzle: fact_or_fib, topic: forts }

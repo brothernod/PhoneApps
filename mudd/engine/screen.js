@@ -1,6 +1,7 @@
 // @ts-check
 // Everything on screen: picture window, typed text, keycap choices, the
-// puzzle card with its number pad, and full-screen overlays. Touch only.
+// puzzle card with its number pad, the map, the casebook and lineup, lair
+// toys, and full-screen overlays. Touch only.
 
 import { sleep } from './util.js';
 
@@ -8,7 +9,7 @@ const PAGE = 3; // story choices shown at once; more than this and they page
 
 const $ = (sel) => /** @type {HTMLElement} */ (document.querySelector(sel));
 
-function el(tag, cls, text) {
+export function el(tag, cls, text) {
   const e = document.createElement(tag);
   if (cls) e.className = cls;
   if (text !== undefined) e.textContent = text;
@@ -21,6 +22,33 @@ function highlight(text) {
   return esc.replace(/¡?[A-Za-zÁÉÍÓÚÑÜáéíóúñü'-]+!?/g, (w) => {
     const letters = w.replace(/[^A-Za-zÁÉÍÓÚÑÜáéíóúñü]/g, '');
     return letters.length >= 2 && letters === letters.toUpperCase() ? `<span class="hl">${w}</span>` : w;
+  });
+}
+
+// 3x5 digits for map flags.
+const DIGITS = ['111101101101111', '010110010010111', '111001111100111', '111001111001111', '101101111001001', '111100111001111', '111100111101111', '111001001001001', '111101111101111', '111101111001111'];
+
+/** Flags on the map: visited places, where the van is, and a numbered flag on each place on offer. */
+function drawMarkers(ctx, view, frame) {
+  const box = (x, y, w, h, c) => { ctx.fillStyle = c; ctx.fillRect(Math.round(x), Math.round(y), w, h); };
+  for (const p of view.visited) {
+    const [x, y] = p.at;
+    box(x - 3, y - 3, 7, 7, '#1a1a2a'); box(x - 2, y - 2, 5, 5, '#8a8aa8');
+  }
+  if (view.here) {
+    const [x, y] = view.here;
+    box(x - 4, y - 4, 9, 9, '#1a1a2a'); box(x - 3, y - 3, 7, 7, '#ffffff'); box(x - 1, y - 1, 3, 3, '#d23a32');
+  }
+  view.offers.forEach((p, i) => {
+    const [x, y] = p.at;
+    const up = frame % 2 ? 0 : 1; // the flags bob
+    box(x, y - 16 - up, 2, 17 + up, '#1a1a2a');
+    box(x - 1, y, 4, 2, '#1a1a2a');
+    box(x + 2, y - 17 - up, 13, 11, '#1a1a2a');
+    box(x + 3, y - 16 - up, 11, 9, frame % 2 ? '#ffd75a' : '#fff2b0');
+    const glyph = view.offers.length > 1 ? DIGITS[(i + 1) % 10] : '';
+    for (let k = 0; k < glyph.length; k++) if (glyph[k] === '1') box(x + 7 + (k % 3), y - 14 - up + Math.floor(k / 3), 1, 1, '#1a1a2a');
+    if (!glyph) box(x + 6, y - 14 - up, 5, 5, '#d23a32');
   });
 }
 
@@ -41,13 +69,42 @@ export class Screen {
     this.unread = false; // text typed since the player last tapped a button
     this.speed = 22; // ms per character
     this.currentPic = '';
+    /** What every picture is told: who hatched this run, and so on. @type {Record<string, any>} */
+    this.picBase = {};
+    /** The same, plus the frame number and a toy's pose. @type {Record<string, any>} */
+    this.picT = { frame: 0 };
+    /** Drawn over the picture each frame (map markers, a toy's hint). @type {((ctx: CanvasRenderingContext2D, frame: number) => void) | null} */
+    this.picOverlay = null;
+    this._anim = 0;
     this.text.addEventListener('pointerdown', () => { this.skip = true; });
     this.pic.addEventListener('pointerdown', () => { this.skip = true; });
   }
 
+  /** Show a picture by name. One that moves (or has an overlay) is redrawn a few times a second. */
   showPic(name) {
+    clearInterval(this._anim);
+    this._anim = 0;
     if (!name) { this.pic.classList.add('off'); this.currentPic = ''; return; }
-    if (this.pictures && this.pictures.draw(this.pic, name)) { this.pic.classList.remove('off'); this.currentPic = name; }
+    if (!this.pictures || !this.pictures.has(name)) return;
+    this.currentPic = name;
+    this.picT = { ...this.picBase, frame: 0 };
+    this.pic.classList.remove('off');
+    this.redraw();
+    const fps = this.pictures.fps(name) || (this.picOverlay ? 4 : 0);
+    if (fps) this._anim = window.setInterval(() => { this.picT.frame++; this.redraw(); }, 1000 / fps);
+  }
+
+  redraw() {
+    if (!this.pictures || !this.currentPic) return;
+    this.pictures.draw(this.pic, this.currentPic, this.picT);
+    const ctx = this.pic.getContext('2d');
+    if (ctx && this.picOverlay) this.picOverlay(ctx, this.picT.frame);
+  }
+
+  /** Put an overlay over the current picture, or take it away with null. */
+  setOverlay(fn) {
+    this.picOverlay = fn;
+    this.showPic(this.currentPic);
   }
 
   clearText() { this.text.innerHTML = ''; }
@@ -100,6 +157,7 @@ export class Screen {
     $('#st-quest').textContent = quest || '';
     $('#st-time').textContent = time || '';
     $('#st-clues').textContent = clues || '';
+    $('#card-book').textContent = clues || '';
   }
 
   clearControls(host = this.controls) { host.innerHTML = ''; host.className = ''; }
@@ -334,8 +392,15 @@ export class Screen {
     this.hideOverlay();
   }
 
-  /** A full-screen page of text with a close button (Field Guide, grown-up screen). */
-  page(title, build) {
+  /**
+   * A full-screen page with a close button (Field Guide, casebook, grown-up
+   * screen). `build` fills it and may call done(value) to close it itself.
+   * With back: '' there is no close button, so the page must call done.
+   * @param {string} title
+   * @param {(body: HTMLElement, el: typeof import('./screen.js').el, done: (value?: any) => void) => void} build
+   * @param {{ back?: string }} [opts]
+   */
+  page(title, build, opts = {}) {
     return new Promise((resolve) => {
       const prevClass = this.overlay.className;
       const prevNodes = [...this.overlay.childNodes];
@@ -344,19 +409,193 @@ export class Screen {
       const box = el('div', 'pagebox');
       box.appendChild(el('h2', '', title));
       const body = el('div', 'pagebody');
-      build(body, el);
-      box.appendChild(body);
-      const close = el('button', 'key wide', 'BACK');
-      close.addEventListener('click', (e) => {
-        e.stopPropagation();
+      let open = true;
+      const done = (value) => {
+        if (!open) return;
+        open = false;
         this.overlay.innerHTML = '';
         this.overlay.append(...prevNodes);
         this.overlay.className = prevClass;
-        resolve(undefined);
-      }, { once: true });
-      box.appendChild(close);
+        resolve(value);
+      };
+      build(body, el, done);
+      box.appendChild(body);
+      const back = opts.back === undefined ? 'BACK' : opts.back;
+      if (back) {
+        const close = el('button', 'key wide', back);
+        close.addEventListener('click', (e) => { e.stopPropagation(); done(undefined); }, { once: true });
+        box.appendChild(close);
+      }
       this.overlay.appendChild(box);
     });
+  }
+
+  // -------------------------------------------------------------------------
+  // The map, the casebook, and the lineup
+
+  /**
+   * The map: the pack's map picture with a numbered flag on each place on
+   * offer. Resolves with the index of the place picked.
+   * @param {import('./quest.js').MapView} view
+   */
+  async map(view) {
+    this.clearText();
+    this.picOverlay = (ctx, frame) => drawMarkers(ctx, view, frame);
+    this.showPic(view.pic);
+    let pick = 0;
+    if (view.offers.length === 1) await this.waitTap(view.labels[0], view.prompt);
+    else pick = await this.choose(view.labels, { prompt: view.prompt });
+    this.picOverlay = null;
+    this.showPic(view.pic);
+    return pick;
+  }
+
+  /**
+   * Fill a page with the casebook: clues, lock numbers, stars, and the lineup.
+   * Tapping a creature crosses it out. With `pick`, each creature also gets a
+   * key that names it (the case file).
+   * @param {HTMLElement} body
+   * @param {import('./quest.js').BookView} view
+   * @param {{ words: Record<string, string>, toggle: (id: string) => boolean, pick?: (id: string) => void }} opts
+   */
+  bookBody(body, view, { words, toggle, pick }) {
+    const row = (label, cls = '') => { const r = el('div', 'bookrow ' + cls); r.appendChild(el('span', 'booklabel', label)); body.appendChild(r); return r; };
+    const clues = row(words.clues);
+    for (let i = 0; i < view.cluesTotal; i++) {
+      const c = view.clues[i];
+      clues.appendChild(el('span', c ? 'chip on' : 'chip', c ? c.label : '? ? ?'));
+    }
+    if (view.sign) body.appendChild(el('p', 'good', view.sign));
+    if (!pick) {
+      const lock = row(words.lock);
+      for (const d of view.digits) lock.appendChild(el('span', d === null ? 'digit' : 'digit on', d === null ? '_' : String(d)));
+      const played = view.places.filter((p) => p.tries > 0);
+      if (played.length) {
+        const stars = row(words.stars, 'wrap');
+        for (const p of played) stars.appendChild(el('span', 'starline', `${p.name} ${'★'.repeat(p.stars)}${'☆'.repeat(Math.max(0, p.tries - p.stars))}`));
+      }
+    }
+    body.appendChild(el('p', 'dim', pick ? words.case_hint : words.book_hint));
+    const grid = el('div', 'lineup');
+    for (const c of view.lineup) {
+      const card = el('div', 'dcard' + (c.crossed ? ' crossed' : '') + (c.wrong ? ' wrong' : ''));
+      const face = /** @type {HTMLCanvasElement} */ (el('canvas'));
+      if (this.pictures) this.pictures.portrait(face, c.sprite);
+      card.append(face, el('h3', '', c.name));
+      for (const t of c.traits) {
+        const known = view.clues.some((k) => k.title === t.title);
+        card.appendChild(el('span', known ? 'chip seen' : 'chip', t.label));
+      }
+      if (c.wrong) card.appendChild(el('div', 'stamp', words.case_not));
+      else {
+        card.addEventListener('click', () => { card.classList.toggle('crossed', toggle(c.id)); });
+        if (pick) {
+          const b = el('button', 'key wide', words.case_pick);
+          b.addEventListener('click', (e) => { e.stopPropagation(); pick(c.id); }, { once: true });
+          card.appendChild(b);
+        }
+      }
+      grid.appendChild(card);
+    }
+    body.appendChild(grid);
+  }
+
+  // -------------------------------------------------------------------------
+  // Lair toys: small things to do with a picture. Nothing is scored.
+
+  /**
+   * @param {Record<string, any>} toy  from a lair card's toys:, with its words filled in
+   * @param {(name: string) => void} cue
+   */
+  async toy(toy, cue) {
+    if (toy.pic) this.showPic(toy.pic);
+    if (toy.kind === 'spot') await this.toySpot(toy, cue);
+    else if (toy.kind === 'taps') await this.toyTaps(toy, cue);
+    this.clearControls();
+  }
+
+  /** Find something in the picture and tap it. After two misses a frame blinks around it. */
+  toySpot(toy, cue) {
+    const [x, y, w, h] = toy.at;
+    return new Promise((resolve) => {
+      let misses = 0;
+      const say = (text) => {
+        this.clearControls();
+        this.controls.className = 'choices';
+        this.controls.appendChild(this.prompt(text));
+        this.settle(this.controls);
+      };
+      say(toy.prompt || 'TAP IT!');
+      const onTap = (e) => {
+        const r = this.pic.getBoundingClientRect();
+        const px = ((e.clientX - r.left) / r.width) * 320, py = ((e.clientY - r.top) / r.height) * 200;
+        const pad = 6; // small fingers
+        if (px >= x - pad && px <= x + w + pad && py >= y - pad && py <= y + h + pad) {
+          this.pic.removeEventListener('pointerdown', onTap);
+          this.picOverlay = null;
+          cue('find');
+          resolve(undefined);
+          return;
+        }
+        cue('miss');
+        if (toy.miss) say(toy.miss);
+        if (++misses === 2) {
+          this.setOverlay((ctx, frame) => {
+            if (frame % 2) return;
+            ctx.strokeStyle = '#ffd75a'; ctx.lineWidth = 2;
+            ctx.strokeRect(x - 3, y - 3, w + 6, h + 6);
+          });
+        }
+      };
+      this.pic.addEventListener('pointerdown', onTap);
+    });
+  }
+
+  /**
+   * Watch and count, then tap that many times. The picture is told pose 1
+   * (down) and pose 0 (up). A third round counts out loud and takes any answer.
+   */
+  async toyTaps(toy, cue) {
+    const pose = async (ms) => {
+      this.picT.pose = 1; this.redraw(); cue(toy.cue || 'find');
+      await sleep(ms);
+      this.picT.pose = 0; this.redraw();
+      await sleep(ms);
+    };
+    const say = (text) => {
+      this.clearControls();
+      this.controls.className = 'choices';
+      this.controls.appendChild(this.prompt(text));
+      this.settle(this.controls);
+    };
+    for (let round = 1; ; round++) {
+      say(toy.watch || 'WATCH AND COUNT...');
+      await sleep(900);
+      for (let i = 0; i < toy.n; i++) {
+        if (round >= 3) say(String(i + 1));
+        await pose(380);
+      }
+      const count = await new Promise((resolve) => {
+        this.clearControls();
+        this.controls.className = 'choices';
+        this.controls.appendChild(this.prompt(toy.turn || 'YOUR TURN!'));
+        let n = 0, busy = false;
+        const tap = el('button', 'key wide', toy.key || 'TAP');
+        tap.addEventListener('click', async () => {
+          n++;
+          if (busy) return;
+          busy = true; await pose(120); busy = false;
+        });
+        const ok = el('button', 'key wide ok', toy.done || 'DONE');
+        ok.addEventListener('click', () => { if (n) resolve(n); });
+        this.controls.append(tap, ok);
+        this.settle(this.controls);
+      });
+      if (count === toy.n || round >= 3) return;
+      cue('miss');
+      say(toy.again || 'NOT THE SAME. WATCH AGAIN...');
+      await sleep(1400);
+    }
   }
 
   /** Brief SAVING TO DISK... light in the corner. */
