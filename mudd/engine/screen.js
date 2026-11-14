@@ -1,9 +1,10 @@
 // @ts-check
-// Everything on screen: picture window, typed text, keycap choices,
-// number pad, letter grid, and full-screen overlays. Touch only.
+// Everything on screen: picture window, typed text, keycap choices, the
+// puzzle card with its number pad, and full-screen overlays. Touch only.
 
-import { drawScene } from './art.js';
 import { sleep } from './util.js';
+
+const PAGE = 3; // story choices shown at once; more than this and they page
 
 const $ = (sel) => /** @type {HTMLElement} */ (document.querySelector(sel));
 
@@ -30,6 +31,12 @@ export class Screen {
     this.controls = $('#controls');
     this.overlay = $('#overlay');
     this.status = $('#status');
+    this.root = $('#screen');
+    this.cardQ = $('#card-q');
+    this.cardHint = $('#card-hint');
+    this.cardKeys = $('#card-keys');
+    /** The game pack's pictures. Set once the pack has loaded. @type {import('./art.js').Pictures | null} */
+    this.pictures = null;
     this.skip = false;
     this.unread = false; // text typed since the player last tapped a button
     this.speed = 22; // ms per character
@@ -40,7 +47,7 @@ export class Screen {
 
   showPic(name) {
     if (!name) { this.pic.classList.add('off'); this.currentPic = ''; return; }
-    if (drawScene(this.pic, name)) { this.pic.classList.remove('off'); this.currentPic = name; }
+    if (this.pictures && this.pictures.draw(this.pic, name)) { this.pic.classList.remove('off'); this.currentPic = name; }
   }
 
   clearText() { this.text.innerHTML = ''; }
@@ -62,6 +69,9 @@ export class Screen {
   }
 
   scroll() { this.text.scrollTop = this.text.scrollHeight; }
+
+  /** New keys under the story shrink the text window; keep its last line in view. */
+  settle(host) { if (host === this.controls) this.scroll(); }
 
   /** Type a line out letter by letter. A tap finishes the line at once. */
   async type(line, cls = '') {
@@ -85,13 +95,14 @@ export class Screen {
     await sleep(this.skip ? 60 : 180);
   }
 
+  /** @param {{ quest?: string, time?: string, clues?: string }} s  ready-made labels */
   setStatus({ quest, time, clues }) {
-    $('#st-quest').textContent = quest ? `QUEST #${quest}` : '';
+    $('#st-quest').textContent = quest || '';
     $('#st-time').textContent = time || '';
-    $('#st-clues').textContent = clues !== undefined ? `CLUES ${clues}` : '';
+    $('#st-clues').textContent = clues || '';
   }
 
-  clearControls() { this.controls.innerHTML = ''; this.controls.className = ''; }
+  clearControls(host = this.controls) { host.innerHTML = ''; host.className = ''; }
 
   prompt(label) {
     const d = el('div', 'prompt');
@@ -101,36 +112,50 @@ export class Screen {
 
   /**
    * Numbered keycap choices, like Oregon Trail. Resolves with the index.
+   * With `paged`, more than three choices show three at a time behind a
+   * MORE key, so the story text keeps its room.
    * @param {string[]} labels
-   * @param {{prompt?: string, colors?: (string|null)[], wide?: boolean}} [opts]
+   * @param {{prompt?: string, colors?: (string|undefined)[], paged?: boolean, host?: HTMLElement}} [opts]
    */
   choose(labels, opts = {}) {
+    const host = opts.host || this.controls;
+    const size = opts.paged && labels.length > PAGE ? PAGE : labels.length;
     return new Promise((resolve) => {
-      this.clearControls();
-      this.controls.className = 'choices';
-      this.controls.appendChild(this.prompt(opts.prompt || 'WHAT WILL YOU DO?'));
-      labels.forEach((label, i) => {
-        const b = el('button', 'key');
-        const color = opts.colors && opts.colors[i];
-        if (color) {
-          b.classList.add('door');
-          b.style.setProperty('--door', color);
+      const show = (first) => {
+        this.clearControls(host);
+        host.className = 'choices';
+        host.appendChild(this.prompt(opts.prompt || 'WHAT WILL YOU DO?'));
+        labels.slice(first, first + size).forEach((label, k) => {
+          const i = first + k;
+          const b = el('button', 'key');
+          const color = opts.colors && opts.colors[i];
+          if (color) {
+            b.classList.add('door');
+            b.style.setProperty('--door', color);
+          }
+          b.append(el('span', 'num', String(i + 1)), el('span', 'lbl', label));
+          b.addEventListener('click', () => { this.unread = false; this.clearControls(host); resolve(i); }, { once: true });
+          host.appendChild(b);
+        });
+        if (size < labels.length) {
+          const more = el('button', 'key wide more', first + size < labels.length ? 'MORE...' : 'BACK TO THE FIRST ONES');
+          more.addEventListener('click', () => show(first + size < labels.length ? first + size : 0), { once: true });
+          host.appendChild(more);
         }
-        b.append(el('span', 'num', String(i + 1)), el('span', 'lbl', label));
-        b.addEventListener('click', () => { this.unread = false; this.clearControls(); resolve(i); }, { once: true });
-        this.controls.appendChild(b);
-      });
+        this.settle(host);
+      };
+      show(0);
     });
   }
 
   /** Big retro number pad. Resolves with a whole number. */
-  numpad(label = 'TYPE YOUR ANSWER') {
+  numpad(label = 'TYPE YOUR ANSWER', host = this.controls) {
     return new Promise((resolve) => {
-      this.clearControls();
-      this.controls.className = 'numpad';
-      this.controls.appendChild(this.prompt(label));
+      this.clearControls(host);
+      host.className = 'numpad';
+      host.appendChild(this.prompt(label));
       const display = el('div', 'display', '_');
-      this.controls.appendChild(display);
+      host.appendChild(display);
       const grid = el('div', 'grid');
       let val = '';
       const show = () => { display.textContent = val || '_'; };
@@ -139,14 +164,53 @@ export class Screen {
         const b = el('button', 'key' + (k === 'OK' ? ' ok' : k === 'DEL' ? ' del' : ''), k);
         b.addEventListener('click', () => {
           if (k === 'DEL') val = val.slice(0, -1);
-          else if (k === 'OK') { if (!val) return; this.unread = false; this.clearControls(); resolve(Number(val)); return; }
+          else if (k === 'OK') { if (!val) return; this.unread = false; this.clearControls(host); resolve(Number(val)); return; }
           else if (val.length < 4) val = (val === '0' ? '' : val) + k;
           show();
         });
         grid.appendChild(b);
       }
-      this.controls.appendChild(grid);
+      host.appendChild(grid);
+      this.settle(host);
     });
+  }
+
+  // -------------------------------------------------------------------------
+  // The puzzle card. It rises over the text and most of the picture. The
+  // question is pinned at the top, a hint appears under it after a miss, and
+  // the answer keys fill the rest. These methods are the `card` a puzzle plays on.
+
+  /** @param {{ question: string }} pz */
+  async cardOpen(pz) {
+    this.clearControls();
+    this.cardQ.innerHTML = highlight(pz.question);
+    this.cardHint.textContent = '';
+    this.clearControls(this.cardKeys);
+    this.root.classList.add('puzzling');
+    await sleep(320);
+  }
+
+  cardNumpad(prompt) { return this.numpad(prompt, this.cardKeys); }
+
+  /** @param {{ label: string, color?: string }[]} options */
+  cardPick(options, prompt) {
+    return this.choose(options.map((o) => o.label), { prompt, colors: options.map((o) => o.color), host: this.cardKeys });
+  }
+
+  cardHintText(text) { this.cardHint.innerHTML = highlight(text); }
+
+  /** After a second miss: show the answer on the card and wait for a tap. */
+  async cardReveal(text) {
+    this.cardHint.innerHTML = highlight(text);
+    await this.waitTap('OK', '', this.cardKeys);
+  }
+
+  async cardClose() {
+    this.root.classList.remove('puzzling');
+    await sleep(320);
+    this.cardQ.textContent = '';
+    this.cardHint.textContent = '';
+    this.clearControls(this.cardKeys);
   }
 
   /** Letter grid like an old console name screen. */
@@ -176,14 +240,15 @@ export class Screen {
   }
 
   /** One big button; waits as long as the player needs. */
-  waitTap(label = 'CONTINUE', prompt = '') {
+  waitTap(label = 'CONTINUE', prompt = '', host = this.controls) {
     return new Promise((resolve) => {
-      this.clearControls();
-      this.controls.className = 'choices';
-      if (prompt) this.controls.appendChild(this.prompt(prompt));
+      this.clearControls(host);
+      host.className = 'choices';
+      if (prompt) host.appendChild(this.prompt(prompt));
       const b = el('button', 'key wide', label);
-      b.addEventListener('click', () => { this.unread = false; this.clearControls(); resolve(undefined); }, { once: true });
-      this.controls.appendChild(b);
+      b.addEventListener('click', () => { this.unread = false; this.clearControls(host); resolve(undefined); }, { once: true });
+      host.appendChild(b);
+      this.settle(host);
     });
   }
 
@@ -226,7 +291,7 @@ export class Screen {
   }
 
   /** Studio card, then the title picture. Resolves on the first tap. */
-  async title(studio, name) {
+  async title(studio, name, pic) {
     this.overlay.className = 'show title';
     this.overlay.innerHTML = '';
     const card = el('div', 'studio', `${studio}\nPRESENTS`);
@@ -235,7 +300,7 @@ export class Screen {
     this.overlay.innerHTML = '';
     const c = /** @type {HTMLCanvasElement} */ (el('canvas', 'titlepic'));
     c.width = 320; c.height = 200;
-    drawScene(c, 'title');
+    if (this.pictures && pic) this.pictures.draw(c, pic);
     const t = el('div', 'titletext', name);
     const tap = el('div', 'tap blink', 'TAP TO START');
     this.overlay.append(c, t, tap);

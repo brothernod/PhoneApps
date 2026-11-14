@@ -1,0 +1,5 @@
+# MUSEO DE LEYENDAS: the hub. Every run starts and ends here.
+name: Museo de Leyendas
+role: hub
+finish: home        # the part of museum.ink that plays when the run comes home
+drive: 15           # minutes on the clock for the drive back

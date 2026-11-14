@@ -11,10 +11,11 @@
 <meta name="theme-color" content="#0b0b14">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<link rel="preload" href="vendor/vt323.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+  /* The font ships with the game, so it works offline and every line breaks
+     the same way on every device. */
+  @font-face { font-family: "VT323"; src: url("vendor/vt323.woff2") format("woff2"); font-display: block; }
   :root {
     --bg: #0b0b14;
     --screen: #0a0a1a;
@@ -87,6 +88,7 @@
     display: block; width: 100%; aspect-ratio: 320 / 200; flex: none;
     image-rendering: pixelated; image-rendering: crisp-edges;
     background: #000;
+    transition: filter 0.3s;
   }
   #pic.off { display: none; }
 
@@ -98,9 +100,10 @@
   #corner { position: absolute; left: 0; top: 0; width: 70px; height: 70px; z-index: 15; }
   #mute { color: var(--dim); }
 
+  /* Story screens always keep five lines of text. */
   #text {
-    flex: 1 1 auto; min-height: 60px; overflow-y: auto;
-    padding: 8px 14px 4px;
+    flex: 1 1 auto; min-height: calc(6em + 10px); overflow-y: auto;
+    padding: 8px 14px 2px;
     -webkit-overflow-scrolling: touch;
   }
   #text p { margin: 0 0 0.45em; }
@@ -141,6 +144,43 @@
   .key.ok { background: #8fd38f; box-shadow: inset 0 -5px 0 #4f9a4f; }
   .key.del { background: #e6b28a; box-shadow: inset 0 -5px 0 #a8744e; }
   .key.danger { background: #e88a8a; box-shadow: inset 0 -5px 0 #a04848; }
+  .key.more { min-height: 38px; background: #b9b3a2; }
+
+  /* Puzzle card. It rises over the text and most of the picture, so the
+     question is pinned in place and never scrolls. A dimmed strip of the
+     scene stays in view above it. */
+  #card {
+    position: absolute; left: 0; right: 0; bottom: 0; top: 58px; z-index: 8;
+    display: flex; flex-direction: column;
+    background: var(--screen);
+    border-top: 3px solid var(--hl); border-radius: 10px 10px 0 0;
+    box-shadow: 0 -6px 0 #0009;
+    transform: translateY(105%); visibility: hidden;
+    transition: transform 0.3s steps(8), visibility 0s 0.3s;
+  }
+  #screen.puzzling #card { transform: none; visibility: visible; transition: transform 0.3s steps(8); }
+  #screen.puzzling #pic { filter: brightness(0.45); }
+  #card-q { flex: none; padding: 10px 12px 4px; color: #fff; }
+  #card-hint { flex: none; padding: 2px 12px 4px; color: var(--hint); }
+  #card-hint:empty { display: none; }
+  #card-keys {
+    flex: 1 1 auto; min-height: 0; overflow-y: auto;
+    display: flex; flex-direction: column;
+    padding: 6px 10px calc(10px + env(safe-area-inset-bottom));
+  }
+  #card-keys > :first-child { margin-top: auto; }   /* keys sit low, near the thumbs */
+  #card-keys.numpad .grid .key { min-height: 56px; }
+  @media (orientation: landscape) and (max-height: 600px) {
+    /* Phone on its side: the scene stays on the left, the card takes the right half. */
+    #card { top: 0; left: 50%; border-top: 0; border-left: 3px solid var(--hl); border-radius: 0; overflow-y: auto; }
+    #screen.puzzling #pic { filter: none; }
+    #card-keys { flex: none; overflow: visible; }
+    #card .key { min-height: 42px; }
+    /* Two rows of six, so the pad fits under a four-line question. */
+    #card-keys.numpad .grid { grid-template-columns: repeat(6, 1fr); }
+    #card-keys.numpad .grid .key { min-height: 40px; }
+    #card-keys.numpad .display { font-size: 1.3em; margin-bottom: 6px; }
+  }
 
   .numpad .display, .letters .display {
     font-size: 1.6em; text-align: center; letter-spacing: 6px;
@@ -184,6 +224,7 @@
   .pagebody table { width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 0.9em; }
   .pagebody th, .pagebody td { text-align: left; padding: 3px 4px; border-bottom: 1px solid #33335a; }
   .pagebody th { color: var(--hl); font-weight: normal; }
+  .pagebody canvas { display: block; width: 100%; aspect-ratio: 320 / 200; image-rendering: pixelated; margin-bottom: 4px; }
 
   #saving { position: absolute; right: 8px; top: 6px; z-index: 12; font-size: 0.7em; color: #f55; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
   #saving.on { opacity: 1; }
@@ -197,6 +238,11 @@
     <div id="status"><span id="st-quest"></span><span id="st-time"></span><span id="st-clues"></span><button id="mute">♪ ON</button></div>
     <div id="text"></div>
     <div id="controls"></div>
+    <div id="card" aria-hidden="true">
+      <div id="card-q"></div>
+      <div id="card-hint"></div>
+      <div id="card-keys"></div>
+    </div>
     <div id="overlay" class="show boot"></div>
     <div id="corner" aria-hidden="true"></div>
     <div id="saving">● SAVING TO DISK...</div>

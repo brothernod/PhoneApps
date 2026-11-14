@@ -1,0 +1,26 @@
+# The creatures that can hatch. The dealer picks one per run, always a kind
+# that hasn't been caught yet until all of them have been.
+#
+# traits:  what the clues reveal, one trait per "# clue" tag in a scene card.
+#          found: what turns up, written to fit any place
+#          clue:  the line added to the clue count
+# lair:    the scene card for this creature's finale
+# The rest fills the Field Guide ({name}, {based_on}, {fact}, {source}, ...).
+
+iguana:
+  name: IGUANA DRAGON
+  based_on: green iguana
+  color_es: VERDE
+  lair: plaza-tree
+  traits:
+    covering:
+      found: "It's a tiny green SCALE with a spike on it, still warm."
+      clue: "CLUE: the hatchling has spiky GREEN SCALES."
+    spot:
+      found: "It's a leaf from the very top of a tree, warm as toast from the sun."
+      clue: "CLUE: the hatchling loves SUNNY TREETOPS."
+    giveaway:
+      found: "It's a flower with tiny BITES taken out of every petal."
+      clue: "CLUE: the hatchling NIBBLES leaves and flowers."
+  fact: "Green iguanas came to Puerto Rico as pets in the 1970s. People there call them gallina de palo, chicken of the trees."
+  source: "IUCN Iguana Specialist Group; Global Voices"

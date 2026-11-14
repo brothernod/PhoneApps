@@ -105,12 +105,6 @@ export function clock(minutes) {
 
 export const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-/** "HOLDEN" -> "Holden" */
-export function niceName(s) {
-  const t = String(s || '').trim().toLowerCase();
-  return t.charAt(0).toUpperCase() + t.slice(1);
-}
-
 /** localStorage that never throws (private mode, blocked storage). */
 export const store = {
   get(key, fallback = null) {
@@ -123,3 +117,37 @@ export const store = {
     try { localStorage.removeItem(key); } catch { /* ignore */ }
   },
 };
+
+/** Columns of text across a puzzle card on the narrowest iPhone (375pt wide). */
+export const CARD_COLS = 38;
+/** Columns inside an answer key on the same phone (the number badge takes the rest). */
+export const KEY_COLS = 30;
+
+/**
+ * How many lines a text takes when word-wrapped to `cols` columns. The game
+ * font is monospaced, so this matches the screen.
+ * @param {string} text
+ * @param {number} cols
+ */
+export function countLines(text, cols) {
+  let lines = 0, used = 0;
+  for (const word of String(text).split(/\s+/).filter(Boolean)) {
+    let w = word.length;
+    if (used && used + 1 + w <= cols) { used += 1 + w; continue; }
+    lines++;
+    while (w > cols) { lines++; w -= cols; }   // a word longer than the line breaks
+    used = w;
+  }
+  return lines;
+}
+
+/** Pick from a list by weight. `weights[i]` goes with `items[i]`. */
+export function pickWeighted(rng, items, weights) {
+  const total = weights.reduce((a, b) => a + b, 0);
+  let r = rng.next() * total;
+  for (let i = 0; i < items.length; i++) {
+    r -= weights[i];
+    if (r < 0) return items[i];
+  }
+  return items[items.length - 1];
+}

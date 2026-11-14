@@ -1,15 +1,31 @@
 # Content banks for THE DRAGON OF EL MORRO.
 # Edit freely. No code needed. Names in {braces} are filled in by the game:
-#   {hero} {sibling} {pet}, plus any letters defined under "vars".
+#   {hero} {sibling} {pet} from game.yaml, plus any letters defined under "vars".
+# A scene card picks a bank by topic: { puzzle: dragon_hoard, topic: piraguas }.
 
-title: THE DRAGON OF EL MORRO
-studio: HOLDEN A GAME STUDIO
+# Cheers for a right answer.
+praise: ["¡CORRECTO!", "¡PERFECTO!", "¡MUY BIEN!", "¡EXCELENTE!"]
 
-# The heroes. Every scene uses these names.
-cast:
-  hero: Holden
-  sibling: Quentin
-  pet: Cheddar
+# ---------------------------------------------------------------------------
+# WORDING: what each puzzle says around its question, so a puzzle can be
+# reskinned without code. Anything left out uses the engine's plain wording.
+wording:
+  colores:
+    ask: "The note says: ¡{es}! Which door should you knock on?"
+    prompt: "¡{es}! PICK A DOOR"
+    retry: TRY ANOTHER DOOR
+    option: DOOR
+    right: "¡SÍ! {es} ({say}) means {en}."
+    miss: "That door is {pick_es}, which means {pick_en}. HINT: {es} sounds like {say}. {hint}"
+    reveal: "{es} means {en}. It's the {en} door!"
+  fact_or_fib:
+    ask: "Two are TRUE. Which one is the FIB?"
+    prompt: "{pet} SNIFFED OUT A FIB!"
+    retry: TRY AGAIN
+    right: "RIGHT! That's the fib. {pet} wags."
+    sources: "The true ones come from: {sources}."
+    miss: "That one is TRUE! (Source: {source}.) HINT: {hint}"
+    reveal: "That one is true too! The FIB was: \"{fib}\""
 
 # ---------------------------------------------------------------------------
 # DRAGON HOARD: story word problems (Common Core 3.OA.D.8, two-step problems)
@@ -17,54 +33,57 @@ cast:
 # where:  a rule the numbers must follow (optional)
 # answer: the math that gives the answer
 # level:  1 is easiest; the game moves up after 2 right in a row
+# The question must fit in four lines on an iPhone. The bot playtest checks it
+# with the longest numbers, so keep each one short.
 dragon_hoard:
-  - level: 1
-    vars: { a: [2, 4], b: [2, 5], c: [1, 4] }
-    where: "a * b > c"
-    text: "Don Tito had {a} trays with {b} piragua cups on each tray. {pet} knocked {c} cups over. How many cups are left?"
-    hint: "First find how many cups there were: {a} groups of {b}. Then take away the {c} that fell."
-    explain: "{a} x {b} = {a*b} cups. Take away {c}: {a*b} - {c} = {answer}."
-    answer: "a * b - c"
+  piraguas:
+    - level: 1
+      vars: { a: [2, 4], b: [2, 5], c: [1, 4] }
+      where: "a * b > c"
+      text: "Don Tito had {a} trays with {b} piragua cups on each tray. {pet} knocked {c} cups over. How many cups are left?"
+      hint: "First find how many cups there were: {a} groups of {b}. Then take away the {c} that fell."
+      explain: "{a} x {b} = {a*b} cups. Take away {c}: {a*b} - {c} = {answer}."
+      answer: "a * b - c"
 
-  - level: 1
-    vars: { a: [3, 9], b: [2, 9], c: [2, 6] }
-    text: "Don Tito made {a} cherry piraguas and {b} lime ones. Then {sibling} ate {c}... of the napkins. Oops! How many piraguas are there in all?"
-    hint: "The napkins don't count! Just add the cherry and the lime."
-    explain: "{a} + {b} = {answer}. The napkins were a trick!"
-    answer: "a + b"
+    - level: 1
+      vars: { a: [3, 9], b: [2, 9], c: [2, 6] }
+      text: "Don Tito made {a} cherry piraguas and {b} lime ones. Then {sibling} ate {c}... of the napkins. Oops! How many piraguas are there in all?"
+      hint: "The napkins don't count! Just add the cherry and the lime."
+      explain: "{a} + {b} = {answer}. The napkins were a trick!"
+      answer: "a + b"
 
-  - level: 2
-    vars: { a: [3, 6], b: [4, 9], c: [3, 12] }
-    where: "a * b > c"
-    text: "Don Tito had {a} rows of syrup bottles with {b} bottles in each row. {pet} bumped the cart and {c} bottles rolled away. How many bottles are still on the cart?"
-    hint: "Rows times bottles in each row gives the total. Then subtract the ones that rolled away."
-    explain: "{a} x {b} = {a*b}. Then {a*b} - {c} = {answer}."
-    answer: "a * b - c"
+    - level: 2
+      vars: { a: [3, 6], b: [4, 9], c: [3, 12] }
+      where: "a * b > c"
+      text: "Don Tito had {a} rows of syrup bottles, {b} in each row. {pet} bumped the cart and {c} rolled away. How many bottles are left?"
+      hint: "Rows times bottles in each row gives the total. Then subtract the ones that rolled away."
+      explain: "{a} x {b} = {a*b}. Then {a*b} - {c} = {answer}."
+      answer: "a * b - c"
 
-  - level: 2
-    vars: { a: [2, 5], b: [2, 4] }
-    text: "Each piragua costs {a} dollars. You buy one for {hero}, one for {sibling}, and {b} more for Doña Luz's friends. How many dollars is that?"
-    hint: "Count the piraguas first: 2 plus {b}. Then each one costs {a} dollars."
-    explain: "2 + {b} = {b+2} piraguas. {b+2} x {a} = {answer} dollars."
-    answer: "(2 + b) * a"
+    - level: 2
+      vars: { a: [2, 5], b: [2, 4] }
+      text: "Each piragua costs {a} dollars. You buy one for {hero}, one for {sibling}, and {b} more for Doña Luz's friends. How many dollars is that?"
+      hint: "Count the piraguas first: 2 plus {b}. Then each one costs {a} dollars."
+      explain: "2 + {b} = {b+2} piraguas. {b+2} x {a} = {answer} dollars."
+      answer: "(2 + b) * a"
 
-  - level: 3
-    vars: { a: [4, 8], b: [6, 9], c: [2, 5] }
-    text: "Don Tito filled {a} trays with {b} cups each. When nobody was looking, {pet} licked {c} cups, so those go in the trash. How many clean cups are left?"
-    hint: "Find all the cups: {a} x {b}. Then take away the {c} licked ones."
-    explain: "{a} x {b} = {a*b}. {a*b} - {c} = {answer}."
-    answer: "a * b - c"
+    - level: 3
+      vars: { a: [4, 8], b: [6, 9], c: [2, 5] }
+      text: "Don Tito filled {a} trays with {b} cups each. {pet} licked {c} cups, so those go in the trash. How many clean cups are left?"
+      hint: "Find all the cups: {a} x {b}. Then take away the {c} licked ones."
+      explain: "{a} x {b} = {a*b}. {a*b} - {c} = {answer}."
+      answer: "a * b - c"
 
-  - level: 3
-    vars: { a: [3, 6], b: [3, 8] }
-    where: "a * b <= 48"
-    text: "Don Tito has {a*b} cups. He puts them into {a} equal stacks. How many cups are in each stack?"
-    hint: "Share {a*b} cups into {a} equal groups. What times {a} makes {a*b}?"
-    explain: "{a*b} ÷ {a} = {answer}, because {a} x {answer} = {a*b}."
-    answer: "b"
+    - level: 3
+      vars: { a: [3, 6], b: [3, 8] }
+      where: "a * b <= 48"
+      text: "Don Tito has {a*b} cups. He puts them into {a} equal stacks. How many cups are in each stack?"
+      hint: "Share {a*b} cups into {a} equal groups. What times {a} makes {a*b}?"
+      explain: "{a*b} ÷ {a} = {answer}, because {a} x {answer} = {a*b}."
+      answer: "b"
 
 # ---------------------------------------------------------------------------
-# MAGIC WORDS: Spanish words (grade 1)
+# COLORES: Spanish words (grade 1)
 # say: a sound-it-out hint, since the game has no speech
 spanish:
   colors:
@@ -128,13 +147,3 @@ tunes:
   disk:
     tempo: 400
     notes: "A2:1 -:1 A2:1 B2:1 -:1 A2:1 A2:1 -:2 C3:4"
-
-# ---------------------------------------------------------------------------
-# FIELD GUIDE: dragons that can be discovered in this slice
-dragons:
-  iguana:
-    name: IGUANA DRAGON
-    based_on: green iguana
-    fact: "Green iguanas came to Puerto Rico as pets in the 1970s. People there call them gallina de palo, chicken of the trees."
-    source: "IUCN Iguana Specialist Group; Global Voices"
-    color_es: VERDE

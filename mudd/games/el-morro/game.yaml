@@ -1,0 +1,63 @@
+# THE DRAGON OF EL MORRO: the game's settings.
+# A game is this one folder. The engine holds no places, creatures, or names.
+#
+#   game.yaml        this file: title, cast, run shape, clock, words, pictures
+#   scenes/          one scene card per place: <id>.ink (prose) + <id>.yaml (data)
+#   creatures.yaml   the collectibles: traits, clue lines, lair, Field Guide entry
+#   banks.yaml       word problems, Spanish words, facts and fibs, tunes
+#   pics/            scene art: 320x200 PNGs, plus drawn.js for scenes drawn in code
+
+title: THE DRAGON OF EL MORRO
+studio: HOLDEN A GAME STUDIO
+
+# The heroes. Scene cards use these as {hero}, {sibling}, and {pet}.
+cast:
+  hero: Holden
+  sibling: Quentin
+  pet: Cheddar
+
+# Minutes since midnight: 540 is 9:00 AM, 1125 is sunset (6:45 PM).
+clock:
+  start: 540
+  sunset: 1125
+
+# The shape of one run. The dealer picks the creature, then places_per_run
+# places from the pool, then a puzzle for every slot, all from the quest number.
+# While the pool is smaller than places_per_run, a run visits the whole pool.
+run:
+  hub: museum            # every run starts and ends at this card
+  pool:                  # places the dealer chooses from
+    - old-san-juan
+  places_per_run: 3
+
+# Words the engine shows around the story.
+words:
+  quest: QUEST
+  clues: CLUES
+  new: NEW QUEST
+  continue: CONTINUE QUEST
+  guide: DRAGON FIELD GUIDE
+  guide_count: "{found} of {total} found in this demo. Eight kinds will hatch in the full game."
+  guide_entry: "Based on the {based_on}. Color: {color_es}."
+  guide_source: "Source: {source}. Discovered by {hero}."
+  guide_locked: Not discovered yet.
+  # Typed when the story reaches a "# caught" tag.
+  caught:
+    - "{name}. Based on the {based_on}. Discovered by {hero}."
+    - "REAL FACT: {fact}"
+
+# Pictures. "# pic: <name>" in a scene card shows a scene drawn in code
+# (pics/drawn.js) or, failing that, the PNG pics/<name>.png listed here.
+pics:
+  title: title
+  drawn: pics/drawn.js
+  png:
+    - old-san-juan
+    - el-morro
+    - garita
+    - tunnel
+    - yokahu
+    - lookout
+    - la-coca
+    - juan-diego
+    - beach

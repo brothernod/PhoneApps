@@ -1,0 +1,8 @@
+# THE BIG PLAZA TREE: the iguana dragon's lair.
+name: The big plaza tree
+role: lair
+drive: 5
+
+slots:
+  sniff:
+    - { puzzle: fact_or_fib, topic: iguana }

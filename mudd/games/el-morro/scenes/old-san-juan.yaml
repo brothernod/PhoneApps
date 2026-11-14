@@ -1,0 +1,14 @@
+# OLD SAN JUAN STREETS: a pool place.
+name: Old San Juan streets
+role: place
+drive: 15           # minutes on the clock to get here
+
+# Each slot is one puzzle moment in old-san-juan.ink ("# slot: cart").
+# The dealer picks one of the slot's puzzles each run, favoring kinds that
+# haven't come up lately. Still to come: trading_post at the cart and
+# hola_y_gracias at the doors.
+slots:
+  cart:
+    - { puzzle: dragon_hoard, topic: piraguas }
+  doors:
+    - { puzzle: colores, topic: colors }
