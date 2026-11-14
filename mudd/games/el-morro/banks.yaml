@@ -23,8 +23,7 @@ wording:
     prompt: "{pet} SNIFFED OUT A FIB!"
     retry: TRY AGAIN
     right: "RIGHT! That's the fib. {pet} wags."
-    sources: "The true ones come from: {sources}."
-    miss: "That one is TRUE! (Source: {source}.) HINT: {hint}"
+    miss: "That one is TRUE! HINT: {hint}"
     reveal: "That one is true too! The FIB was: \"{fib}\""
 
 # ---------------------------------------------------------------------------
@@ -97,6 +96,8 @@ spanish:
 
 # ---------------------------------------------------------------------------
 # FACT OR FIB: two real facts and one fib. Every fact needs a source.
+# The game never shows the source. It's here so a grown-up can check each
+# fact before release, and the bot playtest fails on a fact without one.
 facts:
   iguana:
     - text: "Green iguanas aren't from Puerto Rico. They came as pets in the 1970s."

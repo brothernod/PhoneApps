@@ -139,6 +139,7 @@ export function checkPack(pack, known) {
   const ident = /^[A-Za-z_]\w*$/;
 
   if (!pack.game.title) bad('game.yaml: missing title');
+  if (pack.game.version !== undefined && typeof pack.game.version !== 'string') bad('game.yaml: put version in quotes, like "0.1.1"');
   for (const role of Object.keys(pack.cast)) if (!ident.test(role)) bad(`game.yaml: cast role "${role}" must be one plain word`);
   if (!run.hub) bad('game.yaml: run.hub is missing');
   if (!Array.isArray(run.pool) || !run.pool.length) bad('game.yaml: run.pool needs at least one place');

@@ -34,6 +34,8 @@ screen.pictures = pictures;
 
 /** @type {import('./pack.js').Pack} */
 let pack;
+/** "v0.1.1" from version: in game.yaml, or nothing if the pack has none. */
+const gameVersion = () => (pack && pack.game.version ? `v${pack.game.version}` : '');
 /** A word the engine shows, from the pack's words: with a plain fallback. */
 const word = (key, fallback) => (pack && pack.words[key]) || fallback;
 
@@ -301,7 +303,7 @@ function grownUp() {
       location.reload();
     });
     body.appendChild(wipe);
-    body.appendChild(el('p', 'dim', `Data stays on this device. Engine: ${VERSION}, game: ${GAME}.`));
+    body.appendChild(el('p', 'dim', `Data stays on this device. Engine: ${VERSION}, game: ${GAME} ${gameVersion()}.`));
   });
 }
 
@@ -351,7 +353,7 @@ async function main() {
     return;
   }
   for (;;) {
-    await screen.title(pack.game.studio || 'MUDD SOFT', pack.game.title || 'MUDD', (pack.game.pics || {}).title);
+    await screen.title(pack.game.studio || 'MUDD SOFT', pack.game.title || 'MUDD', (pack.game.pics || {}).title, gameVersion());
     sound.play('title', { music: true });
     const saved = savedGame();
     const items = [

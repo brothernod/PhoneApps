@@ -291,7 +291,7 @@ export class Screen {
   }
 
   /** Studio card, then the title picture. Resolves on the first tap. */
-  async title(studio, name, pic) {
+  async title(studio, name, pic, version = '') {
     this.overlay.className = 'show title';
     this.overlay.innerHTML = '';
     const card = el('div', 'studio', `${studio}\nPRESENTS`);
@@ -304,6 +304,7 @@ export class Screen {
     const t = el('div', 'titletext', name);
     const tap = el('div', 'tap blink', 'TAP TO START');
     this.overlay.append(c, t, tap);
+    if (version) this.overlay.appendChild(el('div', 'version', version));
     await new Promise((r) => this.overlay.addEventListener('click', r, { once: true }));
     tap.remove();
   }

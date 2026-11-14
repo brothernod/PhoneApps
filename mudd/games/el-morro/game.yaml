@@ -9,6 +9,9 @@
 
 title: THE DRAGON OF EL MORRO
 studio: HOLDEN A GAME STUDIO
+# Shown small on the title screen, so you can tell which build a device has.
+# Bump it with every push: 0.<phase>.<fix>.
+version: "0.1.1"
 
 # The heroes. Scene cards use these as {hero}, {sibling}, and {pet}.
 cast:

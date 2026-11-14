@@ -32,7 +32,7 @@ import { evalExpr, fill } from './util.js';
  *   answer?: number,
  *   options?: { label: string, color?: string, correct: boolean, miss: string }[],
  *   miss?: (guess: number) => string,
- *   right: string, note?: string, reveal: string,
+ *   right: string, reveal: string,
  *   learned?: [string, string][],
  * }} Puzzle
  */
@@ -60,8 +60,7 @@ const WORDS = {
     prompt: 'WHICH ONE IS THE FIB?',
     retry: 'TRY AGAIN',
     right: '{praise} That one is the fib.',
-    sources: 'The true ones come from: {sources}.',
-    miss: 'That one is TRUE! (Source: {source}.) HINT: {hint}',
+    miss: 'That one is TRUE! HINT: {hint}',
     reveal: 'That one is true too! The FIB was: "{fib}"',
     hint: 'Which one sounds too wild to be real?',
   },
@@ -236,19 +235,19 @@ const factOrFib = {
     const second = rng.pick(extra.length ? extra : facts.filter((f) => f !== first));
     const truths = [first, second].filter(Boolean);
     const fib = rng.pick(fibs);
-    const base = { ...names, praise: praise(ctx), fib: fib.text, hint: fill(fib.hint || w.hint, names), sources: truths.map((f) => f.source).join(' and ') };
-    const say = (text, more = {}) => fill(text, { ...base, ...more }).trim();
+    // A fact's source is for grown-up review of the bank; the player never sees it.
+    const base = { ...names, praise: praise(ctx), fib: fib.text, hint: fill(fib.hint || w.hint, names) };
+    const say = (text) => fill(text, base).trim();
     return {
       screen: 'pick',
       skill: 'science_facts',
       question: say(w.ask),
       prompt: say(w.prompt), retry: say(w.retry),
       options: rng.shuffle([
-        ...truths.map((f) => ({ label: fill(f.text, names), correct: false, miss: say(w.miss, { source: f.source }) })),
+        ...truths.map((f) => ({ label: fill(f.text, names), correct: false, miss: say(w.miss) })),
         { label: fill(fib.text, names), correct: true, miss: '' },
       ]),
       right: say(w.right),
-      note: say(w.sources),
       reveal: say(w.reveal),
       learned: truths.map((f) => ['fact', f.text]),
     };
@@ -330,7 +329,6 @@ export async function playPuzzle(spec, ctx) {
       ctx.cue('right');
       await card.close();
       await ctx.say(pz.right, 'good');
-      if (pz.note) await ctx.say(pz.note, 'dim');
       return done(true, attempt === 1);
     }
     ctx.cue('miss');

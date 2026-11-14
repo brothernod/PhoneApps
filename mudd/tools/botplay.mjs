@@ -171,7 +171,7 @@ async function playRun(plan, history, bot) {
         puzzles++;
         read(pz.question, 'a puzzle question');
         measure(`${tag}: ${pz.skill}`, pz.question, pz.screen === 'pick' && pz.options.some((o) => o.label.length > 12) ? 1 : MAX_QUESTION_LINES, []);
-        for (const t of [pz.prompt, pz.retry, pz.right, pz.reveal, pz.note || '']) see(t, 'puzzle wording');
+        for (const t of [pz.prompt, pz.retry, pz.right, pz.reveal]) see(t, 'puzzle wording');
         if (pz.screen === 'numpad') {
           if (!Number.isInteger(pz.answer) || pz.answer < 0 || pz.answer > 9999) fail(`${tag}: ${pz.skill} answer is ${pz.answer}`);
         } else {
