@@ -173,7 +173,7 @@ export class Screen {
    * With `paged`, more than three choices show three at a time behind a
    * MORE key, so the story text keeps its room.
    * @param {string[]} labels
-   * @param {{prompt?: string, colors?: (string|undefined)[], paged?: boolean, host?: HTMLElement}} [opts]
+   * @param {{prompt?: string, colors?: (string|undefined)[], sizes?: (string|undefined)[], paged?: boolean, host?: HTMLElement}} [opts]
    */
   choose(labels, opts = {}) {
     const host = opts.host || this.controls;
@@ -191,6 +191,8 @@ export class Screen {
             b.classList.add('door');
             b.style.setProperty('--door', color);
           }
+          const size = opts.sizes && opts.sizes[i];
+          if (size) { b.classList.add(size); host.classList.add('sized'); }
           b.append(el('span', 'num', String(i + 1)), el('span', 'lbl', label));
           b.addEventListener('click', () => { this.unread = false; this.clearControls(host); resolve(i); }, { once: true });
           host.appendChild(b);
@@ -206,8 +208,11 @@ export class Screen {
     });
   }
 
-  /** Big retro number pad. Resolves with a whole number. */
-  numpad(label = 'TYPE YOUR ANSWER', host = this.controls) {
+  /**
+   * Big retro number pad. Resolves with a whole number. With format 'clock'
+   * the display reads like a clock, so 325 shows as 3:25.
+   */
+  numpad(label = 'TYPE YOUR ANSWER', host = this.controls, format = '') {
     return new Promise((resolve) => {
       this.clearControls(host);
       host.className = 'numpad';
@@ -216,7 +221,9 @@ export class Screen {
       host.appendChild(display);
       const grid = el('div', 'grid');
       let val = '';
-      const show = () => { display.textContent = val || '_'; };
+      const asClock = () => (val.length < 3 ? `_:${val.padStart(2, '_')}` : `${val.slice(0, -2)}:${val.slice(-2)}`);
+      const show = () => { display.textContent = format === 'clock' ? asClock() : val || '_'; };
+      show();
       const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'DEL', '0', 'OK'];
       for (const k of keys) {
         const b = el('button', 'key' + (k === 'OK' ? ' ok' : k === 'DEL' ? ' del' : ''), k);
@@ -248,11 +255,11 @@ export class Screen {
     await sleep(320);
   }
 
-  cardNumpad(prompt) { return this.numpad(prompt, this.cardKeys); }
+  cardNumpad(prompt, format = '') { return this.numpad(prompt, this.cardKeys, format); }
 
-  /** @param {{ label: string, color?: string }[]} options */
+  /** @param {{ label: string, color?: string, size?: string }[]} options */
   cardPick(options, prompt) {
-    return this.choose(options.map((o) => o.label), { prompt, colors: options.map((o) => o.color), host: this.cardKeys });
+    return this.choose(options.map((o) => o.label), { prompt, colors: options.map((o) => o.color), sizes: options.map((o) => o.size), host: this.cardKeys });
   }
 
   cardHintText(text) { this.cardHint.innerHTML = highlight(text); }
@@ -511,6 +518,7 @@ export class Screen {
     if (toy.pic) this.showPic(toy.pic);
     if (toy.kind === 'spot') await this.toySpot(toy, cue);
     else if (toy.kind === 'taps') await this.toyTaps(toy, cue);
+    else if (toy.kind === 'pulse') await this.toyPulse(toy, cue);
     this.clearControls();
   }
 
@@ -595,6 +603,30 @@ export class Screen {
       cue('miss');
       say(toy.again || 'NOT THE SAME. WATCH AGAIN...');
       await sleep(1400);
+    }
+  }
+
+  /**
+   * Press a key a few times; each press sends a pulse through the picture.
+   * The picture is told pose (presses so far) and pulse (0 to 1 as each one
+   * spreads), so it can show a little more each time.
+   */
+  async toyPulse(toy, cue) {
+    const say = (text) => {
+      this.clearControls();
+      this.controls.className = 'choices';
+      this.controls.appendChild(this.prompt(text));
+      this.settle(this.controls);
+    };
+    this.picT.pose = 0; this.picT.pulse = 0; this.redraw();
+    for (let n = 1; n <= toy.count; n++) {
+      await this.waitTap(toy.key || 'GO', n === 1 ? toy.prompt || '' : toy.more || toy.prompt || '');
+      say(toy.wait || '...');
+      cue(toy.cue || 'find');
+      this.picT.pose = n;
+      for (let f = 0; f <= 12; f++) { this.picT.pulse = f / 12; this.redraw(); await sleep(70); }
+      this.picT.pulse = 1; this.redraw();
+      await sleep(350);
     }
   }
 

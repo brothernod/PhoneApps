@@ -11,7 +11,7 @@ title: THE DRAGON OF EL MORRO
 studio: HOLDEN A GAME STUDIO
 # Shown small on the title screen, so you can tell which build a device has.
 # Bump it with every push: 0.<phase>.<fix>.
-version: "0.2.0"
+version: "0.3.0"
 
 # The heroes. Scene cards use these as {hero}, {sibling}, and {pet}.
 cast:
@@ -34,7 +34,15 @@ run:
   pool:                  # places the map can offer
     - old-san-juan
     - garita
+    - tunnel
+    - yokahu
   places_per_run: 3
+
+# Where a skill starts, for a skill that shouldn't start on level 1. The game
+# still steps down after two misses and up after two first-try solves.
+levels:
+  spanish_colors: 2
+  spanish_hola: 2
 
 # What a clue can reveal. Every creature in creatures.yaml has one value for
 # each trait, and no two creatures share all of them, so the clues name

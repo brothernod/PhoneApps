@@ -1,0 +1,24 @@
+# THE DEEPEST TUNNEL ROOM, SAN CRISTÓBAL: the bat dragon's lair.
+name: The deepest tunnel room
+role: lair
+drive: 20
+map: [136, 64]
+
+slots:
+  rescue:
+    - { puzzle: rescue, topic: calls }
+
+# Toys: small things to do with the picture. Nothing is scored.
+#   pulse: press a key a few times. Each press sends a pulse through the
+#          picture, which shows a little more each time. count: presses.
+#          The picture is drawn with pose (presses so far) and pulse (0 to 1).
+toys:
+  echo:
+    kind: pulse
+    pic: echo-room
+    count: 3
+    prompt: "IT'S TOO DARK TO SEE. MAKE A SOUND!"
+    more: "THE ECHO SHOWED A LITTLE. AGAIN!"
+    key: "CLICK!"
+    wait: "LISTEN..."
+    cue: click

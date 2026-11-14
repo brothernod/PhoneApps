@@ -1,0 +1,18 @@
+# THE CAVE OF VINES, in the hills: the boa dragon's lair.
+name: The cave of vines
+role: lair
+drive: 45
+map: [214, 152]
+
+slots:
+  rescue:
+    - { puzzle: rescue, topic: calls }
+
+# Toys: small things to do with the picture. Nothing is scored.
+#   spot: find something in the picture and tap it. at: [x, y, width, height]
+toys:
+  vine:
+    kind: spot
+    at: [192, 62, 12, 78]
+    prompt: "TAP the vine that BLINKS"
+    miss: "That one is just a vine. Watch for an eye."
