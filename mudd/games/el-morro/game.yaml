@@ -33,12 +33,15 @@ run:
   hub: museum            # every run starts and ends at this card
   pool:                  # places the map can offer
     - old-san-juan
+    - lawn
     - garita
     - tunnel
     - yokahu
+    - lookout
     - la-coca
     - juan-diego
     - beach
+    - bay
   places_per_run: 3
 
 # Where a skill starts, for a skill that shouldn't start on level 1. The game
@@ -147,11 +150,9 @@ pics:
   drawn: pics/drawn.js
   png:
     - old-san-juan
-    - el-morro
     - garita
     - tunnel
     - yokahu
-    - lookout
     - la-coca
     - juan-diego
     - beach

@@ -1,0 +1,13 @@
+# THE TOWER VIEW, EL YUNQUE: a pool place.
+name: The tower view, El Yunque
+role: place
+drive: 60           # minutes on the clock to get here
+map: [270, 122]     # where it sits on the map picture
+
+slots:
+  sky:
+    - { puzzle: weather_watch, topic: deck }
+    - { puzzle: sunset_clock, topic: clouds }
+  packs:
+    - { puzzle: colores, topic: colors, skin: packs }
+    - { puzzle: memoria, topic: forest }

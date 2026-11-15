@@ -1718,7 +1718,7 @@ const weatherWatch = {
     const good = skies.filter((s) => s.ok), bad = skies.filter((s) => !s.ok);
     const n = Math.max(3, Math.min(5, Number(rule.rows) || 4));
     const limit = rng.int(2, 4) * 5;                 // "wind under 15"
-    const calm = () => rng.int(2, limit - 1), windy = () => rng.int(limit, limit + 14);
+    const calm = () => rng.int(2, limit - 1), windy = () => rng.int(limit + 2, limit + 14);
     // Which rows are safe, then weather to match. Every wind is a different number.
     const safe = new Set(rule.ask === 'first' ? rng.shuffle([...Array(n - 1).keys()].map((i) => i + 1)).slice(0, 2) : [rng.int(0, n - 1)]);
     const used = new Set();

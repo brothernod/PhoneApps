@@ -264,7 +264,8 @@ export function checkPack(pack, known) {
       const toy = card.toys[t] || {};
       if (!card.tags.toy.includes(t)) bad(`${where}.yaml: toy "${t}" is never used in ${card.id}.ink`);
       if (known.toys && !known.toys.includes(toy.kind)) bad(`${where}.yaml: toy "${t}" has kind "${toy.kind}", which the engine doesn't have`);
-      if (toy.kind === 'spot' && !spot(toy.at, 4)) bad(`${where}.yaml: toy "${t}" needs at: [x, y, width, height]`);
+      if ((toy.kind === 'spot' || toy.kind === 'rub') && !spot(toy.at, 4)) bad(`${where}.yaml: toy "${t}" needs at: [x, y, width, height]`);
+      if (toy.kind === 'rub' && !(Number.isInteger(toy.count) && toy.count >= 2 && toy.count <= 8)) bad(`${where}.yaml: toy "${t}" needs count: how many strips its box is cut into, 2 to 8`);
       if (toy.kind === 'spot' && toy.count !== undefined && !(Number.isInteger(toy.count) && toy.count >= 1 && toy.count <= 8)) bad(`${where}.yaml: toy "${t}": count: is how many taps it takes, 1 to 8`);
       if (toy.kind === 'song') {
         const keys = Array.isArray(toy.keys) ? toy.keys : [];

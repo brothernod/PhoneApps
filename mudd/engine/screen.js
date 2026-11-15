@@ -860,7 +860,82 @@ export class Screen {
     else if (toy.kind === 'taps') await this.toyTaps(toy, cue);
     else if (toy.kind === 'pulse') await this.toyPulse(toy, cue);
     else if (toy.kind === 'song') await this.toySong(toy, cue);
+    else if (toy.kind === 'rub') await this.toyRub(toy, cue);
     this.clearControls();
+  }
+
+  /**
+   * Rub the picture. Every touch on it, and every bit of a finger dragged
+   * across it, leaves a mark: the picture is told rubs, a list of
+   * [x, y, frame], and can draw them as it likes. Something is hidden in the box at:,
+   * which is cut into count: strips side by side. The picture is told which
+   * strips have been touched (lit) and how many (pose), and it is found when
+   * all of them have. After five touches that find nothing new, the picture
+   * is told hint, so it can show where to look.
+   */
+  toyRub(toy, cue) {
+    const [x, y, w, h] = toy.at;
+    const need = Number(toy.count) || 4;
+    return new Promise((resolve) => {
+      const lit = new Set();
+      const rubs = [];
+      let cold = 0, down = false, lastAt = 0, over = false;
+      Object.assign(this.picT, { rubs, lit: [], pose: 0, hint: false, at: toy.at, count: need });
+      const say = (text) => {
+        this.clearControls();
+        this.controls.className = 'choices';
+        this.controls.appendChild(this.prompt(text));
+        this.settle(this.controls);
+      };
+      say(toy.prompt || 'RUB IT!');
+      const keepTouch = this.pic.style.touchAction;
+      this.pic.style.touchAction = 'none';     // a dragged finger rubs; it doesn't scroll the page
+      const touch = (e, fresh) => {
+        if (over) return;
+        const r = this.pic.getBoundingClientRect();
+        const px = ((e.clientX - r.left) / r.width) * 320, py = ((e.clientY - r.top) / r.height) * 200;
+        rubs.push([Math.round(px), Math.round(py), this.picT.frame]);
+        if (rubs.length > 90) rubs.shift();
+        const pad = 6; // small fingers
+        const strip = Math.max(0, Math.min(need - 1, Math.floor((px - x) / (w / need))));
+        if (px >= x - pad && px <= x + w + pad && py >= y - pad && py <= y + h + pad && !lit.has(strip)) {
+          lit.add(strip);
+          cold = 0;
+          Object.assign(this.picT, { lit: [...lit], pose: lit.size, hint: false });
+          cue(toy.cue || 'find');
+          if (lit.size >= need) {
+            over = true;
+            this.redraw();
+            window.setTimeout(done, 1200);       // a moment to see all of it
+            return;
+          }
+          if (toy.more) say(toy.more);
+        } else if (fresh && ++cold >= 5) {
+          this.picT.hint = true;
+          if (toy.miss) say(toy.miss);
+        }
+        this.redraw();
+      };
+      const onDown = (e) => { down = true; touch(e, true); };
+      const onMove = (e) => {
+        if (!down || e.timeStamp - lastAt < 50) return;
+        lastAt = e.timeStamp;
+        touch(e, false);
+      };
+      const onUp = () => { down = false; };
+      const done = () => {
+        this.pic.removeEventListener('pointerdown', onDown);
+        this.pic.removeEventListener('pointermove', onMove);
+        window.removeEventListener('pointerup', onUp);
+        window.removeEventListener('pointercancel', onUp);
+        this.pic.style.touchAction = keepTouch;
+        resolve(undefined);
+      };
+      this.pic.addEventListener('pointerdown', onDown);
+      this.pic.addEventListener('pointermove', onMove);
+      window.addEventListener('pointerup', onUp);
+      window.addEventListener('pointercancel', onUp);
+    });
   }
 
   /**

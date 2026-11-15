@@ -1,0 +1,25 @@
+# THE BAY IN THE DARK, under the mangroves: the glow dragon's lair. The same
+# bay by day is a pool place (bay).
+name: The glowing bay
+role: lair
+drive: 75
+map: [304, 108]
+
+slots:
+  rescue:
+    - { puzzle: rescue, topic: calls }
+
+# Toys: small things to do with the picture. Nothing is scored.
+#   rub:  rub the picture. Here every touch leaves a glow on the dark water,
+#         and the hatchling shows only where it glows.
+#         at: [x, y, width, height] is its box, cut into count: strips side
+#         by side. It is found when a touch has landed in every strip.
+toys:
+  glow:
+    kind: rub
+    pic: bay-dark
+    at: [128, 110, 72, 40]
+    count: 4
+    prompt: "RUB the dark water to make it GLOW"
+    more: "SOMETHING IS THERE! KEEP RUBBING"
+    miss: "Only water there. Try another part of the dark."

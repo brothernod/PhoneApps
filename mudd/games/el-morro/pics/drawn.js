@@ -4,7 +4,7 @@
 // Each scene is a function that paints a 320x200 framebuffer. The hatchlings
 // are drawn here too: the engine asks for one with creature().
 
-import { W, H, shade } from '../../../engine/art.js';
+import { W, H, shade, Pix } from '../../../engine/art.js';
 
 // ---------------------------------------------------------------------------
 // Sprites. Palette keys are shared so the cast stays consistent.
@@ -983,6 +983,249 @@ const sandWiggle = (p, t) => sandNest(p, 'nest', t);
 sandWiggle.fps = 4;
 
 // ---------------------------------------------------------------------------
+// El Morro's lawn, the tower view, the bay, and the road between places.
+
+/** A diamond kite with a tail, and its string down to a hand at (sx, sy). */
+function kiteAt(p, x, y, a, b, sx, sy) {
+  for (let i = 0; i <= 60; i++) { const t = i / 60; p.set(Math.round(x + (sx - x) * t), Math.round(y + 8 + (sy - y - 8) * t + Math.sin(t * 3.14) * 5), '#f4f1e8'); }
+  for (let dy = -6; dy <= 8; dy++) {
+    const hw = dy < 0 ? 6 + dy : Math.round((8 - dy) * 0.75);
+    p.rect(x - hw, y + dy, hw, 1, dy < 0 ? a : b); p.rect(x, y + dy, hw + 1, 1, dy < 0 ? b : a);
+  }
+  p.rect(x, y - 6, 1, 15, '#24140e'); p.rect(x - 5, y, 11, 1, '#24140e');
+  for (let i = 0; i < 4; i++) p.rect(x + (i % 2 ? 1 : -2), y + 10 + i * 3, 2, 2, i % 2 ? a : b);
+}
+
+/** El Morro across its lawn: the long walls, the lighthouse, and a sky full of kites. */
+function lawn(p) {
+  sky(p, 100);
+  cloud(p, 96, 30, 1.1); cloud(p, 214, 14, 0.8); cloud(p, 20, 60, 0.7);
+  p.grad(0, 88, W, 12, ['#1d4f86', '#2a6fb0']);
+  const stone = '#9a9284', lit = '#c0b8a6', dark = '#6e675c';
+  // the upper level and the lighthouse behind the outer wall
+  p.rect(112, 62, 150, 20, stone); p.rect(112, 62, 150, 2, lit);
+  for (let x = 112; x < 262; x += 8) p.rect(x, 59, 5, 3, stone);
+  p.rect(204, 36, 16, 28, '#8a8478'); p.rect(204, 36, 4, 28, lit); p.rect(202, 34, 20, 3, dark);
+  p.rect(208, 26, 8, 8, '#2a2a30'); p.rect(209, 27, 6, 5, '#f2e8a0'); p.rect(207, 24, 10, 2, dark); p.rect(211, 20, 2, 4, dark);
+  p.rect(209, 44, 3, 5, '#2a2a30'); p.rect(209, 54, 3, 5, '#2a2a30');
+  // the outer wall, with its teeth, its gate, and a sentry box on the corner
+  p.rect(38, 78, 256, 22, stone); p.rect(38, 78, 256, 2, lit); p.rect(38, 95, 256, 5, dark);
+  for (let x = 38; x < 294; x += 8) p.rect(x, 75, 5, 3, stone);
+  for (let x = 54; x < 284; x += 22) p.rect(x, 84, 2, 6, dark);
+  p.rect(151, 88, 13, 12, '#2a221c'); p.ellipse(157, 88, 6, 5, '#2a221c');
+  p.rect(30, 68, 10, 16, lit); p.ellipse(35, 68, 5, 4, dark); p.rect(34, 73, 2, 4, '#2a2a30'); p.rect(34, 62, 2, 3, dark);
+  // the lawn, and the path to the gate
+  p.grad(0, 100, W, 100, ['#6ab04a', '#4f9a3a', '#3f8a30', '#2f7a2a']);
+  for (let i = 0; i < 170; i++) { const x = (i * 73) % W, y = 103 + ((i * 41) % 95); p.rect(x, y, 1, 2, i % 3 ? '#7cc45a' : '#2f6a24'); }
+  for (let y = 100; y < H; y++) { const t = (y - 100) / 100, cx = 157 + Math.round(t * t * 46), hw = 3 + Math.round(t * 15); p.rect(cx - hw, y, hw * 2, 1, (y & 1) ? '#d8c89a' : '#cbb98a'); }
+  // kites, and the people flying them
+  const flyer = (x, y, shirt) => { p.rect(x, y, 3, 5, shirt); p.rect(x, y - 3, 3, 3, '#dca88a'); p.rect(x, y + 5, 1, 3, '#36466e'); p.rect(x + 2, y + 5, 1, 3, '#36466e'); };
+  flyer(98, 118, '#d23a32'); kiteAt(p, 58, 34, '#d23a32', '#f2c531', 99, 119);
+  flyer(238, 126, '#2f6fd1'); kiteAt(p, 268, 50, '#2f6fd1', '#f4f1e8', 239, 127);
+  flyer(126, 110, '#f2c531'); kiteAt(p, 150, 18, '#3f9e4a', '#f2c531', 127, 111);
+  flyer(300, 112, '#f4f1e8'); kiteAt(p, 300, 22, '#ec8a2c', '#d23a32', 301, 113);
+  // the kite stand: a striped awning and a line of little kites
+  p.rect(238, 150, 2, 30, '#5a3a22'); p.rect(294, 150, 2, 30, '#5a3a22');
+  for (let i = 0; i < 8; i++) p.rect(234 + i * 8, 142, 8, 9, i % 2 ? '#f4f1e8' : '#d23a32');
+  p.rect(234, 151, 64, 1, '#8a2a24');
+  ['#f2c531', '#2f6fd1', '#3f9e4a', '#ec8a2c'].forEach((c, i) => {
+    const x = 248 + i * 12;
+    for (let dy = -4; dy <= 5; dy++) { const hw = dy < 0 ? 4 + dy : Math.round((5 - dy) * 0.8); p.rect(x - hw, 162 + dy, hw * 2 + 1, 1, c); }
+    p.rect(x, 152, 1, 6, '#f4f1e8');
+  });
+  p.rect(238, 172, 58, 8, '#7a5232'); p.rect(238, 172, 58, 2, '#9a6a42');
+  p.sprite(HERO, HERO_PAL, 36, 152);
+  p.sprite(SIDEKICK, SIDEKICK_PAL, 58, 160);
+  p.sprite(PUP, PUP_PAL, 80, 178);
+}
+
+/** The view from the top of the tower: forest all the way down to the sea, over the stone rim. */
+function lookout(p) {
+  sky(p, 74, ['#4a80d8', '#7fb2ee', '#bcdcf8', '#e4f0fa']);
+  // low clouds, gray underneath
+  const low = (x, y, s) => { p.blob(x, y + 3, 16 * s, 5 * s, '#8a98a8', '#a8b4c0', '#c4ccd4'); cloud(p, x, y, s); };
+  low(48, 22, 1.7); low(170, 12, 2.1); low(276, 30, 1.6); low(112, 44, 1.0);
+  // the sea, the surf, and the flat green coast
+  p.grad(0, 66, W, 8, ['#2a6fb0', '#4fb3c8']);
+  for (let x = 0; x < W; x++) if ((x * 7) % 11 < 6) p.set(x, 73 + ((x * 3) % 2), '#eef8ff');
+  p.rect(0, 75, W, 14, '#b8d48a'); p.dith(0, 78, W, 3, '#9ac474', '#b8d48a'); p.rect(0, 81, W, 8, '#8ac49a');
+  // ridges rolling downhill, far to near
+  const ridge = (y0, amp, len, ph, dark, base, light) => {
+    for (let x = 0; x < W; x++) {
+      const y = y0 + Math.round(Math.sin(x / len + ph) * amp + Math.sin(x / (len * 0.37) + ph * 2) * amp * 0.35);
+      p.rect(x, y, 1, H - y, base); p.set(x, y, light);
+      if ((x * 13 + y0) % 5 === 0) p.rect(x, y + 2 + ((x * 7) % 9), 2, 1, dark);
+      if ((x * 11 + y0) % 7 === 0) p.rect(x, y + 3 + ((x * 5) % 12), 2, 1, light);
+    }
+  };
+  ridge(82, 3, 50, 0.6, '#5a9a7a', '#6aaa86', '#8ac49a');
+  ridge(94, 5, 40, 2.2, '#3a8256', '#4a9462', '#6ab07a');
+  ridge(110, 7, 31, 4.1, '#2a6a3c', '#357a44', '#52985a');
+  ridge(128, 8, 27, 1.3, '#1e5a2a', '#2a6a30', '#3f8a40');
+  // treetops close by
+  for (let i = 0; i < 26; i++) { const x = (i * 53) % W, y = 142 + ((i * 29) % 22); p.blob(x, y, 9 + (i % 3) * 2, 6 + (i % 2) * 2, '#184a22', '#256a2c', '#3f8a40'); }
+  // a bird far below
+  p.rect(214, 100, 3, 1, '#f4f1e8'); p.rect(218, 100, 3, 1, '#f4f1e8'); p.set(217, 101, '#f4f1e8');
+  // the three of you at the rail
+  p.sprite(HERO, HERO_PAL, 40, 142);
+  p.sprite(SIDEKICK, SIDEKICK_PAL, 64, 150);
+  // the ranger's weather board on its post
+  p.rect(262, 138, 3, 34, '#5a3a22'); p.rect(244, 120, 40, 26, '#2a3a30'); p.rect(244, 120, 40, 2, '#7a5232'); p.rect(244, 144, 40, 2, '#7a5232');
+  p.blob(254, 130, 4, 3, '#b8a020', '#f2c531', '#fff2b0'); p.rect(264, 128, 14, 1, '#cfe6fa'); p.rect(264, 132, 10, 1, '#cfe6fa'); p.rect(250, 138, 28, 1, '#cfe6fa');
+  // the tower's stone rim, with its square teeth
+  const stone = '#9a9284', lit = '#c0b8a6', dark = '#6e675c';
+  p.rect(0, 172, W, 28, stone); p.rect(0, 172, W, 2, lit);
+  for (let x = -8; x < W; x += 44) { p.rect(x, 160, 28, 12, stone); p.rect(x, 160, 28, 2, lit); p.rect(x + 26, 162, 2, 10, dark); }
+  for (let y = 180; y < H; y += 8) p.rect(0, y, W, 1, dark);
+  for (let i = 0; i < 24; i++) p.rect((i * 31 + (i % 3) * 9) % W, 173 + ((i * 8) % 24), 1, 7, dark);
+  p.sprite(PUP, PUP_PAL, 92, 152);     // up on the rim, of course
+}
+
+/** A clump of mangrove: arching roots standing in the water, leaves on top. */
+function mangrove(p, x, y, w, cols = ['#3a2a1e', '#1e5a2a', '#2f7d33', '#4cae4f']) {
+  const [root, dark, base, light] = cols;
+  for (let i = 0; i < w; i += 7) {
+    const h = 16 + ((i * 5) % 9);
+    for (let k = 0; k <= h; k++) { const t = k / h; p.rect(Math.round(x + i + Math.sin(t * 3.14) * 5 * (i % 2 ? 1 : -1)), y - k, 2, 1, root); }
+  }
+  for (let i = -6; i < w + 6; i += 9) p.blob(x + i, y - 24 - ((i * 7) % 8), 11, 8, dark, base, light);
+  for (let i = 0; i < w; i += 11) p.blob(x + i, y - 34 - ((i * 3) % 6), 9, 6, dark, base, light);
+}
+
+const BAY4 = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]];
+const GLOW_AT = [120, 110];   // where the hatchling floats in the dark water
+const GLOW_LIFE = 34;         // frames a touch keeps glowing
+
+/**
+ * The bay.
+ *   'day'    Maritza's kayak hut and the dock
+ *   'dark'   under the mangroves, where it is as dark as dusk. The water
+ *            glows where it has been touched (t.rubs: [[x, y, frame]]), and
+ *            the hatchling shows only in the glow, or in the strips of its
+ *            box that are already lit (t.at, t.count, t.lit)
+ *   'found'  the hatchling all lit up
+ */
+function bay(p, what, t = {}) {
+  if (what === 'day') {
+    sky(p, 70);
+    cloud(p, 60, 22, 1.0); cloud(p, 230, 14, 0.8);
+    // the far shore: a low line of mangroves
+    for (let x = -4; x < W; x += 9) p.blob(x, 66 - ((x * 7) % 5), 8, 6, '#1e5a2a', '#2f7d33', '#4cae4f');
+    p.rect(0, 70, W, 3, '#1e4a26');
+    p.grad(0, 73, W, 127, ['#3fa08a', '#2f8a84', '#256e78', '#1c5868']);
+    for (let i = 0; i < 70; i++) { const x = (i * 59) % W, y = 78 + ((i * 37) % 116); p.rect(x, y, 5 + (i % 4), 1, i % 3 ? '#6ac4b0' : '#1c5868'); }
+    mangrove(p, 250, 112, 70); mangrove(p, -6, 104, 44);
+    // the hut, with paddles on the wall
+    p.rect(20, 96, 66, 52, '#c98a4e'); p.rect(20, 96, 66, 3, '#e0a868'); for (let x = 20; x < 86; x += 8) p.rect(x, 99, 1, 49, '#a86a34');
+    for (let i = 0; i < 12; i++) p.rect(12 + i * 2, 96 - i, 82 - i * 4, 1, i % 2 ? '#7a9a3a' : '#5a7a2a');
+    p.rect(30, 110, 22, 16, '#2a1e1a'); p.rect(31, 111, 20, 14, '#3a5a6a');
+    for (const x of [60, 68, 76]) { p.rect(x, 108, 2, 30, '#7a5232'); p.ellipse(x, 108, 3, 6, '#ec8a2c'); }
+    // the dock
+    p.rect(0, 148, 214, 10, '#9a6a42'); p.rect(0, 148, 214, 2, '#c08a5a'); for (let x = 6; x < 214; x += 14) p.rect(x, 150, 1, 8, '#6a4628');
+    for (const x of [30, 100, 170, 208]) { p.rect(x, 152, 5, 44, '#6a4628'); p.rect(x, 152, 2, 44, '#8a5e3a'); }
+    // the sign and the box of cards
+    p.rect(150, 118, 3, 30, '#5a3a22'); p.rect(136, 104, 32, 20, '#f4f1e8'); p.rect(136, 104, 32, 2, '#2f6fd1'); for (let y = 109; y < 121; y += 3) p.rect(140, y, 24, 1, '#6a6a72');
+    p.rect(176, 138, 16, 10, '#d23a32'); p.rect(176, 138, 16, 2, '#f4f1e8');
+    // kayaks pulled up by the dock
+    const kayak = (x, y, c, d) => { p.ellipse(x, y, 30, 5, d); p.ellipse(x, y - 1, 29, 4, c); p.ellipse(x, y - 1, 8, 2, '#1e1414'); };
+    kayak(262, 168, '#ec8a2c', '#a85a1a'); kayak(246, 182, '#f2c531', '#b8922a');
+    p.sprite(HERO, HERO_PAL, 60, 124);
+    p.sprite(SIDEKICK, SIDEKICK_PAL, 84, 130);
+    p.sprite(PUP, PUP_PAL, 108, 139);
+    return;
+  }
+
+  const frame = t.frame || 0, glows = t.rubs || [];
+  const found = what === 'found';
+  p.rect(0, 0, W, H, '#03060d');
+  p.grad(0, 56, W, 144, ['#040913', '#06101d', '#081626']);
+  // the mangrove tunnel: leaves overhead and roots down both sides, all in shadow
+  const shadow = ['#04090a', '#050d0c', '#081612', '#0c2018'];
+  for (let x = -6; x < W + 8; x += 13) p.blob(x, 8 + ((x * 5) % 14), 15, 12, shadow[1], shadow[2], shadow[3]);
+  for (let x = 0; x < W; x += 17) p.blob(x + 6, 30 + ((x * 3) % 10), 11, 8, shadow[1], shadow[2], shadow[3]);
+  mangrove(p, -10, 96, 60, shadow); mangrove(p, 268, 104, 60, shadow);
+  for (let i = 0; i < 9; i++) { const x = 70 + i * 23; for (let k = 0; k < 16 + ((i * 7) % 14); k++) p.set(x + Math.round(Math.sin(k / 4 + i) * 1.5), 36 + k, shadow[2]); }
+  for (let i = 0; i < 26; i++) p.rect((i * 47) % W, 66 + ((i * 31) % 126), 4, 1, '#0b1c2c');
+
+  // The glow. Each touch spreads a little and fades; the water keeps a soft
+  // shimmer once the hatchling is found.
+  const light = new Float32Array(W * H);
+  const add = (gx, gy, r, power) => {
+    for (let y = Math.max(50, gy - r); y <= Math.min(H - 1, gy + r); y++) for (let x = Math.max(0, gx - r); x <= Math.min(W - 1, gx + r); x++) {
+      const d = Math.hypot(x - gx, (y - gy) * 1.6);
+      if (d < r) light[y * W + x] = Math.max(light[y * W + x], power * (1 - d / r));
+    }
+  };
+  for (const [gx, gy, f0] of glows) {
+    const age = frame - f0;
+    if (age >= 0 && age < GLOW_LIFE) add(gx, gy, 12 + Math.round(age * 0.6), 1 - age / GLOW_LIFE);
+  }
+  const [sx, sy] = GLOW_AT;
+  if (found) for (let i = 0; i < 5; i++) add(sx + 40 + Math.round(Math.cos(i * 1.26 + frame / 5) * (34 + i * 6)), sy + 24 + Math.round(Math.sin(i * 1.26 + frame / 5) * 14), 26, 0.75);
+  if (t.hint) for (let i = 0; i < 3; i++) add(sx + 14 + ((i * 29 + frame * 3) % 60), sy + 10 + ((i * 17 + frame) % 26), 5, 0.6);
+  for (let y = 50; y < H; y++) for (let x = 0; x < W; x++) {
+    const v = light[y * W + x];
+    if (v <= 0.04) continue;
+    const th = (BAY4[y & 3][x & 3] + 0.5) / 16;
+    if (v > 0.72 && v - 0.72 > th * 0.28) p.set(x, y, '#d8fff4');
+    else if (v > th * 0.9) p.set(x, y, v > 0.4 ? '#5fe8d0' : '#1f8a8a');
+  }
+
+  // The hatchling: painted off to one side, then copied in wherever it is lit.
+  const q = new Pix();
+  creature(q, t.who || { shape: 'wisp', body: '#3f7fc0', dark: '#28558c', belly: '#8fd8f0', trim: '#b8fff0', wing: '#5fb0e0' }, sx, sy, { scale: 4, outline: '#0a3a4a' });
+  const at = t.at || [sx + 8, sy, 72, 40], strips = t.count || 4, lit = t.lit || [];
+  for (let y = sy - 6; y < sy + 48; y++) for (let x = sx; x < sx + 96; x++) {
+    const i = y * W + x, v = q.buf[i];
+    if (!v) continue;
+    const strip = Math.floor((x - at[0]) / (at[2] / strips));
+    if (found || lit.includes(strip) || glows.some(([gx, gy]) => Math.hypot(x - gx, y - gy) < 13)) p.buf[i] = v;
+  }
+  if (found) for (let i = 0; i < 14; i++) p.set(sx + 4 + ((i * 37 + frame * 2) % 88), sy - 8 + ((i * 23 + frame) % 56), i % 2 ? '#d8fff4' : '#5fe8d0');
+
+  // your kayak, nosing in from the corner
+  p.ellipse(54, 190, 62, 9, '#7a4a14'); p.ellipse(54, 188, 60, 8, '#b86a1c');
+  p.sprite(HERO, HERO_PAL, 30, 160);
+  p.sprite(SIDEKICK, SIDEKICK_PAL, 56, 166);
+  p.sprite(PUP, PUP_PAL, 82, 176);
+  p.ellipse(54, 194, 60, 5, '#b86a1c'); p.rect(0, 197, 116, 3, '#7a4a14');
+}
+const bayDark = (p, t) => bay(p, 'dark', t);
+bayDark.fps = 8;
+const bayFound = (p, t) => bay(p, 'found', t);
+bayFound.fps = 6;
+
+/** The museum van on the road. what: '' | 'jam' (cars ahead) | 'rain'. */
+function road(p, what = '') {
+  const rain = what === 'rain';
+  sky(p, 96, rain ? ['#5a6470', '#7a8490', '#9aa4ae', '#b4bcc4'] : undefined);
+  if (rain) { p.blob(80, 20, 60, 14, '#4a525e', '#6a7480', '#8a94a0'); p.blob(230, 26, 70, 16, '#4a525e', '#6a7480', '#8a94a0'); }
+  else { cloud(p, 70, 24, 1.0); cloud(p, 240, 34, 0.8); }
+  p.ellipse(70, 104, 130, 34, rain ? '#2a6a3c' : '#2f7d33'); p.ellipse(260, 108, 120, 30, rain ? '#357a44' : '#3f8a3a');
+  for (let i = 0; i < 40; i++) p.rect((i * 53) % W, 84 + ((i * 17) % 26), 3, 1, '#4cae4f');
+  // a palm on each side
+  const palm = (x, y) => { for (let i = 0; i < 46; i++) p.rect(x + Math.round(Math.sin(i / 12) * 3), y - i, 4, 1, i % 6 < 3 ? '#7a5232' : '#5a3a22'); for (const [dx, dy] of [[-1.2, -0.4], [-0.8, 0.2], [0.9, -0.4], [0.6, 0.3], [-0.2, -0.9]]) for (let i = 0; i < 20; i++) p.rect(x + 2 + Math.round(dx * i), y - 46 + Math.round(dy * i + (i * i) / 50), 3, 2, i % 2 ? '#2f7d33' : '#4cae4f'); };
+  palm(24, 122); palm(292, 124);
+  // the road
+  p.rect(0, 122, W, 62, '#4a4a52'); p.rect(0, 122, W, 2, '#74747c'); p.rect(0, 182, W, 2, '#74747c');
+  for (let x = 6; x < W; x += 30) p.rect(x, 152, 15, 3, '#f2e8a0');
+  p.grad(0, 184, W, 16, ['#4f9a3a', '#2f7a2a']);
+  const car = (x, y, c) => { p.rect(x, y + 6, 34, 10, c); p.rect(x + 6, y, 20, 8, c); p.rect(x + 8, y + 2, 7, 5, '#bfe0fa'); p.rect(x + 17, y + 2, 7, 5, '#bfe0fa'); p.ellipse(x + 8, y + 17, 4, 4, '#1e1414'); p.ellipse(x + 26, y + 17, 4, 4, '#1e1414'); p.rect(x, y + 9, 2, 3, '#d23a32'); };
+  if (what === 'jam') { car(190, 124, '#d23a32'); car(232, 124, '#2f6fd1'); car(274, 124, '#f2c531'); car(226, 158, '#c8c8c8'); car(270, 158, '#3f9e4a'); car(4, 124, '#ec8a2c'); }
+  // the museum van: purple, with an egg painted on the side
+  const x = 96, y = 126;
+  p.rect(x, y, 74, 34, '#7b4aa8'); p.rect(x, y, 74, 3, '#9a6ac8'); p.rect(x, y + 28, 74, 6, '#5b3282');
+  p.rect(x + 56, y + 6, 14, 12, '#bfe0fa'); p.rect(x + 34, y + 6, 18, 12, '#bfe0fa'); p.rect(x + 12, y + 6, 18, 12, '#bfe0fa');
+  p.blob(x + 21, y + 24, 4, 5, '#b8a020', '#f2e8a0', '#fffbe0');
+  p.ellipse(x + 16, y + 35, 7, 7, '#1e1414'); p.ellipse(x + 16, y + 35, 3, 3, '#8a8a96'); p.ellipse(x + 58, y + 35, 7, 7, '#1e1414'); p.ellipse(x + 58, y + 35, 3, 3, '#8a8a96');
+  p.rect(x + 72, y + 20, 3, 4, '#fff2b0');
+  // faces at the windows
+  p.rect(x + 38, y + 9, 5, 6, '#f6d3b8'); p.rect(x + 38, y + 8, 5, 2, '#6b3d1e'); p.rect(x + 18, y + 10, 5, 6, '#f6d3b8'); p.rect(x + 18, y + 9, 5, 2, '#6b3d1e');
+  p.rect(x + 60, y + 9, 6, 7, '#c98d63'); p.rect(x + 60, y + 7, 6, 3, '#ece8e4');
+  if (rain) for (let i = 0; i < 150; i++) { const rx = (i * 61) % W, ry = (i * 43) % H; p.rect(rx, ry, 1, 4, '#cfe6fa'); }
+}
+
+// ---------------------------------------------------------------------------
 // Icons: small pictures for puzzle boards (the cards in Memoria, the marks in
 // a picture graph, what goes in a tray). Each fits in iconBox and is called
 // as fn(pix, x, y). A puzzle bank names one with icon:.
@@ -1423,6 +1666,14 @@ export const scenes = {
   'sand-tracks': (p, t) => sandNest(p, 'real', t),
   'sand-nest': sandWiggle,
   'sand-dragon': (p, t) => sandNest(p, 'found', t),
+  lawn,
+  lookout,
+  bay: (p, t) => bay(p, 'day', t),
+  'bay-dark': bayDark,
+  'bay-dragon': bayFound,
+  road: (p) => road(p),
+  'road-jam': (p) => road(p, 'jam'),
+  'road-rain': (p) => road(p, 'rain'),
   'egg-gold': eggPic('#b8862a', '#f2c531', '#fff2b0'),
   'egg-silver': eggPic('#7a8490', '#c4ccd4', '#ffffff'),
   'egg-bronze': eggPic('#7a4a2a', '#c98a4e', '#f0c8a0'),

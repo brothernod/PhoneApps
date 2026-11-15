@@ -1,0 +1,13 @@
+# EL MORRO'S LAWN: a pool place.
+name: El Morro's lawn
+role: place
+drive: 10           # minutes on the clock to get here
+map: [62, 54]       # where it sits on the map picture
+
+slots:
+  ranger:
+    - { puzzle: flight_plan, topic: kite }
+    - { puzzle: sunset_clock, topic: kites }
+  stand:
+    - { puzzle: colores, topic: colors, skin: kites }
+    - { puzzle: picky_bridge, topic: kites }

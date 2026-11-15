@@ -66,6 +66,7 @@ glow:
   name: GLOW DRAGON
   based_on: glowing plankton
   color_es: AZUL
+  lair: glow-bay
   sprite: { shape: wisp, body: "#3f7fc0", dark: "#28558c", belly: "#8fd8f0", trim: "#b8fff0", wing: "#5fb0e0" }
   traits:
     covering: { is: smooth, found: "{sibling} pokes a shiny smear on the ground. It's SMOOTH and slippery, like jelly." }
@@ -74,7 +75,7 @@ glow:
   sign: "the puddle flashed blue-green when {pet} stepped in it"
   detour:
     place: The glowing bay
-    map: [300, 104]
+    pic: bay
     drive: 75
     lines:
       - "The van drives a long way east, to a quiet bay ringed with mangrove trees. No hatchling."

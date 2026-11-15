@@ -1,0 +1,14 @@
+# THE GLOWING BAY, BY DAY: a pool place. The glow dragon's lair is the same
+# bay in the dark (glow-bay).
+name: The glowing bay
+role: place
+drive: 75           # minutes on the clock to get here
+map: [294, 100]     # where it sits on the map picture
+
+slots:
+  hut:
+    - { puzzle: trading_post, topic: kayaks }
+    - { puzzle: snack_muncher, topic: bay }
+  dock:
+    - { puzzle: fact_or_fib, topic: bay }
+    - { puzzle: memoria, topic: bay }

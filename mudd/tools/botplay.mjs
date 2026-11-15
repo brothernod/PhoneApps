@@ -275,6 +275,7 @@ async function playRun(plan, history, bot, want = {}) {
       for (const v of Object.values(toy)) if (typeof v === 'string') see(v, 'a toy');
       if (toy.kind === 'taps' && !(toy.n >= toy.count[0] && toy.n <= toy.count[1])) fail(`${tag}: a taps toy asked for ${toy.n} taps`);
       if (toy.kind === 'pulse' && !(toy.count >= 1)) fail(`${tag}: a pulse toy with no presses`);
+      if (toy.kind === 'rub' && !(toy.count >= 2 && Array.isArray(toy.at) && toy.at[0] >= 70 && toy.at[0] + toy.at[2] <= 320 && toy.at[1] + toy.at[3] <= 200)) fail(`${tag}: a rub toy whose box is off the picture, or under the grown-up corner`);
       if (toy.kind === 'song') {
         const rounds = toy.rounds || [];
         if (rounds.length !== toy.notes.length || rounds.some((r, i) => r.length !== toy.notes[i])) fail(`${tag}: a song toy whose rounds don't match its notes`);
@@ -550,8 +551,11 @@ for (const id of canHatch) {
     const deck = [place, ...run.pool.filter((p) => p !== place)];
     for (const hubSlots of slotCombos(hub)) for (const placeSlots of slotCombos(pack.scenes[place])) for (const lairSlots of slotCombos(lair)) {
       const force = { creature: id, deck, slots: { [hub.id]: hubSlots, [place]: placeSlots, [lair.id]: lairSlots } };
+      // Three times over, once at each level, so every level of every puzzle is played.
       for (let again = 0; again < 3; again++) {
-        await playRun(deal(pack, 1000 + combos * 3 + again, newHistory(), force), newHistory(), bot, { go: [place] });
+        const leveled = newHistory();
+        leveled.skills = new Proxy({}, { get: (t, k) => (k in t ? t[k] : again + 1) });
+        await playRun(deal(pack, 1000 + combos * 3 + again, newHistory(), force), leveled, bot, { go: [place] });
       }
       combos++;
     }

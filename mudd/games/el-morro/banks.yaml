@@ -33,6 +33,39 @@ wording:
     hint_color: "{color} sounds like {say}. {hint}"
     hint_size: "{pick_size} means {pick_size_en}. You want {size}."
     hint_not: "NO ES {pick_color} means it is NOT {pick_color_en}."
+    # The same puzzle about other things. A slot asks for one with skin:.
+    # The thing must be a "la" word, like "la puerta", so the f: forms fit.
+    skins:
+      kites:
+        ask: "The kite seller calls: ¡{es}! Which kite is it?"
+        prompt: "¡{es}! PICK A KITE"
+        retry: TRY ANOTHER KITE
+        option: KITE
+        miss: "That kite is {pick_es}, which means {pick_en}. HINT: {es} sounds like {say}. {hint}"
+        reveal: "{es} means {en}. It's the {en} kite!"
+        ask2: "The kite seller calls: \"¡Toca la chiringa {color} y {size}!\" Which kite is it?"
+        prompt2: PICK A KITE
+        right2: "¡SÍ! \"La chiringa {color} y {size}\" is the {size_en} {color_en} kite."
+        reveal2: "\"La chiringa {color} y {size}\" is the {size_en} {color_en} kite."
+        ask3: "The kite seller calls: \"¡No es {no1} ni {no2}! ¡Es {size}!\" Which kite is it?"
+        prompt3: PICK A KITE
+        reveal3: "NO ES {no1} NI {no2}: not {no1_en}, not {no2_en}. ES {size}: it is {size_en}. That leaves the {size_en} {color_en} kite."
+        miss2: "That kite is {pick_color} y {pick_size}: {pick_color_en} and {pick_size_en}. HINT: {hint}"
+      packs:
+        ask: "The hikers call: ¡{es}! Which backpack is it?"
+        prompt: "¡{es}! PICK A BACKPACK"
+        retry: TRY ANOTHER BACKPACK
+        option: BACKPACK
+        miss: "That backpack is {pick_es}, which means {pick_en}. HINT: {es} sounds like {say}. {hint}"
+        reveal: "{es} means {en}. It's the {en} backpack!"
+        ask2: "The hikers call: \"¡Toca la mochila {color} y {size}!\" Which backpack is it?"
+        prompt2: PICK A BACKPACK
+        right2: "¡SÍ! \"La mochila {color} y {size}\" is the {size_en} {color_en} backpack."
+        reveal2: "\"La mochila {color} y {size}\" is the {size_en} {color_en} backpack."
+        ask3: "The hikers call: \"¡No es {no1} ni {no2}! ¡Es {size}!\" Which backpack is it?"
+        prompt3: PICK A BACKPACK
+        reveal3: "NO ES {no1} NI {no2}: not {no1_en}, not {no2_en}. ES {size}: it is {size_en}. That leaves the {size_en} {color_en} backpack."
+        miss2: "That backpack is {pick_color} y {pick_size}: {pick_color_en} and {pick_size_en}. HINT: {hint}"
   hola_y_gracias:
     who: Someone
     ask: "{who} says: \"{says}\" What do you say back?"
@@ -387,6 +420,50 @@ trading_post:
       explain: "{b} x {a} = {a*b}, and one more would cost {a*b+a}. So you can buy {answer}, with ${r} left."
       answer: "b"
 
+  # Maritza's kayak hut at the bay
+  kayaks:
+    - level: 1
+      vars: { a: [4, 7], b: [1, 3] }
+      text: "You have $10. You rent a kayak for ${a} and buy a snack for {pet} for ${b}. How many dollars do you have left?"
+      hint: "Add up what you spent: ${a} and ${b}. Then take that away from $10."
+      explain: "{a} + {b} = {a+b} dollars spent. 10 - {a+b} = {answer}."
+      answer: "10 - a - b"
+
+    - level: 1
+      vars: { a: [3, 6], b: [2, 5] }
+      text: "A paddle costs ${a} to rent. You rent one for you and one for {sibling}, and Doña Luz gives you ${b} to help. How many dollars do YOU pay?"
+      hint: "Two paddles cost {a} + {a}. Then take away the ${b} from Doña Luz."
+      explain: "{a} + {a} = {a+a} dollars. {a+a} - {b} = {answer}."
+      answer: "a + a - b"
+
+    - level: 2
+      vars: { a: [3, 6], b: [2, 3] }
+      text: "Life jackets cost ${a} each to rent. You rent {b} and pay with a $20 bill. How many dollars does Maritza give back?"
+      hint: "First find the price of {b} life jackets: {b} groups of {a}. Then take that away from 20."
+      explain: "{b} x {a} = {a*b} dollars. 20 - {a*b} = {answer}."
+      answer: "20 - a * b"
+
+    - level: 2
+      vars: { a: [5, 8], b: [2, 3], c: [2, 4] }
+      text: "You rent {b} kayaks at ${a} each, and one ${c} dry bag for the map. How many dollars is that in all?"
+      hint: "The kayaks first: {b} groups of {a}. Then add the dry bag."
+      explain: "{b} x {a} = {a*b}. Then {a*b} + {c} = {answer}."
+      answer: "a * b + c"
+
+    - level: 3
+      vars: { a: [6, 9], b: [2, 3], c: [2, 3], d: [2, 4] }
+      text: "A kayak is ${a} and a paddle is ${c}. You rent {b} kayaks and {d} paddles and pay $50. How many dollars come back?"
+      hint: "Kayaks: {b} x {a}. Paddles: {d} x {c}. Add those, then take the sum away from 50."
+      explain: "{a*b} + {c*d} = {a*b+c*d} dollars spent. 50 - {a*b+c*d} = {answer}."
+      answer: "50 - a * b - c * d"
+
+    - level: 3
+      vars: { a: [6, 9], b: [2, 5], r: [1, 4] }
+      text: "You have ${a*b+r}. A kayak ride costs ${a}. What is the MOST rides you can buy?"
+      hint: "Count by {a}s until one more would be too much. The leftover dollars can't buy a whole ride."
+      explain: "{b} x {a} = {a*b}, and one more would cost {a*b+a}. So you can buy {answer}, with ${r} left."
+      answer: "b"
+
 # ---------------------------------------------------------------------------
 # SUNSET CLOCK: time problems (Common Core 3.MD.A.1, time to the minute and
 # elapsed time). Written like DRAGON HOARD, plus:
@@ -397,13 +474,13 @@ trading_post:
 # Keep every time between 1:00 and 12:59. Here q counts five-minute steps,
 # so q*5 is the minutes past the hour.
 sunset_clock:
-  # the lantern tunnel at San Cristóbal
-  tours:
+  # El Morro's lawn
+  kites:
     - level: 1
       vars: { h: [1, 4], q: [1, 6], d: [2, 5] }
       at: "h*60 + q*5"
       as: time
-      text: "It's {at}. The ranger unlocks the tunnel gate in {d*5} minutes. What time will that be?"
+      text: "It's {at}. The kite contest starts in {d*5} minutes. What time does it start?"
       hint: "The hour stays {h}. Add {d*5} to the {q*5} minutes."
       explain: "{q*5} + {d*5} = {q*5+d*5} minutes, so it's {answer}."
       answer: "h*60 + q*5 + d*5"
@@ -413,7 +490,7 @@ sunset_clock:
       where: "q + d > 12"
       at: "h*60 + q*5"
       as: time
-      text: "It's {at}. The lantern tour starts in {d*5} minutes. What time does it start?"
+      text: "It's {at}. The wind will pick up in {d*5} minutes, and then the big kites go up. What time will that be?"
       hint: "From {at} it takes {60-q*5} minutes to reach {h+1}:00. How many of the {d*5} minutes are left?"
       explain: "{60-q*5} minutes gets you to {h+1}:00. {d*5} - {60-q*5} = {d*5+q*5-60} more: {answer}."
       answer: "h*60 + q*5 + d*5"
@@ -424,12 +501,12 @@ sunset_clock:
       at: "h*60 + q*5"
       end: "h*60 + q*5 + d*5"
       as: minutes
-      text: "The lantern tour goes into the tunnel at {at} and comes out at {end}. How many minutes long is the tour?"
+      text: "A kite went up at {at} and came down at {end}. How many minutes was it in the air?"
       hint: "Count from {at} up to {h+1}:00 first. Then add the minutes after {h+1}:00."
       explain: "{60-q*5} minutes to {h+1}:00, plus {q*5+d*5-60} more: {answer} minutes."
       answer: "d*5"
 
-  # the top of Yokahú Tower
+  # the tower view in El Yunque
   clouds:
     - level: 1
       vars: { h: [1, 4], q: [1, 6], d: [2, 5] }
@@ -513,6 +590,8 @@ snack_muncher:
     text: "{pet} won't cross without a snack. He eats only treats that {rule}. Tap each one he may eat."
   sand:
     text: "{pet} thinks shells are snacks. He eats only treats that {rule}. Tap each one he may eat."
+  bay:
+    text: "{pet} found Maritza's snack box. He eats only treats that {rule}. Tap each one he may eat."
 
 # ---------------------------------------------------------------------------
 # EGG CRATES: rows and columns, then sharing fairly (Common Core 3.OA.A.1 to
@@ -600,6 +679,11 @@ flight_plan:
     goal: the KEYS
     wall: a stone block
     icons: { who: dog, goal: key, wall: block }
+  kite:
+    text: "A kite got loose on the lawn! Plan a path for {pet} to the KITE. Go around the picnic blankets."
+    goal: the KITE
+    wall: a picnic blanket
+    icons: { who: dog, goal: kite, wall: blanket }
 
 # ---------------------------------------------------------------------------
 # EGG TO DRAGON: put the stages of a real animal's life in order. He taps the
@@ -687,6 +771,38 @@ picky_bridge:
     text: "The sign tells of a picky sentry. He let {yes} through the gate, but not {no}. Which one gets through next?"
   hiker:
     text: "The hiker draws a game in the mud. {yes} may cross her bridge, but not {no}. Which one may cross next?"
+  kites:
+    text: "The wind is picky today. It lifted the kites marked {yes}, but not {no}. Which kite will it lift next?"
+
+# ---------------------------------------------------------------------------
+# WEATHER WATCH: a small weather table, one row for each hour. He taps the
+# hour that fits the rule (Common Core 3.MD.B.3, reading a table; comparing
+# numbers). The weather is made up for each puzzle, so it needs no source.
+# skies: what the sky can be. es: is shown in the table, icon: is from
+#   pics/drawn.js, and ok: says whether it is good weather.
+# rules: what is asked, each with a level and rows: (3 to 5)
+#   ask: sky     the one hour with the first sky in the list
+#        calm    the hour with the least wind
+#        both    the one hour with good weather and wind under a number
+#        first   the first of two such hours
+# Each topic has a sentence for each ask. {sky} and {sky_en} are the first
+# sky in the list; {limit} is the wind number and {unit} is its unit.
+weather_watch:
+  skies:
+    - { es: SOL,      en: sunny,   icon: sun,   ok: true }
+    - { es: NUBES,    en: cloudy,  icon: cloud, ok: true }
+    - { es: LLUVIA,   en: rain,    icon: rain,  ok: false }
+    - { es: TORMENTA, en: a storm, icon: storm, ok: false }
+  rules:
+    - { level: 1, ask: sky, rows: 3 }
+    - { level: 1, ask: calm, rows: 3 }
+    - { level: 2, ask: both, rows: 4 }
+    - { level: 3, ask: first, rows: 5 }
+  deck:
+    text_sky: "The ranger opens the top deck only when the sky says {sky}: {sky_en}. Which hour is that?"
+    text_calm: "The ranger flies his weather flag when the wind (VIENTO) is at its LOWEST. Which hour is that?"
+    text_both: "The top deck opens when there is no LLUVIA or TORMENTA and the wind is under {limit} {unit}. Which hour is that?"
+    text_first: "The top deck opens at the FIRST hour with no LLUVIA or TORMENTA and wind under {limit} {unit}. Which hour is that?"
 
 # ---------------------------------------------------------------------------
 # COLORES: Spanish words and sentences
@@ -811,6 +927,24 @@ memoria:
     - { es: LA PALMA,    en: the palm tree, icon: palm }
     - { es: EL CANGREJO, en: the crab,      icon: crab }
     - { es: EL BARCO,    en: the boat,      icon: boat }
+  forest:
+    - { es: EL SOL,      en: the sun,      icon: sun }
+    - { es: LA NUBE,     en: the cloud,    icon: cloud }
+    - { es: LA LLUVIA,   en: the rain,     icon: rain }
+    - { es: EL ÁRBOL,    en: the tree,     icon: tree }
+    - { es: LA MONTAÑA,  en: the mountain, icon: mountain }
+    - { es: LA TORRE,    en: the tower,    icon: tower }
+    - { es: LA HOJA,     en: the leaf,     icon: leaf }
+    - { es: LA RANA,     en: the frog,     icon: frog }
+  bay:
+    - { es: EL AGUA,     en: the water,    icon: wave }
+    - { es: LA LUNA,     en: the moon,     icon: moon }
+    - { es: LA ESTRELLA, en: the star,     icon: star }
+    - { es: EL BARCO,    en: the boat,     icon: boat }
+    - { es: EL PEZ,      en: the fish,     icon: fish }
+    - { es: EL REMO,     en: the paddle,   icon: paddle }
+    - { es: EL CANGREJO, en: the crab,     icon: crab }
+    - { es: EL ÁRBOL,    en: the tree,     icon: tree }
 
 # ---------------------------------------------------------------------------
 # THE RESCUE: Spanish sentences for calling the hatchling (grade 2).
@@ -880,6 +1014,15 @@ facts:
       source: "U.S. Forest Service, El Yunque brochure"
     - text: "Only two kinds of coquí frog really sing co-kee."
       source: "U.S. Forest Service, coquí brochure"
+  bay:
+    - text: "The glow in the bay comes from living things too tiny to see one by one."
+      source: "UT Marine Science Institute"
+    - text: "The tiny glowing things flash blue-green when the water around them moves."
+      source: "UT Marine Science Institute"
+    - text: "Red mangrove trees make a vitamin that the tiny glowing things feed on."
+      source: "Scientific American"
+    - text: "Only a handful of glowing bays are known in the whole world."
+      source: "Scientific American"
   island:
     - text: "Baby coquí frogs skip the tadpole stage. They hatch as tiny froglets."
       source: "U.S. Forest Service, coquí brochure; eLife"
@@ -922,6 +1065,14 @@ fibs:
       hint: "You can climb it in a few minutes. Could you climb to outer space?"
     - text: "The trees in El Yunque are made of green plastic."
       hint: "Real trees grow from seeds, with rain and sun."
+
+  bay:
+    - text: "The bay glows because someone left a flashlight on the bottom."
+      hint: "The glow is all through the water. Could one flashlight do that?"
+    - text: "The glowing water is as hot as soup."
+      hint: "People paddle and splash in it. Would they, if it were hot?"
+    - text: "The bay glows only when you sing to it."
+      hint: "It glows when the water MOVES. Does a song move water?"
 
   falls:
     - text: "At La Coca Falls the water flows UP the rocks."
