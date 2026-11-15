@@ -17,7 +17,7 @@ import { hatchable, traitKeys } from './pack.js';
  * @param {import('./pack.js').Pack} pack
  * @param {number} seed
  * @param {{ caught?: Record<string, any>, recent?: string[] }} [history]  what the player has done before
- * @param {{ creature?: string, deck?: string[], slots?: Record<string, Record<string, number>> }} [force]
+ * @param {{ creature?: string, deck?: string[], slots?: Record<string, Record<string, number>>, events?: string[], eventLegs?: number[] }} [force]
  *   fixed picks, for replaying or testing one combination
  * @returns {Plan}
  */
@@ -47,7 +47,7 @@ export function deal(pack, seed, history = {}, force = {}) {
   const dealt = {};
   /** @type {Record<string, Record<string, any>>} */
   const slots = {};
-  for (const id of [run.hub, ...reachable, pack.creatures[creature].lair]) {
+  for (const id of [run.hub, ...reachable, pack.creatures[creature].lair, run.events]) {
     const card = pack.scenes[id];
     if (!card) continue;
     slots[id] = {};
@@ -65,7 +65,18 @@ export function deal(pack, seed, history = {}, force = {}) {
   const clues = rng.shuffle(traitKeys(pack));
   const lock = Array.from({ length: stops }, () => rng.int(1, 9));
 
-  return { seed, creature, stops, deck, slots, clues, lock };
+  // 5. What happens along the way. The drives are numbered: 0 is the drive to
+  //    the first place, and the last one is the drive to the lair. A run
+  //    gets events on some of them, taken off the top of a shuffled deck
+  //    (the quest skips an event that doesn't fit where the van is going).
+  const road = pack.scenes[run.events];
+  const all5 = road ? Object.keys(road.events) : [];
+  const legs = stops + 1;
+  const count = Math.min(Number(run.events_per_run) || 0, legs, all5.length);
+  const eventLegs = force.eventLegs || rng.shuffle([...Array(legs).keys()]).slice(0, count).sort((a, b) => a - b);
+  const events = force.events ? [...force.events, ...all5.filter((e) => !force.events.includes(e))] : rng.shuffle(all5);
+
+  return { seed, creature, stops, deck, slots, clues, lock, events, eventLegs };
 }
 
 /**

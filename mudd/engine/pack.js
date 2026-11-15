@@ -12,7 +12,7 @@ const COUNTED = ['clue', 'digit', 'caught', 'rate'];
 export const knotName = (id) => 'scene_' + String(id).replace(/[^A-Za-z0-9]/g, '_');
 
 /**
- * @typedef {{ id: string, name?: string, role: 'hub'|'place'|'lair', drive?: number, finish?: string, casefile?: string,
+ * @typedef {{ id: string, name?: string, role: 'hub'|'place'|'lair'|'events', events: Record<string, { at?: string[], far?: number, near?: number }>, drive?: number, finish?: string, casefile?: string,
  *   map?: number[], slots: Record<string, any[]>, toys: Record<string, any>, ink: string, knot: string,
  *   tags: Record<string, string[]>, count: Record<string, number>, stitches: string[] }} SceneCard
  * @typedef {{ id: string, game: any, cast: Record<string,string>, words: Record<string, any>,
@@ -39,14 +39,15 @@ export async function loadPack(id, read, yaml) {
   const run = game.run || {};
   const [creatures, banks] = await Promise.all([data('creatures.yaml'), data('banks.yaml')]);
 
-  // Every card the game can reach: the hub, the pool, and each creature's lair.
+  // Every card the game can reach: the hub, the pool, each creature's lair,
+  // and the card of things that happen on a drive, if the game has one.
   // A creature with no lair yet stays in the lineup but can't hatch.
-  const ids = [...new Set([run.hub, ...(run.pool || []), ...Object.values(creatures).map((c) => c && c.lair)].filter(Boolean))];
+  const ids = [...new Set([run.hub, ...(run.pool || []), ...Object.values(creatures).map((c) => c && c.lair), run.events].filter(Boolean))];
   /** @type {Record<string, SceneCard>} */
   const scenes = {};
   await Promise.all(ids.map(async (sid) => {
     const [meta, ink] = await Promise.all([data(`scenes/${sid}.yaml`), text(`scenes/${sid}.ink`)]);
-    scenes[sid] = { ...meta, id: sid, slots: meta.slots || {}, toys: meta.toys || {}, ink, knot: knotName(sid), ...scanInk(ink) };
+    scenes[sid] = { ...meta, id: sid, slots: meta.slots || {}, toys: meta.toys || {}, events: meta.events || {}, ink, knot: knotName(sid), ...scanInk(ink) };
   }));
 
   const pics = game.pics || {};
@@ -63,6 +64,20 @@ export async function loadPack(id, read, yaml) {
   };
   pack.ink = buildInk(pack, ids);
   return pack;
+}
+
+/**
+ * Can this event happen on the drive to this card?
+ * @param {{ at?: string[], far?: number, near?: number } | null | undefined} ev
+ * @param {{ id: string, drive?: number }} to
+ */
+export function eventFits(ev, to) {
+  const e = ev || {};
+  const drive = Number(to.drive) || 0;
+  if (Array.isArray(e.at) && !e.at.includes(to.id)) return false;
+  if (e.far !== undefined && drive < Number(e.far)) return false;
+  if (e.near !== undefined && drive > Number(e.near)) return false;
+  return true;
 }
 
 /** Find the tags and stitches in one card's ink, skipping // comments. */
@@ -206,6 +221,29 @@ export function checkPack(pack, known) {
     if (!card.count.clue) bad(`scenes/${id}.ink: a place needs a "# clue" tag`);
     if (!card.count.digit) bad(`scenes/${id}.ink: a place needs a "# digit" tag for the lock`);
   }
+
+  // The card of things that happen on a drive.
+  if (run.events) {
+    const card = pack.scenes[run.events];
+    const at = `scenes/${run.events}`;
+    if (card) {
+      if (card.role !== 'events') bad(`${at}.yaml: the events card needs role: events`);
+      const names = Object.keys(card.events);
+      if (!names.length) bad(`${at}.yaml: events: is empty`);
+      if (!(Number.isInteger(run.events_per_run) && run.events_per_run >= 0 && run.events_per_run <= names.length)) bad(`game.yaml: run.events_per_run must be a whole number, no more than the ${names.length} events in ${at}.yaml`);
+      for (const name of names) {
+        const ev = card.events[name] || {};
+        if (!card.stitches.includes(name)) bad(`${at}.ink has no "= ${name}" part for the event "${name}"`);
+        for (const to of ev.at || []) if (!pack.scenes[to]) bad(`${at}.yaml: event "${name}" is at: "${to}", which is not a card`);
+        for (const k of ['far', 'near']) if (ev[k] !== undefined && !(Number(ev[k]) > 0)) bad(`${at}.yaml: event "${name}": ${k}: must be a number of minutes`);
+      }
+      // Every drive needs at least one event that can happen on it.
+      for (const to of Object.values(pack.scenes)) {
+        if (to.role !== 'place' && to.role !== 'lair') continue;
+        if (!names.some((name) => eventFits(card.events[name], to))) bad(`${at}.yaml: no event can happen on the way to "${to.id}"`);
+      }
+    }
+  } else if (run.events_per_run) bad('game.yaml: run.events_per_run is set, but run.events names no card');
 
   const creatureIds = Object.keys(pack.creatures);
   if (!creatureIds.length) bad('creatures.yaml: no creatures');

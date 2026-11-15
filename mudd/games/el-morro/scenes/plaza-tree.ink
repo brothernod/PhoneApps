@@ -3,14 +3,8 @@
 // Tags are listed at the top of museum.ink.
 
 The van stops at a little plaza with a big shady tree. # clear # pic: plaza
-A street cat on the bench puffs up and HISSES at {pet}.
-* [GO AROUND the CAT]
-    You take the long way around the plaza.
-    ~ minutes += 10
-* [Let {pet} SAY HELLO]
-    {pet} lies down flat and wags his stubby tail.
-    The cat sniffs his nose... and purrs. A new friend!
-- Leaves drift down, but there is no wind. Something is up in that tree. # toy: tail
+A street cat is asleep on the bench. {pet} tiptoes past it. Corgis are not good at tiptoeing.
+Leaves drift down, but there is no wind. Something is up in that tree. # toy: tail
 A long green TAIL swishes between the leaves. You spotted it! # cue: find
 -> found
 

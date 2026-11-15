@@ -15,7 +15,7 @@
 
 import { offers } from './dealer.js';
 import { playPuzzle } from './puzzles.js';
-import { traitKeys, traitValue } from './pack.js';
+import { traitKeys, traitValue, eventFits } from './pack.js';
 import { makeRng, fill, clock } from './util.js';
 
 /** Toys a lair card can ask for with "# toy: <name>". The screen plays them. */
@@ -42,7 +42,7 @@ export const TOYS = ['spot', 'taps', 'pulse', 'song', 'rub'];
  * }} QuestUi
  *
  * What a saved game remembers besides the ink state.
- * @typedef {{ step: number, entered: boolean, puzzleN: number, toyN: number, disk: number,
+ * @typedef {{ step: number, entered: boolean, drove: boolean, event: string, eventsDone: string[], puzzleN: number, toyN: number, disk: number,
  *   clues: string[], sign: boolean, digits: number, route: string[],
  *   crossed: string[], wrong: string[], named: string,
  *   stars: Record<string, number>, tries: Record<string, number>,
@@ -61,7 +61,7 @@ export const TOYS = ['spot', 'taps', 'pulse', 'song', 'rub'];
 
 /** @returns {QuestState} */
 export const newQuestState = () => ({
-  step: 0, entered: false, puzzleN: 0, toyN: 0, disk: 1,
+  step: 0, entered: false, drove: false, event: '', eventsDone: [], puzzleN: 0, toyN: 0, disk: 1,
   clues: [], sign: false, digits: 0, route: [],
   crossed: [], wrong: [], named: '',
   stars: {}, tries: {},
@@ -350,10 +350,31 @@ export async function runQuest({ pack, plan, story, state, ui, hooks }) {
     }
   }
 
-  /** Start a card at `path` unless a saved game is already inside it, then play it. */
-  async function visit(card, path, arrive) {
+  /** What happens on this drive, if anything: the next event in the deck that fits where the van is going. */
+  const road = pack.scenes[run.events];
+  const eventFor = (card, leg) => {
+    if (!road || !(plan.eventLegs || []).includes(leg)) return '';
+    return (plan.events || []).find((id) => !state.eventsDone.includes(id) && road.events[id] && eventFits(road.events[id], card)) || '';
+  };
+
+  /**
+   * Go to a card and play it. `arrive` is the drive there, and `leg` is the
+   * number of that drive (see the dealer): something may happen on the way.
+   * A saved game picks up where it was: partway there, or already in the card.
+   */
+  async function visit(card, path, arrive, leg = -1) {
     if (!state.entered) {
-      if (arrive) await arrive();
+      if (!state.drove) {
+        if (arrive) await arrive();
+        state.drove = true;
+        state.event = leg >= 0 ? eventFor(card, leg) : '';
+        if (state.event) story.ChoosePathString(`${road.knot}.${state.event}`);
+      }
+      if (state.event) {
+        await playCard(road);
+        state.eventsDone.push(state.event);
+        state.event = '';
+      }
       story.ChoosePathString(path);
       state.entered = true;
     }
@@ -385,7 +406,7 @@ export async function runQuest({ pack, plan, story, state, ui, hooks }) {
     await ui.choose([fill(words.case_back, names)]);
   }
 
-  for (; state.step < stages.length; state.step++, state.entered = false) {
+  for (; state.step < stages.length; state.step++, state.entered = false, state.drove = false) {
     const stage = stages[state.step];
 
     if (stage === 'hub') {
@@ -400,7 +421,7 @@ export async function runQuest({ pack, plan, story, state, ui, hooks }) {
         state.route.push(offer[pick] || offer[0]);
       }
       const card = pack.scenes[state.route[state.step - 1]];
-      await visit(card, card.knot, () => drive(card.drive));
+      await visit(card, card.knot, () => drive(card.drive), state.step - 1);
     } else if (stage === 'case') {
       await visit(hub, `${hub.knot}.${hub.casefile}`);
       // Every trait must be known before he is asked to name the creature.
@@ -425,7 +446,7 @@ export async function runQuest({ pack, plan, story, state, ui, hooks }) {
       await visit(lair, lair.knot, async () => {
         await ui.map(mapView([cardOnMap(lair)], fill(words.map_lair, names)));
         await drive(lair.drive);
-      });
+      }, plan.stops);
     } else if (stage === 'home') {
       await visit(hub, `${hub.knot}.${hub.finish}`, () => drive(hub.drive));
     }

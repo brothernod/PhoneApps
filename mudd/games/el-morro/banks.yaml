@@ -506,6 +506,38 @@ sunset_clock:
       explain: "{60-q*5} minutes to {h+1}:00, plus {q*5+d*5-60} more: {answer} minutes."
       answer: "d*5"
 
+  # a traffic jam, from the event deck
+  tapon:
+    - level: 1
+      vars: { h: [9, 11], q: [1, 6], d: [2, 5] }
+      at: "h*60 + q*5"
+      as: time
+      text: "The van's clock says {at}. The radio says the tapón will clear in {d*5} minutes. What time will that be?"
+      hint: "The hour stays {h}. Add {d*5} to the {q*5} minutes."
+      explain: "{q*5} + {d*5} = {q*5+d*5} minutes, so it's {answer}."
+      answer: "h*60 + q*5 + d*5"
+
+    - level: 2
+      vars: { h: [9, 11], q: [7, 11], d: [3, 9] }
+      where: "q + d > 12"
+      at: "h*60 + q*5"
+      as: time
+      text: "The van's clock says {at}. The radio says the tapón will clear in {d*5} minutes. What time will that be?"
+      hint: "From {at} it takes {60-q*5} minutes to reach the next hour. How many of the {d*5} minutes are left?"
+      explain: "{60-q*5} minutes gets you to the next hour. {d*5} - {60-q*5} = {d*5+q*5-60} more: {answer}."
+      answer: "h*60 + q*5 + d*5"
+
+    - level: 3
+      vars: { h: [9, 11], q: [5, 10], d: [4, 9] }
+      where: "q + d > 12"
+      at: "h*60 + q*5"
+      end: "h*60 + q*5 + d*5"
+      as: minutes
+      text: "The van stopped at {at} and started rolling again at {end}. How many minutes was it stuck in the tapón?"
+      hint: "Count from {at} up to the next hour first. Then add the minutes after that."
+      explain: "{60-q*5} minutes to the next hour, plus {q*5+d*5-60} more: {answer} minutes."
+      answer: "d*5"
+
   # the tower view in El Yunque
   clouds:
     - level: 1
@@ -679,6 +711,11 @@ flight_plan:
     goal: the KEYS
     wall: a stone block
     icons: { who: dog, goal: key, wall: block }
+  hat:
+    text: "{hero}'s HAT is rolling away! Plan a path for {pet} to the hat. Go around the puddles."
+    goal: the HAT
+    wall: a puddle
+    icons: { who: dog, goal: hat, wall: puddle }
   kite:
     text: "A kite got loose on the lawn! Plan a path for {pet} to the KITE. Go around the picnic blankets."
     goal: the KITE
@@ -1023,6 +1060,10 @@ facts:
       source: "Scientific American"
     - text: "Only a handful of glowing bays are known in the whole world."
       source: "Scientific American"
+  # The other fact comes from island: below, which already has the push-ups.
+  anole:
+    - text: "Scientists built robot lizards to learn why anoles do push-ups."
+      source: "UC Davis"
   island:
     - text: "Baby coquí frogs skip the tadpole stage. They hatch as tiny froglets."
       source: "U.S. Forest Service, coquí brochure; eLife"
@@ -1065,6 +1106,12 @@ fibs:
       hint: "You can climb it in a few minutes. Could you climb to outer space?"
     - text: "The trees in El Yunque are made of green plastic."
       hint: "Real trees grow from seeds, with rain and sun."
+
+  anole:
+    - text: "Anole lizards do push-ups to get ready for arm wrestling."
+      hint: "Who would a lizard arm wrestle? Think about why it wants to be SEEN."
+    - text: "An anole lizard does one push-up for every car that goes by."
+      hint: "Lizards can't count cars. Its push-ups are a message to other lizards."
 
   bay:
     - text: "The bay glows because someone left a flashlight on the bottom."

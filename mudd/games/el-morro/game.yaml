@@ -43,6 +43,8 @@ run:
     - beach
     - bay
   places_per_run: 3
+  events: on-the-road    # the card of things that can happen on a drive
+  events_per_run: 2      # how many of them a run gets
 
 # Where a skill starts, for a skill that shouldn't start on level 1. The game
 # still steps down after two misses and up after two first-try solves.

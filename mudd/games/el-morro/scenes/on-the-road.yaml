@@ -1,0 +1,28 @@
+# ON THE ROAD: the event deck. Things that can happen on a drive.
+name: On the road
+role: events
+
+# Each event is a "= part" of on-the-road.ink with the same name. A run gets
+# events_per_run of them (see run: in game.yaml), each on a different drive.
+# An event can be picky about the drive it happens on:
+#   at:   only on the way to one of these cards
+#   far:  only on a drive of at least this many minutes
+#   near: only on a drive of at most this many minutes
+events:
+  tapon: { far: 40 }          # a traffic jam on the highway
+  flat: { far: 40 }           # a flat tire
+  rain: { at: [yokahu, lookout, la-coca, juan-diego, vine-cave, mossy-hollow, old-tree] }
+  lizard: {}                  # the push-up lizard
+  cat: { near: 20 }           # a street cat in the old city
+  drip: { near: 20 }          # a piragua that drips
+  stop: { far: 40 }           # a bathroom break
+  hat: { at: [lawn, garita, sunny-wall] }   # a windy hat by El Morro
+  shark: { far: 40 }          # the shark statue from the trip
+
+slots:
+  jam:
+    - { puzzle: sunset_clock, topic: tapon }
+  lizard:
+    - { puzzle: fact_or_fib, topic: anole }
+  hat:
+    - { puzzle: flight_plan, topic: hat }

@@ -26,7 +26,7 @@ import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import path from 'node:path';
 
-import { loadPack, checkPack, compileStory, hatchable, traitKeys } from '../engine/pack.js';
+import { eventFits, loadPack, checkPack, compileStory, hatchable, traitKeys } from '../engine/pack.js';
 import { deal, offers, slotCombos } from '../engine/dealer.js';
 import { ARCHETYPES, TILE_COLS, TILE_LINES } from '../engine/puzzles.js';
 import { runQuest, newQuestState, startStory, toggleCrossed, TOYS } from '../engine/quest.js';
@@ -184,6 +184,21 @@ const stats = { finished: 0, played: 0, words: 0, puzzles: 0, choices: 0, minute
 const eggCount = {};            // egg id -> runs that earned it
 const dealtCount = {};          // "card.slot=puzzle" -> times dealt
 const visited = new Set();      // "card.stitch" reached by some run
+const eventsPlayed = new Set(); // events that happened in some run
+// How many puzzles each event has: the "# slot:" tags from its "= part" to
+// the next part that is another event, or the end of the card.
+const road = pack.scenes[(pack.game.run || {}).events];
+/** @type {Record<string, number>} */
+const eventSlots = {};
+if (road) {
+  let at = '';
+  for (const raw of road.ink.split('\n')) {
+    const line = raw.replace(/\/\/.*$/, '');
+    const st = /^\s*=\s*([A-Za-z_]\w*)\s*$/.exec(line);
+    if (st && road.events[st[1]]) at = st[1];
+    if (at && /#\s*slot:/.test(line)) eventSlots[at] = (eventSlots[at] || 0) + 1;
+  }
+}
 const detoured = new Set();     // creatures a run was sent to by mistake
 const toysPlayed = new Set();   // "card.toy" played by some run
 const levelsPlayed = new Set(); // "skill@level" of pick-one puzzles played
@@ -488,7 +503,12 @@ async function playRun(plan, history, bot, want = {}) {
   if (state.route.length !== plan.stops || new Set(state.route).size !== plan.stops) fail(`${tag}: visited ${state.route.join(', ') || 'nowhere'}, but the run has ${plan.stops} stops`);
   if (state.clues.length !== traitCount) fail(`${tag}: ended with ${state.clues.length} of ${traitCount} clues`);
   const stops = [hub.id, ...state.route, lair.id];
-  const expected = stops.reduce((n, id) => n + Object.keys(plan.slots[id] || {}).length, 0);
+  // Every slot of every stop, and the puzzles in whatever happened on the drives.
+  if (state.eventsDone.length !== plan.eventLegs.length) fail(`${tag}: ${plan.eventLegs.length} events were dealt but ${state.eventsDone.length} happened (${state.eventsDone.join(', ')})`);
+  if (new Set(state.eventsDone).size !== state.eventsDone.length) fail(`${tag}: an event happened twice (${state.eventsDone.join(', ')})`);
+  for (const e of state.eventsDone) eventsPlayed.add(e);
+  const expected = stops.reduce((n, id) => n + Object.keys(plan.slots[id] || {}).length, 0)
+    + state.eventsDone.reduce((n, e) => n + (eventSlots[e] || 0), 0);
   if (puzzles !== expected) fail(`${tag}: ${puzzles} puzzles played but ${expected} were dealt`);
   if (rating && rating.puzzles !== expected) fail(`${tag}: the rating counted ${rating.puzzles} puzzles of ${expected}`);
   for (const t of lair.tags.toy) toysPlayed.add(`${lair.id}.${t}`);
@@ -513,7 +533,7 @@ async function playRun(plan, history, bot, want = {}) {
   for (const card of Object.values(pack.scenes)) {
     for (const st of card.stitches) if (story.state.VisitCountAtPathString(`${card.knot}.${st}`) > 0) visited.add(`${card.id}.${st}`);
   }
-  for (const id of stops) for (const [slot, spec] of Object.entries(plan.slots[id] || {})) {
+  for (const id of [...stops, ...(road && state.eventsDone.length ? [road.id] : [])]) for (const [slot, spec] of Object.entries(plan.slots[id] || {})) {
     const key = `${id}.${slot}=${spec.puzzle}`;
     dealtCount[key] = (dealtCount[key] || 0) + 1;
   }
@@ -560,6 +580,19 @@ for (const id of canHatch) {
       combos++;
     }
   }
+}
+
+// 4f. Every event, on a drive it fits.
+let forcedEvents = 0;
+for (const name of Object.keys(road ? road.events : {})) {
+  const place = run.pool.find((p) => eventFits(road.events[name], pack.scenes[p]));
+  if (!place) { fail(`scenes/${road.id}.yaml: event "${name}" fits no place in the pool, so the bot can't play it`); continue; }
+  const deck = [place, ...run.pool.filter((p) => p !== place)];
+  for (let again = 0; again < 4; again++) {
+    await playRun(deal(pack, 9000 + forcedEvents * 4 + again, newHistory(), { deck, events: [name], eventLegs: [0] }), newHistory(), bot, { go: [place] });
+  }
+  if (!eventsPlayed.has(name)) fail(`event "${name}" was dealt first on the way to ${place}, and did not happen`);
+  forcedEvents++;
 }
 
 // 4c. Every wrong guess: each creature that can hatch, with each other
