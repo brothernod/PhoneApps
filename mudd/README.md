@@ -160,7 +160,7 @@ one; a path that doesn't reach its goal; a weather table with two right
 hours; a Memoria word too long for its card; a fact without a source; a
 puzzle that offers a treat and has no hint; an event that never happens;
 and anything from the pack hard-wired into the engine. A full run takes
-about eight minutes.
+about five minutes.
 
 ## Not built yet
 
