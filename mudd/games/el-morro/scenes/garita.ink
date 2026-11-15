@@ -30,13 +30,13 @@ You stack them, and count, and stack them again. That takes a while.
 -> choose
 
 = sign
-A sign by the garita tells about the fort. But someone with tiny claws has scratched an extra line into it.
-{pet} sniffs the sign and sneezes. One of these lines doesn't belong! # slot: sign
+A sign by the garita tells about the fort and the sentries who kept watch here. Someone with tiny claws has been scratching at it.
+{pet} sniffs the sign and sneezes. There's a puzzle in this! # slot: sign
 + [@pass] -> sign_pass
 + [@fail] -> sign_fail
 
 = sign_pass
-{pet} wags. You rub the scratched line with your thumb, and something is hiding under the dust. # cue: find
+{pet} wags. You rub the scratches with your thumb, and something is hiding under the dust. # cue: find
 It leads to a black scorch mark inside the garita, no bigger than your hand. # digit
 -> choose
 

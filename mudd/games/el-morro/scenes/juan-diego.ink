@@ -31,17 +31,17 @@ On the far bank, {sibling} points at the mud. # clue
 
 = hiker
 A hiker with a big backpack is resting on a rock by the pool. She waves at you.
-"She only speaks Spanish," Doña Luz whispers. "Go on. You can do it!" # slot: hiker
+"She only speaks Spanish," Doña Luz whispers. "Go on, say hello. You can do it!" # slot: hiker
 + [@pass] -> hiker_pass
 + [@fail] -> hiker_fail
 
 = hiker_pass
-"¡Qué bien hablas!" The hiker laughs and points behind the rock she is sitting on. # cue: find
+"¡Muy bien!" The hiker laughs and points behind the rock she is sitting on. # cue: find
 Something small scratched the stone back there. # digit
 -> choose
 
 = hiker_fail
-The hiker says it again, slowly, and Doña Luz helps you answer. That takes a while.
+The hiker goes through it again, slowly, and Doña Luz helps you answer. That takes a while.
 ~ minutes += 15
 Then the hiker points behind the rock she is sitting on. Something small scratched the stone back there. # digit
 -> choose

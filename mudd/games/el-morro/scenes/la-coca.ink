@@ -31,13 +31,13 @@ Ranger Inés works through it with you, one step at a time. A cloud drifts over 
 -> choose
 
 = sign
-A sign at the lookout tells about the falls and the forest. Someone with tiny claws has scratched an extra line into it.
-{pet} sniffs the sign and sneezes. One of these lines doesn't belong! # slot: sign
+A sign at the lookout tells about the falls and the animals of the forest. Someone with tiny claws has been at it: the words are scratched and the pictures are knocked crooked.
+{pet} sniffs the sign and sneezes. Something here needs fixing! # slot: sign
 + [@pass] -> sign_pass
 + [@fail] -> sign_fail
 
 = sign_pass
-{pet} wags. You wipe the wet sign with your sleeve, and there is something under the scratched line. # cue: find
+{pet} wags. You wipe the wet sign with your sleeve, and there is something under the scratches. # cue: find
 A little scorch mark, right on the signpost. # digit
 -> choose
 

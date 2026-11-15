@@ -245,6 +245,7 @@ async function playQuest(run) {
       numpad: (prompt, format) => screen.cardNumpad(prompt, format),
       pick: (options, prompt) => screen.cardPick(options, prompt),
       grid: (board, prompt, last) => screen.cardGrid(board, prompt, last),
+      order: (board, prompt, last) => screen.cardOrder(board, prompt, last),
       pairs: (board, prompt, opts) => screen.cardPairs(board, prompt, opts, (name) => sound.play(name)),
       solve: (board, solution) => screen.cardSolve(board, solution),
       hint: (text) => screen.cardHintText(text),

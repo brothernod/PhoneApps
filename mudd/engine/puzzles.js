@@ -1,7 +1,8 @@
 // @ts-check
 // Puzzle archetypes. An archetype is a small rule set: from the quest number,
 // the player's level, and the pack's banks, it makes one puzzle for one of
-// the shared answer screens (number pad, pick one, a board of squares to tap).
+// the shared answer screens (number pad, pick one, a board of squares to tap,
+// things to put in order).
 // The screens live in screen.js; this file has no screen code, so the bot
 // plays the same puzzles.
 //
@@ -27,7 +28,7 @@ import { evalExpr, fill } from './util.js';
  *
  * One made puzzle. `screen` says which answer screen runs it.
  * @typedef {{
- *   screen: 'numpad' | 'pick' | 'grid' | 'pairs',
+ *   screen: 'numpad' | 'pick' | 'grid' | 'pairs' | 'order',
  *   format?: 'clock',
  *   skill: string,
  *   question: string,
@@ -36,7 +37,8 @@ import { evalExpr, fill } from './util.js';
  *   options?: { label: string, color?: string, size?: string, correct: boolean, miss: string }[],
  *   miss?: (guess: any) => string,
  *   board?: Record<string, any>,
- *   check?: (answer: any) => boolean, solution?: any, decoy?: any,
+ *   check?: (answer: any) => boolean, solution?: any, decoy?: any, keep?: (answer: any) => any,
+ *   hint?: string,
  *   starMisses?: number, maxMisses?: number,
  *   right: string, reveal: string,
  *   maxLines?: number,
@@ -205,6 +207,66 @@ const WORDS = {
     hint_same: 'Match a WORD with a PICTURE.',
     reveal: 'Here they all are. {list}.',
   },
+  flight_plan: {
+    ask: 'Plan a path to the goal.',
+    wall: 'something in the way', goal: 'the goal',
+    go_left: 'LEFT', go_up: 'UP', go_down: 'DOWN', go_right: 'RIGHT',
+    go_left_en: '', go_up_en: '', go_down_en: '', go_right_en: '',
+    prompt: 'TAP THE ARROWS, THEN GO',
+    retry: 'FIX THE PATH AND TRY AGAIN',
+    undo: 'UNDO', done: 'GO!',
+    right: '{praise} {steps} steps, and there it is.',
+    miss_wall: 'Step {n}, {move}, bumps into {wall}. HINT: {hint}',
+    miss_edge: 'Step {n}, {move}, goes off the map. HINT: {hint}',
+    miss_short: 'The path stops before {goal}. HINT: {hint}',
+    hint: 'Trace the path with your finger first, one square at a time.',
+    reveal: 'One way to get there: {way}.',
+  },
+  egg_to_dragon: {
+    ask: 'How does a {name} grow up? Tap the pictures in order, from first to last.',
+    prompt: 'TAP THEM IN ORDER',
+    retry: 'TAP THE REST IN ORDER',
+    done: 'DONE',
+    right: '{praise} {fact}',
+    miss_first: 'Not that one first. HINT: {hint}',
+    miss: 'The first {kept} are right. Number {n} is not. HINT: {hint}',
+    hint: 'What comes before anything else?',
+    treat: 'Find the very first one. Then ask: what happens next?',
+    reveal: 'Here is the order: {list}.',
+  },
+  picky_bridge: {
+    who: 'The keeper',
+    ask: '{who} let {yes} cross, but not {no}. Which one may cross next?',
+    prompt: 'WHICH ONE MAY CROSS?',
+    retry: 'TRY ANOTHER ONE',
+    right: '{praise} {rule}.',
+    miss: '{pick} is sent back. HINT: {hint}',
+    hint: 'Look at the ones that crossed. What is the same about all of them?',
+    reveal: '{rule}. So {answer} may cross.',
+    rule_even: 'They are all EVEN numbers',
+    rule_odd: 'They are all ODD numbers',
+    rule_over: 'They are all bigger than {n}',
+    rule_under: 'They are all smaller than {n}',
+    rule_multiple: 'They are all multiples of {n}',
+    rule_digits: 'The two digits of each one add up to {n}',
+  },
+  weather_watch: {
+    ask_sky: 'Pick the hour when the sky says {sky}.',
+    ask_calm: 'Pick the hour with the least wind.',
+    ask_both: 'Pick the hour with good weather and wind under {limit}.',
+    ask_first: 'Pick the FIRST hour with good weather and wind under {limit}.',
+    head_time: 'TIME', head_sky: 'SKY', head_wind: 'WIND', unit: 'mph',
+    prompt: 'TAP AN HOUR',
+    retry: 'TAP ANOTHER HOUR',
+    done: 'DONE',
+    right: '{praise} {time} it is.',
+    miss_sky: 'At {pick_time} the sky says {pick_sky}: {pick_sky_en}. HINT: {hint}',
+    miss_wind: 'At {pick_time} the wind is {pick_wind}. That is not under {limit}. HINT: {hint}',
+    miss_calm: 'The wind at {pick_time} is {pick_wind}. Another hour has less. HINT: {hint}',
+    miss_first: '{pick_time} is fine, but an earlier hour is fine too. HINT: {hint}',
+    hint: 'Read across each row, one at a time.',
+    reveal: 'It was {time}: {sky_es}, with wind at {wind}.',
+  },
   code_lock: {
     ask: 'It is LOCKED. Type the code: your lock numbers, in the order you found them.',
     prompt: 'TYPE THE CODE',
@@ -215,9 +277,16 @@ const WORDS = {
   },
 };
 
-/** The pack's wording for a puzzle, over the plain fallbacks. */
-function wording(banks, type) {
-  return { ...WORDS[type], ...((banks.wording || {})[type] || {}) };
+/**
+ * The pack's wording for a puzzle, over the plain fallbacks. A slot can ask
+ * for a skin ({ puzzle: colores, skin: kites }): the words under
+ * wording.<puzzle>.skins.<skin> in the bank then go over the rest, so the
+ * same puzzle can be about doors in one place and kites in another.
+ */
+function wording(banks, type, spec) {
+  const own = (banks.wording || {})[type] || {};
+  const skin = spec && spec.skin ? (own.skins || {})[spec.skin] || {} : {};
+  return { ...WORDS[type], ...own, ...skin };
 }
 
 const praise = (ctx) => ctx.rng.pick(ctx.banks.praise && ctx.banks.praise.length ? ctx.banks.praise : ['CORRECT!']);
@@ -480,7 +549,7 @@ const colores = {
   /** @param {Spec} spec @param {MakeCtx} ctx @returns {Puzzle} */
   make(spec, ctx) {
     const { rng, banks, names } = ctx;
-    const w = wording(banks, 'colores');
+    const w = wording(banks, 'colores', spec);
     const skill = colores.skill(spec);
     const words = colorBank(spec, banks);
     const sizes = sizeBank(banks);
@@ -559,7 +628,7 @@ const colores = {
   },
 
   longest(spec, banks, names) {
-    const w = wording(banks, 'colores');
+    const w = wording(banks, 'colores', spec);
     const words = colorBank(spec, banks);
     const out = words.map((x) => ({ what: `colores ${x.es}`, question: fill(w.ask, { ...names, es: x.es, en: x.en, say: x.say }) }));
     const sizes = sizeBank(banks);
@@ -824,7 +893,8 @@ const codeLock = {
 //   array   { rows, cols, icon, captions, done }          answer: [rows, columns]
 //   graph   { slots, icon, key, rows: [{ label, count, open }], done }   answer: pictures in the open row
 //   pairs   { cols, cards: [{ pair, label?, sub?, icon?, hint }] }       no answer: it is played to the end
-// The first three are `screen: 'grid'` and also carry check(answer),
+//   table   { head, rows: [{ cells: [{ label, icon? }] }], done }        answer: the row tapped
+// All but pairs are `screen: 'grid'` and also carry check(answer),
 // solution (a right answer), decoy (a wrong one, for the bot), and
 // miss(answer). An icon is the name of a small picture in the pack's art.
 
@@ -1212,6 +1282,533 @@ const memoria = {
   },
 };
 
+// ---------------------------------------------------------------------------
+// Order boards: puzzles answered by putting things in order. They are played
+// on the order screen (`screen: 'order'`), and like the tap boards they carry
+// check(answer), solution, decoy, and miss(answer). Two kinds:
+//   path    { cols, rows, start, goal, walls, icons, moves, max, preview }   answer: the moves, as numbers
+//   order   { cols, tiles: [{ label, icon? }] }                     answer: the tiles, first to last
+// A puzzle may also carry keep(answer): the part of a missed answer a second
+// try starts from.
+
+// ---------------------------------------------------------------------------
+// FLIGHT PLAN: plan a path across a small map, one arrow at a time, then
+// send someone along it. The arrows are labeled in the pack's words. The
+// rules are in the bank (flight_plan.rules):
+//   cols: and rows:  the size of the map (up to 6 by 4)
+//   walls:   [fewest, most] squares in the way
+//   steps:   [fewest, most] moves in the shortest path
+//   blocked: how many of the two plain paths (across then up, up then
+//            across) must have something in the way: 0, 1, or 2
+// Each topic has the story (text:), three icons (who walks, the goal, what
+// is in the way), and wall: the words for what is in the way.
+
+const PLAN_MOVES = [['left', -1, 0, '←'], ['up', 0, -1, '↑'], ['down', 0, 1, '↓'], ['right', 1, 0, '→']];
+const planBank = (banks) => banks.flight_plan || {};
+const planRules = (banks) => (Array.isArray(planBank(banks).rules) ? planBank(banks).rules : []);
+
+/** Walk a plan. Says where it ends and, if it bumps, at which step and into what. */
+function walkPlan(course, moves) {
+  let [x, y] = course.start;
+  for (let i = 0; i < moves.length; i++) {
+    const m = PLAN_MOVES[moves[i]];
+    if (!m) return { x, y, bump: 'edge', at: i };
+    const nx = x + m[1], ny = y + m[2];
+    if (nx < 0 || ny < 0 || nx >= course.cols || ny >= course.rows) return { x, y, bump: 'edge', at: i };
+    if (course.walls.some((w) => w[0] === nx && w[1] === ny)) return { x, y, bump: 'wall', at: i };
+    x = nx; y = ny;
+  }
+  return { x, y, bump: '', at: moves.length };
+}
+
+/** The shortest plan from start to goal, or null when the walls shut it off. */
+function shortestPlan(course) {
+  const key = (x, y) => y * course.cols + x;
+  const seen = new Map([[key(...course.start), []]]);
+  const queue = [course.start];
+  while (queue.length) {
+    const [x, y] = queue.shift();
+    const path = seen.get(key(x, y));
+    if (x === course.goal[0] && y === course.goal[1]) return path;
+    PLAN_MOVES.forEach((m, i) => {
+      const nx = x + m[1], ny = y + m[2];
+      if (nx < 0 || ny < 0 || nx >= course.cols || ny >= course.rows || seen.has(key(nx, ny))) return;
+      if (course.walls.some((w) => w[0] === nx && w[1] === ny)) return;
+      seen.set(key(nx, ny), [...path, i]);
+      queue.push([nx, ny]);
+    });
+  }
+  return null;
+}
+
+/** Deal a map that fits a rule. */
+function dealCourse(rule, rng) {
+  const cols = Math.max(3, Math.min(6, Number(rule.cols) || 5)), rows = Math.max(2, Math.min(4, Number(rule.rows) || 3));
+  const [w0, w1] = rule.walls || [0, 0], [s0, s1] = rule.steps || [2, 4];
+  const cell = () => [rng.int(0, cols - 1), rng.int(0, rows - 1)];
+  const same = (a, b) => a[0] === b[0] && a[1] === b[1];
+  for (let tries = 0; tries < 400; tries++) {
+    const start = cell(), goal = cell();
+    if (Math.abs(start[0] - goal[0]) + Math.abs(start[1] - goal[1]) < 2) continue;
+    const walls = [];
+    for (let n = rng.int(w0, w1), guard = 0; walls.length < n && guard < 60; guard++) {
+      const w = cell();
+      if (!same(w, start) && !same(w, goal) && !walls.some((v) => same(v, w))) walls.push(w);
+    }
+    const course = { cols, rows, start, goal, walls };
+    const path = shortestPlan(course);
+    if (!path || path.length < s0 || path.length > s1) continue;
+    // The two plain paths: all the way across and then up or down, or the other way round.
+    const dx = goal[0] - start[0], dy = goal[1] - start[1];
+    const across = Array(Math.abs(dx)).fill(dx < 0 ? 0 : 3), updown = Array(Math.abs(dy)).fill(dy < 0 ? 1 : 2);
+    const plain = dx && dy ? [[...across, ...updown], [...updown, ...across]] : [[...across, ...updown]];
+    const shut = plain.filter((p) => walkPlan(course, p).bump).length;
+    if (shut < Math.min(Number(rule.blocked) || 0, plain.length)) continue;
+    return { ...course, path };
+  }
+  // Nothing fit: a short walk with nothing in the way.
+  const course = { cols, rows, start: [0, rows - 1], goal: [Math.min(cols - 1, 2), 0], walls: [] };
+  return { ...course, path: /** @type {number[]} */ (shortestPlan(course)) };
+}
+
+const flightPlan = {
+  screen: 'order',
+  skill: () => 'flight_plan',
+  label: 'Planning a path',
+
+  /** @param {Spec} spec @param {MakeCtx} ctx @returns {Puzzle} */
+  make(spec, ctx) {
+    const { rng, banks, names } = ctx;
+    const w = wording(banks, 'flight_plan', spec);
+    const topic = planBank(banks)[spec.topic || ''] || {};
+    const level = ctx.level('flight_plan');
+    const course = dealCourse(rng.pick(atLevel(planRules(banks), level)), rng);
+    const icons = topic.icons || {};
+    const word = (i) => w[`go_${(PLAN_MOVES[i] || [])[0]}`];
+    const base = { ...names, praise: praise(ctx), wall: fill(topic.wall || w.wall, names), goal: fill(topic.goal || w.goal, names), steps: String(course.path.length), way: course.path.map(word).join(', ') };
+    const say = (text, more = {}) => fill(text, { ...base, ...more }).trim();
+    const hint = say(w.hint);
+    return {
+      screen: 'order',
+      skill: 'flight_plan',
+      question: say(topic.text || w.ask),
+      prompt: say(w.prompt), retry: say(w.retry),
+      hint,
+      board: {
+        kind: 'path', cols: course.cols, rows: course.rows, start: course.start, goal: course.goal, walls: course.walls,
+        icons: { who: icons.who || '', goal: icons.goal || '', wall: icons.wall || '' },
+        // On level 1 each arrow also says what it means.
+        moves: PLAN_MOVES.map((m, i) => ({ label: word(i), sub: level <= 1 ? w[`go_${m[0]}_en`] || '' : '', arrow: m[3], dx: m[1], dy: m[2] })),
+        max: Math.min(12, course.path.length + 3),
+        // On level 1 the map shows where the plan leads while he makes it.
+        preview: level <= 1,
+        undo: say(w.undo), done: say(w.done),
+      },
+      check: (moves) => {
+        if (!Array.isArray(moves) || !moves.length) return false;
+        const end = walkPlan(course, moves);
+        return !end.bump && end.x === course.goal[0] && end.y === course.goal[1];
+      },
+      solution: course.path,
+      decoy: course.path.slice(0, -1),
+      // A second try keeps the steps that worked.
+      keep: (moves) => (Array.isArray(moves) ? moves.slice(0, walkPlan(course, moves).at) : []),
+      miss: (moves) => {
+        const end = walkPlan(course, moves || []);
+        const step = { n: String(end.at + 1), move: word((moves || [])[end.at]) || '' };
+        if (end.bump === 'wall') return say(w.miss_wall, { ...step, hint });
+        if (end.bump === 'edge') return say(w.miss_edge, { ...step, hint });
+        return say(w.miss_short, { hint });
+      },
+      right: say(w.right),
+      reveal: say(w.reveal),
+      learned: PLAN_MOVES.map((m) => ['spanish', w[`go_${m[0]}`]]),
+    };
+  },
+
+  check(spec, banks) {
+    const out = [];
+    const topic = planBank(banks)[spec.topic || ''];
+    if (!topic || !topic.text) out.push(`flight_plan.${spec.topic} needs text: in banks.yaml`);
+    const icons = (topic && topic.icons) || {};
+    for (const k of ['who', 'goal', 'wall']) if (!icons[k]) out.push(`flight_plan.${spec.topic}.icons needs ${k}:`);
+    const rules = planRules(banks);
+    if (!rules.length) out.push('flight_plan.rules is missing in banks.yaml');
+    rules.forEach((r, i) => {
+      const at = `flight_plan.rules[${i + 1}]`;
+      if (!whole(r.cols, 3, 6) || !whole(r.rows, 2, 4)) out.push(`${at} needs cols: 3 to 6 and rows: 2 to 4`);
+      if (!range(r.walls, 0, 10)) out.push(`${at} needs walls: [fewest, most], up to 10`);
+      if (!range(r.steps, 2, 9)) out.push(`${at} needs steps: [fewest, most], from 2 to 9`);
+      if (r.blocked !== undefined && !whole(r.blocked, 0, 2)) out.push(`${at}: blocked: must be 0, 1, or 2`);
+    });
+    return out;
+  },
+
+  icons(spec, banks) { return Object.values((planBank(banks)[spec.topic || ''] || {}).icons || {}).filter(Boolean); },
+
+  longest(spec, banks, names) {
+    const topic = planBank(banks)[spec.topic || ''] || {};
+    return [{ what: `flight_plan.${spec.topic}`, question: fill(topic.text || '', names) }];
+  },
+};
+
+// ---------------------------------------------------------------------------
+// EGG TO DRAGON: put the stages of a life in order, first to last. The bank
+// (egg_to_dragon.<topic>) is a list of lives. Each has
+//   name:    whose life it is, for the question
+//   stages:  in the right order. label: the words on the tile, icon: its
+//            picture, and from: the lowest level that shows it (1 unless
+//            given). Level 1 should leave three stages.
+//   fact / source: a real fact to say when he gets it right. Every life is
+//            real science, so each one needs a source.
+
+const lifeBank = (spec, banks) => ((banks.egg_to_dragon || {})[spec.topic || ''] || []);
+const stagesAt = (life, level) => (life.stages || []).filter((s) => (Number(s.from) || 1) <= level);
+/** Columns of text on an order tile on the narrowest iPhone, and the lines a tile has room for. */
+export const TILE_COLS = 16, TILE_LINES = 3;
+
+const eggToDragon = {
+  screen: 'order',
+  skill: () => 'life_cycles',
+  label: 'Life cycles',
+
+  /** @param {Spec} spec @param {MakeCtx} ctx @returns {Puzzle} */
+  make(spec, ctx) {
+    const { rng, banks, names } = ctx;
+    const w = wording(banks, 'egg_to_dragon', spec);
+    const level = Math.max(1, Math.min(3, ctx.level('life_cycles')));
+    const life = rng.pick(lifeBank(spec, banks));
+    const stages = stagesAt(life, level);
+    // Deal the tiles so they never start out in the right order.
+    let order = stages.map((_, i) => i);
+    for (let tries = 0; tries < 20 && order.every((v, i) => v === i); tries++) order = rng.shuffle(order);
+    if (order.every((v, i) => v === i)) order.reverse();
+    const solution = stages.map((_, i) => order.indexOf(i));
+    const text = (s) => fill(s || '', names);
+    const base = { ...names, praise: praise(ctx), name: text(life.name), fact: text(life.fact), hint: text(life.hint || w.hint), list: stages.map((s) => text(s.label)).join(' → ') };
+    const say = (t, more = {}) => fill(t, { ...base, ...more }).trim();
+    return {
+      screen: 'order',
+      skill: 'life_cycles',
+      question: say(w.ask),
+      maxLines: 3,
+      prompt: say(w.prompt), retry: say(w.retry),
+      hint: say(w.treat),
+      board: { kind: 'order', cols: 2, tiles: order.map((i) => ({ label: text(stages[i].label), icon: stages[i].icon || '' })), done: say(w.done) },
+      check: (seq) => Array.isArray(seq) && seq.length === solution.length && seq.every((v, i) => v === solution[i]),
+      solution,
+      decoy: [...solution.slice(0, -2), solution[solution.length - 1], solution[solution.length - 2]],
+      // A second try keeps the tiles that were right from the start.
+      keep: (seq) => { const n = (seq || []).findIndex((v, i) => v !== solution[i]); return (seq || []).slice(0, n < 0 ? seq.length : n); },
+      miss: (seq) => {
+        const n = (seq || []).findIndex((v, i) => v !== solution[i]);
+        return say(n <= 0 ? w.miss_first : w.miss, { n: String(n + 1), kept: String(n) });
+      },
+      right: say(w.right),
+      reveal: say(w.reveal),
+      learned: life.fact ? [['fact', text(life.fact)]] : [],
+    };
+  },
+
+  check(spec, banks) {
+    const all = lifeBank(spec, banks);
+    const at = `egg_to_dragon.${spec.topic}`;
+    const out = [];
+    if (!all.length) out.push(`${at} needs at least one life in banks.yaml`);
+    for (const life of all) {
+      const who = `${at}: "${life.name || '?'}"`;
+      if (!life.name) out.push(`${who} needs name:`);
+      if (!life.source) out.push(`${who} has no source`);
+      if (!life.fact) out.push(`${who} needs fact:`);
+      for (const lvl of [1, 2, 3]) {
+        const n = stagesAt(life, lvl).length;
+        if (n < 3 || n > 6) out.push(`${who} shows ${n} stages on level ${lvl}; it needs 3 to 6`);
+      }
+      for (const s of life.stages || []) if (!s.label || !s.icon) out.push(`${who}: every stage needs label: and icon:`);
+      const looks = (life.stages || []).map((s) => s.icon);
+      if (new Set(looks).size !== looks.length) out.push(`${who}: two stages have the same icon, so two tiles would look alike`);
+    }
+    return out;
+  },
+
+  icons(spec, banks) { return lifeBank(spec, banks).flatMap((life) => (life.stages || []).map((s) => s.icon)).filter(Boolean); },
+
+  longest(spec, banks, names) {
+    const w = wording(banks, 'egg_to_dragon', spec);
+    return lifeBank(spec, banks).map((life) => ({
+      what: `egg_to_dragon "${life.name}"`,
+      question: fill(w.ask, { ...names, name: fill(life.name || '', names) }),
+      maxLines: 3,
+      tiles: (life.stages || []).map((s) => fill(s.label || '', names)),
+    }));
+  },
+};
+
+// ---------------------------------------------------------------------------
+// PICKY BRIDGE: some may cross and some are sent back. Work out the rule
+// from who crossed, then pick who crosses next. Pick one. The rules are in
+// the bank (picky_bridge.rules), each with a level:
+//   kind: even | odd
+//   kind: over | under   n: [min, max]      bigger or smaller than a number
+//   kind: multiple       of: [numbers]      skip-counting numbers
+//   kind: digits         sum: [min, max]    two digits that add up to a number
+//   kind: group                             words that belong together; the
+//                                           groups are in picky_bridge.groups
+// A puzzle is dealt again until no other rule in the bank fits the same
+// crossings and yet picks a different answer.
+// Each topic has the story (text:), with {yes} and {no} in it.
+
+const bridgeBank = (banks) => banks.picky_bridge || {};
+const bridgeRules = (banks) => (Array.isArray(bridgeBank(banks).rules) ? bridgeBank(banks).rules : []);
+const bridgeGroups = (banks) => (Array.isArray(bridgeBank(banks).groups) ? bridgeBank(banks).groups : []);
+const BRIDGE_KINDS = ['even', 'odd', 'over', 'under', 'multiple', 'digits', 'group'];
+const digitSum = (v) => Math.floor(v / 10) + (v % 10);
+
+/** Does a number fit one rule, with its number filled in? */
+function bridgeFits(kind, n, v) {
+  if (kind === 'even') return v % 2 === 0;
+  if (kind === 'odd') return v % 2 === 1;
+  if (kind === 'over') return v > n;
+  if (kind === 'under') return v < n;
+  if (kind === 'multiple') return v % n === 0;
+  if (kind === 'digits') return v >= 10 && digitSum(v) === n;
+  return false;
+}
+
+/** Every number rule the bank can make, one for each number it can hold. */
+function bridgeInstances(banks) {
+  const out = [];
+  const seen = new Set();
+  const add = (kind, n) => { const k = `${kind}:${n}`; if (!seen.has(k)) { seen.add(k); out.push({ kind, n }); } };
+  for (const r of bridgeRules(banks)) {
+    if (r.kind === 'even' || r.kind === 'odd') add(r.kind, 0);
+    else if (r.kind === 'multiple') for (const n of r.of || []) add('multiple', n);
+    else if (r.kind === 'over' || r.kind === 'under') for (let n = (r.n || [0, 0])[0]; n <= (r.n || [0, 0])[1]; n++) add(r.kind, n);
+    else if (r.kind === 'digits') for (let n = (r.sum || [0, 0])[0]; n <= (r.sum || [0, 0])[1]; n++) add('digits', n);
+  }
+  return out;
+}
+
+const pickyBridge = {
+  screen: 'pick',
+  skill: () => 'picky_bridge',
+  label: 'Finding the rule',
+
+  /** The words for a rule: "They are all EVEN numbers". */
+  rule(w, kind, n) { return fill(w[`rule_${kind}`] || '', { n: String(n) }); },
+
+  /** @param {Spec} spec @param {MakeCtx} ctx @returns {Puzzle} */
+  make(spec, ctx) {
+    const { rng, banks, names } = ctx;
+    const w = wording(banks, 'picky_bridge', spec);
+    const topic = bridgeBank(banks)[spec.topic || ''] || {};
+    const level = ctx.level('picky_bridge');
+    const rule = rng.pick(atLevel(bridgeRules(banks), level));
+    const count = level >= 2 ? 4 : 3;
+    /** @type {{ yes: string[], no: string[], answer: string, wrong: string[], why: string }} */
+    let deal = { yes: [], no: [], answer: '', wrong: [], why: '' };
+
+    if (rule.kind === 'group') {
+      const groups = bridgeGroups(banks);
+      const group = rng.pick(groups);
+      const inside = rng.shuffle(group.words), outside = rng.shuffle(groups.filter((g) => g !== group).flatMap((g) => g.words));
+      deal = { yes: inside.slice(0, 3), no: outside.slice(0, 2), answer: inside[3], wrong: outside.slice(2, 1 + count), why: fill(group.rule || '', names) };
+    } else {
+      const [lo, hi] = bridgeBank(banks).range || [2, 99];
+      const all = bridgeInstances(banks);
+      for (let tries = 0; tries < 400; tries++) {
+        const n = rule.kind === 'multiple' ? rng.pick(rule.of) : rule.kind === 'digits' ? rng.int(rule.sum[0], rule.sum[1]) : rule.kind === 'over' || rule.kind === 'under' ? rng.int(rule.n[0], rule.n[1]) : 0;
+        const fits = (v) => bridgeFits(rule.kind, n, v);
+        const pool = rng.shuffle(Array.from({ length: hi - lo + 1 }, (_, i) => lo + i));
+        const yes = pool.filter(fits), no = pool.filter((v) => !fits(v));
+        if (yes.length < 4 || no.length < 1 + count) continue;
+        const shown = { yes: yes.slice(0, 3), no: no.slice(0, 2) }, answer = yes[3], wrong = no.slice(2, 1 + count);
+        // Another rule that fits what crossed must pick the same answer.
+        const clash = all.some((o) => (o.kind !== rule.kind || o.n !== n)
+          && shown.yes.every((v) => bridgeFits(o.kind, o.n, v)) && shown.no.every((v) => !bridgeFits(o.kind, o.n, v))
+          && (!bridgeFits(o.kind, o.n, answer) || wrong.some((v) => bridgeFits(o.kind, o.n, v))));
+        deal = { yes: shown.yes.map(String), no: shown.no.map(String), answer: String(answer), wrong: wrong.map(String), why: pickyBridge.rule(w, rule.kind, n) };
+        if (!clash) break;
+      }
+    }
+
+    const list = (items) => (items.length > 2 ? `${items.slice(0, -1).join(', ')}, and ${items[items.length - 1]}` : items.join(' and '));
+    const base = { ...names, praise: praise(ctx), yes: list(deal.yes), no: deal.no.join(' or '), answer: deal.answer, rule: deal.why, who: fill(spec.who || topic.who || w.who, names) };
+    const say = (text, more = {}) => fill(text, { ...base, ...more }).trim();
+    return {
+      screen: 'pick',
+      skill: 'picky_bridge',
+      question: say(topic.text || w.ask),
+      prompt: say(w.prompt), retry: say(w.retry),
+      hint: say(w.hint),
+      options: rng.shuffle([deal.answer, ...deal.wrong]).map((v) => ({
+        label: v,
+        correct: v === deal.answer,
+        miss: say(w.miss, { pick: v, hint: say(w.hint) }),
+      })),
+      right: say(w.right),
+      reveal: say(w.reveal),
+    };
+  },
+
+  check(spec, banks) {
+    const out = [];
+    const topic = bridgeBank(banks)[spec.topic || ''];
+    if (!topic || !topic.text) out.push(`picky_bridge.${spec.topic} needs text: in banks.yaml`);
+    else for (const k of ['{yes}', '{no}']) if (!String(topic.text).includes(k)) out.push(`picky_bridge.${spec.topic}.text needs ${k} in it`);
+    const rules = bridgeRules(banks);
+    if (!rules.length) out.push('picky_bridge.rules is missing in banks.yaml');
+    rules.forEach((r, i) => {
+      const at = `picky_bridge.rules[${i + 1}]`;
+      if (!BRIDGE_KINDS.includes(r.kind)) out.push(`${at}: kind: must be one of ${BRIDGE_KINDS.join(', ')}`);
+      if (r.kind === 'multiple' && !(Array.isArray(r.of) && r.of.length && r.of.every((n) => whole(n, 2, 12)))) out.push(`${at} needs of: [a list of numbers from 2 to 12]`);
+      if ((r.kind === 'over' || r.kind === 'under') && !range(r.n, 5, 95)) out.push(`${at} needs n: [min, max], from 5 to 95`);
+      if (r.kind === 'digits' && !range(r.sum, 3, 15)) out.push(`${at} needs sum: [min, max], from 3 to 15`);
+    });
+    if (rules.some((r) => r.kind === 'group')) {
+      const groups = bridgeGroups(banks);
+      if (groups.length < 3) out.push('picky_bridge.groups needs at least 3 groups');
+      for (const g of groups) if (!g.rule || !Array.isArray(g.words) || g.words.length < 4) out.push(`picky_bridge.groups: "${g.name || '?'}" needs rule: and at least 4 words`);
+      const words = groups.flatMap((g) => g.words || []);
+      if (new Set(words).size !== words.length) out.push('picky_bridge.groups: a word is in two groups, so two answers could be right');
+    }
+    return out;
+  },
+
+  longest(spec, banks, names) {
+    const w = wording(banks, 'picky_bridge', spec);
+    const topic = bridgeBank(banks)[spec.topic || ''] || {};
+    const who = fill(spec.who || topic.who || w.who, names);
+    const longest = bridgeGroups(banks).flatMap((g) => g.words || []).sort((a, b) => b.length - a.length);
+    const out = [{ what: `picky_bridge.${spec.topic} numbers`, question: fill(topic.text || '', { ...names, who, yes: '88, 88, and 88', no: '88 or 88' }) }];
+    if (longest.length >= 5) out.push({ what: `picky_bridge.${spec.topic} words`, question: fill(topic.text || '', { ...names, who, yes: `${longest[0]}, ${longest[1]}, and ${longest[2]}`, no: `${longest[3]} or ${longest[4]}` }), keys: longest.slice(0, 1), maxKeyLines: 1 });
+    return out;
+  },
+};
+
+// ---------------------------------------------------------------------------
+// WEATHER WATCH: read a small weather table and tap the hour that fits the
+// rule. The table has a row for each hour: the sky and the wind. What the
+// sky can be is in the bank (weather_watch.skies): the word, what it means,
+// its icon, and ok: whether it is good weather. The rules
+// (weather_watch.rules), each with a level and rows: (3 to 5):
+//   ask: sky     the one hour with good weather
+//        calm    the hour with the least wind
+//        both    the one hour with good weather and wind under a number
+//        first   the first of two such hours
+// Each topic has a sentence for each ask (text_sky: and so on).
+
+const weatherBank = (banks) => banks.weather_watch || {};
+const weatherRules = (banks) => (Array.isArray(weatherBank(banks).rules) ? weatherBank(banks).rules : []);
+const weatherSkies = (banks) => (Array.isArray(weatherBank(banks).skies) ? weatherBank(banks).skies : []);
+const WEATHER_ASKS = ['sky', 'calm', 'both', 'first'];
+
+const weatherWatch = {
+  screen: 'grid',
+  skill: () => 'weather_watch',
+  label: 'Reading a table',
+
+  /** @param {Spec} spec @param {MakeCtx} ctx @returns {Puzzle} */
+  make(spec, ctx) {
+    const { rng, banks, names } = ctx;
+    const w = wording(banks, 'weather_watch', spec);
+    const topic = weatherBank(banks)[spec.topic || ''] || {};
+    const rule = rng.pick(atLevel(weatherRules(banks), ctx.level('weather_watch')));
+    const skies = weatherSkies(banks);
+    const good = skies.filter((s) => s.ok), bad = skies.filter((s) => !s.ok);
+    const n = Math.max(3, Math.min(5, Number(rule.rows) || 4));
+    const limit = rng.int(2, 4) * 5;                 // "wind under 15"
+    const calm = () => rng.int(2, limit - 1), windy = () => rng.int(limit, limit + 14);
+    // Which rows are safe, then weather to match. Every wind is a different number.
+    const safe = new Set(rule.ask === 'first' ? rng.shuffle([...Array(n - 1).keys()].map((i) => i + 1)).slice(0, 2) : [rng.int(0, n - 1)]);
+    const used = new Set();
+    const fresh = (roll) => { let v = roll(); for (let t = 0; t < 40 && used.has(v); t++) v = roll(); used.add(v); return v; };
+    let turn = rng.int(0, 1);
+    let rows = Array.from({ length: n }, (_, i) => {
+      if (safe.has(i)) return { sky: rng.pick(rule.ask === 'sky' ? good.slice(0, 1) : good), wind: fresh(calm) };
+      if (rule.ask === 'sky') return { sky: rng.pick(skies.filter((s) => s !== good[0])), wind: fresh(() => rng.int(2, 28)) };
+      // Not safe: bad sky with a gentle wind, or a fine sky with too much wind.
+      return turn++ % 2 ? { sky: rng.pick(bad), wind: fresh(calm) } : { sky: rng.pick(good), wind: fresh(windy) };
+    });
+    if (rule.ask === 'calm') {
+      const winds = rng.shuffle(rows.map(() => fresh(() => rng.int(3, 30))));
+      rows = rows.map((r, i) => ({ sky: rng.pick(skies), wind: winds[i] }));
+    }
+    const hour0 = rng.int(9, 9 + 8 - n);              // mornings and afternoons, never past 4:00
+    const time = (i) => `${((hour0 + i - 1) % 12) + 1}:00`;
+    const least = Math.min(...rows.map((r) => r.wind));
+    const fits = (r) => (rule.ask === 'calm' ? r.wind === least : rule.ask === 'sky' ? r.sky === good[0] : !!r.sky.ok && r.wind < limit);
+    const solution = rows.findIndex(fits);
+    const decoy = rows.findIndex((r) => !fits(r));
+    const base = {
+      ...names, praise: praise(ctx), limit: String(limit), time: time(solution), least: String(least),
+      sky: good[0] ? good[0].es : '', sky_en: good[0] ? good[0].en : '', unit: w.unit,
+      sky_es: rows[solution].sky.es, wind: String(rows[solution].wind),
+    };
+    const say = (text, more = {}) => fill(text, { ...base, ...more }).trim();
+    const hint = say(w[`hint_${rule.ask}`] || w.hint);
+    return {
+      screen: 'grid',
+      skill: 'weather_watch',
+      question: say(topic[`text_${rule.ask}`] || w[`ask_${rule.ask}`]),
+      maxLines: 3,
+      prompt: say(w.prompt), retry: say(w.retry),
+      hint,
+      board: {
+        kind: 'table', head: [say(w.head_time), say(w.head_sky), say(w.head_wind)],
+        rows: rows.map((r, i) => ({ cells: [{ label: time(i) }, { label: r.sky.es, icon: r.sky.icon }, { label: `${r.wind} ${w.unit}` }] })),
+        done: say(w.done),
+      },
+      check: (pick) => pick === solution,
+      solution,
+      decoy,
+      miss: (pick) => {
+        const r = rows[pick];
+        if (!r) return hint;
+        const at = { pick_time: time(pick), pick_sky: r.sky.es, pick_sky_en: r.sky.en, pick_wind: String(r.wind), hint };
+        if (rule.ask === 'calm') return say(w.miss_calm, at);
+        if (rule.ask === 'sky' || !r.sky.ok) return say(w.miss_sky, at);
+        if (r.wind >= limit) return say(w.miss_wind, at);
+        return say(w.miss_first, at);
+      },
+      right: say(w[`right_${rule.ask}`] || w.right),
+      reveal: say(w[`reveal_${rule.ask}`] || w.reveal),
+      learned: rows.map((r) => ['spanish', r.sky.es]),
+    };
+  },
+
+  check(spec, banks) {
+    const out = [];
+    const topic = weatherBank(banks)[spec.topic || ''];
+    if (!topic) out.push(`weather_watch.${spec.topic} is missing in banks.yaml`);
+    const skies = weatherSkies(banks);
+    if (skies.filter((s) => s.ok).length < 2 || skies.filter((s) => !s.ok).length < 2) out.push('weather_watch.skies needs at least two with ok: true and two with ok: false');
+    for (const s of skies) if (!s.es || !s.en || !s.icon) out.push(`weather_watch.skies: "${s.es || '?'}" needs es, en, and icon`);
+    const rules = weatherRules(banks);
+    if (!rules.length) out.push('weather_watch.rules is missing in banks.yaml');
+    rules.forEach((r, i) => {
+      const at = `weather_watch.rules[${i + 1}]`;
+      if (!WEATHER_ASKS.includes(r.ask)) out.push(`${at}: ask: must be one of ${WEATHER_ASKS.join(', ')}`);
+      else if (topic && !topic[`text_${r.ask}`]) out.push(`weather_watch.${spec.topic} needs text_${r.ask}:`);
+      if (!whole(r.rows, r.ask === 'first' ? 4 : 3, 5)) out.push(`${at} needs rows: ${r.ask === 'first' ? 4 : 3} to 5`);
+    });
+    return out;
+  },
+
+  icons(spec, banks) { return weatherSkies(banks).map((s) => s.icon).filter(Boolean); },
+
+  longest(spec, banks, names) {
+    const w = wording(banks, 'weather_watch', spec);
+    const topic = weatherBank(banks)[spec.topic || ''] || {};
+    const sky = weatherSkies(banks).find((s) => s.ok) || {};
+    return weatherRules(banks).map((r) => ({
+      what: `weather_watch.${spec.topic} ${r.ask}`,
+      question: fill(topic[`text_${r.ask}`] || '', { ...names, limit: '20', sky: sky.es || '', sky_en: sky.en || '', unit: w.unit }),
+      maxLines: 3,
+    }));
+  },
+};
+
 export const ARCHETYPES = {
   dragon_hoard: dragonHoard,
   trading_post: tradingPost,
@@ -1224,6 +1821,10 @@ export const ARCHETYPES = {
   egg_crates: eggCrates,
   dragon_census: dragonCensus,
   memoria,
+  flight_plan: flightPlan,
+  egg_to_dragon: eggToDragon,
+  picky_bridge: pickyBridge,
+  weather_watch: weatherWatch,
   rescue,
   code_lock: codeLock,
 };
@@ -1237,6 +1838,7 @@ export const ARCHETYPES = {
  *   numpad: (prompt: string, format?: string) => Promise<number>,
  *   pick: (options: { label: string, color?: string, size?: string }[], prompt: string) => Promise<number>,
  *   grid: (board: Record<string, any>, prompt: string, last?: any) => Promise<any>,
+ *   order: (board: Record<string, any>, prompt: string, last?: any) => Promise<any>,
  *   pairs: (board: Record<string, any>, prompt: string, opts: { starMisses: number, maxMisses: number }) => Promise<{ done: boolean, misses: number }>,
  *   solve: (board: Record<string, any>, solution: any) => void,
  *   hint: (text: string) => void,
@@ -1286,10 +1888,12 @@ export async function playPuzzle(spec, ctx) {
       const guess = await card.numpad(prompt, pz.format);
       ok = guess === pz.answer;
       missText = pz.miss ? pz.miss(guess) : '';
-    } else if (pz.screen === 'grid') {
-      last = await card.grid(pz.board || {}, prompt, last);
+    } else if (pz.screen === 'grid' || pz.screen === 'order') {
+      last = await (pz.screen === 'grid' ? card.grid : card.order)(pz.board || {}, prompt, last);
       ok = !!pz.check && pz.check(last);
       missText = !ok && pz.miss ? pz.miss(last) : '';
+      // An order board starts its second try from the part that was right.
+      if (!ok && pz.keep) last = pz.keep(last);
     } else {
       const picked = options[await card.pick(options, prompt)];
       ok = picked.correct;
@@ -1306,7 +1910,7 @@ export async function playPuzzle(spec, ctx) {
     ctx.cue('miss');
     if (attempt === 1) card.hint(missText);
     else {
-      if (pz.screen === 'grid') card.solve(pz.board || {}, pz.solution);
+      if (pz.screen === 'grid' || pz.screen === 'order') card.solve(pz.board || {}, pz.solution);
       await card.reveal(pz.reveal);
     }
   }

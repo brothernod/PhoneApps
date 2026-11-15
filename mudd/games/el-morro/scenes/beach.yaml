@@ -12,3 +12,4 @@ slots:
     - { puzzle: snack_muncher, topic: sand }
   towel:
     - { puzzle: memoria, topic: beach }
+    - { puzzle: egg_to_dragon, topic: turtles }

@@ -365,8 +365,106 @@ export class Screen {
       }
       cap.textContent = board.key || '';
       host.append(grid, cap);
+    } else if (board.kind === 'table') {
+      // A small table with a row for each choice. Tap a row to pick it.
+      const head = el('div', 'trow thead');
+      for (const h of board.head || []) head.appendChild(el('span', '', h));
+      grid.appendChild(head);
+      let sel = Number.isInteger(start) ? start : -1;
+      const rows = board.rows.map((row, i) => {
+        const b = el(tag, 'trow cell');
+        for (const c of row.cells) {
+          const s = el('span', 'tcell');
+          if (c.icon) s.appendChild(this.icon(c.icon));
+          s.appendChild(el('span', '', c.label));
+          b.appendChild(s);
+        }
+        if (set) b.addEventListener('click', () => { sel = i; paint(); set(sel); });
+        grid.appendChild(b);
+        return b;
+      });
+      const paint = () => rows.forEach((b, i) => b.classList.toggle('on', i === sel));
+      paint();
+      host.append(grid);
+      if (set) set(sel >= 0 ? sel : null);
+    } else if (board.kind === 'order') {
+      // Tiles to put in order. Tap them first to last; each takes its number
+      // and moves into line. Tap a numbered tile to take it back, along with
+      // every tile after it.
+      grid.style.gridTemplateColumns = `repeat(${board.cols || 2}, 1fr)`;
+      let seq = Array.isArray(start) ? start.slice() : [];
+      const answer = () => (seq.length === board.tiles.length ? seq.slice() : null);
+      const tiles = board.tiles.map((t, i) => {
+        const b = el(tag, 'cell tile');
+        const n = el('span', 'tnum');
+        if (t.icon) b.appendChild(this.icon(t.icon));
+        b.append(el('span', 'tlabel', t.label), n);
+        if (set) b.addEventListener('click', () => {
+          const at = seq.indexOf(i);
+          if (at >= 0) seq = seq.slice(0, at); else seq.push(i);
+          paint();
+          set(answer());
+        });
+        grid.appendChild(b);
+        return { b, n };
+      });
+      const paint = () => tiles.forEach((t, i) => {
+        const at = seq.indexOf(i);
+        t.b.classList.toggle('on', at >= 0);
+        t.n.textContent = at >= 0 ? String(at + 1) : '';
+        t.b.style.order = String(at >= 0 ? at : 100 + i);
+      });
+      paint();
+      host.append(grid);
+      if (set) set(answer());
+    } else if (board.kind === 'path') {
+      this.paintPath(board, Array.isArray(start) ? start : [], grid, cap);
+      host.append(grid, cap);
     }
     host.classList.toggle('solved', !set);
+  }
+
+  /**
+   * Paint a path board: the map, how far the plan gets, and the plan itself
+   * as a row of arrows under the map.
+   * @param {Record<string, any>} board
+   * @param {number[]} moves
+   */
+  paintPath(board, moves, grid, cap) {
+    grid.innerHTML = '';
+    grid.style.gridTemplateColumns = `repeat(${board.cols}, 1fr)`;
+    const wall = (cx, cy) => board.walls.some((w) => w[0] === cx && w[1] === cy);
+    let [x, y] = board.start;
+    let bump = null;
+    const been = new Set([`${x},${y}`]);
+    for (const m of moves) {
+      const mv = board.moves[m];
+      const nx = x + mv.dx, ny = y + mv.dy;
+      if (nx < 0 || ny < 0 || nx >= board.cols || ny >= board.rows) { bump = [x, y]; break; }
+      if (wall(nx, ny)) { bump = [nx, ny]; break; }
+      x = nx; y = ny;
+      been.add(`${x},${y}`);
+    }
+    for (let r = 0; r < board.rows; r++) for (let c = 0; c < board.cols; c++) {
+      const cell = el('span', 'cell');
+      const here = c === x && r === y, goal = c === board.goal[0] && r === board.goal[1];
+      if (wall(c, r)) { cell.classList.add('wall'); cell.appendChild(this.icon(board.icons.wall)); }
+      else if (here) { cell.classList.add('who'); cell.appendChild(this.icon(board.icons.who)); }
+      else if (goal) cell.appendChild(this.icon(board.icons.goal));
+      else if (been.has(`${c},${r}`)) cell.classList.add('trail');
+      if (goal) cell.classList.add('goal');
+      if (bump && bump[0] === c && bump[1] === r) cell.classList.add('bump');
+      grid.appendChild(cell);
+    }
+    this.paintPlan(board, moves, cap);
+    return !!bump;
+  }
+
+  /** The plan as a row of arrows, with a dot for each step there is still room for. */
+  paintPlan(board, moves, cap) {
+    cap.className = 'boardcap plan';
+    cap.innerHTML = '';
+    for (let i = 0; i < board.max; i++) cap.appendChild(el('span', i < moves.length ? 'step' : 'step empty', i < moves.length ? board.moves[moves[i]].arrow : '·'));
   }
 
   /**
@@ -389,6 +487,66 @@ export class Screen {
         this.clearControls(keys);
         resolve(answer);
       });
+    });
+  }
+
+  /**
+   * Play an order board. Tiles are tapped into order on the board itself. A
+   * path is planned with four arrow keys, UNDO, and GO. With board.preview
+   * the map shows where the plan leads as it grows; without it, nothing
+   * moves until GO, and then the plan is walked one step at a time. `last`
+   * is the part of an earlier try that worked, and it stays walked.
+   * Resolves with his answer.
+   */
+  cardOrder(board, prompt, last) {
+    if (board.kind !== 'path') return this.cardGrid(board, prompt, last);
+    return new Promise((resolve) => {
+      const keys = this.cardKeys, host = this.cardBoard;
+      this.clearControls(keys);
+      keys.className = 'choices';
+      keys.appendChild(this.prompt(prompt));
+      host.innerHTML = '';
+      host.classList.remove('solved');
+      const grid = el('div', 'board path'), cap = el('div', 'boardcap plan');
+      host.append(grid, cap);
+      const moves = Array.isArray(last) ? last.slice() : [];
+      let walked = moves.length, busy = false;   // steps already known to work
+      const arrows = el('div', 'arrowkeys');
+      const undo = el('button', 'key wide del', board.undo || 'UNDO');
+      const go = el('button', 'key wide ok', board.done || 'GO!');
+      const paint = () => {
+        walked = Math.min(walked, moves.length);
+        this.paintPath(board, board.preview ? moves : moves.slice(0, walked), grid, cap);
+        this.paintPlan(board, moves, cap);
+        undo.classList.toggle('off', !moves.length);
+        go.classList.toggle('off', !moves.length);
+      };
+      board.moves.forEach((m, i) => {
+        const b = el('button', 'key arrow');
+        b.append(el('span', 'arr', m.arrow), el('span', 'lbl', m.label));
+        if (m.sub) b.appendChild(el('span', 'sub', m.sub));
+        b.addEventListener('click', () => { if (!busy && moves.length < board.max) { moves.push(i); paint(); } });
+        arrows.appendChild(b);
+      });
+      undo.addEventListener('click', () => { if (!busy) { moves.pop(); paint(); } });
+      go.addEventListener('click', async () => {
+        if (busy || !moves.length) return;
+        busy = true;
+        this.unread = false;
+        // Walk the plan, one step at a time, up to the first bump.
+        for (let n = Math.min(walked, moves.length) + 1; n <= moves.length; n++) {
+          const bumped = this.paintPath(board, moves.slice(0, n), grid, cap);
+          this.paintPlan(board, moves, cap);
+          await sleep(bumped ? 500 : 260);
+          if (bumped) break;
+        }
+        this.clearControls(keys);
+        resolve(moves);
+      });
+      const row = el('div', 'keyrow');
+      row.append(undo, go);
+      keys.append(arrows, row);
+      paint();
     });
   }
 

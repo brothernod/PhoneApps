@@ -12,3 +12,4 @@ slots:
     - { puzzle: dragon_hoard, topic: falls }
   sign:
     - { puzzle: fact_or_fib, topic: falls }
+    - { puzzle: egg_to_dragon, topic: forest }

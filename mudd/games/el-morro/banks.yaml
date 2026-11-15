@@ -75,6 +75,61 @@ wording:
     hint: "{es} means {en}."
     hint_same: "Match a WORD card with a PICTURE card."
     reveal: "Here they all are. {list}."
+  # The four arrows are in Spanish. Level 1 shows the English under each.
+  flight_plan:
+    go_left: IZQUIERDA
+    go_up: ARRIBA
+    go_down: ABAJO
+    go_right: DERECHA
+    go_left_en: LEFT
+    go_up_en: UP
+    go_down_en: DOWN
+    go_right_en: RIGHT
+    prompt: "TAP THE ARROWS, THEN GO"
+    retry: "FIX THE PATH AND TRY AGAIN"
+    undo: UNDO
+    done: "¡VAMOS! GO!"
+    right: "{praise} {pet} trots {steps} steps and gets there."
+    miss_wall: "Step {n}, {move}, bumps into {wall}. HINT: {hint}"
+    miss_edge: "Step {n}, {move}, runs off the edge. HINT: {hint}"
+    miss_short: "{pet} stops before he gets to {goal}. HINT: {hint}"
+    hint: "IZQUIERDA is LEFT and DERECHA is RIGHT. ARRIBA is UP and ABAJO is DOWN."
+    reveal: "One way to get there: {way}."
+  egg_to_dragon:
+    ask: "How does a {name} grow up? TAP the pictures in order, from first to last."
+    prompt: TAP THEM IN ORDER
+    retry: TAP THE REST IN ORDER
+    done: DONE
+    right: "{praise} {fact}"
+    miss_first: "Not that one first. HINT: {hint}"
+    miss: "The first {kept} can stay. Number {n} is not right yet. HINT: {hint}"
+    treat: "Find the very first thing that happens. Then ask: what comes next?"
+    reveal: "Here is the order: {list}."
+  picky_bridge:
+    prompt: WHICH ONE IS NEXT?
+    retry: TRY ANOTHER ONE
+    right: "{praise} {rule}."
+    miss: "Not {pick}. HINT: {hint}"
+    hint: "Look at the ones that got through. What is the same about all of them?"
+    reveal: "{rule}. So the next one is {answer}."
+  weather_watch:
+    head_time: HORA
+    head_sky: CIELO
+    head_wind: VIENTO
+    unit: mph
+    prompt: TAP AN HOUR
+    retry: TAP ANOTHER HOUR
+    done: "THAT'S THE ONE"
+    right: "{praise} At {time} the sky says {sky_es} and the wind is {wind} {unit}."
+    miss_sky: "At {pick_time} the sky says {pick_sky}: {pick_sky_en}. HINT: {hint}"
+    miss_wind: "At {pick_time} the wind is {pick_wind} {unit}. That is not under {limit}. HINT: {hint}"
+    miss_calm: "The wind at {pick_time} is {pick_wind} {unit}. Another hour has less. HINT: {hint}"
+    miss_first: "{pick_time} is safe, but an earlier hour is safe too. HINT: {hint}"
+    hint_sky: "Look down the CIELO column. CIELO means SKY."
+    hint_calm: "Look down the VIENTO column for the smallest number. VIENTO means WIND."
+    hint_both: "Check two things in each row: the CIELO, then the VIENTO."
+    hint_first: "Start at the top row. Stop at the first hour where the CIELO and the VIENTO are both fine."
+    reveal: "It was {time}: {sky_es}, and the wind is {wind} {unit}."
   rescue:
     ask: "{goal} What do you say?"
     prompt: SAY IT IN SPANISH
@@ -522,6 +577,116 @@ dragon_census:
     more: "She counted {d} MORE {row} than {other}. Each paw print stands for {scale}. Fill in {row}."
     fewer: "She counted {d} FEWER {row} than {other}. Each paw print stands for {scale}. Fill in {row}."
     total: "She counted {total} animals in all. Each paw print stands for {scale}. Fill in the {row} row."
+
+# ---------------------------------------------------------------------------
+# FLIGHT PLAN: plan a path across a small map with four arrow keys, then send
+# someone along it. The arrows are labeled in Spanish (see wording above).
+# rules: how the map is dealt, shared by every topic
+#   cols: and rows:  the size of the map, up to 6 by 4
+#   walls:   [fewest, most] squares in the way
+#   steps:   [fewest, most] moves in the shortest path
+#   blocked: how many of the two plain paths (across then up, or up then
+#            across) must have something in the way: 0, 1, or 2
+# Each topic is the story around the map: text:, goal: (the words for what
+# he is after), wall: (the words for what is in the way), and icons: from
+# pics/drawn.js for who walks, the goal, and what is in the way.
+flight_plan:
+  rules:
+    - { level: 1, cols: 5, rows: 3, walls: [1, 2], steps: [2, 4] }
+    - { level: 2, cols: 5, rows: 4, walls: [3, 5], steps: [4, 6], blocked: 1 }
+    - { level: 3, cols: 6, rows: 4, walls: [6, 8], steps: [6, 9], blocked: 2 }
+  keys:
+    text: "The ranger dropped her KEYS down the dark tunnel. Plan a path for {pet} to the keys. Go around the stone blocks."
+    goal: the KEYS
+    wall: a stone block
+    icons: { who: dog, goal: key, wall: block }
+
+# ---------------------------------------------------------------------------
+# EGG TO DRAGON: put the stages of a real animal's life in order. He taps the
+# tiles first to last (NGSS 3-LS1-1, life cycles).
+# Each topic is a list of lives; the game picks one.
+#   name:    whose life it is, for the question
+#   stages:  in the right order. label: goes on the tile (keep it to three
+#            short lines), icon: is its picture from pics/drawn.js, and
+#            from: is the lowest level that shows the stage (1 unless given).
+#            Level 1 shows three stages, level 2 four, level 3 all five.
+#   hint:    for after a miss
+#   fact:    said when he gets it right. Every life needs a source.
+egg_to_dragon:
+  forest:
+    - name: COQUÍ FROG
+      stages:
+        - { label: "Mom lays EGGS on land", icon: eggs-land }
+        - { label: "Dad keeps the eggs wet", icon: dad-eggs, from: 3 }
+        - { label: "A tiny frog grows in each egg", icon: egg-frog, from: 2 }
+        - { label: "FROGLETS hatch. No tadpoles!", icon: froglet }
+        - { label: "A grown coquí sings", icon: frog }
+      hint: "It starts with EGGS. A coquí is never a tadpole."
+      fact: "A coquí is never a tadpole. A tiny frog climbs out of each egg."
+      source: "U.S. Forest Service, coquí brochure; eLife"
+    - name: PUERTO RICAN PARROT
+      stages:
+        - { label: "A pair picks a hole in an old tree", icon: tree-hole, from: 3 }
+        - { label: "Mom lays 2 to 4 EGGS", icon: eggs-nest }
+        - { label: "CHICKS hatch in the nest", icon: chick }
+        - { label: "The young parrots fly out", icon: fledgling, from: 2 }
+        - { label: "A grown parrot finds a mate", icon: parrot }
+      hint: "A nest comes before eggs, and eggs come before chicks."
+      fact: "Parrot chicks stay in their tree-hole nest for about 9 weeks."
+      source: "U.S. Fish and Wildlife Service, parrot recovery page"
+  turtles:
+    - name: LEATHERBACK TURTLE
+      stages:
+        - { label: "Mom lays EGGS in the sand", icon: eggs-sand }
+        - { label: "The sand keeps the eggs warm", icon: warm-sand, from: 3 }
+        - { label: "HATCHLINGS run to the sea", icon: hatchling }
+        - { label: "It grows up far out at sea", icon: sea-turtle, from: 2 }
+        - { label: "A grown turtle swims back to nest", icon: turtle }
+      hint: "It starts with EGGS in the sand, and it ends with a grown turtle."
+      fact: "A leatherback mom lays 75 to 100 eggs in one nest."
+      source: "Global Voices"
+
+# ---------------------------------------------------------------------------
+# PICKY BRIDGE: some get through and some are sent back. He works out the
+# rule from who got through, then picks who is next (Common Core 3.OA.D.9,
+# patterns; and sorting words into groups).
+# rules: what the rule can be, shared by every topic
+#   kind: even | odd
+#   kind: over | under   n: [min, max]     bigger or smaller than a number
+#   kind: multiple       of: [numbers]     skip-counting numbers
+#   kind: digits         sum: [min, max]   two digits that add up to a number
+#   kind: group                            Spanish words that belong together
+# range: the numbers that can turn up
+# groups: for kind: group. rule: is said when he gets it right. A word may
+#   be in only one group.
+# Each topic is the story, with {yes} (who got through) and {no} (who didn't).
+picky_bridge:
+  range: [2, 99]
+  rules:
+    - { level: 1, kind: even }
+    - { level: 1, kind: odd }
+    - { level: 1, kind: over, n: [20, 70] }
+    - { level: 1, kind: under, n: [20, 70] }
+    - { level: 2, kind: multiple, of: [5, 10] }
+    - { level: 2, kind: multiple, of: [3, 4] }
+    - { level: 2, kind: group }
+    - { level: 3, kind: multiple, of: [6, 7, 8, 9] }
+    - { level: 3, kind: digits, sum: [5, 12] }
+    - { level: 3, kind: group }
+  groups:
+    - name: colors
+      rule: "They are all COLORES: colors"
+      words: [ROJO, AZUL, VERDE, AMARILLO, BLANCO, ROSADO]
+    - name: animals
+      rule: "They are all ANIMALES: animals"
+      words: [PERRO, GATO, RANA, LORO, IGUANA, TORTUGA]
+    - name: numbers
+      rule: "They are all NÚMEROS: numbers"
+      words: [UNO, DOS, TRES, CUATRO, CINCO, DIEZ]
+  sentry:
+    text: "The sign tells of a picky sentry. He let {yes} through the gate, but not {no}. Which one gets through next?"
+  hiker:
+    text: "The hiker draws a game in the mud. {yes} may cross her bridge, but not {no}. Which one may cross next?"
 
 # ---------------------------------------------------------------------------
 # COLORES: Spanish words and sentences

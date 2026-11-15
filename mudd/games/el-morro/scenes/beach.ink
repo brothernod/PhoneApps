@@ -30,8 +30,8 @@ Then {sibling} goes very still. He has spotted something in the sand, right wher
 -> choose
 
 = towel
-A girl about your age sits on a beach towel, with cards laid out in front of her in neat rows.
-"Juego de memoria," she says. A memory game! "¿Quieres jugar?" Do you want to play? # slot: towel
+A girl about your age sits on a beach towel, with picture cards laid out in front of her.
+"Un juego," she says. A game! "¿Quieres jugar?" Do you want to play? # slot: towel
 + [@pass] -> towel_pass
 + [@fail] -> towel_fail
 

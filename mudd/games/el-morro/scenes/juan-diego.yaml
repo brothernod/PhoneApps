@@ -13,3 +13,4 @@ slots:
     - { puzzle: snack_muncher, topic: trail }
   hiker:
     - { puzzle: hola_y_gracias, topic: trail, who: The hiker }
+    - { puzzle: picky_bridge, topic: hiker }

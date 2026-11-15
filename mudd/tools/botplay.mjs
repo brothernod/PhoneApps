@@ -28,7 +28,7 @@ import path from 'node:path';
 
 import { loadPack, checkPack, compileStory, hatchable, traitKeys } from '../engine/pack.js';
 import { deal, offers, slotCombos } from '../engine/dealer.js';
-import { ARCHETYPES } from '../engine/puzzles.js';
+import { ARCHETYPES, TILE_COLS, TILE_LINES } from '../engine/puzzles.js';
 import { runQuest, newQuestState, startStory, toggleCrossed, TOYS } from '../engine/quest.js';
 import { Pix } from '../engine/art.js';
 import { makeRng, countLines, CARD_COLS, KEY_COLS } from '../engine/util.js';
@@ -125,7 +125,11 @@ if (problems.size) finish();
 
 const MAX_QUESTION_LINES = 4, MAX_KEY_LINES = 3;
 const CARD_WORD_COLS = 10, MAX_CARD_WORD_LINES = 2; // a word on a matching-game card
-function measure(what, question, maxLines = MAX_QUESTION_LINES, keys = [], cards = []) {
+function measure(what, question, maxLines = MAX_QUESTION_LINES, keys = [], cards = [], tiles = []) {
+  for (const t of tiles) {
+    const tn = countLines(t, TILE_COLS);
+    if (tn > TILE_LINES) fail(`${what}: "${t}" takes ${tn} lines on its tile (limit ${TILE_LINES}, ${TILE_COLS} letters across)`);
+  }
   const n = countLines(question, CARD_COLS);
   if (n > maxLines) fail(`${what}: the question takes ${n} lines on an iPhone (limit ${maxLines}): "${question}"`);
   for (const k of keys) {
@@ -140,7 +144,7 @@ function measure(what, question, maxLines = MAX_QUESTION_LINES, keys = [], cards
 let measured = 0;
 for (const card of Object.values(pack.scenes)) {
   for (const options of Object.values(card.slots)) for (const spec of options) {
-    for (const m of ARCHETYPES[spec.puzzle].longest(spec, pack.banks, pack.cast)) { measure(m.what, m.question, m.maxLines, m.keys, m.cards); measured++; }
+    for (const m of ARCHETYPES[spec.puzzle].longest(spec, pack.banks, pack.cast)) { measure(m.what, m.question, m.maxLines, m.keys, m.cards, m.tiles); measured++; }
   }
 }
 
@@ -286,7 +290,7 @@ async function playRun(plan, history, bot, want = {}) {
         puzzles++;
         read(pz.question, 'a puzzle question');
         measure(`${tag}: ${pz.skill}`, pz.question, pz.maxLines || MAX_QUESTION_LINES, []);
-        for (const t of [pz.prompt, pz.retry, pz.right, pz.reveal]) see(t, 'puzzle wording');
+        for (const t of [pz.prompt, pz.retry, pz.right, pz.reveal, pz.hint || '']) see(t, 'puzzle wording');
         if (pz.screen === 'numpad') {
           if (!Number.isInteger(pz.answer) || pz.answer < 0 || pz.answer > 9999) fail(`${tag}: ${pz.skill} answer is ${pz.answer}`);
           // The lock opens with the numbers found along the way, in order.
@@ -299,7 +303,7 @@ async function playRun(plan, history, bot, want = {}) {
         } else if (pz.screen === 'grid') {
           // A board: its own right answer must pass, a wrong one must not.
           const b = pz.board || {};
-          if (!['toggle', 'array', 'graph'].includes(b.kind)) fail(`${tag}: ${pz.skill} has a board of kind "${b.kind}"`);
+          if (!['toggle', 'array', 'graph', 'table'].includes(b.kind)) fail(`${tag}: ${pz.skill} has a board of kind "${b.kind}"`);
           if (!pz.check(pz.solution)) fail(`${tag}: ${pz.skill} does not accept its own right answer (${JSON.stringify(pz.solution)})`);
           if (pz.check(pz.decoy)) fail(`${tag}: ${pz.skill} accepts a wrong answer (${JSON.stringify(pz.decoy)})`);
           see(pz.miss(pz.decoy), 'a hint');
@@ -324,6 +328,63 @@ async function playRun(plan, history, bot, want = {}) {
             if (!(pz.solution >= 1 && pz.solution <= b.slots)) fail(`${tag}: ${pz.skill} wants ${pz.solution} pictures in a row of ${b.slots}`);
             for (const r of b.rows) if (!r.open && !(r.count >= 1 && r.count <= b.slots)) fail(`${tag}: ${pz.skill} shows a row of ${r.count} pictures`);
             see(b.key || '', 'a graph key');
+          } else if (b.kind === 'table') {
+            // One row is right, and only one.
+            const right = b.rows.map((_, i) => i).filter((i) => pz.check(i));
+            if (right.length !== 1 || right[0] !== pz.solution) fail(`${tag}: ${pz.skill} has ${right.length} right rows (${right.join(', ')}), and its answer is row ${pz.solution}`);
+            if (b.rows.some((r) => r.cells.length !== b.head.length)) fail(`${tag}: ${pz.skill} has a row that doesn't match its headings`);
+            const times = b.rows.map((r) => r.cells[0].label);
+            if (new Set(times).size !== times.length) fail(`${tag}: ${pz.skill} has two rows with the same label`);
+            for (const h of b.head) see(h, 'a table heading');
+            for (const r of b.rows) for (const c of r.cells) {
+              see(c.label, 'a table square');
+              if (c.icon && !icons.includes(c.icon)) fail(`${tag}: ${pz.skill} wants icon "${c.icon}", which the pack doesn't have`);
+            }
+            for (let i = 0; i < b.rows.length; i++) if (i !== pz.solution) see(pz.miss(i), 'a hint');
+            levelsPlayed.add(`${pz.skill}@${hooks.level(pz.skill)}`);
+          }
+        } else if (pz.screen === 'order') {
+          // An order board: its own answer passes, a wrong one doesn't, and a
+          // second try keeps only a part of the first answer.
+          const b = pz.board || {};
+          if (!['path', 'order'].includes(b.kind)) fail(`${tag}: ${pz.skill} has an order board of kind "${b.kind}"`);
+          if (!pz.check(pz.solution)) fail(`${tag}: ${pz.skill} does not accept its own right answer (${JSON.stringify(pz.solution)})`);
+          if (pz.check(pz.decoy)) fail(`${tag}: ${pz.skill} accepts a wrong answer (${JSON.stringify(pz.decoy)})`);
+          if (pz.check([])) fail(`${tag}: ${pz.skill} accepts an empty answer`);
+          see(pz.miss(pz.decoy), 'a hint');
+          see(b.done || '', 'a board key');
+          const kept = pz.keep ? pz.keep(pz.decoy) : pz.decoy;
+          if (!Array.isArray(kept) || kept.length > pz.decoy.length || kept.some((v, i) => v !== pz.decoy[i])) fail(`${tag}: ${pz.skill} keeps something that wasn't in the answer`);
+          levelsPlayed.add(`${pz.skill}@${hooks.level(pz.skill)}`);
+          if (b.kind === 'path') {
+            const inside = ([x, y]) => x >= 0 && y >= 0 && x < b.cols && y < b.rows;
+            const wall = (x, y) => b.walls.some((w) => w[0] === x && w[1] === y);
+            if (!(b.cols >= 2 && b.cols <= 6 && b.rows >= 2 && b.rows <= 4)) fail(`${tag}: ${pz.skill} has a map of ${b.cols} by ${b.rows}`);
+            if (![b.start, b.goal, ...b.walls].every(inside)) fail(`${tag}: ${pz.skill} has something off its map`);
+            if (wall(...b.start) || wall(...b.goal) || (b.start[0] === b.goal[0] && b.start[1] === b.goal[1])) fail(`${tag}: ${pz.skill} starts or ends on a square that is taken`);
+            if (b.moves.length !== 4 || new Set(b.moves.map((m) => m.label)).size !== 4) fail(`${tag}: ${pz.skill} needs four arrows with four different words`);
+            for (const m of b.moves) { see(m.label, 'an arrow key'); see(m.sub || '', 'an arrow key'); }
+            see(b.undo || '', 'a board key');
+            // Walk the answer here, apart from the puzzle's own check.
+            let [x, y] = b.start, bumped = false;
+            for (const m of pz.solution) { x += b.moves[m].dx; y += b.moves[m].dy; if (!inside([x, y]) || wall(x, y)) bumped = true; }
+            if (bumped || x !== b.goal[0] || y !== b.goal[1]) fail(`${tag}: ${pz.skill}: the answer ${JSON.stringify(pz.solution)} does not reach the goal`);
+            if (pz.solution.length > b.max) fail(`${tag}: ${pz.skill} needs ${pz.solution.length} steps but has room for ${b.max}`);
+            for (const name of Object.values(b.icons)) if (!icons.includes(name)) fail(`${tag}: ${pz.skill} wants icon "${name}", which the pack doesn't have`);
+            // Every way of going wrong gets a hint: into a wall, off the map, stopping short.
+            for (let m = 0; m < 4; m++) see(pz.miss([m]), 'a hint');
+          } else {
+            const n = b.tiles.length;
+            if (n < 3 || n > 6) fail(`${tag}: ${pz.skill} has ${n} tiles`);
+            if ([...pz.solution].sort().join() !== [...Array(n).keys()].join()) fail(`${tag}: ${pz.skill}: the answer ${JSON.stringify(pz.solution)} doesn't use every tile once`);
+            if (pz.solution.every((v, i) => v === i)) fail(`${tag}: ${pz.skill} deals its tiles already in order`);
+            const looks = b.tiles.map((t) => t.label);
+            if (new Set(looks).size !== looks.length) fail(`${tag}: ${pz.skill} has two tiles that look the same`);
+            for (const t of b.tiles) {
+              see(t.label, 'a tile');
+              if (t.icon && !icons.includes(t.icon)) fail(`${tag}: ${pz.skill} wants icon "${t.icon}", which the pack doesn't have`);
+            }
+            measure(`${tag}: ${pz.skill}`, '', 1, [], [], looks);
           }
         } else if (pz.screen === 'pairs') {
           const cards = (pz.board || {}).cards || [];
@@ -364,6 +425,12 @@ async function playRun(plan, history, bot, want = {}) {
       grid: async (board, prompt, last) => {
         if (current.tries && JSON.stringify(last) !== JSON.stringify(current.last)) fail(`${tag}: ${current.pz.skill}: a second try did not start from the first answer`);
         current.last = answersRight() ? current.pz.solution : current.pz.decoy;
+        return current.last;
+      },
+      order: async (board, prompt, last) => {
+        const pz = current.pz;
+        if (current.tries && JSON.stringify(last) !== JSON.stringify(pz.keep ? pz.keep(current.last) : current.last)) fail(`${tag}: ${pz.skill}: a second try did not start from what was right in the first`);
+        current.last = answersRight() ? pz.solution : pz.decoy;
         return current.last;
       },
       // A matching game ends with every pair found, or with the cards turned over for him.
@@ -522,8 +589,8 @@ for (const card of Object.values(pack.scenes)) {
   }
   for (const t of Object.keys(card.toys)) if (!toysPlayed.has(`${card.id}.${t}`)) fail(`scenes/${card.id}.yaml: toy "${t}" was never played`);
 }
-// Every level of the Spanish puzzles gets played.
-for (const skill of [...new Set([...levelsPlayed].map((k) => k.split('@')[0]))].filter((k) => k.startsWith('spanish_'))) {
+// Every level gets played, for each puzzle whose levels change what is on the screen.
+for (const skill of new Set([...levelsPlayed].map((k) => k.split('@')[0]))) {
   for (const lvl of [1, 2, 3]) if (!levelsPlayed.has(`${skill}@${lvl}`)) fail(`${skill}: no run played level ${lvl}`);
 }
 // Every egg can be earned.

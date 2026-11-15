@@ -12,3 +12,4 @@ slots:
     - { puzzle: stepping_stones, topic: cannonballs }
   sign:
     - { puzzle: fact_or_fib, topic: forts }
+    - { puzzle: picky_bridge, topic: sentry }
