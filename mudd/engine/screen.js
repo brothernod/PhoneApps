@@ -1,9 +1,9 @@
 // @ts-check
 // Everything on screen: picture window, typed text, keycap choices, the
-// puzzle card with its number pad, the map, the casebook and lineup, lair
-// toys, and full-screen overlays. Touch only.
+// puzzle card with its number pad and its boards, the map, the casebook and
+// lineup, lair toys, and full-screen overlays. Touch only.
 
-import { sleep } from './util.js';
+import { sleep, fill } from './util.js';
 
 const PAGE = 3; // story choices shown at once; more than this and they page
 
@@ -62,6 +62,7 @@ export class Screen {
     this.root = $('#screen');
     this.cardQ = $('#card-q');
     this.cardHint = $('#card-hint');
+    this.cardBoard = $('#card-board');
     this.cardKeys = $('#card-keys');
     /** The game pack's pictures. Set once the pack has loaded. @type {import('./art.js').Pictures | null} */
     this.pictures = null;
@@ -250,6 +251,7 @@ export class Screen {
     this.clearControls();
     this.cardQ.innerHTML = highlight(pz.question);
     this.cardHint.textContent = '';
+    this.cardBoard.innerHTML = '';
     this.clearControls(this.cardKeys);
     this.root.classList.add('puzzling');
     await sleep(320);
@@ -275,7 +277,187 @@ export class Screen {
     await sleep(320);
     this.cardQ.textContent = '';
     this.cardHint.textContent = '';
+    this.cardBoard.innerHTML = '';
     this.clearControls(this.cardKeys);
+  }
+
+  // -------------------------------------------------------------------------
+  // Boards: puzzles answered by tapping squares drawn inside the card, between
+  // the question and the keys. A board is plain data from puzzles.js.
+
+  /** One of the pack's small pictures, to put in a square. */
+  icon(name) {
+    const s = el('span', 'ico');
+    const url = this.pictures && name ? this.pictures.iconUrl(name) : '';
+    if (url) s.style.backgroundImage = `url(${url})`;
+    return s;
+  }
+
+  /**
+   * Draw a board showing `start` (an answer, or nothing yet). With `set`, the
+   * squares can be tapped, and set(answer) is called on every change: null
+   * while there is nothing to check. Without it the board is only a picture.
+   * @param {Record<string, any>} board
+   * @param {any} start
+   * @param {((answer: any) => void) | null} set
+   */
+  drawBoard(board, start, set) {
+    const host = this.cardBoard;
+    host.innerHTML = '';
+    const tag = set ? 'button' : 'span';
+    const grid = el('div', `board ${board.kind}`);
+    const cap = el('div', 'boardcap');
+
+    if (board.kind === 'toggle') {
+      // Tap a square to pick it; tap again to put it back.
+      grid.style.gridTemplateColumns = `repeat(${board.cols}, 1fr)`;
+      const on = new Set(Array.isArray(start) ? start : []);
+      const answer = () => (on.size ? [...on].sort((a, b) => a - b) : null);
+      board.cells.forEach((c, i) => {
+        const b = el(tag, 'cell' + (on.has(i) ? ' on' : ''), c.label);
+        if (set) b.addEventListener('click', () => {
+          if (on.has(i)) on.delete(i); else on.add(i);
+          b.classList.toggle('on', on.has(i));
+          set(answer());
+        });
+        grid.appendChild(b);
+      });
+      host.append(grid);
+      if (set) set(answer());
+    } else if (board.kind === 'array') {
+      // Tap a square, and the crate fills from the top-left corner down to it.
+      grid.style.gridTemplateColumns = `repeat(${board.cols}, 1fr)`;
+      let sel = Array.isArray(start) ? start : [0, 0];
+      const cells = [];
+      const paint = () => {
+        for (const c of cells) c.b.classList.toggle('on', c.r < sel[0] && c.c < sel[1]);
+        const words = board.captions || {};
+        cap.textContent = !sel[0] ? words.none || '' : fill(sel[0] === 1 ? words.one || '' : words.many || '', { rows: String(sel[0]), cols: String(sel[1]) });
+      };
+      for (let r = 0; r < board.rows; r++) for (let c = 0; c < board.cols; c++) {
+        const b = el(tag, 'cell');
+        b.appendChild(this.icon(board.icon));
+        if (set) b.addEventListener('click', () => { sel = [r + 1, c + 1]; paint(); set(sel); });
+        cells.push({ b, r, c });
+        grid.appendChild(b);
+      }
+      paint();
+      host.append(grid, cap);
+      if (set) set(sel[0] ? sel : null);
+    } else if (board.kind === 'graph') {
+      // A picture graph. The open row fills up to the square he taps.
+      grid.style.gridTemplateColumns = `auto repeat(${board.slots}, 1fr)`;
+      for (const row of board.rows) {
+        const open = !!row.open;
+        let n = open ? Number(start) || 0 : row.count;
+        grid.appendChild(el('span', 'glabel' + (open ? ' open' : ''), row.label));
+        const slots = [];
+        const paint = () => slots.forEach((b, k) => b.classList.toggle('on', k < n));
+        for (let k = 0; k < board.slots; k++) {
+          const b = el(open ? tag : 'span', 'slot' + (open ? ' open' : ''));
+          b.appendChild(this.icon(board.icon));
+          if (open && set) b.addEventListener('click', () => { n = n === k + 1 ? k : k + 1; paint(); set(n || null); });
+          slots.push(b);
+          grid.appendChild(b);
+        }
+        paint();
+        if (open && set) set(n || null);
+      }
+      cap.textContent = board.key || '';
+      host.append(grid, cap);
+    }
+    host.classList.toggle('solved', !set);
+  }
+
+  /**
+   * Play a board: he taps squares, then the DONE key. Resolves with his
+   * answer. `last` is his answer from the try before, to start from.
+   */
+  cardGrid(board, prompt, last) {
+    return new Promise((resolve) => {
+      const keys = this.cardKeys;
+      this.clearControls(keys);
+      keys.className = 'choices';
+      keys.appendChild(this.prompt(prompt));
+      const ok = el('button', 'key wide ok', board.done || 'DONE');
+      keys.appendChild(ok);
+      let answer = null;
+      this.drawBoard(board, last, (a) => { answer = a; ok.classList.toggle('off', a === null); });
+      ok.addEventListener('click', () => {
+        if (answer === null) return;
+        this.unread = false;
+        this.clearControls(keys);
+        resolve(answer);
+      });
+    });
+  }
+
+  /** After a second miss: show the right answer on the board. */
+  cardSolve(board, solution) { this.drawBoard(board, solution, null); }
+
+  /**
+   * A matching game: cards face down, two turned over at a time. A pair that
+   * matches stays up. From the second miss on, a hint says what the word
+   * means. Past maxMisses every card is turned over. Resolves with how it
+   * went: { done, misses }.
+   * @param {Record<string, any>} board
+   * @param {{ starMisses: number, maxMisses: number }} opts
+   * @param {(name: string) => void} cue
+   */
+  cardPairs(board, prompt, opts, cue) {
+    return new Promise((resolve) => {
+      const host = this.cardBoard;
+      host.innerHTML = '';
+      host.classList.remove('solved');
+      this.clearControls(this.cardKeys);
+      this.cardKeys.className = 'choices';
+      this.cardKeys.appendChild(this.prompt(prompt));
+      const grid = el('div', 'board pairs');
+      grid.style.gridTemplateColumns = `repeat(${board.cols}, 1fr)`;
+      const cards = board.cards.map((c) => {
+        const b = el('button', 'cell flip');
+        const face = el('span', 'face');
+        if (c.icon) face.appendChild(this.icon(c.icon));
+        else {
+          face.appendChild(el('span', 'word', c.label));
+          if (c.sub) face.appendChild(el('span', 'sub', c.sub));
+        }
+        b.appendChild(face);
+        grid.appendChild(b);
+        return { ...c, b, up: false };
+      });
+      host.appendChild(grid);
+      const turn = (card, up) => { card.up = up; card.b.classList.toggle('up', up); };
+      let first = null, busy = false, misses = 0, left = cards.length / 2;
+      for (const card of cards) card.b.addEventListener('click', async () => {
+        if (busy || card.up) return;
+        turn(card, true);
+        if (!first) { first = card; return; }
+        const other = first;
+        first = null;
+        if (other.pair === card.pair) {
+          other.b.classList.add('done'); card.b.classList.add('done');
+          cue('find');
+          if (--left === 0) { this.unread = false; await sleep(700); resolve({ done: true, misses }); }
+          return;
+        }
+        misses++;
+        busy = true;
+        if (misses >= 2) {
+          const word = !!other.label !== !!card.label ? (other.label ? other : card) : null;
+          this.cardHintText(word ? word.hint : board.same || '');
+        }
+        const over = opts.maxMisses > 0 && misses >= opts.maxMisses;
+        await sleep(over ? 900 : 1500);
+        if (over) {
+          for (const c of cards) { turn(c, true); c.b.classList.add('done'); }
+          resolve({ done: false, misses });
+          return;
+        }
+        turn(other, false); turn(card, false);
+        busy = false;
+      });
+    });
   }
 
   /** Letter grid like an old console name screen. */
@@ -519,14 +701,20 @@ export class Screen {
     if (toy.kind === 'spot') await this.toySpot(toy, cue);
     else if (toy.kind === 'taps') await this.toyTaps(toy, cue);
     else if (toy.kind === 'pulse') await this.toyPulse(toy, cue);
+    else if (toy.kind === 'song') await this.toySong(toy, cue);
     this.clearControls();
   }
 
-  /** Find something in the picture and tap it. After two misses a frame blinks around it. */
+  /**
+   * Find something in the picture and tap it. After two misses a frame blinks
+   * around it. With count: it takes that many taps, and the picture is told
+   * pose (taps so far), so it can change a little each time.
+   */
   toySpot(toy, cue) {
     const [x, y, w, h] = toy.at;
+    const need = Number(toy.count) || 1;
     return new Promise((resolve) => {
-      let misses = 0;
+      let misses = 0, hits = 0;
       const say = (text) => {
         this.clearControls();
         this.controls.className = 'choices';
@@ -539,10 +727,18 @@ export class Screen {
         const px = ((e.clientX - r.left) / r.width) * 320, py = ((e.clientY - r.top) / r.height) * 200;
         const pad = 6; // small fingers
         if (px >= x - pad && px <= x + w + pad && py >= y - pad && py <= y + h + pad) {
-          this.pic.removeEventListener('pointerdown', onTap);
+          hits++;
+          misses = 0;
           this.picOverlay = null;
           cue('find');
-          resolve(undefined);
+          if (hits >= need) {
+            this.pic.removeEventListener('pointerdown', onTap);
+            resolve(undefined);
+            return;
+          }
+          this.picT.pose = hits;
+          this.redraw();
+          if (toy.more) say(toy.more);
           return;
         }
         cue('miss');
@@ -553,10 +749,62 @@ export class Screen {
             ctx.strokeStyle = '#ffd75a'; ctx.lineWidth = 2;
             ctx.strokeRect(x - 3, y - 3, w + 6, h + 6);
           });
+          this.picT.pose = hits; // a new overlay starts the picture over
+          this.redraw();
         }
       };
       this.pic.addEventListener('pointerdown', onTap);
     });
+  }
+
+  /**
+   * Listen, then answer. The creature sings a few notes, each one lighting
+   * its key, and he taps the same keys in the same order. toy.rounds is a
+   * list of rounds, each a list of key numbers. While a note sounds the
+   * picture is told pose: 1 for the first key, 2 for the second, and so on.
+   * A third try at a round takes any answer.
+   */
+  async toySong(toy, cue) {
+    for (const notes of toy.rounds || []) {
+      for (let tries = 1; ; tries++) {
+        this.clearControls();
+        this.controls.className = 'choices';
+        const label = this.prompt(toy.listen || 'LISTEN...');
+        const row = el('div', 'songkeys');
+        const keys = toy.keys.map((k) => { const b = el('button', 'key wide', k.key); row.appendChild(b); return b; });
+        this.controls.append(label, row);
+        this.settle(this.controls);
+        const sound = async (i, ms) => {
+          keys[i].classList.add('lit');
+          this.picT.pose = i + 1; this.redraw();
+          cue(toy.keys[i].cue);
+          await sleep(ms);
+          keys[i].classList.remove('lit');
+          this.picT.pose = 0; this.redraw();
+          await sleep(160);
+        };
+        await sleep(800);
+        for (const i of notes) await sound(i, 460);
+        /** @type {HTMLElement} */ (label.firstChild).textContent = toy.turn || 'YOUR TURN!';
+        const same = await new Promise((resolve) => {
+          let at = 0, busy = false;
+          keys.forEach((b, i) => b.addEventListener('click', async () => {
+            if (busy) return;
+            busy = true;
+            const good = i === notes[at];
+            await sound(i, 220);
+            busy = false;
+            if (!good) resolve(false);
+            else if (++at === notes.length) resolve(true);
+          }));
+        });
+        if (same || tries >= 3) break;
+        cue('miss');
+        /** @type {HTMLElement} */ (label.firstChild).textContent = toy.again || 'NOT THE SAME. LISTEN AGAIN...';
+        await sleep(1300);
+      }
+      await sleep(400);
+    }
   }
 
   /**

@@ -121,6 +121,39 @@ export class Pictures {
     /** The pack's creature painter and the box it needs, for portraits. */
     this.creature = /** @type {null | ((p: Pix, parts: any, x: number, y: number, opts?: any) => void)} */ (null);
     this.creatureBox = [28, 16];
+    /** The pack's small pictures for puzzle boards: name -> painter(pix, x, y), each inside iconBox. */
+    this.icons = /** @type {Record<string, (p: Pix, x: number, y: number) => void>} */ ({});
+    this.iconBox = [16, 16];
+    /** @type {Record<string, string>} */
+    this._urls = {};
+  }
+
+  /**
+   * One of the pack's small pictures as a data URL, one art pixel per image
+   * pixel, with a clear background. The page scales it up. Made once each.
+   */
+  iconUrl(name) {
+    if (name in this._urls) return this._urls[name];
+    let url = '';
+    const fn = this.icons[name];
+    if (fn) {
+      // one pixel of room all around for the outline
+      const w = this.iconBox[0] + 2, h = this.iconBox[1] + 2;
+      const p = new Pix();
+      fn(p, 1, 1);
+      const full = document.createElement('canvas');
+      full.width = W; full.height = H;
+      const out = document.createElement('canvas');
+      out.width = w; out.height = h;
+      const fctx = full.getContext('2d'), octx = out.getContext('2d');
+      if (fctx && octx) {
+        p.flush(fctx);
+        octx.drawImage(full, 0, 0, w, h, 0, 0, w, h);
+        url = out.toDataURL();
+      }
+    }
+    this._urls[name] = url;
+    return url;
   }
 
   /** Names of every picture, drawn first. */

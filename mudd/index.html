@@ -180,6 +180,56 @@
     padding: 6px 10px calc(10px + env(safe-area-inset-bottom));
   }
   #card-keys > :first-child { margin-top: auto; }   /* keys sit low, near the thumbs */
+  .key.off { opacity: 0.4; }
+
+  /* Boards: puzzles answered by tapping squares, drawn inside the card
+     between the question and the keys. */
+  #card-board { flex: none; padding: 6px 10px 0; }
+  #card-board:empty { display: none; }
+  .board { display: grid; gap: 6px; }
+  .cell {
+    display: grid; place-items: center; min-width: 0; min-height: 48px; padding: 2px;
+    background: #1b1b3a; color: var(--ink); border: 2px solid #3a3a6a; border-radius: 6px;
+    box-shadow: inset 0 -4px 0 #101028; line-height: 1;
+  }
+  .cell.on { background: var(--hl); color: #1b1b3a; border-color: #fff2b0; box-shadow: inset 0 -4px 0 #b8923e; }
+  .ico { display: block; width: 100%; height: 100%; min-height: 22px; background: center / contain no-repeat; image-rendering: pixelated; }
+  .boardcap { min-height: 1.2em; margin-top: 4px; text-align: center; color: var(--hl); }
+  /* tap every one that fits: a tray of round treats with numbers on */
+  .board.toggle .cell { min-height: 52px; border-radius: 26px; font-size: 1.35em; }
+  /* rows and columns: an empty crate that fills from the corner */
+  .board.array { gap: 4px; }
+  .board.array .cell { min-height: 40px; background: #12122a; border-style: dashed; box-shadow: none; }
+  .board.array .cell.on { background: #2c2c5c; border-style: solid; border-color: var(--hl); }
+  .board.array .cell .ico { visibility: hidden; }
+  .board.array .cell.on .ico { visibility: visible; }
+  /* a picture graph: a label, then one square for each picture */
+  .board.graph { gap: 4px; align-items: center; }
+  .glabel { padding-right: 6px; color: var(--ink); }
+  .glabel.open { color: var(--hl); }
+  .slot { display: block; height: 40px; padding: 4px 2px; border: 2px solid #0000; border-radius: 6px; }
+  .slot .ico { visibility: hidden; }
+  .slot.on .ico { visibility: visible; }
+  .slot.open { border: 2px dashed #5a5a9a; background: #12122a; }
+  .slot.open.on { border-style: solid; border-color: var(--hl); background: #2c2c5c; }
+  /* a matching game: cards face down until they are tapped */
+  .board.pairs .cell { min-height: 66px; background: #4a3a8a; border-color: #7a6aca; box-shadow: inset 0 -4px 0 #2e2260; }
+  .cell.flip::before { content: "?"; color: #b8aef0; font-size: 1.5em; }
+  .cell.flip .face { display: none; }
+  .cell.flip.up { background: #fbf6ee; color: #1b1b3a; border-color: #cfcabb; box-shadow: inset 0 -4px 0 #cfcabb; }
+  .cell.flip.up::before { content: none; }
+  .cell.flip.up .face { display: grid; place-items: center; width: 100%; height: 100%; }
+  .cell.flip.done { border-color: var(--good); box-shadow: inset 0 -4px 0 #4f9a4f; }
+  .face .ico { min-height: 44px; }
+  .face .word { font-size: 0.82em; text-align: center; overflow-wrap: anywhere; }
+  .face .sub { font-size: 0.68em; color: #5a5a6a; text-align: center; }
+  /* the answer, shown after a second miss */
+  #card-board.solved .cell.on, #card-board.solved .slot.open.on { border-color: var(--good); }
+  /* a lair toy's keys, side by side, lighting up as the song plays */
+  .songkeys { display: flex; gap: 8px; }
+  .songkeys .key { min-height: 62px; font-size: 1.3em; }
+  .key.lit { background: var(--hl); box-shadow: inset 0 -5px 0 #b8923e, 0 0 0 3px #fff2b0; transform: translateY(2px); }
+  .iconrow { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin: 8px 0 4px; }
   #card-keys.numpad .grid .key { min-height: 56px; }
   @media (orientation: landscape) and (max-height: 600px) {
     /* Phone on its side: the scene stays on the left, the card takes the right half. */
@@ -192,6 +242,9 @@
     #card-keys.numpad .grid .key { min-height: 40px; }
     #card-keys.numpad .display { font-size: 1.3em; margin-bottom: 6px; }
     #card-book { position: static; flex: none; align-self: flex-end; margin: 6px 10px 0; }
+    .cell, .board.toggle .cell, .board.array .cell { min-height: 32px; }
+    .board.pairs .cell { min-height: 46px; }
+    .slot { height: 30px; }
   }
 
   .numpad .display, .letters .display {
@@ -292,6 +345,7 @@
       <button id="card-book"></button>
       <div id="card-q"></div>
       <div id="card-hint"></div>
+      <div id="card-board"></div>
       <div id="card-keys"></div>
     </div>
     <div id="overlay" class="show boot"></div>

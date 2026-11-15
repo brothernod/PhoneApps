@@ -150,7 +150,7 @@ export const hatchable = (pack) => Object.keys(pack.creatures).filter((id) => pa
  * when the pack is sound. The game shows them on the boot screen; the bot
  * fails the build on them.
  * @param {Pack} pack
- * @param {{ archetypes: Record<string, any>, toys?: string[], pictures?: string[] }} known
+ * @param {{ archetypes: Record<string, any>, toys?: string[], pictures?: string[], icons?: string[] }} known
  */
 export function checkPack(pack, known) {
   const problems = [];
@@ -254,6 +254,8 @@ export function checkPack(pack, known) {
         const kind = known.archetypes[opt && opt.puzzle];
         if (!kind) { bad(`${where}.yaml: slot "${s}" asks for puzzle "${opt && opt.puzzle}", which the engine doesn't have`); continue; }
         for (const msg of kind.check(opt, pack.banks)) bad(`${where}.yaml: slot "${s}": ${msg}`);
+        // A board puzzle's small pictures must be in the pack's art.
+        if (known.icons && kind.icons) for (const name of kind.icons(opt, pack.banks)) if (!known.icons.includes(name)) bad(`${where}.yaml: slot "${s}": icon "${name}" does not exist`);
       }
     }
     const toyNames = Object.keys(card.toys);
@@ -263,6 +265,13 @@ export function checkPack(pack, known) {
       if (!card.tags.toy.includes(t)) bad(`${where}.yaml: toy "${t}" is never used in ${card.id}.ink`);
       if (known.toys && !known.toys.includes(toy.kind)) bad(`${where}.yaml: toy "${t}" has kind "${toy.kind}", which the engine doesn't have`);
       if (toy.kind === 'spot' && !spot(toy.at, 4)) bad(`${where}.yaml: toy "${t}" needs at: [x, y, width, height]`);
+      if (toy.kind === 'spot' && toy.count !== undefined && !(Number.isInteger(toy.count) && toy.count >= 1 && toy.count <= 8)) bad(`${where}.yaml: toy "${t}": count: is how many taps it takes, 1 to 8`);
+      if (toy.kind === 'song') {
+        const keys = Array.isArray(toy.keys) ? toy.keys : [];
+        if (keys.length < 2 || keys.length > 4 || keys.some((k) => !k || !k.key || !k.cue)) bad(`${where}.yaml: toy "${t}" needs keys: two to four, each with key: and cue:`);
+        for (const k of keys) if (k && k.cue && !tunes[k.cue]) bad(`${where}.yaml: toy "${t}": cue "${k.cue}" is not in banks.yaml`);
+        if (!(Array.isArray(toy.notes) && toy.notes.length && toy.notes.every((n) => Number.isInteger(n) && n >= 1 && n <= 6))) bad(`${where}.yaml: toy "${t}" needs notes: how many notes in each round, like [2, 3, 4]`);
+      }
       if (toy.kind === 'taps' && !(spot(toy.count, 2) && toy.count[0] >= 1 && toy.count[1] >= toy.count[0])) bad(`${where}.yaml: toy "${t}" needs count: [fewest, most]`);
       if (toy.kind === 'pulse' && !(Number.isInteger(toy.count) && toy.count >= 1 && toy.count <= 6)) bad(`${where}.yaml: toy "${t}" needs count: a whole number of presses, 1 to 6`);
       pic(toy.pic, `${where}.yaml: toy "${t}"`);
