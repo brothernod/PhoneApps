@@ -218,6 +218,7 @@ async function playRun(plan, history, bot, want = {}) {
   startStory(story, pack, { runs: history.runs, caught: Object.keys(history.caught).length });
   if (want.start) story.variablesState.minutes = want.start;
   let state = newQuestState();
+  let treatsSpent = 0;
   // Now and then the robot quits at a save point and comes back, the way a
   // real player closes the app: a fresh story loaded from the saved game.
   const quit = new Error('quit and continue');
@@ -443,6 +444,18 @@ async function playRun(plan, history, bot, want = {}) {
         current.last = answersRight() ? current.pz.solution : current.pz.decoy;
         return current.last;
       },
+      // A treat: the robot spends one now and then, and reads what it bought.
+      treat: (label, spend) => {
+        see(label, 'the treat key');
+        if (!label) return;
+        if (!current.pz.hint) fail(`${tag}: ${current.pz.skill} offers a treat but has no hint to give`);
+        if (bot.next() < 0.15) {
+          const text = spend();
+          treatsSpent++;
+          see(text, 'a treat hint');
+          if (!text.includes(current.pz.hint)) fail(`${tag}: the treat for ${current.pz.skill} did not show its hint`);
+        }
+      },
       order: async (board, prompt, last) => {
         const pz = current.pz;
         if (current.tries && JSON.stringify(last) !== JSON.stringify(pz.keep ? pz.keep(current.last) : current.last)) fail(`${tag}: ${pz.skill}: a second try did not start from what was right in the first`);
@@ -507,6 +520,11 @@ async function playRun(plan, history, bot, want = {}) {
   if (state.eventsDone.length !== plan.eventLegs.length) fail(`${tag}: ${plan.eventLegs.length} events were dealt but ${state.eventsDone.length} happened (${state.eventsDone.join(', ')})`);
   if (new Set(state.eventsDone).size !== state.eventsDone.length) fail(`${tag}: an event happened twice (${state.eventsDone.join(', ')})`);
   for (const e of state.eventsDone) eventsPlayed.add(e);
+  const treatsTotal = Number(run.treats) || 0;
+  if (state.treats !== treatsSpent) fail(`${tag}: the robot spent ${treatsSpent} treats but the run counted ${state.treats}`);
+  if (state.treats > treatsTotal) fail(`${tag}: ${state.treats} treats spent, and a run only has ${treatsTotal}`);
+  if (rating && (rating.treatsTotal !== treatsTotal || rating.treats !== treatsTotal - state.treats)) fail(`${tag}: the rating counted ${rating.treats} of ${rating.treatsTotal} treats saved, but ${state.treats} of ${treatsTotal} were spent`);
+  stats.treats = (stats.treats || 0) + state.treats;
   const expected = stops.reduce((n, id) => n + Object.keys(plan.slots[id] || {}).length, 0)
     + state.eventsDone.reduce((n, e) => n + (eventSlots[e] || 0), 0);
   if (puzzles !== expected) fail(`${tag}: ${puzzles} puzzles played but ${expected} were dealt`);

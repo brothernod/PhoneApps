@@ -104,6 +104,7 @@ const WORDS = {
     hint_color: '{color} sounds like {say}. {hint}',
     hint_size: '{pick_size} means {pick_size_en}. You want {size}.',
     hint_not: 'NO ES {pick_color} means it is NOT {pick_color_en}.',
+    treat3: 'NO ES means IT IS NOT. Cross those colors out first.',
   },
   hola_y_gracias: {
     who: 'Someone',
@@ -274,6 +275,7 @@ const WORDS = {
     right: 'CLICK! The lock opens.',
     miss: '{guess}? The lock stays shut. HINT: open your CASEBOOK and read the lock numbers, first to last.',
     reveal: 'The code is {answer}.',
+    treat: 'Open your CASEBOOK and read the lock numbers, first to last.',
   },
 };
 
@@ -369,6 +371,7 @@ function storyProblems(type, label) {
         format: out.isTime ? 'clock' : undefined,
         skill: type,
         question: say(t.text),
+        hint,
         prompt: out.isTime ? (w.prompt_time || w.prompt) : w.prompt, retry: w.retry,
         answer: out.answer,
         miss: (guess) => say(w.miss, { guess: out.isTime ? keysText(guess) : String(guess), hint }),
@@ -486,6 +489,7 @@ const steppingStones = {
     return {
       screen: 'numpad',
       skill: 'stepping_stones',
+      hint,
       question: say(topic.text || w.ask),
       prompt: w.prompt, retry: w.retry,
       answer,
@@ -565,6 +569,7 @@ const colores = {
         screen: 'pick',
         skill,
         question: say(w.ask),
+        hint: say(w.hint_color, { color: target.es }),
         prompt: say(w.prompt), retry: say(w.retry),
         options: rng.shuffle([target, ...others]).map((x) => ({
           label: say(w.option),
@@ -602,6 +607,7 @@ const colores = {
       screen: 'pick',
       skill,
       question: say(w[`ask${n}`]),
+      hint: level === 3 ? say(w.treat3) : say(w.hint_color, { hint: fill(target.hint || '', names) }),
       prompt: say(w[`prompt${n}`] || w.prompt), retry: say(w.retry),
       options: rng.shuffle(doors).map(([x, s]) => ({
         label: say(w.option),
@@ -677,6 +683,7 @@ const holaYGracias = {
     return {
       screen: 'pick',
       skill: 'spanish_hola',
+      hint: base.hint,
       question: say(level <= 1 ? w.ask_easy : w.ask),
       maxLines: 4,
       prompt: say(w.prompt), retry: say(w.retry),
@@ -746,6 +753,7 @@ const factOrFib = {
     return {
       screen: 'pick',
       skill: 'science_facts',
+      hint: base.hint,
       question: say(w.ask),
       maxLines: 1, // the three statements are the keys, so the question gets one line
       prompt: say(w.prompt), retry: say(w.retry),
@@ -811,6 +819,7 @@ const rescue = {
       screen: 'pick',
       skill,
       question: say(w.ask),
+      hint: base.hint,
       maxLines: 3,
       prompt: say(w.prompt), retry: say(w.retry),
       options: rng.shuffle([target, ...others]).map((x) => ({
@@ -865,6 +874,7 @@ const codeLock = {
     return {
       screen: 'numpad',
       skill: 'code_lock',
+      hint: say(w.treat),
       question: say(w.ask),
       prompt: say(w.prompt), retry: say(w.retry),
       answer,
@@ -978,6 +988,7 @@ const snackMuncher = {
     return {
       screen: 'grid',
       skill: 'snack_muncher',
+      hint,
       question: say(topic.text || w.ask),
       prompt: say(w.prompt), retry: say(w.retry),
       board: { kind: 'toggle', cols: 4, cells: cells.map((c) => ({ label: c.label })), done: say(w.done) },
@@ -1059,6 +1070,7 @@ const eggCrates = {
     return {
       screen: 'grid',
       skill: 'egg_crates',
+      hint,
       question: say(topic[rule.ask] || w[`ask_${rule.ask}`]),
       prompt: say(w.prompt), retry: say(w.retry),
       board: {
@@ -1158,6 +1170,7 @@ const dragonCensus = {
     return {
       screen: 'grid',
       skill: 'dragon_census',
+      hint,
       question: say(topic[rule.ask] || w[`ask_${rule.ask}`]),
       prompt: say(w.prompt), retry: say(w.retry),
       board: {
@@ -1839,6 +1852,7 @@ export const ARCHETYPES = {
  *   pick: (options: { label: string, color?: string, size?: string }[], prompt: string) => Promise<number>,
  *   grid: (board: Record<string, any>, prompt: string, last?: any) => Promise<any>,
  *   order: (board: Record<string, any>, prompt: string, last?: any) => Promise<any>,
+ *   treat?: (label: string, spend: () => string) => void,
  *   pairs: (board: Record<string, any>, prompt: string, opts: { starMisses: number, maxMisses: number }) => Promise<{ done: boolean, misses: number }>,
  *   solve: (board: Record<string, any>, solution: any) => void,
  *   hint: (text: string) => void,
@@ -1858,7 +1872,21 @@ export async function playPuzzle(spec, ctx) {
   const { card } = ctx;
   const done = (pass, firstTry) => {
     for (const [kind, id] of pz.learned || []) ctx.learned(kind, id);
-    return { pass, firstTry, skill: pz.skill, type: spec.puzzle };
+    return { pass, firstTry, skill: pz.skill, type: spec.puzzle, treat: treated };
+  };
+
+  // A treat buys the puzzle's hint before a first try. ctx.treats says how
+  // many are left and takes one away; the card shows the key for it.
+  let treated = false;
+  const treats = ctx.treats;
+  const offerTreat = () => {
+    if (!card.treat || !treats || !pz.hint || treats.left() <= 0) return;
+    card.treat(fill(treats.key, { ...ctx.names, left: String(treats.left()) }), () => {
+      treated = true;
+      treats.spend();
+      ctx.cue('find');
+      return fill(treats.hint, { ...ctx.names, hint: pz.hint || '' });
+    });
   };
 
   await card.open(pz);
@@ -1884,6 +1912,7 @@ export async function playPuzzle(spec, ctx) {
   for (let attempt = 1; attempt <= 2; attempt++) {
     const prompt = attempt === 1 ? pz.prompt : pz.retry;
     let ok = false, missText = '';
+    if (attempt === 1) offerTreat();
     if (pz.screen === 'numpad') {
       const guess = await card.numpad(prompt, pz.format);
       ok = guess === pz.answer;

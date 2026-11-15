@@ -45,6 +45,7 @@ run:
   places_per_run: 3
   events: on-the-road    # the card of things that can happen on a drive
   events_per_run: 2      # how many of them a run gets
+  treats: 3              # treats a run starts with. One buys a hint before a first try
 
 # Where a skill starts, for a skill that shouldn't start on level 1. The game
 # still steps down after two misses and up after two first-try solves.
@@ -82,7 +83,9 @@ traits:
 # How a run is rated. The game checks the eggs from the top and gives the
 # first one the run earned; the last egg has no conditions, so every run gets
 # one. The best egg for each creature is kept in the Field Guide.
-#   stars:          share of puzzles solved on the first try (0.8 is 8 in 10)
+#   stars:          share of puzzles solved on the first try (0.8 is 8 in 10).
+#                   A treat that was not spent counts like a star, out of
+#                   the puzzles played plus the treats a run starts with.
 #   first_pick:     named the right creature on the first pick
 #   before_sunset:  home before clock.sunset
 rating:
@@ -138,6 +141,10 @@ words:
 
   # The rating, typed when the story reaches a "# rate" tag.
   rate_stars: "★ FIRST-TRY STARS: {stars} of {puzzles}"
+  rate_treats: "TREATS SAVED FOR {pet}: {left} of {total}"
+  treat_key: "GIVE {pet} A TREAT FOR A HINT ({left} LEFT)"
+  treat_hint: "{pet} gobbles the treat and sniffs it out. HINT: {hint}"
+  book_treats: TREATS
   rate_pick_yes: "NAMED THE DRAGON ON THE FIRST PICK: ¡SÍ!"
   rate_pick_no: "NAMED THE DRAGON ON THE FIRST PICK: not this time"
   rate_early: "HOME {left} BEFORE SUNSET"

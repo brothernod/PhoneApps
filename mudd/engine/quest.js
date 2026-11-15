@@ -42,7 +42,7 @@ export const TOYS = ['spot', 'taps', 'pulse', 'song', 'rub'];
  * }} QuestUi
  *
  * What a saved game remembers besides the ink state.
- * @typedef {{ step: number, entered: boolean, drove: boolean, event: string, eventsDone: string[], puzzleN: number, toyN: number, disk: number,
+ * @typedef {{ step: number, entered: boolean, drove: boolean, event: string, eventsDone: string[], treats: number, puzzleN: number, toyN: number, disk: number,
  *   clues: string[], sign: boolean, digits: number, route: string[],
  *   crossed: string[], wrong: string[], named: string,
  *   stars: Record<string, number>, tries: Record<string, number>,
@@ -61,7 +61,7 @@ export const TOYS = ['spot', 'taps', 'pulse', 'song', 'rub'];
 
 /** @returns {QuestState} */
 export const newQuestState = () => ({
-  step: 0, entered: false, drove: false, event: '', eventsDone: [], puzzleN: 0, toyN: 0, disk: 1,
+  step: 0, entered: false, drove: false, event: '', eventsDone: [], treats: 0, puzzleN: 0, toyN: 0, disk: 1,
   clues: [], sign: false, digits: 0, route: [],
   crossed: [], wrong: [], named: '',
   stars: {}, tries: {},
@@ -82,6 +82,9 @@ const WORDS = {
   case_wrong: 'A real {based_on} {theirs}. But your clue says: it {yours}.',
   case_back: 'BACK TO THE CASE FILE',
   rate_stars: 'FIRST-TRY STARS: {stars} of {puzzles}',
+  rate_treats: 'TREATS SAVED: {left} of {total}',
+  treat_key: 'USE A TREAT FOR A HINT ({left} LEFT)',
+  treat_hint: 'HINT: {hint}',
   rate_pick_yes: 'NAMED IT ON THE FIRST PICK: YES',
   rate_pick_no: 'NAMED IT ON THE FIRST PICK: NO',
   rate_early: 'HOME {left} BEFORE SUNSET',
@@ -90,6 +93,8 @@ const WORDS = {
 };
 
 const sum = (obj) => Object.values(obj || {}).reduce((a, b) => a + b, 0);
+/** How many treats a run starts with. */
+const treatsIn = (pack) => Math.max(0, Number((pack.game.run || {}).treats) || 0);
 
 /** Names a line about one creature may use: the cast, plus that creature's own words. */
 function namesFor(pack, creature) {
@@ -138,6 +143,7 @@ export function casebook(pack, plan, state) {
     digits: plan.lock.map((d, i) => (i < state.digits ? d : null)),
     places: state.route.map(place),
     stars: sum(state.stars),
+    treats: { left: Math.max(0, treatsIn(pack) - (state.treats || 0)), total: treatsIn(pack) },
     lineup: Object.keys(pack.creatures).map((id) => ({
       id,
       name: pack.creatures[id].name || id,
@@ -158,7 +164,9 @@ export function toggleCrossed(state, id) {
 
 /**
  * Rate a run: the first egg under rating.eggs whose conditions it meets.
- * stars is the share of puzzles solved on the first try.
+ * An egg's stars: is a share. A first-try solve counts one and so does a
+ * treat that was not spent, out of the puzzles played plus the treats a run
+ * starts with. So a treat saved is worth as much as a star.
  * @param {import('./pack.js').Pack} pack
  * @param {QuestState} state
  * @param {number} minutes  the clock when the run came home
@@ -169,9 +177,10 @@ export function rate(pack, state, minutes) {
   const stars = sum(state.stars), puzzles = sum(state.tries);
   const firstPick = state.wrong.length === 0;
   const before = minutes <= sunset;
-  let i = eggs.findIndex((e) => (!e.stars || stars >= e.stars * puzzles) && (!e.first_pick || firstPick) && (!e.before_sunset || before));
+  const treatsTotal = treatsIn(pack), treats = Math.max(0, treatsTotal - (state.treats || 0));
+  let i = eggs.findIndex((e) => (!e.stars || stars + treats >= e.stars * (puzzles + treatsTotal)) && (!e.first_pick || firstPick) && (!e.before_sunset || before));
   if (i < 0) i = eggs.length - 1;
-  return { egg: eggs[i], rank: eggs.length - i, stars, puzzles, firstPick, before, left: sunset - minutes };
+  return { egg: eggs[i], rank: eggs.length - i, stars, puzzles, treats, treatsTotal, firstPick, before, left: sunset - minutes };
 }
 
 /**
@@ -288,6 +297,7 @@ export async function runQuest({ pack, plan, story, state, ui, hooks }) {
           if (!state.egg) { state.egg = r.rank; hooks.rated(plan.creature, r); }
           if (r.egg.pic) ui.pic(r.egg.pic);
           await say('rate_stars', { stars: String(r.stars), puzzles: String(r.puzzles) });
+          if (r.treatsTotal) await say('rate_treats', { left: String(r.treats), total: String(r.treatsTotal) });
           await say(r.firstPick ? 'rate_pick_yes' : 'rate_pick_no');
           await say(r.before ? 'rate_early' : 'rate_late', { left: span(Math.max(0, r.left)), time: clock(Number(vars.minutes)) });
           await say('rate_egg', { egg: r.egg.name }, 'good');
@@ -319,6 +329,7 @@ export async function runQuest({ pack, plan, story, state, ui, hooks }) {
             level: hooks.level,
             learned: hooks.learned,
             run: { digits: plan.lock.slice(0, state.digits) },
+            treats: treatsIn(pack) ? { left: () => treatsIn(pack) - state.treats, spend: () => { state.treats++; }, key: words.treat_key, hint: words.treat_hint } : undefined,
           });
           hooks.result(res);
           pass = res.pass;

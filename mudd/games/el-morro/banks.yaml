@@ -33,6 +33,7 @@ wording:
     hint_color: "{color} sounds like {say}. {hint}"
     hint_size: "{pick_size} means {pick_size_en}. You want {size}."
     hint_not: "NO ES {pick_color} means it is NOT {pick_color_en}."
+    treat3: "NO ES means IT IS NOT. Cross those colors out first."
     # The same puzzle about other things. A slot asks for one with skin:.
     # The thing must be a "la" word, like "la puerta", so the f: forms fit.
     skins:
@@ -177,6 +178,7 @@ wording:
     right: "CLICK! The lock pops open."
     miss: "{guess}? The lock stays shut. HINT: tap CASEBOOK and read the LOCK numbers, first to last."
     reveal: "The code is {answer}. Doña Luz turns the dials with you."
+    treat: "Tap CASEBOOK and read the LOCK numbers, first to last."
 
 # ---------------------------------------------------------------------------
 # DRAGON HOARD: story word problems (Common Core 3.OA.D.8, two-step problems)

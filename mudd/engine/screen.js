@@ -266,6 +266,20 @@ export class Screen {
 
   cardHintText(text) { this.cardHint.innerHTML = highlight(text); }
 
+  /**
+   * Offer a treat: a small key under the question. Tapping it calls spend(),
+   * which takes the treat and returns the hint it bought, and the hint
+   * takes the key's place.
+   */
+  cardTreat(label, spend) {
+    const host = this.cardHint;
+    host.innerHTML = '';
+    if (!label) return;
+    const b = el('button', 'treat', label);
+    b.addEventListener('click', () => { host.innerHTML = highlight(spend()); });
+    host.appendChild(b);
+  }
+
   /** After a second miss: show the answer on the card and wait for a tap. */
   async cardReveal(text) {
     this.cardHint.innerHTML = highlight(text);
@@ -820,6 +834,10 @@ export class Screen {
       if (played.length) {
         const stars = row(words.stars, 'wrap');
         for (const p of played) stars.appendChild(el('span', 'starline', `${p.name} ${'★'.repeat(p.stars)}${'☆'.repeat(Math.max(0, p.tries - p.stars))}`));
+      }
+      if (view.treats && view.treats.total) {
+        const treats = row(words.treats);
+        for (let i = 0; i < view.treats.total; i++) treats.appendChild(el('span', i < view.treats.left ? 'digit on' : 'digit', i < view.treats.left ? '●' : '·'));
       }
     }
     body.appendChild(el('p', 'dim', pick ? words.case_hint : words.book_hint));
