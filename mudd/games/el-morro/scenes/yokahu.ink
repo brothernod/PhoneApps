@@ -31,7 +31,7 @@ On the next landing, {pet} stops to sniff, and {sibling} crouches down beside hi
 
 = top
 The top of the tower! You can see the whole green forest, and far away, the sea.
-A ranger with binoculars is up here, beside a big sign about the forest. "You look like sharp kids," she says. "Try this one." # slot: top
+A ranger with binoculars is up here, with a clipboard and a big sign about the forest. "You look like sharp kids," she says. "Try this one." # slot: top
 + [@pass] -> top_pass
 + [@fail] -> top_fail
 

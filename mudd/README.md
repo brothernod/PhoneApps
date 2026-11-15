@@ -10,16 +10,17 @@ keeps its saves.
 
 ## What's playable now
 
-Phases 1 to 3 of the completion plan are built. A run has its full shape:
-three of four places, and four dragons that can hatch.
+Phases 1 to 4 of the completion plan are built. A run has its full shape:
+three of seven places, and seven dragons that can hatch.
 
 - **Museum.** Doña Luz hands over the casebook, and the empty shell gives the
   first clue
 - **The map.** He picks the next stop from the places on offer and sees each
-  drive time. Four pool places, three to a run: Old San Juan streets, the
-  sentry box at El Morro, the lantern tunnel at San Cristóbal, and Yokahú
-  Tower in El Yunque, each with two puzzles. One puzzle earns a clue, the
-  other a lock number
+  drive time. Seven pool places, three to a run: Old San Juan streets, the
+  sentry box at El Morro, the lantern tunnel at San Cristóbal, Yokahú Tower,
+  La Coca Falls and Juan Diego Falls in El Yunque, and the beach on the north
+  coast, each with two puzzles. One puzzle earns a clue, the other a lock
+  number
 - **The casebook.** The CASEBOOK button opens it any time, even in the middle
   of a puzzle: clues, lock numbers, stars, and the lineup of all eight
   dragons, which he can cross out
@@ -30,23 +31,31 @@ three of four places, and four dragons that can hatch.
   tree (spot the tail), the anole dragon on El Morro's sunniest wall (count
   its push-ups and tap them back), the bat dragon in the deepest tunnel room
   (lantern off; each click draws more of the room in echoes), the boa dragon
-  in a cave of vines (tap the vine that blinks). Then **the rescue**, in
-  Spanish sentences
+  in a cave of vines (tap the vine that blinks), the coquí dragon in a mossy
+  hollow (it sings; he sings the same notes back), the parrot dragon in a
+  hollow high in an old tree (call to it and it leans out a little more each
+  time), the turtle dragon under a bump in the sand (tap where the sand
+  wiggles). Then **the rescue**, in Spanish sentences
 - **Home.** The **Code Lock** on the nest case, three endings by the clock,
   and a gold, silver, or bronze egg for the run. The best egg is kept on the
   dragon's Field Guide page
-- Nine puzzles so far: **Dragon Hoard** (two-step word problems), **Trading
-  Post** (money and change), **Sunset Clock** (time; he types 3:25 on the
-  pad), **Stepping Stones** (find the rule, fill the missing number),
+- Thirteen puzzles so far: **Dragon Hoard** (two-step word problems),
+  **Trading Post** (money and change), **Sunset Clock** (time; he types 3:25
+  on the pad), **Stepping Stones** (find the rule, fill the missing number),
   **Colores**, **Hola y Gracias** (pick what to say back in Spanish),
-  **Fact or Fib**, **the rescue**, and **Code Lock**. A first-try solve earns
-  a star
+  **Fact or Fib**, **the rescue**, and **Code Lock**, plus four played on a
+  board of squares inside the puzzle card: **Snack Muncher** (tap every
+  treat that fits the rule: multiples of 4, rounds to 50), **Egg Crates**
+  (tap a tray to make rows and columns, then share a number into equal
+  rows), **Dragon Census** (fill in a row of a picture graph where each
+  picture stands for 2, 5, or 10), and **Memoria** (turn over cards to match
+  a Spanish word with its picture). A first-try solve earns a star
 - Colores has three levels: one color word; a sentence with a color and a
   size ("Toca la puerta ROJA y GRANDE") over big and small doors; and a "not"
   sentence ("No es ROJA ni AZUL"). Colores and Hola y Gracias start on level
   2 (`levels:` in `game.yaml`)
-- Four places use trip photos. All nine trip scenes are in the pack; the
-  rest wait for their places
+- Seven places use trip photos. All nine trip scenes are in the pack; the
+  last two wait for their places
 - A caught list that carries across runs, a sunset clock, FM-synth music,
   autosave and Continue
 - Difficulty that steps up after 2 right in a row and down after 2 misses
@@ -62,8 +71,8 @@ Prose lives in ink, data lives in YAML, and code lives in the engine.
 | `game.yaml` | Title, cast, clock, the run shape (hub, pool, places per run), the traits clues reveal, the eggs a run can earn, the words around the story, and the picture list |
 | `scenes/<id>.ink` + `scenes/<id>.yaml` | One scene card per place: the prose, plus its puzzle slots, toys, drive time, and spot on the map. Tags are listed at the top of `scenes/museum.ink` |
 | `creatures.yaml` | The creatures: traits and clue lines, sprite, lair, the detour when one is named by mistake, and Field Guide entry |
-| `banks.yaml` | Word-problem templates, Spanish words and sentences, facts and fibs, puzzle wording, and tunes |
-| `pics/` | Scene art: 320×200 PNGs, plus `drawn.js` for the scenes, the map, and the creatures drawn in code |
+| `banks.yaml` | Word-problem templates, rules for the board puzzles, Spanish words and sentences, facts and fibs, puzzle wording, and tunes |
+| `pics/` | Scene art: 320×200 PNGs, plus `drawn.js` for the scenes, the map, the creatures, and the small icons on puzzle boards, all drawn in code |
 
 A place card never names the creature or a puzzle. It marks a puzzle moment
 with `# slot: cart`, a clue with `# clue`, and a lock number with `# digit`,
@@ -78,9 +87,16 @@ A slot can list any number of puzzles; the dealer picks one each run. A new
 kind of puzzle needs a rule set in `engine/puzzles.js` and a bank in
 `banks.yaml`; the comments above each bank say how to write a question.
 
+A board puzzle (Snack Muncher, Egg Crates, Dragon Census, Memoria) hands
+the screen a board as plain data and checks the answer itself. Its pictures
+are icons: small drawings exported as `icons` from `pics/drawn.js` and named
+with `icon:` in the bank.
+
 To let a creature hatch: write its lair card (`role: lair`, with a `rescue`
 slot and, if you like, a toy), and name the card under `lair:` in
-`creatures.yaml`. Until then the creature is in the lineup but is never
+`creatures.yaml`. There are four kinds of toy: `spot` (tap something in the
+picture, once or several times), `taps` (count and tap back), `pulse` (press
+a key a few times), and `song` (repeat the notes). Until then the creature is in the lineup but is never
 dealt. A lair belongs to one creature, so its card may name it.
 
 | File in `engine/` | What it does |
@@ -89,7 +105,7 @@ dealt. A lair belongs to one creature, so its card may name it.
 | `dealer.js` | Deals a run from the quest number: the creature, the order places come up on the map, a puzzle for each slot, the clue order, and the lock |
 | `quest.js` | Plays a dealt run: hub, map and places, case file and detours, lair, home, and the rating. Also the casebook |
 | `puzzles.js` | Puzzle rule sets. Each makes a puzzle for a shared answer screen |
-| `screen.js`, `art.js`, `sound.js` | The screen, puzzle card, map, casebook and lair toys; pictures; and music |
+| `screen.js`, `art.js`, `sound.js` | The screen, puzzle card and its boards, map, casebook and lair toys; pictures and icons; and music |
 | `main.js` | Wires it together: title, saves, profile, Field Guide, grown-up screen |
 
 There is no build step. The ink compiles in the browser, so editing a file and
@@ -112,16 +128,19 @@ after sunset. It fails on a missing card, slot, bank, tune, or picture; ink
 that doesn't compile; a dead end; a part of a card, a toy, or an egg no run
 reaches; a case file that opens before every clue is found; a lock whose code
 isn't the numbers found; a puzzle question longer than four lines on an
-iPhone; a fact without a source; and anything from the pack hard-wired into
-the engine.
+iPhone; a board puzzle that takes a wrong answer or refuses its own right
+one; a Memoria word too long for its card; a fact without a source; and
+anything from the pack hard-wired into the engine. A full run takes about
+three minutes.
 
 ## Not built yet
 
-Phases 4 to 6 of the completion plan: eleven more puzzle kinds; the other
-six places and four lairs; the event deck and treats; both mother-dragon
-endings; the password backup; and a blank game pack. Sunset Clock sits at the
-tunnel gate and the top of Yokahú Tower until Flight Plan and Dragon Census
-are built.
+Phases 5 and 6 of the completion plan: four more puzzle kinds (Flight Plan,
+Egg to Dragon, Picky Bridge, Weather Watch); the tower view, El Morro's
+lawn, and the glowing bay with the glow dragon's lair; the event deck and
+treats; both mother-dragon endings; the password backup; and a blank game
+pack. Sunset Clock sits at the tunnel gate until Flight Plan is built, and
+its `clouds` problems wait for the tower view.
 
 ## Credits
 

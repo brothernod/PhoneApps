@@ -534,6 +534,8 @@ function map(p) {
   hill(226, 150, 22); hill(262, 146, 24); hill(244, 132, 20); hill(250, 160, 26); hill(206, 160, 14);
   p.rect(241, 114, 6, 8, '#8a94a0'); p.rect(242, 110, 4, 5, '#a8b2be'); p.rect(240, 109, 8, 2, '#6a7480'); // the tower
   p.ellipse(214, 154, 4, 3, '#1a1a2a');                                                                    // a cave
+  for (const [fx, fy] of [[221, 127], [257, 133]]) { p.rect(fx, fy, 2, 7, '#eef5fc'); p.rect(fx - 1, fy + 7, 4, 1, '#8fc0f2'); }   // two waterfalls
+  p.rect(172, 94, 7, 2, '#d23a32'); p.rect(175, 96, 1, 4, '#f4f1e8');                                        // a beach umbrella
   // the road east, dashed
   for (let x = 150; x < 296; x += 7) p.rect(x, 118 + Math.round(Math.sin(x / 40) * 6), 4, 1, '#f4f1e8');
   // Old San Juan: a small island by itself, with a bridge
@@ -788,6 +790,339 @@ const caveVines = (p, t) => cave(p, 'hiding', t);
 caveVines.fps = 4;
 
 
+// ---------------------------------------------------------------------------
+// The coquí dragon's lair: a mossy hollow under a giant tree, by a stream.
+
+const COQUI_PARTS = { shape: 'frog', body: '#c8964e', dark: '#8a6230', belly: '#f2e2b4', trim: '#e8734a', wing: '#e0b070' };
+
+/** A music note, for a song you can see. */
+function note(p, x, y, hex) {
+  p.rect(x + 3, y, 1, 8, hex); p.rect(x + 3, y, 4, 2, hex);
+  p.ellipse(x + 1, y + 8, 2, 1, hex);
+}
+
+/**
+ * what: 'real'   a real coquí on a wet leaf (the detour)
+ *       'song'   two eyes in the hollow; t.pose is the note it is singing
+ *       'found'  the hatchling out on the leaf
+ */
+function hollow(p, what, { who = null, pose = 0 } = {}) {
+  // deep forest, dim as evening
+  p.grad(0, 0, W, 124, ['#0c261e', '#123426', '#1a462e']);
+  for (const [x, w] of [[14, 9], [52, 6], [224, 8], [262, 12], [300, 7]]) { p.rect(x, 0, w, 126, '#0a1c16'); p.rect(x, 0, 2, 126, '#153226'); }
+  for (const x of [30, 206, 284]) for (let y = 0; y < 112; y += 3) p.rect(x + Math.round(y * 0.22), y, 5, 1, '#245a3a');   // thin shafts of light
+  p.grad(0, 124, W, 76, ['#25502c', '#1b3e24', '#132c1a']);
+  for (let i = 0; i < 70; i++) p.rect((i * 53) % W, 128 + ((i * 29) % 70), 3, 1, i % 3 ? '#2f6a36' : '#183822');
+  // the stream, running down the right side
+  for (let y = 126; y < H; y++) {
+    const cx = 252 + Math.round((y - 126) * 0.45) + Math.round(Math.sin(y / 8) * 5), hw = 9 + Math.round((y - 126) * 0.3);
+    p.rect(cx - hw, y, hw * 2, 1, '#173f6c');
+    p.rect(cx - hw + 2, y, hw * 2 - 4, 1, (y + Math.round(cx / 3)) % 5 < 2 ? '#3b82c4' : '#2a6fb0');
+    if (y % 6 === 0) p.rect(cx - 5, y, 9, 1, '#9cc8f2');
+  }
+  for (const [x, y] of [[236, 150], [262, 172], [286, 190]]) p.blob(x, y, 7, 4, '#3a3a40', '#5a5a64', '#8a8a96');   // stones in the water
+  // the giant tree and its roots
+  p.rect(100, 0, 92, 112, '#3a2a1c');
+  for (let x = 104; x < 190; x += 8) p.rect(x, 0, 2, 112, '#2a1e14');
+  p.rect(100, 0, 5, 112, '#523c28');
+  for (let i = 0; i < 46; i++) {
+    p.rect(100 - Math.round(i * 0.9), 106 + i, 20, 1, '#3a2a1c'); p.rect(100 - Math.round(i * 0.9), 106 + i, 3, 1, '#523c28');
+    p.rect(172 + Math.round(i * 0.9), 106 + i, 20, 1, '#3a2a1c'); p.rect(189 + Math.round(i * 0.9), 106 + i, 3, 1, '#2a1e14');
+  }
+  p.ellipse(146, 138, 34, 26, '#2a1e14'); p.rect(112, 138, 69, 16, '#2a1e14');
+  p.ellipse(146, 142, 27, 21, '#050c09'); p.rect(119, 142, 55, 12, '#050c09');
+  // moss and ferns
+  const moss = (x, y, r) => p.blob(x, y, r, Math.round(r * 0.55), '#1e5a2a', '#3f8e3e', '#7ac860');
+  moss(112, 110, 14); moss(146, 108, 18); moss(182, 112, 13); moss(86, 142, 9); moss(206, 144, 10);
+  const fern = (x, y, flip) => { for (let i = 0; i < 14; i++) { const fx = x + (flip ? -i : i), fy = y - Math.round(Math.sin(i / 5) * 9); p.rect(fx, fy, 1, 5 - Math.floor(i / 4), '#3f9e4a'); p.set(fx, fy, '#7ac860'); } };
+  fern(60, 150, false); fern(86, 156, true); fern(214, 160, false); fern(40, 138, true);
+  // a wet leaf out in front
+  p.ellipse(152, 176, 40, 9, '#1e5a2a'); p.ellipse(152, 175, 37, 7, '#2f8a3a'); p.rect(118, 175, 70, 1, '#7ac860');
+  p.set(140, 171, '#cfe6fa'); p.set(170, 178, '#cfe6fa'); p.set(128, 177, '#cfe6fa');
+  if (what === 'song') {
+    // two big eyes in the dark, and a throat that puffs with each note
+    const blink = pose === 0;
+    p.rect(138, 144, 4, blink ? 3 : 4, '#ffe9a0'); p.rect(150, 144, 4, blink ? 3 : 4, '#ffe9a0');
+    p.set(140, 145, '#1e1414'); p.set(152, 145, '#1e1414');
+    if (pose === 1) { p.ellipse(146, 152, 4, 2, '#e8c890'); note(p, 120, 126, '#9cd8f2'); }
+    if (pose >= 2) { p.ellipse(146, 153, 7, 4, '#f2e2b4'); note(p, 166, 114, '#fff2b0'); note(p, 178, 120, '#fff2b0'); }
+  } else if (what === 'found') {
+    creature(p, who || COQUI_PARTS, 108, 134, { scale: 4, outline: '#06100c' });
+  } else {
+    // a real coquí, about as big as a thumbnail, singing
+    p.rect(150, 170, 6, 4, '#a87a44'); p.rect(149, 173, 8, 2, '#a87a44'); p.set(151, 170, '#1e1414'); p.set(154, 170, '#1e1414'); p.rect(151, 174, 4, 1, '#e8d8a8');
+    note(p, 162, 152, '#9cd8f2'); note(p, 174, 144, '#fff2b0');
+  }
+  p.sprite(HERO, HERO_PAL, 16, 150);
+  p.sprite(SIDEKICK, SIDEKICK_PAL, 38, 158);
+  p.sprite(PUP, PUP_PAL, 58, 176);
+}
+
+// ---------------------------------------------------------------------------
+// The parrot dragon's lair: a hollow high in an old tree, seen from below.
+
+const PARROT_PARTS = { shape: 'bird', body: '#3fae4a', dark: '#2a7a34', belly: '#9ade6e', trim: '#d23a32', wing: '#2f6fd1' };
+
+/**
+ * what: 'real'   a real parrot peeking out of the hollow (the detour)
+ *       'call'   the hatchling in the hollow; with each call (t.pose) it
+ *                leans out a little more, and t.pulse spreads the squawk
+ *       'found'  the hatchling down on a low branch, wings still open
+ */
+function oldTree(p, what, { who = null, pose = 0, pulse = 0 } = {}) {
+  sky(p, H, ['#3b6fd1', '#6aa0ea', '#bfe0fa', '#d8ecfa']);
+  const leaf = (x, y, rr) => p.blob(x, y, rr, Math.round(rr * 0.8), '#1e5a2a', '#2f7d33', '#4cae4f');
+  leaf(20, 14, 44); leaf(84, -6, 34); leaf(300, 20, 46); leaf(250, -10, 34); leaf(-6, 96, 30); leaf(322, 110, 30);
+  // the trunk: wide at your feet, narrow far above
+  for (let y = 0; y < 186; y++) {
+    const hw = 24 + Math.round(y * 0.2);
+    p.rect(170 - hw, y, hw * 2, 1, '#5a3a22'); p.rect(170 - hw, y, 5, 1, '#7a5232'); p.rect(170 + hw - 7, y, 7, 1, '#3e2716');
+    for (let k = -2; k <= 2; k++) if ((y + k * 11) % 23 < 15) p.set(170 + k * Math.round(hw / 3.2), y, '#4a2e1a');
+  }
+  // a low branch on the left, and the stub of the one that broke off
+  for (let x = 0; x < 150; x++) { const y = 150 - Math.round(x * 0.1); p.rect(x, y, 1, 9, '#5a3a22'); p.rect(x, y, 1, 2, '#7a5232'); p.rect(x, y + 7, 1, 2, '#3e2716'); }
+  leaf(18, 138, 16); leaf(52, 160, 12);
+  p.rect(196, 52, 22, 9, '#5a3a22'); p.rect(196, 52, 22, 2, '#7a5232'); p.rect(216, 50, 4, 13, '#8a6a48');
+  leaf(170, -14, 30);
+  // the hollow
+  p.ellipse(170, 60, 14, 17, '#3e2716'); p.ellipse(170, 61, 11, 14, '#0e0a08');
+  p.grad(0, 186, W, 14, ['#3f8e3e', '#2f6e30']);
+  const k = { ...PARROT_PARTS, ...(who || {}) };
+  /** A head at the hollow, `out` pixels out of the dark. */
+  const head = (out) => {
+    const y = 66 - Math.min(out, 6);
+    p.ellipse(170, y, 6, 6, k.dark); p.ellipse(170, y - 1, 5, 5, k.body);
+    p.rect(166, y - 6, 9, 2, k.trim);                        // the red forehead
+    p.rect(166, y - 2, 3, 3, '#ffffff'); p.set(167, y - 1, '#1e1414');   // a white ring around the eye
+    p.rect(172, y - 2, 3, 3, '#ffffff'); p.set(173, y - 1, '#1e1414');
+    p.rect(169, y + 1, 3, 3, '#e8d8a8'); p.set(170, y + 4, '#c8b888');   // beak
+  };
+  if (what === 'real') head(2);
+  if (what === 'call') {
+    if (pose === 0) { p.rect(166, 62, 2, 2, '#ffe9a0'); p.rect(173, 62, 2, 2, '#ffe9a0'); }
+    if (pose === 1) { p.rect(166, 66, 9, 2, k.trim); p.rect(166, 69, 2, 2, '#ffffff'); p.rect(173, 69, 2, 2, '#ffffff'); }
+    if (pose === 2) head(1);
+    if (pose >= 3) {
+      head(6);
+      p.rect(156, 62, 8, 3, k.body); p.rect(150, 60, 8, 3, k.wing); p.rect(146, 58, 6, 2, k.wing);     // one wing opening
+      p.rect(177, 62, 8, 3, k.body); p.rect(183, 60, 8, 3, k.wing); p.rect(189, 58, 6, 2, k.wing);
+    }
+    // the squawk, spreading out from the hollow
+    if (pose > 0 && pulse < 1) {
+      const r = 20 + pulse * 46;
+      for (let a = 200; a <= 340; a += 4) {
+        const t = (a * Math.PI) / 180;
+        p.rect(Math.round(170 + Math.cos(t) * r), Math.round(60 + Math.sin(t) * r * 0.8), 2, 2, a % 8 ? '#fff2b0' : '#ffffff');
+      }
+    }
+  }
+  if (what === 'found') {
+    // the way it came down, in blue
+    for (let i = 0; i < 26; i++) { const t = i / 26; p.rect(Math.round(160 - t * 70 + Math.sin(t * 5) * 10), Math.round(70 + t * 46), 2, 1, i % 2 ? k.wing : '#8fc0f2'); }
+    creature(p, who || PARROT_PARTS, 36, 104, { scale: 4, outline: '#14240f' });
+  }
+  p.sprite(HERO, HERO_PAL, 228, 150);
+  p.sprite(SIDEKICK, SIDEKICK_PAL, 250, 158);
+  p.sprite(PUP, PUP_PAL, 272, 176);
+}
+
+// ---------------------------------------------------------------------------
+// The turtle dragon's lair: a bump in the sand at the quiet end of a beach.
+
+const TURTLE_PARTS = { shape: 'turtle', body: '#5a7a8a', dark: '#2e3e4e', belly: '#c8d4dc', trim: '#7a94a4', wing: '#5a7a8a' };
+
+/**
+ * what: 'real'   tracks where a real turtle came up to nest and went back (the detour)
+ *       'nest'   a bump in the sand that wiggles; with each tap (t.pose) more of the hatchling shows
+ *       'found'  the hatchling out on the sand
+ */
+function sandNest(p, what, { who = null, pose = 0, frame = 0 } = {}) {
+  sky(p, 64, ['#3b6fd1', '#6aa0ea', '#bfe0fa', '#f4ead0']);
+  cloud(p, 70, 20, 0.8); cloud(p, 236, 30, 0.6);
+  p.grad(0, 60, W, 36, ['#1d4f86', '#2a6fb0', '#4fb3c8']);
+  for (let y = 64; y < 92; y += 6) for (let x = (y * 11) % 29; x < W; x += 29) p.rect(x, y, 6, 1, '#8fd0e6');
+  p.grad(0, 96, W, 104, ['#f4e2a8', '#e8cf8c', '#d8b870']);
+  for (let x = 0; x < W; x++) { const y = 94 + Math.round(Math.sin(x / 21) * 2 + Math.sin(x / 7)); p.rect(x, y, 1, 3, '#f4fbff'); p.rect(x, y + 3, 1, 2, '#e0d2a0'); }
+  for (let i = 0; i < 90; i++) p.set((i * 67) % W, 104 + ((i * 37) % 92), i % 2 ? '#c8a860' : '#fff2c8');
+  // a palm leaning in from the right
+  for (let i = 0; i < 80; i++) p.rect(300 - Math.round(i * 0.25) + Math.round(Math.sin(i / 14) * 3), 150 - i, 5, 1, i % 6 < 3 ? '#7a5232' : '#5a3a22');
+  const frond = (dx, dy) => { for (let i = 0; i < 30; i++) { const x = 282 + Math.round(dx * i), y = 70 + Math.round(dy * i + (i * i) / 60); p.rect(x, y, 3, 2, i % 2 ? '#2f7d33' : '#4cae4f'); } };
+  frond(-1.2, -0.5); frond(-0.9, 0.1); frond(0.9, -0.4); frond(0.5, 0.3); frond(-0.3, -0.9);
+  // two wavy lines up from the water to the bump
+  const track = (x0, y0, x1, y1) => {
+    for (let i = 0; i <= 44; i++) {
+      const t = i / 44, x = x0 + (x1 - x0) * t, y = y0 + (y1 - y0) * t, wob = Math.sin(i / 1.6) * 2;
+      p.rect(Math.round(x - 6 - wob), Math.round(y), 4, 1, '#b8985a'); p.rect(Math.round(x + 6 + wob), Math.round(y), 4, 1, '#b8985a');
+    }
+  };
+  if (what === 'real') {
+    track(120, 100, 180, 128); track(196, 128, 236, 100);       // up to nest, and back to the sea
+    p.ellipse(188, 132, 20, 8, '#c8a860'); p.ellipse(188, 133, 15, 5, '#b08e50'); p.rect(176, 130, 24, 1, '#e8cf8c');
+  } else {
+    track(120, 100, 180, 126);
+    if (what === 'nest') {
+      const k = { ...TURTLE_PARTS, ...(who || {}) };
+      const wig = frame % 4 === 1 ? 1 : frame % 4 === 3 ? -1 : 0;
+      p.ellipse(186 + wig, 134, 20, 9, '#c8a860'); p.ellipse(186 + wig, 132, 18, 8, '#f0dc9c'); p.ellipse(180 + wig, 129, 8, 3, '#fff2c8');
+      // grains hopping where the sand moves
+      for (let i = 0; i < 5 + pose * 3; i++) p.set(172 + ((i * 13 + frame * 5) % 30), 122 - ((i * 7 + frame * 3) % (6 + pose * 2)), i % 2 ? '#c8a860' : '#fff2c8');
+      if (pose >= 1) { p.ellipse(186, 130, 5 + pose * 3, 2 + pose, '#b08e50'); p.ellipse(186, 130, 3 + pose * 3, 1 + pose, k.dark); }
+      if (pose >= 2) { p.rect(180, 129, 12, 1, k.body); p.rect(183, 127, 1, 5, k.body); p.rect(189, 127, 1, 5, k.body); }
+      if (pose >= 3) { p.ellipse(172, 128, 4, 3, k.body); p.set(170, 127, '#1e1414'); p.rect(196, 134, 7, 2, k.body); }
+    } else {
+      p.ellipse(190, 140, 26, 8, '#c8a860'); p.ellipse(190, 141, 20, 5, '#b08e50');
+      for (let i = 0; i < 14; i++) p.set(150 + ((i * 17) % 90), 108 + ((i * 11) % 14), '#c8a860');   // sand in the air
+      creature(p, who || TURTLE_PARTS, 146, 102, { scale: 4, outline: '#3a2a20' });
+    }
+  }
+  p.sprite(HERO, HERO_PAL, 36, 152);
+  p.sprite(SIDEKICK, SIDEKICK_PAL, 58, 160);
+  p.sprite(PUP, PUP_PAL, 80, 178);
+}
+const sandWiggle = (p, t) => sandNest(p, 'nest', t);
+sandWiggle.fps = 4;
+
+// ---------------------------------------------------------------------------
+// Icons: small pictures for puzzle boards (the cards in Memoria, the marks in
+// a picture graph, what goes in a tray). Each fits in iconBox and is called
+// as fn(pix, x, y). A puzzle bank names one with icon:.
+
+export const iconBox = [22, 12];
+
+/** A character-grid icon, centered in the box. */
+const gridIcon = (grid, pal) => (p, x, y) => {
+  p.sprite(grid, pal, x + Math.floor((iconBox[0] - grid[0].length) / 2), y + Math.floor((iconBox[1] - grid.length) / 2), { outline: '#1a1a2a' });
+};
+/** One of the hatchling shapes, in its own colors. */
+const shapeIcon = (parts) => (p, x, y) => creature(p, parts, x, y + 1);
+
+export const icons = {
+  frog: shapeIcon(COQUI_PARTS),
+  parrot: shapeIcon(PARROT_PARTS),
+  turtle: shapeIcon(TURTLE_PARTS),
+  bat: shapeIcon(BAT_PARTS),
+  snake: shapeIcon(BOA_PARTS),
+  iguana: shapeIcon(PLAIN),
+  dog: gridIcon(PUP, PUP_PAL),
+  cat: gridIcon(CAT, CAT_PAL),
+  fish: gridIcon([
+    '....oooo......',
+    '..ooOOOOoo...o',
+    '.oOeOOOOOOo.oo',
+    'oOOOOOOOOOOooo',
+    'oOOOOwOOOOOooo',
+    '.oOOOOOOOOo.oo',
+    '..ooOOOOoo...o',
+    '....oooo......',
+  ], { o: '#d86a1e', O: '#f29a3a', e: '#1e1414', w: '#ffd9a0' }),
+  sun: gridIcon([
+    '.....y.....',
+    '.y...y...y.',
+    '..y.....y..',
+    '....yyy....',
+    '...yYYYy...',
+    'yy.yYYYy.yy',
+    '...yYYYy...',
+    '....yyy....',
+    '..y.....y..',
+    '.y...y...y.',
+    '.....y.....',
+  ], { y: '#f2b630', Y: '#fff2b0' }),
+  wave: gridIcon([
+    '....ww...........',
+    '..wwbbw.....ww...',
+    '.wbbbbbw..wwbbw..',
+    'wbbbbbbbwwbbbbbw.',
+    'bbbbBBbbbbbbBBbbb',
+    'bbBBbbbbbBBbbbbbb',
+    'BBbbbbBBBbbbbBBBb',
+    'bbbbBBbbbbbBBbbbb',
+    'BBBBBBBBBBBBBBBBB',
+  ], { w: '#f4fbff', b: '#3b82c4', B: '#1d4f86' }),
+  shell: gridIcon([
+    '...ppppp...',
+    '..pPpPpPp..',
+    '.pPpPpPpPp.',
+    'pPpPpPpPpPp',
+    'pPpPpPpPpPp',
+    '.pPpPpPpPp.',
+    '..pPpPpPp..',
+    '...pPpPp...',
+    '..ppppppp..',
+  ], { p: '#f0a8b8', P: '#fbe0e4' }),
+  palm: gridIcon([
+    '..gg....gg...',
+    '.gGGg..gGGg..',
+    'gGggGggGggGg.',
+    'g...gGGg...g.',
+    '...gGttGg....',
+    '..gG.tt.Gg...',
+    '..g..tt..g...',
+    '.....tt......',
+    '.....ttt.....',
+    '......tt.....',
+    '......tt.....',
+    '.....tttt....',
+  ], { g: '#2f7d33', G: '#4cae4f', t: '#8a5a32' }),
+  crab: gridIcon([
+    'rr.........rr.',
+    'r.r.......r.r.',
+    '.rr.e...e.rr..',
+    '..rrrrrrrrr...',
+    '.rRRRRRRRRRr..',
+    'r.rRRRRRRRr.r.',
+    '..r.r...r.r...',
+    '.r..r...r..r..',
+  ], { r: '#c8382c', R: '#ec6a4a', e: '#1e1414' }),
+  boat: gridIcon([
+    '......m.......',
+    '......mw......',
+    '......mww.....',
+    '......mwww....',
+    '......mwwww...',
+    '......m.......',
+    'bbbbbbbbbbbbbb',
+    '.bBBBBBBBBBBb.',
+    '..bBBBBBBBBb..',
+    '...bbbbbbbb...',
+  ], { m: '#5a3a22', w: '#f4f1e8', b: '#a02a24', B: '#d23a32' }),
+  drop: gridIcon([
+    '...b...',
+    '...b...',
+    '..bBb..',
+    '..bBb..',
+    '.bBBBb.',
+    '.bBBBb.',
+    'bBwBBBb',
+    'bBwBBBb',
+    'bBBBBBb',
+    '.bBBBb.',
+    '..bbb..',
+  ], { b: '#2a6fb0', B: '#6ab8f0', w: '#eef8ff' }),
+  paw: gridIcon([
+    '..dd.dd..',
+    '..dd.dd..',
+    'dd.....dd',
+    'dd.ddd.dd',
+    '..ddddd..',
+    '.ddddddd.',
+    '.ddddddd.',
+    '..dd.dd..',
+  ], { d: '#e8b070' }),
+  cannonball: gridIcon([
+    '..kkkkk..',
+    '.kKKKKKk.',
+    'kKKwKKKKk',
+    'kKwKKKKKk',
+    'kKKKKKKKk',
+    'kKKKKKKKk',
+    'kKKKKKKKk',
+    '.kKKKKKk.',
+    '..kkkkk..',
+  ], { k: '#2a2a30', K: '#5a5a66', w: '#b8b8c8' }),
+};
+
+
 /**
  * Scene name -> painter. A name here wins over a PNG with the same name.
  * A painter is called as fn(p, t): t.who is the sprite: of the hatchling
@@ -810,6 +1145,15 @@ export const scenes = {
   cave: (p, t) => cave(p, 'real', t),
   'cave-vines': caveVines,
   'cave-dragon': (p, t) => cave(p, 'found', t),
+  hollow: (p, t) => hollow(p, 'real', t),
+  'hollow-song': (p, t) => hollow(p, 'song', t),
+  'hollow-dragon': (p, t) => hollow(p, 'found', t),
+  'old-tree': (p, t) => oldTree(p, 'real', t),
+  'tree-call': (p, t) => oldTree(p, 'call', t),
+  'tree-dragon': (p, t) => oldTree(p, 'found', t),
+  'sand-tracks': (p, t) => sandNest(p, 'real', t),
+  'sand-nest': sandWiggle,
+  'sand-dragon': (p, t) => sandNest(p, 'found', t),
   'egg-gold': eggPic('#b8862a', '#f2c531', '#fff2b0'),
   'egg-silver': eggPic('#7a8490', '#c4ccd4', '#ffffff'),
   'egg-bronze': eggPic('#7a4a2a', '#c98a4e', '#f0c8a0'),

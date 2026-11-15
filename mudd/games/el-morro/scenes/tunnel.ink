@@ -1,5 +1,5 @@
 // THE LANTERN TUNNEL, SAN CRISTÓBAL. Slots: gate (the ranger needs help),
-// sign (the scratched sign). The gate earns the clue and the sign earns the
+// sign (the sign and the puzzle board on the wall). The gate earns the clue and the sign earns the
 // lock number. Tags are listed at the top of museum.ink.
 
 Castillo San Cristóbal, the big fort on the east side of the old city. # clear # pic: tunnel
@@ -9,7 +9,7 @@ A long tunnel runs down under the walls. Lanterns glow orange on the ceiling, an
 
 = choose
 * [TALK to the RANGER at the GATE] -> gate
-* [READ the SIGN on the WALL] -> sign
+* [LOOK at the SIGN on the WALL] -> sign
 * -> leave
 
 = gate
@@ -30,8 +30,8 @@ Then she swings the gate open. Just inside, {sibling} stops and points at the fl
 -> choose
 
 = sign
-A sign on the tunnel wall tells about the fort. Under it, someone with tiny claws has scratched one more line.
-{pet} sniffs along the wall and sneezes. One of these lines doesn't belong! # slot: sign
+A sign on the tunnel wall tells about the fort, and beside it hangs a puzzle board for kids who visit.
+{pet} sniffs along the wall and sneezes. Somebody small has been at this one! # slot: sign
 + [@pass] -> sign_pass
 + [@fail] -> sign_fail
 
@@ -41,7 +41,7 @@ There's a little scorch mark on the stone. # digit
 -> choose
 
 = sign_fail
-{pet} lets out a very big corgi sigh. You read the whole sign again, slowly.
+{pet} lets out a very big corgi sigh. You go over the whole thing again, slowly.
 ~ minutes += 15
 Then {pet} noses at the wall under the sign. There's a little scorch mark on the stone. # digit
 -> choose

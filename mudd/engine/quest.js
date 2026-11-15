@@ -19,7 +19,7 @@ import { traitKeys, traitValue } from './pack.js';
 import { makeRng, fill, clock } from './util.js';
 
 /** Toys a lair card can ask for with "# toy: <name>". The screen plays them. */
-export const TOYS = ['spot', 'taps', 'pulse'];
+export const TOYS = ['spot', 'taps', 'pulse', 'song'];
 
 /**
  * @typedef {{ id: string, name: string, drive: number, at: number[], stars: number, tries: number }} MapPlace
@@ -273,6 +273,10 @@ export async function runQuest({ pack, plan, story, state, ui, hooks }) {
           const made = {};
           for (const [k, v] of Object.entries(toy)) made[k] = typeof v === 'string' ? fill(v, names) : v;
           if (toy.kind === 'taps') made.n = rng.int(toy.count[0], toy.count[1]);
+          // A song: the first round goes up the keys in order, the rest are dealt.
+          if (toy.kind === 'song') {
+            made.rounds = toy.notes.map((n, round) => Array.from({ length: n }, (_, i) => (round ? rng.int(0, toy.keys.length - 1) : i % toy.keys.length)));
+          }
           await ui.toy(made);
         }
         for (const _ of tag('caught')) {

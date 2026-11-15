@@ -1,0 +1,15 @@
+# JUAN DIEGO FALLS, EL YUNQUE: a pool place. A short muddy trail to a
+# waterfall and a pool, deeper into the rainforest than the tower.
+name: Juan Diego Falls, El Yunque
+role: place
+drive: 65           # minutes on the clock to get here
+map: [258, 140]     # where it sits on the map picture
+
+# Still to come: picky_bridge beside the hiker. who: is the person talking
+# in hola_y_gracias.
+slots:
+  rocks:
+    - { puzzle: stepping_stones, topic: rocks }
+    - { puzzle: snack_muncher, topic: trail }
+  hiker:
+    - { puzzle: hola_y_gracias, topic: trail, who: The hiker }

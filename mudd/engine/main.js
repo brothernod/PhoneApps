@@ -12,7 +12,7 @@ import { ARCHETYPES } from './puzzles.js';
 import { runQuest, newQuestState, startStory, casebook, toggleCrossed, TOYS } from './quest.js';
 import { clock, fill, store } from './util.js';
 
-const VERSION = 'MUDD 0.2';
+const VERSION = 'MUDD 0.4';
 const SAVE_VERSION = 3;
 
 // Which game: ?game=<folder> in the address, or data-game on the page.
@@ -98,11 +98,13 @@ async function loadGame() {
     pictures.drawn = art.scenes || {};
     pictures.creature = art.creature || null;
     if (art.creatureBox) pictures.creatureBox = art.creatureBox;
+    pictures.icons = art.icons || {};
+    if (art.iconBox) pictures.iconBox = art.iconBox;
   }
   await pictures.loadImages(pack.pngs, (name) => new URL(`pics/${name}.png`, BASE).href);
 
   // Fail early, on the boot screen, if the pack or its ink has a mistake.
-  const problems = checkPack(pack, { archetypes: ARCHETYPES, toys: TOYS, pictures: pictures.names });
+  const problems = checkPack(pack, { archetypes: ARCHETYPES, toys: TOYS, pictures: pictures.names, icons: Object.keys(pictures.icons) });
   if (problems.length) throw new Error(problems.join('\n'));
   compileStory(pack, inkjs);
   keepOffline();
@@ -242,6 +244,9 @@ async function playQuest(run) {
       open: (pz) => screen.cardOpen(pz),
       numpad: (prompt, format) => screen.cardNumpad(prompt, format),
       pick: (options, prompt) => screen.cardPick(options, prompt),
+      grid: (board, prompt, last) => screen.cardGrid(board, prompt, last),
+      pairs: (board, prompt, opts) => screen.cardPairs(board, prompt, opts, (name) => sound.play(name)),
+      solve: (board, solution) => screen.cardSolve(board, solution),
       hint: (text) => screen.cardHintText(text),
       reveal: (text) => screen.cardReveal(text),
       close: () => screen.cardClose(),
@@ -330,6 +335,14 @@ function pictureCheck() {
       pictures.portrait(face, creature.sprite, { scale: 3 });
       body.append(face, el('p', 'dim', `${id} (creature)`));
     }
+    const icons = el('div', 'iconrow');
+    for (const name of Object.keys(pictures.icons)) {
+      const box = el('span', 'cell');
+      box.title = name;
+      box.appendChild(screen.icon(name));
+      icons.appendChild(box);
+    }
+    body.append(icons, el('p', 'dim', `${Object.keys(pictures.icons).length} icons for puzzle boards`));
   });
 }
 

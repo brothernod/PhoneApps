@@ -1,0 +1,23 @@
+# THE SAND NEST, at the far end of the beach: the turtle dragon's lair.
+name: The sand nest
+role: lair
+drive: 45
+map: [204, 100]
+
+slots:
+  rescue:
+    - { puzzle: rescue, topic: calls }
+
+# Toys: small things to do with the picture. Nothing is scored.
+#   spot: find something in the picture and tap it. at: [x, y, width, height]
+#         count: how many taps it takes (1 unless given). The picture is
+#         drawn with pose (taps so far), so it can change with each tap.
+toys:
+  dig:
+    kind: spot
+    pic: sand-nest
+    at: [166, 118, 40, 26]
+    count: 4
+    prompt: "TAP the sand that MOVES"
+    more: "IT WIGGLED! TAP IT AGAIN"
+    miss: "Not there. Watch for the sand that wiggles."

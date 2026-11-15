@@ -10,6 +10,8 @@
 //     isn't the numbers found along the way, or a run that earns no egg
 //   - a puzzle question that runs past four lines on an iPhone, a time no
 //     clock shows, or two answers that look the same
+//   - a board puzzle that takes a wrong answer, refuses its own right answer,
+//     or asks for a picture the pack doesn't have
 //   - a part of a scene card no run ever reached
 //   - anything from the game pack hard-wired into the engine
 // It also plays every creature with every place and every puzzle a slot can
@@ -65,10 +67,22 @@ try {
 // Pictures: drawn scenes from the pack's art module, plus PNGs on disk.
 const pics = pack.game.pics || {};
 let drawn = [];
+let icons = [];
 if (pics.drawn) {
   try {
     const art = await import(pathToFileURL(path.join(base, pics.drawn)).href);
     drawn = Object.keys(art.scenes || {});
+    icons = Object.keys(art.icons || {});
+    // Every icon paints something, inside its box.
+    for (const [name, fn] of Object.entries(art.icons || {})) {
+      const box = art.iconBox || [0, 0];
+      try {
+        const p = new Pix();
+        fn(p, 1, 1);
+        if (!p.buf.some((v) => v)) fail(`${pics.drawn}: icon "${name}" paints nothing`);
+        if (p.buf.some((v, i) => v && (i % 320 > box[0] + 1 || i / 320 >= box[1] + 2))) fail(`${pics.drawn}: icon "${name}" paints outside iconBox (${box.join(' x ')})`);
+      } catch (e) { fail(`${pics.drawn}: icon "${name}" crashed: ${e.message}`); }
+    }
     // Every drawn scene paints without an error, with and without a creature,
     // and the pack can paint each creature that has a sprite.
     const sprites = Object.entries(pack.creatures).filter(([, c]) => c.sprite);
@@ -101,7 +115,7 @@ for (const f of readdirSync(path.join(base, 'pics'))) {
   if (f.endsWith('.png') && !pack.pngs.includes(f.slice(0, -4))) fail(`pics/${f} is not listed under pics.png in game.yaml, so the game won't load it`);
 }
 
-for (const p of checkPack(pack, { archetypes: ARCHETYPES, toys: TOYS, pictures: [...drawn, ...pack.pngs] })) fail(p);
+for (const p of checkPack(pack, { archetypes: ARCHETYPES, toys: TOYS, pictures: [...drawn, ...pack.pngs], icons })) fail(p);
 
 try { compileStory(pack, inkjs); } catch (e) { fail(`ink did not compile:\n${e.message}`); }
 if (problems.size) finish();
@@ -110,18 +124,23 @@ if (problems.size) finish();
 // 2. Questions fit the puzzle card: four lines on the narrowest iPhone.
 
 const MAX_QUESTION_LINES = 4, MAX_KEY_LINES = 3;
-function measure(what, question, maxLines = MAX_QUESTION_LINES, keys = []) {
+const CARD_WORD_COLS = 10, MAX_CARD_WORD_LINES = 2; // a word on a matching-game card
+function measure(what, question, maxLines = MAX_QUESTION_LINES, keys = [], cards = []) {
   const n = countLines(question, CARD_COLS);
   if (n > maxLines) fail(`${what}: the question takes ${n} lines on an iPhone (limit ${maxLines}): "${question}"`);
   for (const k of keys) {
     const kn = countLines(k, KEY_COLS);
     if (kn > MAX_KEY_LINES) fail(`${what}: an answer takes ${kn} lines on its key (limit ${MAX_KEY_LINES}): "${k}"`);
   }
+  for (const c of cards) {
+    const cn = countLines(c, CARD_WORD_COLS);
+    if (cn > MAX_CARD_WORD_LINES) fail(`${what}: "${c}" takes ${cn} lines on its card (limit ${MAX_CARD_WORD_LINES}, ${CARD_WORD_COLS} letters across)`);
+  }
 }
 let measured = 0;
 for (const card of Object.values(pack.scenes)) {
   for (const options of Object.values(card.slots)) for (const spec of options) {
-    for (const m of ARCHETYPES[spec.puzzle].longest(spec, pack.banks, pack.cast)) { measure(m.what, m.question, m.maxLines, m.keys); measured++; }
+    for (const m of ARCHETYPES[spec.puzzle].longest(spec, pack.banks, pack.cast)) { measure(m.what, m.question, m.maxLines, m.keys, m.cards); measured++; }
   }
 }
 
@@ -252,6 +271,12 @@ async function playRun(plan, history, bot, want = {}) {
       for (const v of Object.values(toy)) if (typeof v === 'string') see(v, 'a toy');
       if (toy.kind === 'taps' && !(toy.n >= toy.count[0] && toy.n <= toy.count[1])) fail(`${tag}: a taps toy asked for ${toy.n} taps`);
       if (toy.kind === 'pulse' && !(toy.count >= 1)) fail(`${tag}: a pulse toy with no presses`);
+      if (toy.kind === 'song') {
+        const rounds = toy.rounds || [];
+        if (rounds.length !== toy.notes.length || rounds.some((r, i) => r.length !== toy.notes[i])) fail(`${tag}: a song toy whose rounds don't match its notes`);
+        if (rounds.flat().some((k) => !toy.keys[k])) fail(`${tag}: a song toy with a note that has no key`);
+        for (const k of toy.keys) see(k.key, 'a toy');
+      }
       if (toy.pic && !drawn.includes(toy.pic)) fail(`${tag}: toy picture "${toy.pic}" must be a drawn scene, so it can move`);
     },
     card: {
@@ -271,6 +296,51 @@ async function playRun(plan, history, bot, want = {}) {
             if (state.digits !== plan.stops) fail(`${tag}: the lock came up with ${state.digits} of ${plan.stops} numbers found`);
             if (pz.answer !== Number(plan.lock.join(''))) fail(`${tag}: the lock's code is ${pz.answer}, but the numbers found were ${plan.lock.join(', ')}`);
           }
+        } else if (pz.screen === 'grid') {
+          // A board: its own right answer must pass, a wrong one must not.
+          const b = pz.board || {};
+          if (!['toggle', 'array', 'graph'].includes(b.kind)) fail(`${tag}: ${pz.skill} has a board of kind "${b.kind}"`);
+          if (!pz.check(pz.solution)) fail(`${tag}: ${pz.skill} does not accept its own right answer (${JSON.stringify(pz.solution)})`);
+          if (pz.check(pz.decoy)) fail(`${tag}: ${pz.skill} accepts a wrong answer (${JSON.stringify(pz.decoy)})`);
+          see(pz.miss(pz.decoy), 'a hint');
+          see(b.done || '', 'a board key');
+          if (b.icon && !icons.includes(b.icon)) fail(`${tag}: ${pz.skill} wants icon "${b.icon}", which the pack doesn't have`);
+          if (b.kind === 'toggle') {
+            const labels = b.cells.map((c) => c.label);
+            if (new Set(labels).size !== labels.length) fail(`${tag}: ${pz.skill} has two squares that look the same`);
+            if (b.cells.length % b.cols) fail(`${tag}: ${pz.skill} has ${b.cells.length} squares in rows of ${b.cols}`);
+            if (!pz.solution.length || pz.solution.length === labels.length) fail(`${tag}: ${pz.skill} wants ${pz.solution.length} of ${labels.length} squares`);
+            // Check the rule itself, apart from the puzzle's own answer key.
+            const m = / (\d+)/.exec(pz.question.split('treats that')[1] || pz.question);
+            const n = m ? Number(m[1]) : 0;
+            const fits = (v) => (/multiples/.test(pz.question) ? v % n === 0 : /hundred/.test(pz.question) ? Math.round(v / 100) * 100 === n : Math.round(v / 10) * 10 === n);
+            labels.forEach((l, i) => { if (fits(Number(l)) !== pz.solution.includes(i)) fail(`${tag}: ${pz.skill}: "${pz.question}" is wrong about ${l}`); });
+          } else if (b.kind === 'array') {
+            const [r, c] = pz.solution;
+            if (!(r >= 1 && r <= b.rows && c >= 1 && c <= b.cols)) fail(`${tag}: ${pz.skill} wants ${r} rows of ${c} on a ${b.rows} by ${b.cols} board`);
+            for (const t of Object.values(b.captions || {})) if (!t) fail(`${tag}: ${pz.skill} is missing a caption`);
+          } else if (b.kind === 'graph') {
+            if (b.rows.filter((r) => r.open).length !== 1) fail(`${tag}: ${pz.skill} must have exactly one row to fill in`);
+            if (!(pz.solution >= 1 && pz.solution <= b.slots)) fail(`${tag}: ${pz.skill} wants ${pz.solution} pictures in a row of ${b.slots}`);
+            for (const r of b.rows) if (!r.open && !(r.count >= 1 && r.count <= b.slots)) fail(`${tag}: ${pz.skill} shows a row of ${r.count} pictures`);
+            see(b.key || '', 'a graph key');
+          }
+        } else if (pz.screen === 'pairs') {
+          const cards = (pz.board || {}).cards || [];
+          const byPair = {};
+          for (const c of cards) (byPair[c.pair] = byPair[c.pair] || []).push(c);
+          for (const two of Object.values(byPair)) {
+            if (two.length !== 2 || !two.some((c) => c.label) || !two.some((c) => c.icon)) fail(`${tag}: ${pz.skill} has a pair that isn't one word and one picture`);
+          }
+          const looks = cards.map((c) => c.label || `icon:${c.icon}`);
+          if (new Set(looks).size !== looks.length) fail(`${tag}: ${pz.skill} has two cards that look the same`);
+          if (cards.length % pz.board.cols) fail(`${tag}: ${pz.skill} has ${cards.length} cards in rows of ${pz.board.cols}`);
+          for (const c of cards) {
+            see(c.hint, 'a hint'); see(c.label || '', 'a card');
+            if (c.icon && !icons.includes(c.icon)) fail(`${tag}: ${pz.skill} wants icon "${c.icon}", which the pack doesn't have`);
+          }
+          if (!(pz.starMisses >= 1 && pz.maxMisses > pz.starMisses)) fail(`${tag}: ${pz.skill} has no room between a star and giving up`);
+          levelsPlayed.add(`${pz.skill}@${hooks.level(pz.skill)}`);
         } else {
           if (pz.options.length < 2) fail(`${tag}: ${pz.skill} has fewer than two answers`);
           if (pz.options.filter((o) => o.correct).length !== 1) fail(`${tag}: ${pz.skill} must have exactly one right answer`);
@@ -291,6 +361,17 @@ async function playRun(plan, history, bot, want = {}) {
         const want = options.findIndex((o) => o.correct === answersRight());
         return want >= 0 ? want : 0;
       },
+      grid: async (board, prompt, last) => {
+        if (current.tries && JSON.stringify(last) !== JSON.stringify(current.last)) fail(`${tag}: ${current.pz.skill}: a second try did not start from the first answer`);
+        current.last = answersRight() ? current.pz.solution : current.pz.decoy;
+        return current.last;
+      },
+      // A matching game ends with every pair found, or with the cards turned over for him.
+      pairs: async (board, prompt, opts) => {
+        if (!current.right) return { done: false, misses: opts.maxMisses };
+        return { done: true, misses: current.first ? Math.floor(bot.next() * (opts.starMisses + 1)) : opts.starMisses + 1 };
+      },
+      solve: (board, solution) => { if (JSON.stringify(solution) !== JSON.stringify(current.pz.solution)) fail(`${tag}: the board showed an answer that isn't the puzzle's`); },
       hint: () => {},
       reveal: async () => {},
       close: async () => {},
