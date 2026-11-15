@@ -10,11 +10,11 @@ The singing stops. Two big eyes blink in the dark. It heard you!
 -> found
 
 = found
-Something small hops out of the moss, right onto a wet leaf. # clear # pic: hollow-dragon # cue: hatch
-It's a round little dragon with smooth, shiny skin and great big eyes.
+Something hops out of the moss, right onto a wet leaf. It's bigger than you thought! # clear # pic: hollow-dragon # cue: hatch
+It's a big round dragon with smooth, shiny skin and great big eyes.
 It's the COQUÍ DRAGON, just like your clues said!
 But it looks scared, and it doesn't understand English.
-"Hatchlings only know Spanish!" Doña Luz whispers. She opens the travel basket. # slot: rescue
+"Hatchlings only know Spanish!" Doña Luz whispers. She opens the big travel basket. # slot: rescue
 + [@pass] -> rescue_pass
 + [@fail] -> rescue_fail
 

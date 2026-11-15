@@ -12,10 +12,10 @@ The echoes drew a shape on the ceiling: two big ears and two folded wings, UPSID
 
 = found
 You turn the lantern back on, very low. # clear # pic: echo-dragon # cue: hatch
-A little furry dragon hangs from the ceiling by its toes, blinking at the light.
+A big furry dragon hangs from the ceiling by its toes, blinking at the light.
 It's the BAT DRAGON, just like your clues said!
 But it looks scared, and it doesn't understand English.
-"Hatchlings only know Spanish!" Doña Luz whispers. She opens the travel basket. # slot: rescue
+"Hatchlings only know Spanish!" Doña Luz whispers. She opens the big travel basket. # slot: rescue
 + [@pass] -> rescue_pass
 + [@fail] -> rescue_fail
 

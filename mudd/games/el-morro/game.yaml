@@ -11,7 +11,7 @@ title: THE DRAGON OF EL MORRO
 studio: HOLDEN A GAME STUDIO
 # Shown small on the title screen, so you can tell which build a device has.
 # Bump it with every push: 0.<phase>.<fix>.
-version: "0.5.0"
+version: "0.5.1"
 
 # The heroes. Scene cards use these as {hero}, {sibling}, and {pet}.
 cast:
@@ -116,6 +116,7 @@ words:
   clue: "CLUE: the hatchling {clue}."
   sign: "{sibling} SPOTS ONE MORE THING: {sign}."
   digit: "Tiny claws scratched a number here: {digit}. That's lock number {n} of {total}."
+  digit_tip: "Lock numbers go in your CASEBOOK too. Tap CASEBOOK up top any time to see them."
   star: "★ FIRST TRY! You earned a star."
 
   # The map.

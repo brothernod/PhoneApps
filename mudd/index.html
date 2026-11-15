@@ -106,6 +106,9 @@
   }
   #st-clues:empty, #card-book:empty { display: none; }
   #card-book { position: absolute; right: 10px; top: -29px; font-size: 0.85em; line-height: 1.5; }
+  /* Something new went in the casebook: it pulses until he opens it. */
+  #st-clues.nudge, #card-book.nudge { animation: nudge 1.2s steps(2) infinite; }
+  @keyframes nudge { 50% { background: #fff; box-shadow: 0 0 0 3px var(--hl), inset 0 -2px 0 #b8923e; } }
 
   /* Story screens always keep five lines of text. */
   #text {

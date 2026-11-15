@@ -97,9 +97,9 @@ The glass case swings open. # clear # pic: nest
     "Home at last," she whispers. "Next time, let's beat the sunset."
 - else:
     { minutes > sunset - 30:
-        The little dragon tumbles into its nest and is asleep before you can close the case. That was close!
+        The dragon squeezes into its nest. It barely fits! It's asleep before you can close the case. That was close!
     - else:
-        The little dragon climbs into its nest and curls up inside the warm eggshell.
+        The dragon squeezes into its nest. It barely fits in the case anymore! It curls up and closes its eyes.
         Doña Luz claps her hands. "Home long before sunset! ¡Gracias, {hero}!"
     }
 }

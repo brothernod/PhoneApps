@@ -10,11 +10,11 @@ It leans out of the hollow, spreads its wings, and JUMPS. A flash of BLUE feathe
 -> found
 
 = found
-A little green dragon glides down in a wide circle and lands on a low branch. # clear # pic: tree-dragon # cue: hatch
+A big green dragon glides down in a wide circle and lands on a low branch. # clear # pic: tree-dragon # cue: hatch
 It has a red forehead, and the feathers at the tips of its wings are bright blue.
 It's the PARROT DRAGON, just like your clues said!
 But it looks scared, and it doesn't understand English.
-"Hatchlings only know Spanish!" Doña Luz whispers. She opens the travel basket. # slot: rescue
+"Hatchlings only know Spanish!" Doña Luz whispers. She opens the big travel basket. # slot: rescue
 + [@pass] -> rescue_pass
 + [@fail] -> rescue_fail
 

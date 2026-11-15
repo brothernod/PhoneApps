@@ -161,6 +161,11 @@ export class Screen {
     $('#card-book').textContent = clues || '';
   }
 
+  /** Make the CASEBOOK buttons pulse (something new is in it), or stop. Opening it stops them. */
+  nudgeBook(on) {
+    for (const id of ['#st-clues', '#card-book']) $(id)?.classList.toggle('nudge', !!on);
+  }
+
   clearControls(host = this.controls) { host.innerHTML = ''; host.className = ''; }
 
   prompt(label) {

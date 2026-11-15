@@ -12,8 +12,8 @@ import { ARCHETYPES } from './puzzles.js';
 import { runQuest, newQuestState, startStory, casebook, toggleCrossed, TOYS } from './quest.js';
 import { clock, fill, store } from './util.js';
 
-const VERSION = 'MUDD 0.5';
-const SAVE_VERSION = 5;
+const VERSION = 'MUDD 0.5.1';
+const SAVE_VERSION = 6;
 
 // Which game: ?game=<folder> in the address, or data-game on the page.
 const asked = new URLSearchParams(location.search).get('game') || document.documentElement.dataset.game || '';
@@ -192,6 +192,7 @@ function crossOut(id) {
 function openBook() {
   if (!live || screen.overlay.querySelector('.pagebox')) return;
   const { plan, state } = live;
+  screen.nudgeBook(false);
   screen.page(word('book', 'CASEBOOK'), (body) => screen.bookBody(body, casebook(pack, plan, state), { words: bookWords(), toggle: crossOut }));
 }
 
@@ -212,6 +213,7 @@ async function playQuest(run) {
   // Pictures are told which creature hatched, so the nest and the lair show it.
   screen.picBase = { who: pack.creatures[run.plan.creature].sprite || null };
   screen.hideOverlay();
+  screen.nudgeBook(false);
   screen.clearText();
   screen.showPic(run.pic || '');
   if (run.lines) screen.restore(run.lines);
@@ -231,18 +233,20 @@ async function playQuest(run) {
     map: async (view) => { await screen.waitIfUnread(); return screen.map(view); },
     lineup: async (view) => {
       if (screen.unread) await screen.waitTap(word('case_open', 'OPEN THE CASE FILE'));
+      screen.nudgeBook(false);
       return screen.page(word('case', 'CASE FILE'), (body, el, done) => {
         screen.bookBody(body, view, { words: bookWords(), toggle: crossOut, pick: done });
       }, { back: '' });
     },
     toy: (toy) => screen.toy(toy, (name) => sound.play(name)),
+    nudge: () => screen.nudgeBook(true),
     status: ({ quest, minutes, clues }) => screen.setStatus({
       quest: `${word('quest', 'QUEST')} #${quest}`,
       time: clock(minutes),
       clues: `${word('clues', 'CLUES')} ${clues}`,
     }),
     card: {
-      open: (pz) => screen.cardOpen(pz),
+      open: (pz) => { if (pz.book) screen.nudgeBook(true); return screen.cardOpen(pz); },
       numpad: (prompt, format) => screen.cardNumpad(prompt, format),
       pick: (options, prompt) => screen.cardPick(options, prompt),
       grid: (board, prompt, last) => screen.cardGrid(board, prompt, last),

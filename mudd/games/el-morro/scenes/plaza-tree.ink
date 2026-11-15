@@ -10,10 +10,10 @@ A long green TAIL swishes between the leaves. You spotted it! # cue: find
 
 = found
 You look up. Way, way up. # clear # pic: dragon # cue: hatch
-On a sunny branch sits a little green dragon with spikes down its back. It nods its head: yes, yes, yes.
+On a sunny branch sits a big green dragon with spikes down its back. It nods its head: yes, yes, yes.
 It's the IGUANA DRAGON, just like your clues said!
 But it looks scared, and it doesn't understand English.
-"Hatchlings only know Spanish!" Doña Luz whispers. She opens the travel basket. # slot: rescue
+"Hatchlings only know Spanish!" Doña Luz whispers. She opens the big travel basket. # slot: rescue
 + [@pass] -> rescue_pass
 + [@fail] -> rescue_fail
 

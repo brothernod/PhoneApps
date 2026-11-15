@@ -11,11 +11,11 @@ The glow runs together into one bright shape, and the shape has two eyes.
 -> found
 
 = found
-A little blue dragon floats up out of the dark water, shining like a night-light. # clear # pic: bay-dragon # cue: hatch
+A big blue dragon floats up out of the dark water, shining like a night-light. # clear # pic: bay-dragon # cue: hatch
 It's smooth as jelly and soaking wet, and it leaves a sparkly trail behind it.
 It's the GLOW DRAGON, just like your clues said!
 But it looks scared, and it doesn't understand English.
-"Hatchlings only know Spanish!" Doña Luz whispers. She opens the travel basket. # slot: rescue
+"Hatchlings only know Spanish!" Doña Luz whispers. She opens the big travel basket. # slot: rescue
 + [@pass] -> rescue_pass
 + [@fail] -> rescue_fail
 
@@ -30,5 +30,5 @@ Doña Luz helps you say it, and this time the dragon swims right up to the kayak
 -> herd
 
 = herd
-{pet} can't run a circle around it in a kayak. So he wags very hard, and the little dragon hops into the basket by itself. # cue: find
+{pet} can't run a circle around it in a kayak. So he wags very hard, and the dragon hops into the basket by itself. # cue: find
 -> DONE

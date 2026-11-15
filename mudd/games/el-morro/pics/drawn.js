@@ -370,8 +370,9 @@ function museum(p, { egg = 'cracked', who = null } = {}) {
       p.rect(fx, fy, 3, 2, '#3c6e2e'); p.set(fx - 1, fy - 1, '#3c6e2e'); p.set(fx + 3, fy - 1, '#3c6e2e'); p.set(fx + 1, fy - 1, '#3c6e2e');
     }
   } else {
-    p.blob(156, 96, 7, 6, '#5c5a58', '#8e8b88', '#c4c0bc');
-    creature(p, who, 147, 88, { outline: '#1a2a1a' });
+    // The hatchling is as big here as in its lair: it barely fits in the case.
+    p.blob(160, 98, 9, 6, '#5c5a58', '#8e8b88', '#c4c0bc');
+    creature(p, who, 127, 75, { scale: 3, outline: '#1a2a1a' });
     // the egg next door, wobbling
     p.rect(198, 128, 26, 4, '#a7a39d');
     p.blob(211, 118, 7, 9, '#7a5a8a', '#a07ab8', '#d6b8ea');

@@ -4,8 +4,8 @@
 
 The van stops under El Morro's sunniest wall. The old stones are as warm as toast. # clear # pic: wall
 {pet} flops down in the sun. {sibling} shades his eyes and points.
-Halfway up the wall, something small goes up, down, up, down. # pic: wall-dragon # cue: hatch
-A little dragon with an orange flag under its chin is doing PUSH-UPS!
+Halfway up the wall, something goes up, down, up, down. # pic: wall-dragon # cue: hatch
+A big dragon with an orange flag under its chin is doing PUSH-UPS!
 It's the ANOLE DRAGON, just like your clues said!
 "Push-ups are how it says LOOK AT ME," Doña Luz whispers. "Count them, then answer with the same number!" # toy: pushups
 The dragon stops and stares. You speak its language!
@@ -13,7 +13,7 @@ The dragon stops and stares. You speak its language!
 
 = found
 But it still looks scared, and it doesn't understand English.
-"Hatchlings only know Spanish!" Doña Luz whispers. She opens the travel basket. # slot: rescue
+"Hatchlings only know Spanish!" Doña Luz whispers. She opens the big travel basket. # slot: rescue
 + [@pass] -> rescue_pass
 + [@fail] -> rescue_fail
 

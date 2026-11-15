@@ -172,7 +172,7 @@ wording:
     miss: "\"{pick_es}\" means \"{pick_en}\" {oops} HINT: {hint}"
     reveal: "\"{es}\" means \"{en}\""
   code_lock:
-    ask: "The nest case is LOCKED. Type your lock numbers, in the order you found them."
+    ask: "The nest case is LOCKED. Tap CASEBOOK to see your lock numbers, then type them in the order you found them."
     prompt: TYPE THE CODE
     retry: TRY AGAIN
     right: "CLICK! The lock pops open."

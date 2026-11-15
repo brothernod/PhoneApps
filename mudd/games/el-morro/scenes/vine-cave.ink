@@ -11,10 +11,10 @@ You found it! That is NOT a vine. # cue: find
 
 = found
 The vine uncurls and lifts its head. # clear # pic: cave-dragon # cue: hatch
-It's a little dragon with no legs at all, and it was holding perfectly still.
+It's a long, long dragon with no legs at all, and it was holding perfectly still.
 It's the BOA DRAGON, just like your clues said!
 But it looks scared, and it doesn't understand English.
-"Hatchlings only know Spanish!" Doña Luz whispers. She opens the travel basket. # slot: rescue
+"Hatchlings only know Spanish!" Doña Luz whispers. She opens the big travel basket. # slot: rescue
 + [@pass] -> rescue_pass
 + [@fail] -> rescue_fail
 

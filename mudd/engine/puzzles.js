@@ -269,7 +269,7 @@ const WORDS = {
     reveal: 'It was {time}: {sky_es}, with wind at {wind}.',
   },
   code_lock: {
-    ask: 'It is LOCKED. Type the code: your lock numbers, in the order you found them.',
+    ask: 'It is LOCKED. Tap CASEBOOK to see your lock numbers, then type them in the order you found them.',
     prompt: 'TYPE THE CODE',
     retry: 'TRY AGAIN',
     right: 'CLICK! The lock opens.',
@@ -874,6 +874,7 @@ const codeLock = {
     return {
       screen: 'numpad',
       skill: 'code_lock',
+      book: true,          // the answer is in the casebook, so the screen points at it
       hint: say(w.treat),
       question: say(w.ask),
       prompt: say(w.prompt), retry: say(w.retry),

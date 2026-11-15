@@ -38,6 +38,7 @@ export const TOYS = ['spot', 'taps', 'pulse', 'song', 'rub'];
  *   lineup: (view: BookView) => Promise<string>,
  *   toy: (toy: Record<string, any>) => Promise<void>,
  *   status: (s: { quest: number, minutes: number, clues: number }) => void,
+ *   nudge?: () => void,
  *   card: import('./puzzles.js').Card,
  * }} QuestUi
  *
@@ -73,6 +74,7 @@ const WORDS = {
   clue: 'CLUE: it {clue}.',
   sign: 'ONE MORE THING: {sign}.',
   digit: 'LOCK NUMBER {n} of {total}: {digit}.',
+  digit_tip: 'Lock numbers go in your CASEBOOK too. Tap CASEBOOK any time to see them.',
   star: 'FIRST TRY! You earned a star.',
   map_prompt: 'WHERE TO?',
   map_place: '{name}: {drive} MIN',
@@ -245,9 +247,11 @@ export async function runQuest({ pack, plan, story, state, ui, hooks }) {
       state.clues.push(key);
       if (trait.found) await ui.line(fill(trait.found, names));
       await say('clue', { clue: traitValue(pack, creature, key).clue }, 'good');
+      if (ui.nudge) ui.nudge();
     } else if (creature.sign && !state.sign) {
       state.sign = true;
       await say('sign', { sign: fill(creature.sign, names) }, 'good');
+      if (ui.nudge) ui.nudge();
     } else problem(`${where}: a "# clue" tag with no clue left to give`);
   }
 
@@ -273,6 +277,8 @@ export async function runQuest({ pack, plan, story, state, ui, hooks }) {
           if (digit === undefined) { problem(`${card.id}: a "# digit" tag with no lock digit left to give`); continue; }
           state.digits++;
           await say('digit', { digit: String(digit), n: String(state.digits), total: String(plan.lock.length) }, 'good');
+          if (state.digits === 1 && words.digit_tip) await say('digit_tip');
+          if (ui.nudge) ui.nudge();
         }
         for (const name of tag('toy')) {
           const toy = card.toys[name];

@@ -10,11 +10,11 @@ One more wiggle, and the bump falls open!
 -> found
 
 = found
-Out of the warm sand pops a little gray dragon, shaking the sand off its head. # clear # pic: sand-dragon # cue: hatch
+Out of the warm sand pops a big gray dragon, shaking the sand off its head. # clear # pic: sand-dragon # cue: hatch
 Its shell is smooth, like leather, and its front feet are shaped like paddles.
 It's the TURTLE DRAGON, just like your clues said!
 But it looks scared, and it doesn't understand English.
-"Hatchlings only know Spanish!" Doña Luz whispers. She opens the travel basket. # slot: rescue
+"Hatchlings only know Spanish!" Doña Luz whispers. She opens the big travel basket. # slot: rescue
 + [@pass] -> rescue_pass
 + [@fail] -> rescue_fail
 
