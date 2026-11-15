@@ -133,14 +133,14 @@ const WORDS = {
     hint: 'Sound each one out.',
   },
   snack_muncher: {
-    ask: 'Tap every number that is {rule}.',
+    ask: 'Tap all the numbers that {rule}.',
     prompt: 'TAP EVERY ONE THAT FITS',
     retry: 'FIX IT AND TRY AGAIN',
     done: 'DONE',
-    rule_multiple: 'a multiple of {n}',
-    rule_round: 'a number that rounds to {t} (nearest {unit})',
-    unit_10: 'TEN',
-    unit_100: 'HUNDRED',
+    rule_multiple: 'are multiples of {n}',
+    rule_round: 'round to {t} (nearest {unit})',
+    unit_10: 'ten',
+    unit_100: 'hundred',
     right: '{praise} All {count} fit: {list}.',
     miss_wrong: '{pick} does not fit. HINT: {hint}',
     miss_short: 'Those all fit, but there are more. HINT: {hint}',
@@ -873,7 +873,7 @@ const snackMuncher = {
   skill: () => 'snack_muncher',
   label: 'Multiples and rounding',
 
-  /** The words for a rule: "a multiple of 4". */
+  /** The words for a rule: "are multiples of 4". */
   rule(w, rule, n) {
     if (rule.kind === 'round') return fill(w.rule_round, { t: String(n), unit: w[`unit_${rule.to}`] || String(rule.to) });
     return fill(w.rule_multiple, { n: String(n) });

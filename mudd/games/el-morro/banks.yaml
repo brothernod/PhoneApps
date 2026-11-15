@@ -54,6 +54,27 @@ wording:
     right: "RIGHT! That's the fib. {pet} wags."
     miss: "That one is TRUE! HINT: {hint}"
     reveal: "That one is true too! The FIB was: \"{fib}\""
+  snack_muncher:
+    prompt: "TAP EVERY TREAT {pet} MAY EAT"
+    retry: "FIX THE TRAY AND TRY AGAIN"
+    done: "MUNCH!"
+    right: "{praise} {pet} munches all {count}: {list}."
+    miss_wrong: "{pet} spits out the {pick}. It doesn't fit! HINT: {hint}"
+    miss_short: "{pet} ate those and is still hungry. There are more! HINT: {hint}"
+    reveal: "{pet}'s treats were {list}. {explain}"
+  egg_crates:
+    prompt: TAP A SQUARE TO FILL THE TRAY
+    caption_none: TAP A SQUARE
+  dragon_census:
+    prompt: TAP TO FILL IN THE ROW
+  memoria:
+    ask: "Match each Spanish word with its picture."
+    ask_easy: "Match each word with its picture. The small print is the English."
+    prompt: TURN OVER TWO CARDS
+    right: "{praise} You matched all {pairs} pairs."
+    hint: "{es} means {en}."
+    hint_same: "Match a WORD card with a PICTURE card."
+    reveal: "Here they all are. {list}."
   rescue:
     ask: "{goal} What do you say?"
     prompt: SAY IT IN SPANISH
@@ -217,6 +238,53 @@ dragon_hoard:
       explain: "{a} x {b} = {a*b}. {a*b} + {c} = {answer}."
       answer: "a * b + c"
 
+  # La Coca Falls, with Ranger Inés and her rain gauge
+  falls:
+    - level: 1
+      vars: { a: [3, 9], b: [2, 9], c: [2, 5] }
+      text: "Ranger Inés emptied {a} rain cups this morning and {b} after lunch. {pet} drank from {c} puddles. How many cups did she empty?"
+      hint: "Puddles aren't cups! Just add the morning and the afternoon."
+      explain: "{a} + {b} = {answer}. The puddles were a trick!"
+      answer: "a + b"
+
+    - level: 1
+      vars: { a: [2, 4], b: [2, 5], c: [1, 3] }
+      where: "a * b > c"
+      text: "{a} hikers stop at the falls, and each one takes {b} photos. {c} photos come out blurry. How many photos are good?"
+      hint: "First find all the photos: {a} groups of {b}. Then take away the {c} blurry ones."
+      explain: "{a} x {b} = {a*b} photos. Take away {c}: {a*b} - {c} = {answer}."
+      answer: "a * b - c"
+
+    - level: 2
+      vars: { a: [3, 6], b: [4, 9], c: [3, 12] }
+      where: "a * b > c"
+      text: "The trail has {a} little bridges with {b} planks on each. {c} planks are loose. How many planks are NOT loose?"
+      hint: "Bridges times planks gives them all. Then subtract the loose ones."
+      explain: "{a} x {b} = {a*b}. Then {a*b} - {c} = {answer}."
+      answer: "a * b - c"
+
+    - level: 2
+      vars: { a: [6, 9], b: [2, 5], c: [3, 9] }
+      text: "{b} tour vans bring {a} people each to see the falls. Then {c} more people walk up. How many people is that?"
+      hint: "Find the people in the vans first: {b} groups of {a}. Then add the {c} who walked."
+      explain: "{b} x {a} = {a*b} people. Then {a*b} + {c} = {answer}."
+      answer: "a * b + c"
+
+    - level: 3
+      vars: { a: [3, 6], b: [4, 8] }
+      where: "a * b <= 48"
+      text: "Ranger Inés has {a*b} trail maps. She puts them in {a} equal stacks. How many maps are in each stack?"
+      hint: "Share {a*b} maps into {a} equal groups. What times {a} makes {a*b}?"
+      explain: "{a*b} ÷ {a} = {answer}, because {a} x {answer} = {a*b}."
+      answer: "b"
+
+    - level: 3
+      vars: { a: [4, 8], b: [6, 9], c: [2, 5] }
+      text: "{a} vans are parked at the falls, with {b} seats in each. {c} seats are empty. How many seats have someone in them?"
+      hint: "Find all the seats: {a} x {b}. Then take away the {c} empty ones."
+      explain: "{a} x {b} = {a*b}. {a*b} - {c} = {answer}."
+      answer: "a * b - c"
+
 # ---------------------------------------------------------------------------
 # TRADING POST: money problems. Buy on a budget and count the change.
 # Written the same way as DRAGON HOARD. Answers are whole dollars.
@@ -366,6 +434,94 @@ stepping_stones:
     text: "Each lantern in the tunnel has a number, but one has rubbed off: {stones}. What number is missing?"
   stairs:
     text: "Some stairs have a number painted on them, but one is worn away: {stones}. What number is missing?"
+  rocks:
+    text: "Each rock in the stream has a number painted on it, but one is under water: {stones}. What number is missing?"
+
+# ---------------------------------------------------------------------------
+# SNACK MUNCHER: a tray of numbered treats and a rule. He taps every treat
+# that fits, then the MUNCH! key (Common Core 3.OA.C.7 and 3.NBT.A.1).
+# rules: which rules come up, shared by every topic
+#   kind: multiple   of: the game picks one number from the list.
+#                    upto: how far the multiples go (10 unless given)
+#   kind: round      to: 10 or 100. target: [min, max] counts in steps of
+#                    "to", so to: 10 with target: [2, 9] is 20, 30, ... 90
+# Each topic is the story around the rule. {rule} reads like "are multiples
+# of 4" or "round to 50 (nearest ten)".
+snack_muncher:
+  rules:
+    - { level: 1, kind: multiple, of: [2, 5, 10] }
+    - { level: 2, kind: multiple, of: [3, 4, 6] }
+    - { level: 2, kind: round, to: 10, target: [2, 9] }
+    - { level: 3, kind: multiple, of: [7, 8, 9] }
+    - { level: 3, kind: round, to: 100, target: [2, 8] }
+  trail:
+    text: "{pet} won't cross without a snack. He eats only treats that {rule}. Tap each one he may eat."
+  sand:
+    text: "{pet} thinks shells are snacks. He eats only treats that {rule}. Tap each one he may eat."
+
+# ---------------------------------------------------------------------------
+# EGG CRATES: rows and columns, then sharing fairly (Common Core 3.OA.A.1 to
+# 3.OA.A.3). The board is an empty tray, 5 rows of 6. He taps a square and
+# the tray fills from the top-left corner down to it.
+# rules: what is asked, shared by every topic
+#   ask: build   make {r} rows of {c}
+#        rows    there are {n}; make {r} equal rows (he finds how long)
+#        cols    there are {n}; make rows of {c} (he finds how many rows)
+#   rows: and cols: [min, max] for the answer. No more than 5 rows and 6 columns.
+# Each topic has an icon: from pics/drawn.js and a sentence for each ask.
+egg_crates:
+  rules:
+    - { level: 1, ask: build, rows: [2, 4], cols: [2, 5] }
+    - { level: 2, ask: rows, rows: [2, 4], cols: [3, 6] }
+    - { level: 3, ask: cols, rows: [3, 5], cols: [3, 6] }
+  cannonballs:
+    icon: cannonball
+    build: "Set the cannonballs back on the rack in {r} rows of {c}."
+    rows: "There are {n} cannonballs. Set them on the rack in {r} equal rows."
+    cols: "There are {n} cannonballs. Set them on the rack in equal rows of {c}."
+  shells:
+    icon: shell
+    build: "{sibling} wants his shells laid out in {r} rows of {c}."
+    rows: "{sibling} found {n} shells. Lay them out in {r} equal rows."
+    cols: "{sibling} found {n} shells. Lay them out in equal rows of {c}."
+
+# ---------------------------------------------------------------------------
+# DRAGON CENSUS: a picture graph where each picture stands for more than one
+# (Common Core 3.MD.B.3). Three rows show; one is empty, and he fills it in.
+# rules: what is asked, shared by every topic
+#   ask: fill    the row's number is given
+#        more    it has {d} more than {other}
+#        fewer   it has {d} fewer than {other}
+#        total   all three rows make {total}
+#   scale: what one picture stands for; the game picks one from the list
+# Each topic has rows: (the game shows three in a row, in this order), an
+# icon: from pics/drawn.js, a key: for under the graph, and a sentence for
+# each ask. A row holds up to 6 pictures.
+dragon_census:
+  rules:
+    - { level: 1, ask: fill, scale: [2, 5] }
+    - { level: 2, ask: more, scale: [5, 10] }
+    - { level: 2, ask: fewer, scale: [5, 10] }
+    - { level: 3, ask: total, scale: [5, 10] }
+  # Ranger Inés's rain chart at La Coca Falls. The days are in Spanish:
+  # Monday to Friday.
+  rain:
+    icon: drop
+    rows: [LUNES, MARTES, MIÉRCOLES, JUEVES, VIERNES]
+    key: "EACH DROP = {scale} MINUTES OF RAIN"
+    fill: "It rained for {n} minutes on {row}. Each drop stands for {scale} minutes. Fill in the {row} row."
+    more: "On {row} it rained {d} minutes MORE than on {other}. Each drop is {scale} minutes. Fill in {row}."
+    fewer: "On {row} it rained {d} minutes LESS than on {other}. Each drop is {scale} minutes. Fill in {row}."
+    total: "It rained {total} minutes in all. Each drop stands for {scale} minutes. Fill in the {row} row."
+  # The ranger's count from the top of Yokahú Tower: frogs, lizards, birds.
+  animals:
+    icon: paw
+    rows: [COQUÍS, LAGARTIJOS, PÁJAROS]
+    key: "EACH PAW PRINT = {scale} ANIMALS"
+    fill: "The ranger counted {n} {row} this week. Each paw print stands for {scale}. Fill in the {row} row."
+    more: "She counted {d} MORE {row} than {other}. Each paw print stands for {scale}. Fill in {row}."
+    fewer: "She counted {d} FEWER {row} than {other}. Each paw print stands for {scale}. Fill in {row}."
+    total: "She counted {total} animals in all. Each paw print stands for {scale}. Fill in the {row} row."
 
 # ---------------------------------------------------------------------------
 # COLORES: Spanish words and sentences
@@ -431,6 +587,66 @@ hola:
       reply_en: "Goodbye!"
       hint: "HASTA LUEGO is what you say when you LEAVE."
 
+  # a hiker on the trail at Juan Diego Falls
+  trail:
+    - says: "¿Adónde vas?"
+      en: "Where are you going?"
+      reply: "Voy a la cascada."
+      reply_en: "I'm going to the waterfall."
+      hint: "ADÓNDE asks WHERE. VOY means I GO."
+    - says: "¿Tienes hambre?"
+      en: "Are you hungry?"
+      reply: "Sí, tengo hambre."
+      reply_en: "Yes, I'm hungry."
+      hint: "TIENES asks if you HAVE it. TENGO says I HAVE it."
+    - says: "¡Cuidado! El camino está mojado."
+      en: "Careful! The path is wet."
+      reply: "Gracias. Camino despacio."
+      reply_en: "Thank you. I'm walking slowly."
+      hint: "CUIDADO means CAREFUL. DESPACIO means SLOWLY."
+    - says: "¿Hace calor hoy?"
+      en: "Is it hot today?"
+      reply: "Sí, hace mucho calor."
+      reply_en: "Yes, it's very hot."
+      hint: "CALOR means HEAT. Look for the same word in the answer."
+    - says: "¿Oyes el coquí?"
+      en: "Do you hear the coquí?"
+      reply: "Sí, canta muy fuerte."
+      reply_en: "Yes, it sings very loudly."
+      hint: "OYES asks if you HEAR. CANTA means it SINGS."
+    - says: "¿Es tu perro?"
+      en: "Is that your dog?"
+      reply: "Sí, se llama {pet}."
+      reply_en: "Yes, his name is {pet}."
+      hint: "PERRO means DOG. SE LLAMA tells a NAME."
+
+# ---------------------------------------------------------------------------
+# MEMORIA: a matching game. Each pair is a Spanish word and its picture.
+#   es / en: the word, and what it means
+#   icon:    its picture, from pics/drawn.js
+# A topic needs at least 6 pairs, and no two may share a word or a picture.
+# Level 1 is 3 pairs with the English under each word; level 2 is 4 pairs;
+# level 3 is 6. Keep each word to two short lines so it fits on its card.
+memoria:
+  animals:
+    - { es: LA RANA,       en: the frog,   icon: frog }
+    - { es: EL LORO,       en: the parrot, icon: parrot }
+    - { es: EL MURCIÉLAGO, en: the bat,    icon: bat }
+    - { es: LA IGUANA,     en: the iguana, icon: iguana }
+    - { es: LA CULEBRA,    en: the snake,  icon: snake }
+    - { es: EL PERRO,      en: the dog,    icon: dog }
+    - { es: EL GATO,       en: the cat,    icon: cat }
+    - { es: EL PEZ,        en: the fish,   icon: fish }
+  beach:
+    - { es: EL SOL,      en: the sun,       icon: sun }
+    - { es: EL MAR,      en: the sea,       icon: wave }
+    - { es: LA TORTUGA,  en: the turtle,    icon: turtle }
+    - { es: LA CONCHA,   en: the shell,     icon: shell }
+    - { es: EL PEZ,      en: the fish,      icon: fish }
+    - { es: LA PALMA,    en: the palm tree, icon: palm }
+    - { es: EL CANGREJO, en: the crab,      icon: crab }
+    - { es: EL BARCO,    en: the boat,      icon: boat }
+
 # ---------------------------------------------------------------------------
 # THE RESCUE: Spanish sentences for calling the hatchling (grade 2).
 # A sentence with a goal: can be the right answer; goal: is what the hero
@@ -492,15 +708,22 @@ facts:
       source: "U.S. Forest Service"
     - text: "Yokahú Tower was built in 1963 so people could look out over the forest."
       source: "Wikipedia, Yokahú Tower"
+  falls:
+    - text: "The water at La Coca Falls drops 85 feet onto a pile of huge rocks."
+      source: "U.S. Forest Service, La Coca Falls page"
+    - text: "El Yunque gets about 120 inches of rain in a year."
+      source: "U.S. Forest Service, El Yunque brochure"
+    - text: "Only two kinds of coquí frog really sing co-kee."
+      source: "U.S. Forest Service, coquí brochure"
   island:
     - text: "Baby coquí frogs skip the tadpole stage. They hatch as tiny froglets."
-      source: "eLife"
+      source: "U.S. Forest Service, coquí brochure; eLife"
     - text: "The Puerto Rican boa is the island's biggest snake."
       source: "U.S. Fish and Wildlife Service"
     - text: "Puerto Rican anole lizards do push-ups to get attention."
       source: "UC Davis"
     - text: "In 1975, only 13 Puerto Rican parrots were left in the wild."
-      source: "U.S. Forest Service"
+      source: "U.S. Fish and Wildlife Service, parrot recovery page; BirdsCaribbean"
 
 fibs:
   iguana:
@@ -535,6 +758,14 @@ fibs:
     - text: "The trees in El Yunque are made of green plastic."
       hint: "Real trees grow from seeds, with rain and sun."
 
+  falls:
+    - text: "At La Coca Falls the water flows UP the rocks."
+      hint: "Which way does water always go on a hill?"
+    - text: "The rangers turn the waterfall off every night."
+      hint: "A waterfall is a stream going over rocks. Does a stream have a switch?"
+    - text: "The water in La Coca Falls is lemonade."
+      hint: "Rain fills the streams in a rainforest. Does it rain lemonade?"
+
 # ---------------------------------------------------------------------------
 # TUNES: note lists. Each note is NAME+OCTAVE, then :length in eighth notes.
 # Use "-" for a rest. Example: "C5:1 E5:1 G5:2 -:1"
@@ -560,6 +791,16 @@ tunes:
   click:
     tempo: 600
     notes: "E7:1 -:1 E7:1"
+  # the two notes of a coquí's song, low then high
+  co:
+    tempo: 300
+    notes: "D6:2"
+  kee:
+    tempo: 300
+    notes: "C7:3"
+  squawk:
+    tempo: 520
+    notes: "A4:1 F5:1 A4:1 G5:2"
   disk:
     tempo: 400
     notes: "A2:1 -:1 A2:1 B2:1 -:1 A2:1 A2:1 -:2 C3:4"

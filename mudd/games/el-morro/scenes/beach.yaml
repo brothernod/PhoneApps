@@ -1,0 +1,14 @@
+# THE BEACH, NORTH COAST: a pool place.
+name: The beach, north coast
+role: place
+drive: 40           # minutes on the clock to get here
+map: [176, 100]     # where it sits on the map picture
+
+# Still to come: egg_to_dragon at the towel. Real sea turtle nests are
+# protected, so the rows-and-columns puzzle here uses shells, not eggs.
+slots:
+  shells:
+    - { puzzle: egg_crates, topic: shells }
+    - { puzzle: snack_muncher, topic: sand }
+  towel:
+    - { puzzle: memoria, topic: beach }

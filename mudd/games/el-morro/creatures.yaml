@@ -20,6 +20,7 @@ coqui:
   name: COQUÍ DRAGON
   based_on: coquí frog
   color_es: MARRÓN
+  lair: mossy-hollow
   sprite: { shape: frog, body: "#c8964e", dark: "#8a6230", belly: "#f2e2b4", trim: "#e8734a", wing: "#e0b070" }
   traits:
     covering: { is: smooth, found: "{sibling} finds a tiny handprint with no claw marks at all. Whatever made it has soft, SMOOTH skin." }
@@ -28,21 +29,21 @@ coqui:
   sign: "it only started singing when the light got dim"
   detour:
     place: A mossy stream in El Yunque
-    pic: la-coca
-    map: [236, 140]
+    pic: hollow
     drive: 60
     lines:
       - "The van climbs into the rainforest of El Yunque. By a mossy stream you stop and listen. No hatchling."
       - "But a tiny real coquí frog sits on a wet leaf, singing its own name: co-KEE!"
     fact: "REAL FACT: A coquí dad guards the eggs until they hatch."
-    source: "eLife"
+    source: "U.S. Forest Service, coquí brochure; eLife"
   fact: "Baby coquí frogs skip the tadpole stage. They hatch as tiny froglets."
-  source: "eLife"
+  source: "U.S. Forest Service, coquí brochure; eLife"
 
 parrot:
   name: PARROT DRAGON
   based_on: Puerto Rican parrot
   color_es: VERDE
+  lair: old-tree
   sprite: { shape: bird, body: "#3fae4a", dark: "#2a7a34", belly: "#9ade6e", trim: "#d23a32", wing: "#2f6fd1" }
   traits:
     covering: { is: fluffy, found: "{sibling} holds up something soft and light as air. It tickles {pet}'s nose, and he sneezes." }
@@ -51,14 +52,13 @@ parrot:
   sign: "a flash of blue as something flew off"
   detour:
     place: A tall old tree in El Yunque
-    pic: lookout
-    map: [254, 126]
+    pic: old-tree
     drive: 60
     lines:
       - "The van climbs into the rainforest of El Yunque. You look up into a tall old tree. No hatchling."
       - "But a real Puerto Rican parrot peeks out of a hollow: bright green, with a red forehead."
     fact: "REAL FACT: In 1975 only 13 of these parrots were left in the wild. People have been helping them ever since."
-    source: "U.S. Forest Service"
+    source: "U.S. Fish and Wildlife Service, parrot recovery page; BirdsCaribbean"
   fact: "The Puerto Rican parrot is green with a red forehead and blue wing feathers."
   source: "BirdsCaribbean"
 
@@ -88,6 +88,7 @@ turtle:
   name: TURTLE DRAGON
   based_on: leatherback sea turtle
   color_es: GRIS
+  lair: sand-nest
   sprite: { shape: turtle, body: "#5a7a8a", dark: "#2e3e4e", belly: "#c8d4dc", trim: "#7a94a4", wing: "#5a7a8a" }
   traits:
     covering: { is: smooth, found: "{sibling} rubs a mark on the stone. It's SMOOTH as a bar of soap. No scales, no fluff." }
@@ -95,17 +96,16 @@ turtle:
     habit:    { is: trail,  found: "Two wavy lines are swept in the dust, side by side, as if tiny oars went by." }
   sign: "a little pit dug in the dirt, with a paddle mark on each side"
   detour:
-    place: A quiet beach on the north coast
-    pic: beach
-    map: [178, 100]
-    drive: 40
+    place: The far end of a quiet beach
+    pic: sand-tracks
+    drive: 45
     lines:
       - "The van stops at a quiet beach. You search the warm sand. No hatchling."
       - "But there are real turtle tracks, where a leatherback crawled up from the sea to nest."
     fact: "REAL FACT: Warmer sand makes more girl turtles hatch."
     source: "Global Voices"
   fact: "Leatherback sea turtles nest on Puerto Rico's beaches."
-  source: "Global Voices"
+  source: "Global Voices; NOAA Ocean Service"
 
 bat:
   name: BAT DRAGON

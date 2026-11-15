@@ -1,0 +1,30 @@
+# THE MOSSY HOLLOW, EL YUNQUE: the coquí dragon's lair.
+name: The mossy hollow
+role: lair
+drive: 60
+map: [236, 158]
+
+slots:
+  rescue:
+    - { puzzle: rescue, topic: calls }
+
+# Toys: small things to do with the picture. Nothing is scored.
+#   song: the creature sings a few notes, and each one lights its key. Then
+#         he taps the same keys in the same order.
+#         keys:  two to four, each with the word on the key and a cue from
+#                tunes: in banks.yaml
+#         notes: how many notes in each round. The first round goes up the
+#                keys in order; after that the notes are dealt.
+#         The picture is drawn with pose 1 while the first key sounds, pose
+#         2 for the second, and pose 0 in between.
+toys:
+  song:
+    kind: song
+    pic: hollow-song
+    keys:
+      - { key: "CO", cue: co }
+      - { key: "KEE", cue: kee }
+    notes: [2, 3, 4]
+    listen: "LISTEN TO ITS SONG..."
+    turn: "YOUR TURN! SING IT BACK"
+    again: "NOT THE SAME SONG. LISTEN AGAIN..."

@@ -1,0 +1,24 @@
+# THE OLD TREE, EL YUNQUE: the parrot dragon's lair.
+name: The old tree
+role: lair
+drive: 60
+map: [262, 122]
+
+slots:
+  rescue:
+    - { puzzle: rescue, topic: calls }
+
+# Toys: small things to do with the picture. Nothing is scored.
+#   pulse: press a key a few times. Each press sends a pulse through the
+#          picture, which shows a little more each time. count: presses.
+#          The picture is drawn with pose (presses so far) and pulse (0 to 1).
+toys:
+  call:
+    kind: pulse
+    pic: tree-call
+    count: 3
+    prompt: "CALL TO THE HOLLOW!"
+    more: "IT PEEKED OUT A LITTLE. CALL AGAIN!"
+    key: "¡HOLA, LORO!"
+    wait: "LISTEN..."
+    cue: squawk

@@ -1,0 +1,14 @@
+# LA COCA FALLS, EL YUNQUE: a pool place. The first waterfall on the road up
+# into the rainforest.
+name: La Coca Falls, El Yunque
+role: place
+drive: 55           # minutes on the clock to get here
+map: [222, 134]     # where it sits on the map picture
+
+# Still to come: egg_to_dragon at the sign.
+slots:
+  gauge:
+    - { puzzle: dragon_census, topic: rain }
+    - { puzzle: dragon_hoard, topic: falls }
+  sign:
+    - { puzzle: fact_or_fib, topic: falls }
