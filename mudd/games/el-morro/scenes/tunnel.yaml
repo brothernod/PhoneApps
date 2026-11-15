@@ -1,0 +1,14 @@
+# THE LANTERN TUNNEL, SAN CRISTÓBAL: a pool place.
+name: The lantern tunnel, San Cristóbal
+role: place
+drive: 10           # minutes on the clock to get here
+map: [122, 56]      # where it sits on the map picture
+
+# Still to come: flight_plan at the gate (sunset_clock holds its spot until
+# then) and memoria at the sign.
+slots:
+  gate:
+    - { puzzle: stepping_stones, topic: lanterns }
+    - { puzzle: sunset_clock, topic: tours }
+  sign:
+    - { puzzle: fact_or_fib, topic: tunnel }

@@ -632,6 +632,162 @@ function eggPic(dark, base, light) {
 }
 
 
+// ---------------------------------------------------------------------------
+// The bat dragon's lair: the deepest room in the tunnels.
+
+/** A hatchling hanging upside down by its toes. */
+function hanging(p, parts, x, y, scale, { outline = '#1a1a2a', one = '' } = {}) {
+  const k = { ...PLAIN, ...(parts || {}) };
+  const grid = (SHAPES[k.shape] || SHAPES.lizard).slice().reverse();
+  const pal = one ? { b: one, d: one, l: one, t: one, w: one, e: one } : { b: k.body, d: k.dark, l: k.belly, t: k.trim, w: k.wing, e: '#1e1414' };
+  p.sprite(grid, pal, x, y, { scale, outline });
+}
+
+const BAT_PARTS = { shape: 'bat', body: '#7a5a44', dark: '#4a3426', belly: '#b89a80', trim: '#e8b0a0', wing: '#5a4034' };
+
+/**
+ * The room with the lantern off. Each click (t.pose counts them) sends a
+ * ring of sound out from the kids, and whatever the ring has passed stays
+ * drawn in faint lines: first the floor and walls, then the arch, then the
+ * shape on the ceiling. t.pulse runs 0 to 1 as a ring spreads.
+ */
+function echoRoom(p, { pose = 0, pulse = 0 } = {}) {
+  p.rect(0, 0, W, H, '#04050b');
+  const sx = 160, sy = 196, reach = 250;
+  const front = pulse * reach;
+  const dist = (x, y) => Math.hypot(x - sx, (y - sy) * 1.15);
+  /** A dot of line art that belongs to click number `level`. */
+  const dot = (x, y, level) => {
+    if (pose > level) { p.set(x, y, '#1f6f78'); return; }
+    if (pose < level) return;
+    const d = dist(x, y);
+    if (d > front) return;
+    p.set(x, y, front - d < 22 && pulse < 1 ? '#b8fff0' : '#2fa0a8');
+  };
+  const line = (x0, y0, x1, y1, level, gap = 1) => {
+    const n = Math.max(Math.abs(x1 - x0), Math.abs(y1 - y0)) || 1;
+    for (let i = 0; i <= n; i += gap) dot(Math.round(x0 + ((x1 - x0) * i) / n), Math.round(y0 + ((y1 - y0) * i) / n), level);
+  };
+  // 1: the floor and the side walls, running back to the far wall
+  line(0, 196, 96, 132, 1); line(319, 196, 224, 132, 1); line(96, 132, 224, 132, 1);
+  for (let i = 1; i < 5; i++) line(96 - i * 22, 132 + i * 15, 224 + i * 22, 132 + i * 15, 1, 3);
+  line(96, 132, 96, 64, 1); line(224, 132, 224, 64, 1);
+  line(0, 20, 96, 64, 1, 2); line(319, 20, 224, 64, 1, 2);
+  // 2: the arched ceiling and its stones
+  for (let a = 0; a <= 180; a += 2) {
+    const r = (a * Math.PI) / 180;
+    dot(Math.round(160 - Math.cos(r) * 64), Math.round(64 - Math.sin(r) * 34), 2);
+    if (a % 6 === 0) dot(Math.round(160 - Math.cos(r) * 100), Math.round(48 - Math.sin(r) * 44), 2);
+  }
+  for (let y = 74; y < 130; y += 14) for (let x = 100 + ((y / 14) % 2) * 10; x < 222; x += 20) line(x, y, x + 12, y, 2, 2);
+  line(132, 132, 132, 104, 2, 2); line(188, 132, 188, 104, 2, 2); line(132, 104, 188, 104, 2, 2);   // a doorway at the back
+  // 3: the shape on the ceiling, upside down
+  const grid = SHAPES.bat.slice().reverse();
+  grid.forEach((row, gy) => [...row].forEach((c, gx) => {
+    if (c === '.') return;
+    const edge = [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => ((grid[gy + dy] || '')[gx + dx] || '.') === '.');
+    for (let yy = 0; yy < 3; yy++) for (let xx = 0; xx < 3; xx++) if (edge || (xx + yy) % 2 === 0) dot(127 + gx * 3 + xx, 36 + gy * 3 + yy, 3);
+  }));
+  // the ring itself
+  if (pose > 0 && pulse < 1) {
+    for (let a = 0; a < 360; a += 1) {
+      const r = (a * Math.PI) / 180;
+      const x = Math.round(sx + Math.cos(r) * front), y = Math.round(sy + (Math.sin(r) * front) / 1.15);
+      if (y < H - 2) p.set(x, y, a % 3 ? '#7fe8e0' : '#2fa0a8');
+    }
+  }
+  // three pairs of eyes in the dark: two kids and a corgi
+  for (const [ex, ey] of [[146, 176], [166, 180], [186, 190]]) { p.rect(ex, ey, 2, 2, '#f4f1e8'); p.rect(ex + 4, ey, 2, 2, '#f4f1e8'); }
+}
+
+/** The same room by lantern light, with the hatchling on the ceiling. */
+function echoDragon(p, { who = null } = {}) {
+  p.grad(0, 0, W, H, ['#1a1420', '#3a2a2a', '#5a4030']);
+  // the far wall, its arch, and the doorway
+  p.rect(96, 64, 128, 68, '#4a3a30'); p.ellipse(160, 64, 64, 34, '#4a3a30');
+  for (let y = 40; y < 130; y += 12) for (let x = 98 + ((y / 12) % 2) * 9; x < 220; x += 18) {
+    if (Math.hypot((x + 8 - 160) / 64, Math.min(0, y - 64) / 34) > 1) continue;
+    p.rect(x, y, 16, 10, ((x + y) >> 2) % 3 ? '#6a5444' : '#5e4a3c'); p.rect(x, y, 16, 1, '#86705c');
+  }
+  p.rect(136, 96, 48, 36, '#120e14'); p.ellipse(160, 96, 24, 10, '#120e14');
+  // the floor
+  p.grad(0, 132, W, 68, ['#4a3c34', '#2e2622']);
+  for (let i = 1; i < 5; i++) p.rect(96 - i * 22, 132 + i * 15, 128 + i * 44, 1, '#5e4e44');
+  // side walls in shadow
+  for (let x = 0; x < 96; x++) { const top = 20 + Math.round((x * 44) / 96); p.rect(x, top, 1, 196 - Math.round((x * 64) / 96) - top, x % 14 < 1 ? '#2a2026' : '#3a2c30'); }
+  for (let x = 224; x < W; x++) { const k = W - 1 - x, top = 20 + Math.round((k * 44) / 96); p.rect(x, top, 1, 196 - Math.round((k * 64) / 96) - top, x % 14 < 1 ? '#2a2026' : '#3a2c30'); }
+  // lantern glow, held low
+  p.blob(118, 150, 26, 18, '#6a4a2a', '#a8702c', '#e8b050');
+  p.rect(115, 140, 7, 10, '#2a2a30'); p.rect(116, 142, 5, 6, '#fff2b0');
+  hanging(p, who || BAT_PARTS, 116, 30, 4, { outline: '#f0d8a0' });
+  p.sprite(HERO, HERO_PAL, 128, 150);
+  p.sprite(SIDEKICK, SIDEKICK_PAL, 150, 158);
+  p.sprite(PUP, PUP_PAL, 172, 172);
+}
+
+// ---------------------------------------------------------------------------
+// The boa dragon's lair: a cave mouth hung with vines.
+
+const BOA_PARTS = { shape: 'snake', body: '#c09a62', dark: '#6e4a2a', belly: '#ecd9a8', trim: '#c09a62', wing: '#c09a62' };
+
+/**
+ * what: 'real'    a real boa among the vines, holding still (the detour)
+ *       'hiding'  the hatchling among the vines; it blinks now and then
+ *       'found'   the hatchling out in the open
+ */
+function cave(p, what, { who = null, frame = 0 } = {}) {
+  sky(p, 70, ['#3b6fd1', '#6aa0ea', '#bfe0fa']);
+  cloud(p, 262, 18, 0.7);
+  // the hillside
+  p.grad(0, 34, W, 166, ['#7a8a6a', '#6a7460', '#565c50']);
+  let s = 11;
+  const rnd = () => ((s = (s * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff);
+  for (let i = 0; i < 46; i++) { const x = rnd() * W, y = 44 + rnd() * 120, w = 14 + rnd() * 26; p.rect(x, y, w, 2, '#8a9a7a'); p.rect(x + 2, y + 2, w, 1, '#4a5046'); }
+  const bush = (x, y, r) => p.blob(x, y, r, Math.round(r * 0.7), '#1e5a2a', '#2f7d33', '#4cae4f');
+  bush(20, 40, 30); bush(300, 46, 34); bush(160, 30, 44); bush(90, 34, 26); bush(236, 32, 28);
+  // the cave mouth
+  p.ellipse(160, 118, 86, 62, '#2a2a30'); p.rect(74, 118, 173, 62, '#2a2a30');
+  p.ellipse(160, 120, 80, 58, '#0c0c14'); p.rect(80, 120, 161, 60, '#0c0c14');
+  // the ground
+  p.grad(0, 170, W, 30, ['#6e6454', '#564c40']);
+  for (let x = 4; x < W; x += 9) p.rect(x, 172 + (x % 4), 5, 1, '#8a7e6a');
+  // vines across the mouth
+  // The hatchling is the color of the vines while it hides; a real boa is brown.
+  const k = what === 'hiding' ? { body: '#4c8a3a', dark: '#2c5c2a' } : BOA_PARTS;
+  const vine = (x, len, sway, a, b) => {
+    for (let i = 0; i < len; i++) {
+      const vx = x + Math.round(Math.sin(i / 7 + sway) * 2);
+      p.rect(vx, 58 + i, 2, 1, i % 6 < 3 ? a : b);
+      if (i % 11 === 5) { p.rect(vx + 2, 58 + i, 3, 2, a); p.set(vx + 5, 59 + i, b); }   // a leaf
+    }
+  };
+  const open = what === 'found';
+  [[92, 70, 0], [108, 96, 1], [124, 84, 2], [142, 104, 3], [158, 76, 4], [176, 98, 5], [214, 88, 0.5], [230, 66, 1.5]].forEach(([x, len, sway]) => {
+    if (open && x > 120 && x < 200) len = 26;         // the vines part once it comes out
+    vine(x, len, sway, '#2f7d33', '#1e5a2a');
+  });
+  if (!open) {
+    // the one that is not a vine: thicker, striped, with a head at the end
+    for (let i = 0; i < 70; i++) {
+      const vx = 196 + Math.round(Math.sin(i / 7 + 2.4) * 2);
+      p.rect(vx, 58 + i, 3, 1, i % 8 < 5 ? k.body : k.dark);
+    }
+    p.rect(194, 126, 7, 8, k.body); p.rect(195, 134, 5, 2, k.body); p.rect(194, 126, 7, 1, k.dark);
+    const blink = what === 'hiding' && frame % 12 >= 10;
+    if (blink) p.rect(195, 129, 3, 1, k.dark);
+    else if (what === 'hiding') { p.rect(195, 128, 3, 3, '#ffe9a0'); p.set(196, 129, '#1e1414'); }
+    else p.rect(195, 128, 2, 2, '#1e1414');
+  } else {
+    creature(p, who || BOA_PARTS, 116, 112, { scale: 4, outline: '#0c0c14' });
+  }
+  p.sprite(HERO, HERO_PAL, 36, 150);
+  p.sprite(SIDEKICK, SIDEKICK_PAL, 56, 158);
+  p.sprite(PUP, PUP_PAL, 74, 174);
+}
+const caveVines = (p, t) => cave(p, 'hiding', t);
+caveVines.fps = 4;
+
+
 /**
  * Scene name -> painter. A name here wins over a PNG with the same name.
  * A painter is called as fn(p, t): t.who is the sprite: of the hatchling
@@ -649,6 +805,11 @@ export const scenes = {
   dragon: dragonUp,
   wall,
   'wall-dragon': (p, t) => wall(p, { who: t.who, pose: t.pose, dragon: true }),
+  'echo-room': echoRoom,
+  'echo-dragon': echoDragon,
+  cave: (p, t) => cave(p, 'real', t),
+  'cave-vines': caveVines,
+  'cave-dragon': (p, t) => cave(p, 'found', t),
   'egg-gold': eggPic('#b8862a', '#f2c531', '#fff2b0'),
   'egg-silver': eggPic('#7a8490', '#c4ccd4', '#ffffff'),
   'egg-bronze': eggPic('#7a4a2a', '#c98a4e', '#f0c8a0'),

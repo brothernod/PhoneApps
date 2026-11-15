@@ -111,6 +111,7 @@ bat:
   name: BAT DRAGON
   based_on: bat
   color_es: MARRÓN
+  lair: echo-room
   sprite: { shape: bat, body: "#7a5a44", dark: "#4a3426", belly: "#b89a80", trim: "#e8b0a0", wing: "#5a4034" }
   traits:
     covering: { is: fluffy, found: "{sibling} holds up a tuft of something soft and FLUFFY. It was stuck to a splinter." }
@@ -134,6 +135,7 @@ boa:
   name: BOA DRAGON
   based_on: Puerto Rican boa
   color_es: MARRÓN
+  lair: vine-cave
   sprite: { shape: snake, body: "#c09a62", dark: "#6e4a2a", belly: "#ecd9a8", trim: "#c09a62", wing: "#c09a62" }
   traits:
     covering: { is: scaly, found: "{sibling} holds up a strip of papery skin with tiny SCALES printed all over it." }
@@ -142,6 +144,7 @@ boa:
   sign: "a vine that turned out not to be a vine"
   detour:
     place: A cave in the hills
+    pic: cave
     map: [214, 152]
     drive: 45
     lines:

@@ -264,6 +264,7 @@ export function checkPack(pack, known) {
       if (known.toys && !known.toys.includes(toy.kind)) bad(`${where}.yaml: toy "${t}" has kind "${toy.kind}", which the engine doesn't have`);
       if (toy.kind === 'spot' && !spot(toy.at, 4)) bad(`${where}.yaml: toy "${t}" needs at: [x, y, width, height]`);
       if (toy.kind === 'taps' && !(spot(toy.count, 2) && toy.count[0] >= 1 && toy.count[1] >= toy.count[0])) bad(`${where}.yaml: toy "${t}" needs count: [fewest, most]`);
+      if (toy.kind === 'pulse' && !(Number.isInteger(toy.count) && toy.count >= 1 && toy.count <= 6)) bad(`${where}.yaml: toy "${t}" needs count: a whole number of presses, 1 to 6`);
       pic(toy.pic, `${where}.yaml: toy "${t}"`);
     }
     for (const t of new Set([...card.tags.tune, ...card.tags.cue])) if (!tunes[t]) bad(`${where}.ink: tune or cue "${t}" is not in banks.yaml`);

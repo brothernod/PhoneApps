@@ -1,0 +1,16 @@
+# YOKAHÚ TOWER, EL YUNQUE: a pool place. The rainforest is about an hour
+# from Old San Juan.
+name: Yokahú Tower, El Yunque
+role: place
+drive: 60           # minutes on the clock to get here
+map: [244, 120]     # where it sits on the map picture
+
+# Still to come: dragon_census at the top (sunset_clock holds its spot
+# until then).
+slots:
+  stairs:
+    - { puzzle: stepping_stones, topic: stairs }
+    - { puzzle: dragon_hoard, topic: tower }
+  top:
+    - { puzzle: fact_or_fib, topic: rainforest }
+    - { puzzle: sunset_clock, topic: clouds }

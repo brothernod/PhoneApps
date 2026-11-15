@@ -10,14 +10,43 @@ praise: ["¡CORRECTO!", "¡PERFECTO!", "¡MUY BIEN!", "¡EXCELENTE!"]
 # WORDING: what each puzzle says around its question, so a puzzle can be
 # reskinned without code. Anything left out uses the engine's plain wording.
 wording:
+  # Colores has three levels. Level 1 is one word. Level 2 is a sentence with
+  # a color and a size. Level 3 says which colors it is NOT. {color}, {no1},
+  # and {no2} are the f: forms from spanish.colors, to go with "la puerta".
   colores:
-    ask: "The note says: ¡{es}! Which door should you knock on?"
+    ask: "The neighbor calls: ¡{es}! Which door is it?"
     prompt: "¡{es}! PICK A DOOR"
     retry: TRY ANOTHER DOOR
     option: DOOR
     right: "¡SÍ! {es} ({say}) means {en}."
     miss: "That door is {pick_es}, which means {pick_en}. HINT: {es} sounds like {say}. {hint}"
     reveal: "{es} means {en}. It's the {en} door!"
+    ask2: "The neighbor calls: \"¡Toca la puerta {color} y {size}!\" Which door is it?"
+    prompt2: PICK A DOOR
+    right2: "¡SÍ! \"La puerta {color} y {size}\" is the {size_en} {color_en} door."
+    reveal2: "\"La puerta {color} y {size}\" is the {size_en} {color_en} door."
+    ask3: "The neighbor calls: \"¡No es {no1} ni {no2}! ¡Es {size}!\" Which door is it?"
+    prompt3: PICK A DOOR
+    right3: "¡SÍ! Not {no1_en}, not {no2_en}, and {size_en}."
+    reveal3: "NO ES {no1} NI {no2}: not {no1_en}, not {no2_en}. ES {size}: it is {size_en}. That leaves the {size_en} {color_en} door."
+    miss2: "That door is {pick_color} y {pick_size}: {pick_color_en} and {pick_size_en}. HINT: {hint}"
+    hint_color: "{color} sounds like {say}. {hint}"
+    hint_size: "{pick_size} means {pick_size_en}. You want {size}."
+    hint_not: "NO ES {pick_color} means it is NOT {pick_color_en}."
+  hola_y_gracias:
+    who: Someone
+    ask: "{who} says: \"{says}\" What do you say back?"
+    ask_easy: "{who} says: \"{says}\" ({en}) What do you say back?"
+    prompt: SAY IT IN SPANISH
+    retry: TRY ANOTHER ONE
+    right: "{praise} \"{says}\" means \"{en}\" You said: \"{reply_en}\""
+    miss: "\"{pick_es}\" means \"{pick_en}\" HINT: {hint}"
+    reveal: "\"{says}\" means \"{en}\" A good answer: \"{reply}\" ({reply_en})"
+  sunset_clock:
+    prompt: HOW MANY MINUTES?
+    prompt_time: "TYPE THE TIME, LIKE 3:25"
+  stepping_stones:
+    prompt: TYPE THE MISSING NUMBER
   fact_or_fib:
     ask: "Two are TRUE. Which one is the FIB?"
     prompt: "{pet} SNIFFED OUT A FIB!"
@@ -141,18 +170,266 @@ dragon_hoard:
       explain: "{a} x {b} = {a*b}. {a*b} - {c} = {answer}."
       answer: "a * b - c"
 
+  # Yokahú Tower: 96 steps to the top
+  tower:
+    - level: 1
+      vars: { a: [3, 9], b: [2, 9], c: [2, 5] }
+      text: "You count {a} lizards on the way up and {b} on the way down. {sibling} counts {c} clouds. How many lizards in all?"
+      hint: "Clouds aren't lizards! Just add the way up and the way down."
+      explain: "{a} + {b} = {answer}. The clouds were a trick!"
+      answer: "a + b"
+
+    - level: 1
+      vars: { a: [2, 4], b: [2, 5], c: [1, 3] }
+      where: "a * b > c"
+      text: "The tower has {a} windows on each of {b} floors. Vines cover {c} of them. How many windows can you see out of?"
+      hint: "First find all the windows: {a} on each of {b} floors. Then take away the {c} with vines."
+      explain: "{a} x {b} = {a*b} windows. Take away {c}: {a*b} - {c} = {answer}."
+      answer: "a * b - c"
+
+    - level: 2
+      vars: { a: [6, 9], b: [3, 6], c: [3, 9] }
+      text: "Each turn of the stairs has {a} steps. You climb {b} turns, then {c} more steps to the top. How many steps is that?"
+      hint: "Find the steps for the turns first: {b} groups of {a}. Then add the last {c}."
+      explain: "{b} x {a} = {a*b} steps. Then {a*b} + {c} = {answer}."
+      answer: "a * b + c"
+
+    - level: 2
+      vars: { a: [3, 6], b: [4, 8], c: [2, 9] }
+      where: "a * b > c"
+      text: "{a} families are up on the tower, with {b} people in each. Then {c} people go back down. How many are still up top?"
+      hint: "Families times people in each gives everyone. Then subtract the ones who left."
+      explain: "{a} x {b} = {a*b}. Then {a*b} - {c} = {answer}."
+      answer: "a * b - c"
+
+    - level: 3
+      vars: { a: [3, 6], b: [4, 8] }
+      where: "a * b <= 48"
+      text: "The tower stairs have {a*b} steps, in {a} equal turns. How many steps are in each turn?"
+      hint: "Share {a*b} steps into {a} equal groups. What times {a} makes {a*b}?"
+      explain: "{a*b} ÷ {a} = {answer}, because {a} x {answer} = {a*b}."
+      answer: "b"
+
+    - level: 3
+      vars: { a: [4, 8], b: [6, 9], c: [2, 5] }
+      text: "{pet} needs {a} rests on the way up, and {b} sniffs at every rest. Then {c} more sniffs at the top. How many sniffs?"
+      hint: "Find the sniffs at the rests: {a} x {b}. Then add the {c} at the top."
+      explain: "{a} x {b} = {a*b}. {a*b} + {c} = {answer}."
+      answer: "a * b + c"
+
 # ---------------------------------------------------------------------------
-# COLORES: Spanish words (grade 1)
+# TRADING POST: money problems. Buy on a budget and count the change.
+# Written the same way as DRAGON HOARD. Answers are whole dollars.
+trading_post:
+  piraguas:
+    - level: 1
+      vars: { a: [2, 4], b: [1, 3] }
+      text: "You have $10. You buy a piragua for ${a} and a dog biscuit for {pet} for ${b}. How many dollars do you have left?"
+      hint: "Add up what you spent: ${a} and ${b}. Then take that away from $10."
+      explain: "{a} + {b} = {a+b} dollars spent. 10 - {a+b} = {answer}."
+      answer: "10 - a - b"
+
+    - level: 1
+      vars: { a: [2, 5], b: [2, 4] }
+      text: "A piragua costs ${a}. You buy one for you and one for {sibling}, and Doña Luz gives you ${b} to help. How many dollars do YOU pay?"
+      hint: "Two piraguas cost {a} + {a}. Then take away the ${b} from Doña Luz."
+      explain: "{a} + {a} = {a+a} dollars. {a+a} - {b} = {answer}."
+      answer: "a + a - b"
+
+    - level: 2
+      vars: { a: [2, 4], b: [2, 4] }
+      text: "Piraguas cost ${a} each. You buy {b} and pay with a $20 bill. How many dollars does Don Tito give back?"
+      hint: "First find the price of {b} piraguas: {b} groups of {a}. Then take that away from 20."
+      explain: "{b} x {a} = {a*b} dollars. 20 - {a*b} = {answer}."
+      answer: "20 - a * b"
+
+    - level: 2
+      vars: { a: [3, 5], b: [2, 4], c: [1, 3] }
+      text: "You buy {b} piraguas at ${a} each, and a ${c} coconut candy. How many dollars is that in all?"
+      hint: "The piraguas first: {b} groups of {a}. Then add the candy."
+      explain: "{b} x {a} = {a*b}. Then {a*b} + {c} = {answer}."
+      answer: "a * b + c"
+
+    - level: 3
+      vars: { a: [2, 3], b: [2, 3], c: [1, 2], d: [2, 3] }
+      text: "A piragua is ${a} and a candy is ${c}. You buy {b} piraguas and {d} candies and pay $20. How many dollars come back?"
+      hint: "Piraguas: {b} x {a}. Candies: {d} x {c}. Add those, then take the sum away from 20."
+      explain: "{a*b} + {c*d} = {a*b+c*d} dollars spent. 20 - {a*b+c*d} = {answer}."
+      answer: "20 - a * b - c * d"
+
+    - level: 3
+      vars: { a: [3, 5], b: [2, 5], r: [1, 2] }
+      text: "You have ${a*b+r}. Piraguas cost ${a} each. What is the MOST piraguas you can buy?"
+      hint: "Count by {a}s until one more would be too much. The leftover dollars can't buy a whole one."
+      explain: "{b} x {a} = {a*b}, and one more would cost {a*b+a}. So you can buy {answer}, with ${r} left."
+      answer: "b"
+
+# ---------------------------------------------------------------------------
+# SUNSET CLOCK: time problems (Common Core 3.MD.A.1, time to the minute and
+# elapsed time). Written like DRAGON HOARD, plus:
+#   at:  the time it is now, in minutes. 2:35 is 2*60 + 35. Shown as {at}
+#   end: a second time to show, as {end} (optional)
+#   as:  time     the answer is a time, in minutes; he types it like 3:25
+#        minutes  the answer is a count of minutes
+# Keep every time between 1:00 and 12:59. Here q counts five-minute steps,
+# so q*5 is the minutes past the hour.
+sunset_clock:
+  # the lantern tunnel at San Cristóbal
+  tours:
+    - level: 1
+      vars: { h: [1, 4], q: [1, 6], d: [2, 5] }
+      at: "h*60 + q*5"
+      as: time
+      text: "It's {at}. The ranger unlocks the tunnel gate in {d*5} minutes. What time will that be?"
+      hint: "The hour stays {h}. Add {d*5} to the {q*5} minutes."
+      explain: "{q*5} + {d*5} = {q*5+d*5} minutes, so it's {answer}."
+      answer: "h*60 + q*5 + d*5"
+
+    - level: 2
+      vars: { h: [1, 4], q: [7, 11], d: [3, 9] }
+      where: "q + d > 12"
+      at: "h*60 + q*5"
+      as: time
+      text: "It's {at}. The lantern tour starts in {d*5} minutes. What time does it start?"
+      hint: "From {at} it takes {60-q*5} minutes to reach {h+1}:00. How many of the {d*5} minutes are left?"
+      explain: "{60-q*5} minutes gets you to {h+1}:00. {d*5} - {60-q*5} = {d*5+q*5-60} more: {answer}."
+      answer: "h*60 + q*5 + d*5"
+
+    - level: 3
+      vars: { h: [1, 4], q: [5, 10], d: [4, 9] }
+      where: "q + d > 12"
+      at: "h*60 + q*5"
+      end: "h*60 + q*5 + d*5"
+      as: minutes
+      text: "The lantern tour goes into the tunnel at {at} and comes out at {end}. How many minutes long is the tour?"
+      hint: "Count from {at} up to {h+1}:00 first. Then add the minutes after {h+1}:00."
+      explain: "{60-q*5} minutes to {h+1}:00, plus {q*5+d*5-60} more: {answer} minutes."
+      answer: "d*5"
+
+  # the top of Yokahú Tower
+  clouds:
+    - level: 1
+      vars: { h: [1, 4], q: [1, 6], d: [2, 5] }
+      at: "h*60 + q*5"
+      as: time
+      text: "It's {at}. The ranger says a rain cloud will get here in {d*5} minutes. What time will it rain?"
+      hint: "The hour stays {h}. Add {d*5} to the {q*5} minutes."
+      explain: "{q*5} + {d*5} = {q*5+d*5} minutes, so it's {answer}."
+      answer: "h*60 + q*5 + d*5"
+
+    - level: 2
+      vars: { h: [1, 4], q: [7, 11], d: [3, 9] }
+      where: "q + d > 12"
+      at: "h*60 + q*5"
+      as: time
+      text: "It's {at}. The fog will lift in {d*5} minutes, and then you can see the sea. What time will that be?"
+      hint: "From {at} it takes {60-q*5} minutes to reach {h+1}:00. How many of the {d*5} minutes are left?"
+      explain: "{60-q*5} minutes gets you to {h+1}:00. {d*5} - {60-q*5} = {d*5+q*5-60} more: {answer}."
+      answer: "h*60 + q*5 + d*5"
+
+    - level: 3
+      vars: { h: [1, 4], q: [5, 10], d: [4, 9] }
+      where: "q + d > 12"
+      at: "h*60 + q*5"
+      end: "h*60 + q*5 + d*5"
+      as: minutes
+      text: "It started to rain at {at}. The sun came back at {end}. How many minutes did it rain?"
+      hint: "Count from {at} up to {h+1}:00 first. Then add the minutes after {h+1}:00."
+      explain: "{60-q*5} minutes to {h+1}:00, plus {q*5+d*5-60} more: {answer} minutes."
+      answer: "d*5"
+
+# ---------------------------------------------------------------------------
+# STEPPING STONES: a row of numbers with a rule and one number missing
+# (Common Core 3.OA.D.9, arithmetic patterns).
+# rules: how rows are made, shared by every topic
+#   step:    the jump between numbers; the game picks one from the list
+#   times:   or each number is this many times the one before
+#   start:   [min, max] for the first number
+#   on_step: true makes the first number that many steps (3 steps of 5 is
+#            15), so the row is plain skip-counting
+#   gap:     end (the last number is missing) or middle
+# Each topic is the story around the row. {stones} is the row, like
+# "3, 6, 9, __, 15".
+stepping_stones:
+  rules:
+    - { level: 1, step: [2, 5, 10], start: [1, 4], on_step: true, gap: end }
+    - { level: 1, step: [2, 5, 10], start: [1, 4], on_step: true, gap: middle }
+    - { level: 2, step: [3, 4, 6], start: [1, 4], on_step: true, gap: middle }
+    - { level: 2, step: [-5, -10], start: [52, 98], gap: middle }
+    - { level: 2, step: [3, 4], start: [1, 9], gap: end }
+    - { level: 3, step: [7, 8, 9], start: [1, 9], gap: middle }
+    - { level: 3, step: [-3, -4, -6], start: [40, 60], gap: middle }
+    - { level: 3, times: 2, start: [1, 5], gap: end }
+  cannonballs:
+    text: "You stack the cannonballs in piles that follow a rule: {stones}. How many go in the empty pile?"
+  lanterns:
+    text: "Each lantern in the tunnel has a number, but one has rubbed off: {stones}. What number is missing?"
+  stairs:
+    text: "Some stairs have a number painted on them, but one is worn away: {stones}. What number is missing?"
+
+# ---------------------------------------------------------------------------
+# COLORES: Spanish words and sentences
 # say: a sound-it-out hint, since the game has no speech
+# f:   the word as it goes with "la puerta" (a door is a "la" word, so ROJO
+#      becomes ROJA). Levels 2 and 3 use it.
+# sizes: the two sizes a door can be, for levels 2 and 3
 spanish:
   colors:
-    - { es: ROJO,       en: RED,    hex: "#d23a32", say: ROH-hoh,       hint: "Think of a fire truck." }
-    - { es: AZUL,       en: BLUE,   hex: "#2f6fd1", say: ah-SOOL,       hint: "Like the sky and the sea." }
-    - { es: AMARILLO,   en: YELLOW, hex: "#f2c531", say: ah-mah-REE-yoh, hint: "The color of the sun." }
-    - { es: VERDE,      en: GREEN,  hex: "#3f9e4a", say: BEHR-deh,      hint: "Like the leaves of a tree." }
-    - { es: ROSADO,     en: PINK,   hex: "#f08cb4", say: roh-SAH-doh,   hint: "Like a flamingo." }
-    - { es: BLANCO,     en: WHITE,  hex: "#f4f1e8", say: BLAHN-koh,     hint: "Like {pet}'s front paws." }
-    - { es: ANARANJADO, en: ORANGE, hex: "#ec8a2c", say: ah-nah-rahn-HAH-doh, hint: "Like an orange, the fruit!" }
+    - { es: ROJO,       f: ROJA,       en: RED,    hex: "#d23a32", say: ROH-hoh,       hint: "Think of a fire truck." }
+    - { es: AZUL,       f: AZUL,       en: BLUE,   hex: "#2f6fd1", say: ah-SOOL,       hint: "Like the sky and the sea." }
+    - { es: AMARILLO,   f: AMARILLA,   en: YELLOW, hex: "#f2c531", say: ah-mah-REE-yoh, hint: "The color of the sun." }
+    - { es: VERDE,      f: VERDE,      en: GREEN,  hex: "#3f9e4a", say: BEHR-deh,      hint: "Like the leaves of a tree." }
+    - { es: ROSADO,     f: ROSADA,     en: PINK,   hex: "#f08cb4", say: roh-SAH-doh,   hint: "Like a flamingo." }
+    - { es: BLANCO,     f: BLANCA,     en: WHITE,  hex: "#f4f1e8", say: BLAHN-koh,     hint: "Like {pet}'s front paws." }
+    - { es: ANARANJADO, f: ANARANJADA, en: ORANGE, hex: "#ec8a2c", say: ah-nah-rahn-HAH-doh, hint: "Like an orange, the fruit!" }
+  sizes:
+    - { es: GRANDE,  en: BIG,   size: big }
+    - { es: PEQUEÑA, en: SMALL, size: small }
+
+# ---------------------------------------------------------------------------
+# HOLA Y GRACIAS: someone says something in Spanish, and he picks what to say
+# back (grade 2). Each topic is a list of exchanges:
+#   says / en:        what they say, and what it means
+#   reply / reply_en: the right thing to say back, and what it means
+# The wrong answers are the replies to the other lines, so no two lines in a
+# topic may share a reply.
+hola:
+  street:
+    - says: "¡Buenos días! ¿Cómo estás?"
+      en: "Good morning! How are you?"
+      reply: "Muy bien, gracias."
+      reply_en: "Very well, thank you."
+      hint: "¿CÓMO ESTÁS? asks how you ARE."
+    - says: "¿Cómo te llamas?"
+      en: "What is your name?"
+      reply: "Me llamo {hero}."
+      reply_en: "My name is {hero}."
+      hint: "TE LLAMAS asks your NAME. Which answer has a name in it?"
+    - says: "¡Muchas gracias!"
+      en: "Thank you very much!"
+      reply: "De nada."
+      reply_en: "You're welcome."
+      hint: "After GRACIAS, the polite answer means \"it was nothing.\""
+    - says: "¿Qué buscas?"
+      en: "What are you looking for?"
+      reply: "Busco un dragón pequeño."
+      reply_en: "I'm looking for a small dragon."
+      hint: "BUSCAS and BUSCO are the same word: to LOOK FOR."
+    - says: "¿Tienes sed?"
+      en: "Are you thirsty?"
+      reply: "Sí, tengo sed."
+      reply_en: "Yes, I'm thirsty."
+      hint: "TIENES asks if you HAVE it. TENGO says I HAVE it."
+    - says: "¿Te gusta Puerto Rico?"
+      en: "Do you like Puerto Rico?"
+      reply: "Sí, me gusta mucho."
+      reply_en: "Yes, I like it a lot."
+      hint: "TE GUSTA asks if you LIKE it. ME GUSTA says I LIKE it."
+    - says: "¡Hasta luego!"
+      en: "See you later!"
+      reply: "¡Adiós!"
+      reply_en: "Goodbye!"
+      hint: "HASTA LUEGO is what you say when you LEAVE."
 
 # ---------------------------------------------------------------------------
 # THE RESCUE: Spanish sentences for calling the hatchling (grade 2).
@@ -203,11 +480,23 @@ facts:
       source: "National Park Service"
     - text: "People fly kites, called chiringas, on El Morro's big lawn."
       source: "National Parks Traveler"
+  tunnel:
+    - text: "Bats are Puerto Rico's only native land mammals."
+      source: "U.S. Forest Service"
+    - text: "Puerto Rico has 13 kinds of bats."
+      source: "U.S. Forest Service"
+    - text: "One sentry box at San Cristóbal is called the Devil's Sentry Box."
+      source: "Wikipedia, Castillo San Cristóbal"
+  rainforest:
+    - text: "El Yunque is the only tropical rainforest in the U.S. National Forest System."
+      source: "U.S. Forest Service"
+    - text: "Yokahú Tower was built in 1963 so people could look out over the forest."
+      source: "Wikipedia, Yokahú Tower"
   island:
     - text: "Baby coquí frogs skip the tadpole stage. They hatch as tiny froglets."
       source: "eLife"
-    - text: "Bats are Puerto Rico's only native land mammals. There are 13 kinds."
-      source: "U.S. Forest Service"
+    - text: "The Puerto Rican boa is the island's biggest snake."
+      source: "U.S. Fish and Wildlife Service"
     - text: "Puerto Rican anole lizards do push-ups to get attention."
       source: "UC Davis"
     - text: "In 1975, only 13 Puerto Rican parrots were left in the wild."
@@ -229,6 +518,22 @@ fibs:
       hint: "Could a fort made of heavy stone float?"
     - text: "The fort's walls are made of hard candy."
       hint: "What would happen to candy walls in the rain?"
+
+  tunnel:
+    - text: "Bats are birds, with feathers under their fur."
+      hint: "Bats have fur and feed their babies milk. What kind of animal does that?"
+    - text: "The soldiers dug the tunnels with spoons, in one weekend."
+      hint: "Long stone tunnels take years to dig."
+    - text: "Bats sleep standing on one leg, like flamingos."
+      hint: "Think about how a bat hangs when it sleeps."
+
+  rainforest:
+    - text: "It never rains in a rainforest."
+      hint: "Read the name again: RAIN forest."
+    - text: "Yokahú Tower is so tall that its top is in outer space."
+      hint: "You can climb it in a few minutes. Could you climb to outer space?"
+    - text: "The trees in El Yunque are made of green plastic."
+      hint: "Real trees grow from seeds, with rain and sun."
 
 # ---------------------------------------------------------------------------
 # TUNES: note lists. Each note is NAME+OCTAVE, then :length in eighth notes.
@@ -252,6 +557,9 @@ tunes:
   hatch:
     tempo: 260
     notes: "C5:1 D5:1 E5:1 G5:1 C6:1 E6:1 G6:3"
+  click:
+    tempo: 600
+    notes: "E7:1 -:1 E7:1"
   disk:
     tempo: 400
     notes: "A2:1 -:1 A2:1 B2:1 -:1 A2:1 A2:1 -:2 C3:4"

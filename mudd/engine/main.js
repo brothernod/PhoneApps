@@ -119,7 +119,9 @@ function keepOffline() {
 // Difficulty: up after two right in a row, down after two misses.
 
 function skillOf(name) {
-  if (!profile.skills[name]) profile.skills[name] = { level: 1, up: 0, down: 0, right: 0, total: 0 };
+  // A pack can start a skill above level 1: levels: in game.yaml.
+  const start = Math.max(1, Math.min(3, Number(((pack && pack.game.levels) || {})[name]) || 1));
+  if (!profile.skills[name]) profile.skills[name] = { level: start, up: 0, down: 0, right: 0, total: 0 };
   return profile.skills[name];
 }
 
@@ -238,7 +240,7 @@ async function playQuest(run) {
     }),
     card: {
       open: (pz) => screen.cardOpen(pz),
-      numpad: (prompt) => screen.cardNumpad(prompt),
+      numpad: (prompt, format) => screen.cardNumpad(prompt, format),
       pick: (options, prompt) => screen.cardPick(options, prompt),
       hint: (text) => screen.cardHintText(text),
       reveal: (text) => screen.cardReveal(text),

@@ -7,7 +7,7 @@
 //                    it must be followed by [@pass] and [@fail] choices
 //   # clue           reveal the next clue about this run's creature
 //   # digit          reveal the next number of the lock (one per place)
-//   # toy: <name>    play a lair toy from the .yaml (tap a spot, count taps)
+//   # toy: <name>    play a lair toy from the .yaml (tap a spot, count taps, send pulses)
 //   # caught         add the creature to the Field Guide
 //   # rate           count up the run and award its egg
 //   # clear          wipe the text window

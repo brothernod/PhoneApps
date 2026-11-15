@@ -19,7 +19,7 @@ import { traitKeys, traitValue } from './pack.js';
 import { makeRng, fill, clock } from './util.js';
 
 /** Toys a lair card can ask for with "# toy: <name>". The screen plays them. */
-export const TOYS = ['spot', 'taps'];
+export const TOYS = ['spot', 'taps', 'pulse'];
 
 /**
  * @typedef {{ id: string, name: string, drive: number, at: number[], stars: number, tries: number }} MapPlace

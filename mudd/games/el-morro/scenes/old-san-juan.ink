@@ -1,4 +1,5 @@
-// OLD SAN JUAN STREETS. Slots: cart (Don Tito needs help), doors (which door?).
+// OLD SAN JUAN STREETS. Slots: cart (Don Tito needs help), doors (the
+// neighbor speaks Spanish).
 // A place gives one clue and one lock number: here the cart earns the clue
 // and the doors earn the number. Tags are listed at the top of museum.ink.
 
@@ -33,19 +34,19 @@ He points behind his cart. "Your dragon stopped right there. Take a look!" # clu
 = houses
 The street of colors climbs uphill. Every house is painted a different color. # clear # pic: houses
 {sibling} tugs your sleeve and points. "The footprints go to one of these doors!"
-But which one? You'll need your Spanish. # slot: doors
+But which one? A neighbor leans out of her window to help. You'll need your Spanish. # slot: doors
 + [@pass] -> houses_pass
 + [@fail] -> houses_fail
 
 = houses_pass
-The door creaks open onto a sunny courtyard. # cue: find
+"¡Eso es!" The neighbor points, and a door creaks open onto a sunny courtyard. # cue: find
 Muddy footprints cross the tiles and stop at the wall. # digit
 -> choose
 
 = houses_fail
-You knock on the wrong doors. A grandma gives {pet} a cookie. Nice, but slow.
+The neighbor says it again, slowly, with her hands. A grandma next door gives {pet} a cookie. Nice, but slow.
 ~ minutes += 15
-At last you find the right door. In the courtyard, footprints stop at the wall. # digit
+At last a door creaks open onto a courtyard. Footprints cross the tiles and stop at the wall. # digit
 -> choose
 
 = leave

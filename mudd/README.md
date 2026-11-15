@@ -10,14 +10,16 @@ keeps its saves.
 
 ## What's playable now
 
-Phases 1 and 2 of the completion plan are built. A run has its full shape,
-with two places and two dragons so far:
+Phases 1 to 3 of the completion plan are built. A run has its full shape:
+three of four places, and four dragons that can hatch.
 
 - **Museum.** Doña Luz hands over the casebook, and the empty shell gives the
   first clue
 - **The map.** He picks the next stop from the places on offer and sees each
-  drive time. Two pool places: Old San Juan streets and the sentry box at El
-  Morro, each with two puzzles. One puzzle earns a clue, the other a lock number
+  drive time. Four pool places, three to a run: Old San Juan streets, the
+  sentry box at El Morro, the lantern tunnel at San Cristóbal, and Yokahú
+  Tower in El Yunque, each with two puzzles. One puzzle earns a clue, the
+  other a lock number
 - **The casebook.** The CASEBOOK button opens it any time, even in the middle
   of a puzzle: clues, lock numbers, stars, and the lineup of all eight
   dragons, which he can cross out
@@ -26,14 +28,25 @@ with two places and two dragons so far:
   didn't fit
 - **The lair.** Each dragon has its own: the iguana dragon in the big plaza
   tree (spot the tail), the anole dragon on El Morro's sunniest wall (count
-  its push-ups and tap them back). Then **the rescue**, in Spanish sentences
+  its push-ups and tap them back), the bat dragon in the deepest tunnel room
+  (lantern off; each click draws more of the room in echoes), the boa dragon
+  in a cave of vines (tap the vine that blinks). Then **the rescue**, in
+  Spanish sentences
 - **Home.** The **Code Lock** on the nest case, three endings by the clock,
   and a gold, silver, or bronze egg for the run. The best egg is kept on the
   dragon's Field Guide page
-- Puzzles so far: **Dragon Hoard**, **Colores**, **Fact or Fib**, **the
-  rescue**, and **Code Lock**. A first-try solve earns a star
-- Old San Juan and the sentry box use trip photos. All nine trip scenes are in
-  the pack; the other seven wait for their places
+- Nine puzzles so far: **Dragon Hoard** (two-step word problems), **Trading
+  Post** (money and change), **Sunset Clock** (time; he types 3:25 on the
+  pad), **Stepping Stones** (find the rule, fill the missing number),
+  **Colores**, **Hola y Gracias** (pick what to say back in Spanish),
+  **Fact or Fib**, **the rescue**, and **Code Lock**. A first-try solve earns
+  a star
+- Colores has three levels: one color word; a sentence with a color and a
+  size ("Toca la puerta ROJA y GRANDE") over big and small doors; and a "not"
+  sentence ("No es ROJA ni AZUL"). Colores and Hola y Gracias start on level
+  2 (`levels:` in `game.yaml`)
+- Four places use trip photos. All nine trip scenes are in the pack; the
+  rest wait for their places
 - A caught list that carries across runs, a sunset clock, FM-synth music,
   autosave and Continue
 - Difficulty that steps up after 2 right in a row and down after 2 misses
@@ -60,6 +73,10 @@ next, and once a creature's traits are all out, the next clue is its `sign:`.
 
 To add a place: write its two files in `scenes/`, add its id to `run.pool` in
 `game.yaml`, give it `map: [x, y]`, and put its picture in `pics/`.
+
+A slot can list any number of puzzles; the dealer picks one each run. A new
+kind of puzzle needs a rule set in `engine/puzzles.js` and a bank in
+`banks.yaml`; the comments above each bank say how to write a question.
 
 To let a creature hatch: write its lair card (`role: lair`, with a `rescue`
 slot and, if you like, a toy), and name the card under `lair:` in
@@ -100,10 +117,11 @@ the engine.
 
 ## Not built yet
 
-Phases 3 to 6 of the completion plan: fifteen more puzzle kinds and the
-harder Spanish; the other eight places and six lairs; the event deck and
-treats; both mother-dragon endings; the password backup; and a blank game
-pack. Until the pool has more than three places, a run visits all of it.
+Phases 4 to 6 of the completion plan: eleven more puzzle kinds; the other
+six places and four lairs; the event deck and treats; both mother-dragon
+endings; the password backup; and a blank game pack. Sunset Clock sits at the
+tunnel gate and the top of Yokahú Tower until Flight Plan and Dragon Census
+are built.
 
 ## Credits
 

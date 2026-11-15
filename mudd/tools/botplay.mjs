@@ -8,7 +8,8 @@
 //     the robot quits at a save point and continues later
 //   - a case file that opens before every clue is found, a lock whose code
 //     isn't the numbers found along the way, or a run that earns no egg
-//   - a puzzle question that runs past four lines on an iPhone
+//   - a puzzle question that runs past four lines on an iPhone, a time no
+//     clock shows, or two answers that look the same
 //   - a part of a scene card no run ever reached
 //   - anything from the game pack hard-wired into the engine
 // It also plays every creature with every place and every puzzle a slot can
@@ -162,6 +163,7 @@ const dealtCount = {};          // "card.slot=puzzle" -> times dealt
 const visited = new Set();      // "card.stitch" reached by some run
 const detoured = new Set();     // creatures a run was sent to by mistake
 const toysPlayed = new Set();   // "card.toy" played by some run
+const levelsPlayed = new Set(); // "skill@level" of pick-one puzzles played
 const braces = /\{[^}]*\}/;
 const run = pack.game.run;
 const hub = pack.scenes[run.hub];
@@ -249,6 +251,8 @@ async function playRun(plan, history, bot, want = {}) {
       if (!TOYS.includes(toy.kind)) fail(`${tag}: a toy of kind "${toy.kind}"`);
       for (const v of Object.values(toy)) if (typeof v === 'string') see(v, 'a toy');
       if (toy.kind === 'taps' && !(toy.n >= toy.count[0] && toy.n <= toy.count[1])) fail(`${tag}: a taps toy asked for ${toy.n} taps`);
+      if (toy.kind === 'pulse' && !(toy.count >= 1)) fail(`${tag}: a pulse toy with no presses`);
+      if (toy.pic && !drawn.includes(toy.pic)) fail(`${tag}: toy picture "${toy.pic}" must be a drawn scene, so it can move`);
     },
     card: {
       open: async (pz) => {
@@ -261,6 +265,8 @@ async function playRun(plan, history, bot, want = {}) {
         if (pz.screen === 'numpad') {
           if (!Number.isInteger(pz.answer) || pz.answer < 0 || pz.answer > 9999) fail(`${tag}: ${pz.skill} answer is ${pz.answer}`);
           // The lock opens with the numbers found along the way, in order.
+          // A time is typed the way a clock shows it: 3:25 is 325.
+          if (pz.format === 'clock' && !(pz.answer >= 100 && pz.answer % 100 < 60)) fail(`${tag}: ${pz.skill} wants the time ${pz.answer}, which no clock shows`);
           if (pz.skill === 'code_lock') {
             if (state.digits !== plan.stops) fail(`${tag}: the lock came up with ${state.digits} of ${plan.stops} numbers found`);
             if (pz.answer !== Number(plan.lock.join(''))) fail(`${tag}: the lock's code is ${pz.answer}, but the numbers found were ${plan.lock.join(', ')}`);
@@ -268,6 +274,10 @@ async function playRun(plan, history, bot, want = {}) {
         } else {
           if (pz.options.length < 2) fail(`${tag}: ${pz.skill} has fewer than two answers`);
           if (pz.options.filter((o) => o.correct).length !== 1) fail(`${tag}: ${pz.skill} must have exactly one right answer`);
+          // No two answers may look alike on their keys.
+          const looks = pz.options.map((o) => `${o.label}|${o.color || ''}|${o.size || ''}`);
+          if (new Set(looks).size !== looks.length) fail(`${tag}: ${pz.skill} has two answers that look the same`);
+          levelsPlayed.add(`${pz.skill}@${hooks.level(pz.skill)}`);
           for (const o of pz.options) { see(o.label, 'an answer'); see(o.miss, 'a hint'); measure(`${tag}: ${pz.skill}`, '', 1, [o.label]); }
         }
       },
@@ -430,6 +440,10 @@ for (const card of Object.values(pack.scenes)) {
     if (!dealtCount[`${card.id}.${slot}=${spec.puzzle}`]) fail(`scenes/${card.id}.yaml: ${spec.puzzle} in slot "${slot}" was never dealt`);
   }
   for (const t of Object.keys(card.toys)) if (!toysPlayed.has(`${card.id}.${t}`)) fail(`scenes/${card.id}.yaml: toy "${t}" was never played`);
+}
+// Every level of the Spanish puzzles gets played.
+for (const skill of [...new Set([...levelsPlayed].map((k) => k.split('@')[0]))].filter((k) => k.startsWith('spanish_'))) {
+  for (const lvl of [1, 2, 3]) if (!levelsPlayed.has(`${skill}@${lvl}`)) fail(`${skill}: no run played level ${lvl}`);
 }
 // Every egg can be earned.
 for (const egg of (pack.game.rating || {}).eggs || []) if (!eggCount[egg.id || egg.name]) fail(`game.yaml: no run ever earned the ${egg.name}`);
