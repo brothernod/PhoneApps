@@ -1345,6 +1345,98 @@ function oldSanJuan(p) {
   p.sprite(PUP, PUP_PAL, 146, 166);
 }
 
+
+const BAYER4 = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]];
+/** Pick from tones (dark to light) by a light level 0..1, dithered between steps. */
+function toneAt(tones, light, x, y) {
+  const t = Math.max(0, Math.min(0.999, light)) * (tones.length - 1);
+  const i = Math.floor(t);
+  return t - i > (BAYER4[y & 3][x & 3] + 0.5) / 16 ? tones[Math.min(i + 1, tones.length - 1)] : tones[i];
+}
+
+/** A lit round surface: an upright cylinder from y0 to y1, sun on the left. */
+function cylinder(p, cx, y0, y1, r, tones, { lit = 0.15 } = {}) {
+  for (let x = Math.ceil(cx - r); x <= cx + r; x++) {
+    const nx = (x - cx) / r, nz = Math.sqrt(Math.max(0, 1 - nx * nx));
+    const light = 0.15 + 0.85 * Math.max(0, -nx * 0.55 + nz * 0.8 + lit);
+    for (let y = y0; y < y1; y++) p.set(x, y, toneAt(tones, light, x, y));
+  }
+}
+
+/** A lit dome: the top half of an ellipse with radii rx, ry, sitting on (cx, base). */
+function dome(p, cx, base, rx, ry, tones) {
+  for (let y = base - ry; y <= base; y++) for (let x = cx - rx; x <= cx + rx; x++) {
+    const nx = (x - cx) / rx, ny = (y - base) / ry;
+    const d = nx * nx + ny * ny;
+    if (d > 1) continue;
+    const nz = Math.sqrt(1 - d);
+    p.set(x, y, toneAt(tones, 0.1 + 0.9 * Math.max(0, -nx * 0.5 - ny * 0.45 + nz * 0.7), x, y));
+  }
+}
+
+const STONE = ['#4e4638', '#6e6452', '#8c8068', '#aa9e84', '#c8bca0', '#e0d6bc'];
+
+/** The sentry box (la garita) on the corner of El Morro's wall, over the sea. */
+function garita(p) {
+  sky(p, 98, ['#2f63c4', '#4f86de', '#86b8f0', '#c9e4fa']);
+  cloud(p, 40, 70, 1.3); cloud(p, 126, 78, 1.0); cloud(p, 300, 62, 1.1); cloud(p, 200, 22, 0.7);
+  // the sea, darker toward the horizon, with whitecaps
+  p.grad(0, 96, W, 50, ['#1d4f86', '#245e9a', '#2a6fb0', '#3b82c4']);
+  const rnd = seeded(11);
+  for (let i = 0; i < 90; i++) { const y = 98 + Math.floor(rnd() * 44), x = Math.floor(rnd() * W); p.rect(x, y, 2 + Math.floor((y - 96) / 10), 1, rnd() < 0.3 ? '#eef8ff' : '#5d9bd6'); }
+  // more of El Morro along the shore: a lower wall and a small white garita
+  p.rect(0, 104, 104, 10, '#c8bca0'); p.rect(0, 104, 104, 1, '#e8e0cc');
+  for (let x = 0; x < 104; x += 7) p.rect(x, 101, 4, 3, '#c8bca0');
+  p.rect(84, 92, 8, 12, '#ece4d2'); p.ellipse(88, 92, 4, 3, '#d8ccb4'); p.rect(87, 87, 2, 3, '#d8ccb4'); p.rect(87, 96, 2, 4, '#4a4030');
+  for (let x = 0; x < 104; x += 3) p.set(x, 115 + (x % 2), '#eef8ff');
+
+  // The parapet you stand behind, running across, and the walkway in front.
+  p.rect(0, 128, W, 22, '#a89a7c'); p.rect(0, 128, W, 3, '#d2c6a8'); p.rect(0, 146, W, 4, '#7e7056');
+  for (let y = 135; y < 146; y += 6) for (let x = (y % 12) * 2; x < W; x += 24) p.rect(x, y, 1, 6, '#8c7e62');
+  p.grad(0, 150, W, 50, ['#b8a888', '#c8b898', '#d4c4a2']);
+  for (let y = 154, r = 0; y < H; y += 8 + r * 2, r++) {
+    p.rect(0, y, W, 1, '#a89878');
+    for (let x = (r % 2) * 20; x < W; x += 40 + r * 4) p.rect(x, y, 1, 8 + r * 2, '#a89878');
+  }
+
+  // The garita, standing out from the corner on its stone bracket.
+  const cx = 236;
+  for (let y = 112; y < 150; y++) {                       // the bracket narrows like a bell
+    const t = (y - 112) / 38, r = Math.round(30 - t * t * 16);
+    for (let x = cx - r; x <= cx + r; x++) {
+      const nx = (x - cx) / r;
+      p.set(x, y, toneAt(STONE, 0.2 + 0.7 * Math.max(0, -nx * 0.5 + Math.sqrt(1 - nx * nx) * 0.7) - t * 0.25, x, y));
+    }
+  }
+  for (const yy of [118, 128, 140]) { const r = Math.round(30 - ((yy - 112) / 38) ** 2 * 16); p.rect(cx - r, yy, r * 2 + 1, 1, '#5e5446'); }
+  cylinder(p, cx, 54, 112, 25, ['#3e382e', '#564e40', '#6e6452', '#8a7e68', '#a69a80', '#bfb398'], { lit: -0.3 });
+  for (let y = 62; y < 112; y += 9) for (let x = cx - 24; x <= cx + 24; x += 1) if ((x + y) % 23 < 1 || ((x * 7 + y) % 41) < 1) p.set(x, y, '#5e5446');
+  for (let i = 0; i < 40; i++) p.set(cx - 22 + Math.floor(rnd() * 44), 58 + Math.floor(rnd() * 52), '#6e6452');
+  p.rect(cx - 30, 108, 61, 5, '#9a8e74'); p.rect(cx - 30, 108, 61, 1, '#d2c6ac');      // the ledge it stands on
+  // the cornice: two bands wider than the walls
+  p.rect(cx - 30, 47, 61, 4, '#d2c6ac'); p.rect(cx - 30, 51, 61, 2, '#8c8068'); p.rect(cx - 28, 53, 57, 2, '#6e6452');
+  p.rect(cx - 27, 44, 55, 3, '#aa9e84');
+  // the dome, its ribs, and the knob on top
+  dome(p, cx, 44, 26, 24, STONE);
+  for (const k of [-0.62, -0.25, 0.12, 0.5]) for (let y = 21; y <= 44; y++) { const ny = (y - 44) / 24, w = Math.sqrt(Math.max(0, 1 - ny * ny)); p.set(Math.round(cx + k * 26 * w), y, '#7e7462'); }
+  p.rect(cx - 3, 16, 7, 6, '#aa9e84'); p.rect(cx - 2, 15, 5, 1, '#c8bca0');
+  p.blob(cx, 11, 5, 5, '#6e6452', '#aa9e84', '#e0d6bc');
+  // the doorway and a lookout slit
+  p.rect(cx - 8, 78, 17, 34, '#2a221c'); p.ellipse(cx, 78, 8, 6, '#2a221c'); p.rect(cx - 9, 76, 1, 36, '#c8bca0');
+  p.rect(cx + 2, 84, 3, 12, '#bfe0fa'); p.rect(cx - 18, 70, 2, 10, '#2a221c');
+
+  // the cannonballs that tumbled off their stack, and the sign
+  const ball = (x, y) => p.blob(x, y, 5, 5, '#141418', '#2e2e36', '#6a6a78');
+  for (const [x, y] of [[40, 146], [51, 146], [62, 146], [46, 137], [57, 137], [51, 128], [86, 168], [104, 182], [76, 160]]) ball(x, y);
+  p.rect(178, 152, 3, 30, '#5a3a22'); p.rect(162, 136, 36, 22, '#7a5232'); p.rect(164, 138, 32, 18, '#e8dcc0');
+  for (let y = 142; y < 154; y += 3) p.rect(167, y, 26, 1, '#6a5a4a');
+  p.rect(186, 146, 5, 1, '#3a2a20'); p.rect(187, 148, 4, 1, '#3a2a20');   // tiny claw scratches
+
+  p.sprite(HERO, HERO_PAL, 112, 156);
+  p.sprite(SIDEKICK, SIDEKICK_PAL, 130, 162);
+  p.sprite(PUP, PUP_PAL, 146, 176);
+}
+
 // ---------------------------------------------------------------------------
 // Icons: small pictures for puzzle boards (the cards in Memoria, the marks in
 // a picture graph, what goes in a tray). Each fits in iconBox and is called
@@ -1787,6 +1879,7 @@ export const scenes = {
   'sand-nest': sandWiggle,
   'sand-dragon': (p, t) => sandNest(p, 'found', t),
   'old-san-juan': oldSanJuan,
+  garita,
   lawn,
   lookout,
   bay: (p, t) => bay(p, 'day', t),
