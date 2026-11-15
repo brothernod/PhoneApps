@@ -13,7 +13,7 @@ import { runQuest, newQuestState, startStory, casebook, toggleCrossed, TOYS } fr
 import { clock, fill, store } from './util.js';
 
 const VERSION = 'MUDD 0.4';
-const SAVE_VERSION = 3;
+const SAVE_VERSION = 4;
 
 // Which game: ?game=<folder> in the address, or data-game on the page.
 const asked = new URLSearchParams(location.search).get('game') || document.documentElement.dataset.game || '';

@@ -2,7 +2,7 @@
 // the cache is only used when there's no Wi-Fi.
 // The shell and engine are listed here. The game pack (story, data, pictures)
 // isn't: the engine sends its file list once the pack has loaded ("keep").
-const CACHE = 'mudd-v5';
+const CACHE = 'mudd-v6';
 const FILES = [
   './', 'index.html', 'manifest.webmanifest', 'apple-touch-icon.png',
   'vendor/ink-full.js', 'vendor/js-yaml.min.js', 'vendor/vt323.woff2',
