@@ -1227,6 +1227,125 @@ function road(p, what = '') {
 }
 
 // ---------------------------------------------------------------------------
+// The places redrawn in Phase 6, from the trip photos: Old San Juan, the
+// sentry box, the tunnel, Yokahú Tower, La Coca Falls, Juan Diego Falls, and
+// the beach. Each shows the whole landmark.
+
+/** A tiny seeded random, so a scene paints the same every time. */
+function seeded(seed) {
+  let s = seed;
+  return () => ((s = (s * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff);
+}
+
+/** The flag of Puerto Rico, hanging from a pole at (x, y), w wide. */
+function prFlag(p, x, y, w = 15) {
+  const h = Math.round(w * 2 / 3);
+  for (let i = 0; i < 5; i++) p.rect(x, y + Math.round((i * h) / 5), w, Math.round(((i + 1) * h) / 5) - Math.round((i * h) / 5), i % 2 ? '#ffffff' : '#d23a32');
+  for (let r = 0; r < h; r++) { const hw = Math.round((Math.min(r, h - 1 - r) + 0.5) * 1.15); p.rect(x, y + r, hw, 1, '#2f5fc4'); }
+  p.set(x + 2, y + Math.floor(h / 2), '#ffffff');
+  p.rect(x - 1, y - 2, 1, h + 6, '#3a2a20');
+}
+
+// Old San Juan: one street of painted houses, seen from the middle of it,
+// running down to the sea. Each house is [wall, trim, shutters, height,
+// depth where it ends, windows]. Heights are above the street, in the same
+// units as the street's half-width.
+const OSJ_LEFT = [
+  ['#9cc8e8', '#f4f1e8', '#3c7f8a', 2.25, 1.55, 3],
+  ['#5fb848', '#f4f1e8', '#2a5a2a', 2.0, 2.2, 3],
+  ['#f2c531', '#ffffff', '#2f6fd1', 2.3, 3.0, 2],
+  ['#f08cb4', '#ffffff', '#3c7f8a', 1.95, 4.1, 3],
+  ['#4fb3c8', '#f4f1e8', '#7a4a2a', 2.15, 6.2, 3],
+];
+const OSJ_RIGHT = [
+  ['#f4a868', '#ffffff', '#2a5a2a', 2.1, 1.7, 3],
+  ['#f4f1e8', '#cfcabb', '#2f6fd1', 2.35, 2.5, 3],
+  ['#d23a32', '#f4f1e8', '#3c3a2a', 1.9, 3.4, 2],
+  ['#9cc8e8', '#ffffff', '#f2c531', 2.2, 4.6, 3],
+  ['#f2c531', '#ffffff', '#3f9e4a', 2.0, 6.2, 3],
+];
+
+/** Old San Juan: blue cobblestones, houses painted every color, and the sea at the end of the street. */
+function oldSanJuan(p) {
+  const vx = 160, vy = 90, f = 100, side = 1.62, eye = 0.8, end = 6.2;
+  sky(p, vy + 4, ['#3b6fd1', '#5d93e6', '#8fc0f2', '#cfe6fa']);
+  cloud(p, 160, 30, 0.9); cloud(p, 40, 12, 0.7); cloud(p, 290, 18, 0.7);
+  // the bay at the end of the street, with the far shore and a sailboat
+  p.rect(vx - 30, vy - 4, 60, 3, '#6a9a6a');
+  p.grad(vx - 30, vy - 1, 60, 12, ['#2a6fb0', '#3b82c4']);
+  p.rect(vx + 6, vy + 2, 5, 1, '#f4f1e8'); p.rect(vx + 8, vy - 3, 1, 5, '#f4f1e8'); p.rect(vx + 9, vy - 2, 2, 3, '#f4f1e8');
+  // the low sea wall where the street ends
+  const wy = Math.round(vy + (eye * f) / end);
+  p.rect(vx - 27, wy - 5, 54, 5, '#c8bca8'); p.rect(vx - 27, wy - 5, 54, 1, '#e4dccb');
+
+  // The street: blue cobbles, a curb, and a strip of pale sidewalk by each wall.
+  const rnd = seeded(5);
+  const tone = ['#4e6c96', '#5b7aa6', '#6a8bb8', '#45628a'], hash = [];
+  for (let i = 0; i < 997; i++) hash.push(Math.floor(rnd() * 4));
+  for (let y = wy; y < H; y++) {
+    const z = (eye * f) / (y - vy);
+    for (let x = 0; x < W; x++) {
+      const X = ((x - vx) * z) / f;
+      if (Math.abs(X) > side + 0.1) continue;
+      if (Math.abs(X) > side - 0.32) { p.set(x, y, Math.abs(X) < side - 0.29 ? '#8a8478' : ((x + y) & 1) && z > 3 ? '#b8b0a0' : '#ccc4b4'); continue; }
+      if (z > 3.6) { p.set(x, y, ((x + y) & 1) ? '#5b7aa6' : '#4e6c96'); continue; }
+      const row = Math.floor(z / 0.085), col = Math.floor((X + 4 + (row % 2) * 0.08) / 0.16);
+      const fz = z / 0.085 - row, fx = (X + 4 + (row % 2) * 0.08) / 0.16 - col;
+      p.set(x, y, fz < 0.16 || fx < 0.1 ? '#2c3e5c' : fz > 0.8 ? '#8fadd2' : tone[hash[(row * 31 + col * 7) % 997]]);
+    }
+  }
+
+  // The houses. Every column of the screen is one slice of a wall.
+  for (let x = 0; x < W; x++) {
+    const dx = x - vx;
+    if (Math.abs(dx) < 1) continue;
+    const z = (side * f) / Math.abs(dx);
+    if (z >= end) continue;
+    const row = dx < 0 ? OSJ_LEFT : OSJ_RIGHT;
+    let z0 = 1, h = row[0];
+    for (const hh of row) { h = hh; if (z < hh[4]) break; z0 = hh[4]; }
+    const [wall, trim, shut, tall, z1, n] = h;
+    const u = (z - z0) / (z1 - z0), slot = u * n, k = slot - Math.floor(slot), mid = Math.floor(slot) === Math.floor(n / 2);
+    const top = Math.round(vy - ((tall - eye) * f) / z), bot = Math.round(vy + (eye * f) / z);
+    for (let y = Math.max(0, top); y < Math.min(H, bot); y++) {
+      const v = ((vy - y) * z) / f + eye;      // height above the street
+      let c = wall;
+      if (v > tall - 0.1) c = v > tall - 0.04 ? trim : shade(trim, 0.8);                  // cornice
+      else if (u < 0.05 || u > 0.95) c = u < 0.02 || u > 0.98 ? shade(wall, 0.8) : trim; // pilasters
+      else if (v < 0.07) c = shade(wall, 0.72);                                           // base
+      else if (v > 0.98 && v < 1.04) c = trim;                                            // floor band
+      else if (v >= 1.2 && v < 1.82 && k > 0.24 && k < 0.76) {                            // upstairs: shuttered doors to a balcony
+        c = k < 0.28 || k > 0.72 || v > 1.77 ? trim : k < 0.38 || k > 0.62 ? shut : '#2d3b4d';
+        if (c === shut && ((y & 3) === 0)) c = shade(shut, 0.75);
+      } else if (v >= 1.12 && v < 1.36 && k > 0.16 && k < 0.84) {                         // the iron balcony
+        c = v < 1.15 || v > 1.33 || (x & 1) ? '#2a2220' : null;
+      } else if (v >= 0.07 && v < (mid ? 0.82 - (k - 0.5) ** 2 * 0.6 : 0.78) && k > (mid ? 0.3 : 0.26) && k < (mid ? 0.7 : 0.74)) {
+        if (mid) c = k < 0.34 || k > 0.66 ? trim : '#7a4a2a';                             // the front door
+        else c = v < 0.3 ? shade(wall, 0.85) : k < 0.3 || k > 0.7 ? trim : (x & 1) || ((y & 3) === 0) ? '#2a2220' : '#2d3b4d'; // window and grille
+      }
+      if (c) p.set(x, y, c);
+    }
+  }
+
+  // a wall lantern on each side, and a flag over a balcony
+  const lamp = (X, z) => {
+    const x = Math.round(vx + (X * f) / z), y = Math.round(vy - ((1.45 - eye) * f) / z), s = Math.max(1, Math.round(3 / z));
+    p.rect(x - s * (X < 0 ? 0 : 3), y, s * 3, s, '#2a2a30');
+    const lx = x + (X < 0 ? s * 3 : -s * 5);
+    p.rect(lx, y + s, s * 3, s * 4, '#2a2a30'); p.rect(lx + Math.ceil(s / 2), y + s * 2, s * 2, s * 2, '#ffe9a0'); p.rect(lx - 1, y, s * 3 + 2, s, '#2a2a30');
+  };
+  lamp(-side, 1.3); lamp(side, 2.1); lamp(-side, 3.2); lamp(side, 4.2);
+  prFlag(p, 268, 54, 16);
+
+  // Don Tito's cart halfway down, and the three of you
+  piraguaCart(p, 184, 98, 1);
+  p.sprite(TITO, TITO_PAL, 172, 104);
+  p.sprite(HERO, HERO_PAL, 112, 154);
+  p.sprite(SIDEKICK, SIDEKICK_PAL, 128, 160);
+  p.sprite(PUP, PUP_PAL, 146, 166);
+}
+
+// ---------------------------------------------------------------------------
 // Icons: small pictures for puzzle boards (the cards in Memoria, the marks in
 // a picture graph, what goes in a tray). Each fits in iconBox and is called
 // as fn(pix, x, y). A puzzle bank names one with icon:.
@@ -1667,6 +1786,7 @@ export const scenes = {
   'sand-tracks': (p, t) => sandNest(p, 'real', t),
   'sand-nest': sandWiggle,
   'sand-dragon': (p, t) => sandNest(p, 'found', t),
+  'old-san-juan': oldSanJuan,
   lawn,
   lookout,
   bay: (p, t) => bay(p, 'day', t),
