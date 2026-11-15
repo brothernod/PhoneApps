@@ -559,7 +559,9 @@ export class Screen {
       });
       const row = el('div', 'keyrow');
       row.append(undo, go);
-      keys.append(arrows, row);
+      const all = el('div', 'pathkeys');     // sideways, the six keys share one row
+      all.append(arrows, row);
+      keys.appendChild(all);
       paint();
     });
   }

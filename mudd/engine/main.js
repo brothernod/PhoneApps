@@ -12,8 +12,8 @@ import { ARCHETYPES } from './puzzles.js';
 import { runQuest, newQuestState, startStory, casebook, toggleCrossed, TOYS } from './quest.js';
 import { clock, fill, store } from './util.js';
 
-const VERSION = 'MUDD 0.4';
-const SAVE_VERSION = 4;
+const VERSION = 'MUDD 0.5';
+const SAVE_VERSION = 5;
 
 // Which game: ?game=<folder> in the address, or data-game on the page.
 const asked = new URLSearchParams(location.search).get('game') || document.documentElement.dataset.game || '';

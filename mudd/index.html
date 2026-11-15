@@ -284,11 +284,20 @@
     .board.array .cell { min-height: 25px; }
     .board.array .cell .ico { min-height: 16px; }
     .board.pairs .cell { min-height: 46px; }
-    .board.order .tile { min-height: 50px; }
-    .tile .ico { height: 22px; min-height: 22px; }
-    .board.path .cell { min-height: 28px; }
-    .trow.cell { min-height: 30px; }
-    .key.arrow { min-height: 44px; }
+    .board.order { grid-template-columns: repeat(3, 1fr) !important; }
+    .board.order .tile { min-height: 46px; }
+    .tile .ico { height: 20px; min-height: 20px; }
+    .board.path .cell { min-height: 22px; }
+    .trow.cell { min-height: 28px; }
+    .key.arrow { min-height: 40px; flex-direction: row; gap: 6px; }
+    .key.arrow .arr { font-size: 1.2em; }
+    .treat { padding: 1px 8px; }
+    .pathkeys { display: flex; gap: 6px; align-items: stretch; }
+    .pathkeys .arrowkeys { flex: 2.4; gap: 4px; }
+    .pathkeys .keyrow { flex: 1.3; gap: 4px; }
+    .pathkeys .key { margin: 0; padding: 2px; font-size: 0.85em; }
+    .pathkeys .key.arrow { flex-direction: column; gap: 0; }
+    #card-keys:has(.pathkeys) .prompt { display: none; }
     .slot { height: 30px; }
   }
 
