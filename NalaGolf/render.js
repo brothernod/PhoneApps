@@ -14,6 +14,22 @@ function drawGoal(alpha){
   }
   ctx.restore();
 }
+// Placeholder art for characters/pickups (Phase 2 replaces these).
+const ENT_LOOK={ stella:{fill:'#8f949e',rim:'#d7dbe4',tag:'S'}, binx:{fill:'#111116',rim:'#b44dff',tag:'B'}, treat:{fill:'#d9a35f',rim:'#ffe066',tag:''} };
+function drawEnt(o,alpha){
+  const k=ENT_LOOK[o.ent]; ctx.save(); ctx.globalAlpha=alpha;
+  ctx.fillStyle=k.fill; ctx.strokeStyle=k.rim; ctx.lineWidth=2; shapePath(ctx,o); ctx.fill(); ctx.stroke();
+  if(o.ent==='binx'){ ctx.fillStyle='#ffe066'; ell(o.x-4,o.y-2,2,2.4); ell(o.x+4,o.y-2,2,2.4); }
+  else if(o.ent==='treat'){ ctx.strokeStyle='rgba(90,50,20,.8)'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(o.x-3,o.y-3); ctx.lineTo(o.x+3,o.y+3); ctx.moveTo(o.x+3,o.y-3); ctx.lineTo(o.x-3,o.y+3); ctx.stroke(); }
+  else { ctx.fillStyle='#1d1f24'; ctx.font='bold 13px system-ui'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(k.tag,o.x,o.y+1); ctx.textBaseline='alphabetic'; }
+  if(o.used && o.ent!=='treat' && state!=='recap'){ ctx.globalAlpha=alpha*.8; ctx.fillStyle='#fff'; ctx.font='10px system-ui'; ctx.textAlign='center'; ctx.fillText('✓',o.x+o.r,o.y-o.r); }
+  ctx.restore();
+}
+// Binx's eyes blink in the dark now and then — a hint that something is watching.
+function drawBinxEyes(){
+  for(const o of objs){ if(o.ent!=='binx') continue; const ph=(t+o.id*.7)%4.6; if(ph>.55) continue;
+    const a=Math.sin(ph/.55*Math.PI)*.75; ctx.fillStyle=`rgba(255,224,102,${a})`; ell(o.x-4,o.y-2,1.8,1.3); ell(o.x+4,o.y-2,1.8,1.3); }
+}
 function roundRect(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
 function drawLit(alpha,isDown){
   ctx.save(); ctx.globalAlpha=alpha;
@@ -23,6 +39,7 @@ function drawLit(alpha,isDown){
   ctx.globalAlpha=alpha;
   for(const o of objs){
     if(isDown(o)) continue;
+    if(o.ent){ drawEnt(o,alpha); continue; }
     ctx.fillStyle=MAT[o.mat].col; shapePath(ctx,o); ctx.fill();
     if(o.knock){ ctx.strokeStyle='#ffd27a'; ctx.lineWidth=1.5; ctx.stroke(); }
   }
@@ -53,7 +70,8 @@ function drawPings(ringsOnly){
       const gr=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,r); gr.addColorStop(0,`rgba(255,30,30,${a*.10})`); gr.addColorStop(1,`rgba(255,30,30,${a*.02})`);
       ctx.fillStyle=gr; ctx.fillRect(p.x-r,p.y-r,r*2,r*2);
       ctx.strokeStyle=`rgba(255,50,50,${a})`; ctx.lineWidth=2; ctx.fillStyle=`rgba(255,30,30,${a*.14})`;
-      for(const o of objs) if(o.solid){ shapePath(ctx,o); ctx.fill(); ctx.stroke(); }
+      for(const o of objs) if(o.solid&&!o.ent){ shapePath(ctx,o); ctx.fill(); ctx.stroke(); }
+      for(const o of objs) if(o.ent&&!o.gone) drawEnt(o,a);
       ctx.restore();
     }
     ctx.strokeStyle=`rgba(255,70,70,${a*.55})`; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(p.x,p.y,r,0,TAU); ctx.stroke();
@@ -102,7 +120,13 @@ function drawAim(){
   ctx.strokeStyle=col; ctx.lineWidth=4; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
   const an=Math.atan2(aim.dy,aim.dx); ctx.fillStyle=col; ctx.beginPath();
   ctx.moveTo(x1+Math.cos(an)*10,y1+Math.sin(an)*10); ctx.lineTo(x1+Math.cos(an+2.4)*10,y1+Math.sin(an+2.4)*10); ctx.lineTo(x1+Math.cos(an-2.4)*10,y1+Math.sin(an-2.4)*10); ctx.fill();
-  ctx.fillStyle='#fff'; ctx.font='bold 12px system-ui'; ctx.textAlign='center'; ctx.fillText(Math.round(aim.pow*100)+'%',x1+Math.cos(an)*24,y1+Math.sin(an)*24+4);
+  const pct=aim.pow>=1?'MAX':Math.round(aim.pow*100)+'%';
+  ctx.fillStyle='#fff'; ctx.font='bold 12px system-ui'; ctx.textAlign='center';
+  ctx.fillText(pct,clamp(x1+Math.cos(an)*24,24,W-24),clamp(y1+Math.sin(an)*24+4,HUD+14,H-8));
+  // power ring at the finger (the drag can start anywhere, so show it where they're looking)
+  const fx=clamp(aim.cx,20,W-20), fy=clamp(aim.cy,HUD+20,H-20);
+  ctx.strokeStyle='rgba(255,255,255,.15)'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(fx,fy,16,0,TAU); ctx.stroke();
+  ctx.strokeStyle=col; ctx.beginPath(); ctx.arc(fx,fy,16,-Math.PI/2,-Math.PI/2+TAU*aim.pow); ctx.stroke();
 }
 function drawWords(){
   ctx.textAlign='center'; ctx.textBaseline='middle';
@@ -118,21 +142,44 @@ function pill(txt,y,sub){
   ctx.fillStyle='#ffe0c8'; ctx.textAlign='center'; ctx.fillText(txt,W/2,y+3);
   if(sub){ ctx.font='11px system-ui'; ctx.fillStyle='#a99'; ctx.fillText(sub,W/2,y+18); }
 }
+function drawToast(){
+  if(!toast) return; const k=toast.t, life=state==='recap'?1.6:3.2, a=Math.min(1,k/.15,(life-k)/.3), y=HUD+22+(k<.15?(1-k/.15)*-12:0);
+  ctx.save(); ctx.globalAlpha=clamp(a,0,1); ctx.font='bold 13px system-ui';
+  const txt=toast.who+': '+toast.txt, w=Math.min(384,ctx.measureText(txt).width+26);
+  ctx.fillStyle='rgba(16,12,24,.92)'; roundRect(W/2-w/2,y-15,w,30,14); ctx.fill();
+  ctx.strokeStyle=toast.col; ctx.lineWidth=1.5; ctx.stroke();
+  ctx.fillStyle=toast.col; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(txt,W/2,y+1,370);
+  ctx.restore(); ctx.textBaseline='alphabetic';
+}
 function drawHUD(){
   ctx.fillStyle='#0d0b0a'; ctx.fillRect(0,0,W,HUD);
   ctx.textAlign='left'; ctx.fillStyle='#fff'; ctx.font='bold 15px system-ui'; ctx.fillText(`${lvlIdx+1}. ${L.name} ${L.emoji}`,12,25);
   ctx.fillStyle='#9a8a7e'; ctx.font='12px system-ui'; ctx.fillText(state==='recap'?'Instant replay':`Attempt ${attempt} · ${stats.bonks} bonks`,12,43);
   ctx.font='17px system-ui';
-  if(settings.shots>=99){ ctx.fillText('🐾 ∞',150,36); }
-  else for(let i=0;i<settings.shots;i++){ ctx.globalAlpha=i<shotsLeft?1:.18; ctx.fillText('🐾',148+i*22,36); }
-  ctx.globalAlpha=1;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  if(settings.shots>=99){ ctx.fillText('🐾 ∞',160,30); }
+  else {
+    const n=Math.max(settings.shots,shotsLeft), step=n>6?132/n:22;
+    for(let i=0;i<n;i++){
+      const fx=hudFx.find(f=>f.i===i&&f.k==='+'), px=158+i*step;
+      let sc=1; if(fx){ const k=fx.t/.35; sc=k>=1?1:k<.5?k*3:1.5-(k-.5); }   // pop in: 0 → 1.5 → 1
+      ctx.globalAlpha=i<shotsLeft?1:.18; ctx.save(); ctx.translate(px,30); ctx.scale(sc,sc); ctx.fillText('🐾',0,0); ctx.restore();
+    }
+    // a paw that just left pops out and falls away
+    for(const f of hudFx){ if(f.k!=='-') continue; const px=158+f.i*step, k=f.t/.9;
+      ctx.globalAlpha=1-k; ctx.save(); ctx.translate(px+k*10,30+k*k*40); ctx.rotate(k*2); ctx.scale(1+k*.4,1+k*.4); ctx.fillText('🐾',0,0); ctx.restore(); }
+    ctx.font='bold 13px system-ui';
+    for(const f of hudFx){ const px=158+f.i*step, k=f.t/.9; ctx.globalAlpha=1-k*k;
+      ctx.fillStyle=f.k==='+'?'#7dff9a':'#ff6a6a'; ctx.fillText(f.k==='+'?'+1':'−1',px+12,46-k*6); }
+  }
+  ctx.globalAlpha=1; ctx.textBaseline='alphabetic';
 }
 function render(){
   ctx.setTransform(scale*dpr,0,0,scale*dpr,0,0);
   ctx.fillStyle='#000'; ctx.fillRect(0,0,W,H);
   if(!L) return;
   if(state==='recap'){
-    const isDown=o=>rp.knocked.has(o.id);
+    const isDown=o=>rp.knocked.has(o.id)||rp.gone.has(o.id);
     drawLit(1,isDown); drawFallen(isDown,.7);
     const cols=['#ff5a5a','#ffb347','#7ad7ff','#b07aff','#7dff9a','#ff7ad1'];
     const end=Math.min(rec.frames.length-1,Math.floor(rp.i)); let att=0, started=false, last=null;
@@ -143,19 +190,19 @@ function render(){
     ctx.stroke(); ctx.globalAlpha=1;
     drawPings(true); drawParts();
     const f=last||{x:L.start.x,y:L.start.y,a:-Math.PI/2}; drawDog(f.x,f.y,f.a,0,0);
-    drawWords();
+    drawWords(); drawToast();
     pill(`📼 INSTANT REPLAY ×${rp.speed.toFixed(0)}  ·  Attempt ${att+1}  ·  ${rp.bonks} bonks`,H-50,'tap to skip');
     drawHUD(); return;
   }
   let lit=settings.lights?.4:0;
   if(state==='winning') lit=Math.max(lit,clamp((winT-.3)/.8,0,1));
-  if(lit>0) drawLit(lit,o=>o.down);
-  if(settings.ghost){ ctx.globalAlpha=.8; ctx.drawImage(mem,0,0,W,H); ctx.globalAlpha=1; }
+  if(lit>0) drawLit(lit,o=>o.down||o.gone);
+  if(DEBUG&&settings.ghost){ ctx.globalAlpha=.8; ctx.drawImage(mem,0,0,W,H); ctx.globalAlpha=1; }
   drawFallen(o=>o.down,.3);
   if(settings.scent && lit<.5) drawScent();
-  drawPings(false); drawGlows(); drawPrints(); drawParts();
+  drawPings(false); drawGlows(); if(lit<.5) drawBinxEyes(); drawPrints(); drawParts();
   drawDog(dog.x,dog.y,dog.a,dog.squash,dog.dizzy);
-  drawAim(); drawWords();
+  drawAim(); drawWords(); drawToast();
   if(banner) pill(banner.txt,H-46);
   else if(state==='aim' && stats.shots===0 && attempt===1) pill('Drag back anywhere ↘  then let go to fling Nala',H-46);
   drawHUD();

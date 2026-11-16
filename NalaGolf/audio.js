@@ -44,6 +44,11 @@ function sfx(name,s=1){
     case 'win': [523,659,784,1047].forEach((f,i)=>tone('triangle',f,f,.28,.3,i*.11)); tone('triangle',1319,1319,.6,.25,.48); break;
     case 'fail': [392,370,349,311].forEach((f,i)=>tone('sawtooth',f,f*.97,i==3?.7:.28,.12,i*.3,1200)); break;
     case 'hmph': noise(.15,.25,'bandpass',300,200,2); break;
+    case 'borf': for(const d of [0,.17]){ tone('sawtooth',240,120,.13,.35*v,d,900); noise(.08,.25*v,'bandpass',600,350,2,d); } break;
+    case 'smack': noise(.09,.8*v,'highpass',3000,1200,.7); tone('triangle',700,200,.07,.4*v); meow(.6*v); break;
+    case 'pickup': [880,1175,1568].forEach((f,i)=>tone('triangle',f,f,.12,.25,i*.06)); break;
+    case 'paw+': tone('sine',660,990,.12,.25); break;
+    case 'paw-': tone('sine',520,260,.2,.25); break;
   }}catch(e){}
 }
 function buzz(ms){ try{ navigator.vibrate&&navigator.vibrate(ms);}catch(e){} }
