@@ -46,7 +46,7 @@ parrot:
   lair: old-tree
   sprite: { shape: bird, body: "#3fae4a", dark: "#2a7a34", belly: "#9ade6e", trim: "#d23a32", wing: "#2f6fd1" }
   traits:
-    covering: { is: fluffy, found: "{sibling} holds up something soft and light as air. It tickles {pet}'s nose, and he sneezes." }
+    covering: { is: feathery, found: "{sibling} holds up a little FEATHER, soft and light as air. It tickles {pet}'s nose, and he sneezes." }
     spot:     { is: high,   found: "{pet} barks at the sky. There are tiny claw marks way up on the highest ledge." }
     habit:    { is: noisy,  found: "SQUAWK! Something shrieks close by, so loud that {pet} hides behind your legs." }
   sign: "a flash of blue as something flew off"

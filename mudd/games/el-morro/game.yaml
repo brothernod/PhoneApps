@@ -11,7 +11,7 @@ title: THE DRAGON OF EL MORRO
 studio: HOLDEN A GAME STUDIO
 # Shown small on the title screen, so you can tell which build a device has.
 # Bump it with every push: 0.<phase>.<fix>.
-version: "0.6.0"
+version: "0.6.1"
 
 # The heroes. Scene cards use these as {hero}, {sibling}, and {pet}.
 cast:
@@ -71,6 +71,7 @@ traits:
       scaly:  { label: SCALES,      es: ESCAMAS,         clue: has SCALES }
       smooth: { label: SMOOTH SKIN, es: PIEL LISA,       clue: has SMOOTH SKIN }
       fluffy: { label: FLUFFY,      es: PELUDO,          clue: is FLUFFY }
+      feathery: { label: FEATHERY,  es: PLUMOSO,         clue: is FEATHERY }
   spot:
     title: HOME
     values:
