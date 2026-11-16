@@ -7,7 +7,10 @@ A small, silly phone game for Ashley (and Corbin) about **Nala**, their shar-pei
 - Repo: `brothernod/PhoneApps` (served on GitHub Pages) → folder `NalaGolf/`
 - Live: `https://brothernod.github.io/PhoneApps/NalaGolf/`
 - Art style options (Design canvas): https://claude.ai/artifact/B6K5u2dghaGohhQ8vztego
-- Proof of concept: the current `NalaGolf/index.html`, a single file that already works
+- Code: `index.html` (shell + CSS), `game.js`, `levels.js`, `audio.js`, `render.js`, `version.js`
+- Revision: shown at the bottom of the level intro card ("rev …"). Run `NalaGolf/tools/bump.sh` before every commit so you can tell when Pages has the update.
+- Test: `python3 -m http.server 8765 &` from the repo root, then `python3 NalaGolf/tools/smoke.py`
+- Debug: add `?debug` to the URL for ghost memory. Test hooks live on `window.NALA`.
 
 ---
 
@@ -66,18 +69,18 @@ Each phase has a ready-to-paste kickoff prompt. Paste it into a new conversation
 
 Kickoff: `Read NalaGolf/PLAN.md in brothernod/PhoneApps and do Phase 1.`
 
-- [ ] Split `index.html` into `index.html` (shell + CSS), `game.js` (loop, physics, input, states), `levels.js` (level data only), `audio.js` (synth sfx), `render.js` (all drawing). This keeps later phases cheap to load. Keep it dependency-free with plain `<script>` tags.
-- [ ] Aiming: full power at ~85 px drag. The drag can start anywhere below the HUD. Show the power %.
-- [ ] Remove ghost memory from settings (keep the code behind `DEBUG`). Make sure scent hint is on by default.
-- [ ] New entity types in level data: `treat` (pickup, +1 move, then disappears for that try), `stella` (bump → line + "BORF!" + +1 move, once per try), `binx` (bump → "SMACK" + −1 move, once per try; he bounces Nala hard). Use placeholder circles for art.
-- [ ] Give the move counter visible feedback for +1 and −1 (a paw pops in or pops out).
-- [ ] If Binx takes the last move mid-roll, Nala finishes her current roll and then the try ends.
-- [ ] Record pickups and smacks in the replay events so the replay shows them.
-- [ ] Add a pool of ~10 Stella lines and ~6 Binx lines (affectionate and funny).
-- [ ] Save the best result per level (fewest tries, fewest shots) in localStorage, wrapped in try/catch.
-- [ ] Keep the 2 POC levels working (loosen POC level 2). Add a treat, Stella and Binx to each for testing.
-- [ ] Headless smoke test: Playwright loads the page, makes a shot, forces a win, and the replay runs with no console errors.
-- [ ] Commit + push. Update the Phase log.
+- [x] Split `index.html` into `index.html` (shell + CSS), `game.js` (loop, physics, input, states), `levels.js` (level data only), `audio.js` (synth sfx), `render.js` (all drawing). This keeps later phases cheap to load. Keep it dependency-free with plain `<script>` tags.
+- [x] Aiming: full power at ~85 px drag. The drag can start anywhere below the HUD. Show the power %.
+- [x] Remove ghost memory from settings (keep the code behind `DEBUG`). Make sure scent hint is on by default.
+- [x] New entity types in level data: `treat` (pickup, +1 move, then disappears for that try), `stella` (bump → line + "BORF!" + +1 move, once per try), `binx` (bump → "SMACK" + −1 move, once per try; he bounces Nala hard). Use placeholder circles for art.
+- [x] Give the move counter visible feedback for +1 and −1 (a paw pops in or pops out).
+- [x] If Binx takes the last move mid-roll, Nala finishes her current roll and then the try ends.
+- [x] Record pickups and smacks in the replay events so the replay shows them.
+- [x] Add a pool of ~10 Stella lines and ~6 Binx lines (affectionate and funny).
+- [x] Save the best result per level (fewest tries, fewest shots) in localStorage, wrapped in try/catch.
+- [x] Keep the 2 POC levels working (loosen POC level 2). Add a treat, Stella and Binx to each for testing.
+- [x] Headless smoke test: Playwright loads the page, makes a shot, forces a win, and the replay runs with no console errors.
+- [x] Commit + push. Update the Phase log.
 - [ ] **Lights-on art options:** add **5 new artboards** to the existing Design canvas (https://claude.ai/artifact/B6K5u2dghaGohhQ8vztego) showing the *lights-on* view (the instant replay and win reveal, with the whole house visible) in five different takes that all work with the Neon dark mode. Ideas to start from:
   - neon blueprint (cyan line drawing of the whole house)
   - "black-light party" (everything fluorescent)
@@ -137,3 +140,4 @@ Kickoff: `Read NalaGolf/PLAN.md in brothernod/PhoneApps and do Phase 4.`
 Update this after every phase: what was done, what changed from the plan, and any open issues.
 
 - **Phase 0 (done, 2026-11-16):** Single-file POC with 2 levels, sonar pings, knock-overs, replay, results and workshop settings. Pushed as `NalaGolf/index.html`. Five art-style boards are on the Design canvas, with Nala, Stella and Binx updated to match the photos and descriptions. **Style #2 Neon chosen.** Bonk animation and lights-on options added to the plan.
+- **Phase 1 (game part done, 2026-11-16):** Split into `game.js` / `levels.js` / `audio.js` / `render.js` / `version.js`, with a revision stamp on the intro card and `tools/bump.sh`. Full power now needs an 85 px drag, the drag can start anywhere on screen (letterbox bars included), and a power ring at the finger shows % / MAX. Ghost memory is hidden behind `?debug`. Added level `ents` (treat, Stella, Binx) with placeholder circles. Binx's yellow eyes blink in the dark now and then. Paws pop in and out with +1/−1, Stella and Binx speak in a top toast, and replay events record all of it. Best tries/shots per level are saved and shown, with a Clear button in settings. Level 2 is renamed **Bone Hunt** (goal = bone) so it doesn't clash with the hidden treat, and loosened: door 90→130 px, table legs 72→96 px apart, chairs moved out, and the win radius is now a true touch. `tools/smoke.py` passes with no console errors. Changes from the plan: Binx's hard bounce only applies to the smack (after that he's a normal bouncy cat). Funny emergent combo: Binx can smack Nala into Stella, who hands the move right back.
