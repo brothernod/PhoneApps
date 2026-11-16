@@ -15,11 +15,18 @@
 
 import { offers } from './dealer.js';
 import { playPuzzle } from './puzzles.js';
-import { traitKeys, traitValue, eventFits } from './pack.js';
+import { traitKeys, traitValue, eventFits, spanishTraits } from './pack.js';
 import { makeRng, fill, clock } from './util.js';
 
 /** Toys a lair card can ask for with "# toy: <name>". The screen plays them. */
 export const TOYS = ['spot', 'taps', 'pulse', 'song', 'rub'];
+
+/**
+ * The skill behind the Spanish dragon cards. On level 1 each card shows its
+ * traits in Spanish with small English under them; from level 2 on, Spanish
+ * only. Naming the right creature on the first pick counts as a first-try win.
+ */
+export const GUIDE_SKILL = 'spanish_guide';
 
 /**
  * @typedef {{ id: string, name: string, drive: number, at: number[], stars: number, tries: number }} MapPlace
@@ -45,7 +52,7 @@ export const TOYS = ['spot', 'taps', 'pulse', 'song', 'rub'];
  * What a saved game remembers besides the ink state.
  * @typedef {{ step: number, entered: boolean, drove: boolean, event: string, eventsDone: string[], treats: number, puzzleN: number, toyN: number, disk: number,
  *   clues: string[], sign: boolean, digits: number, route: string[],
- *   crossed: string[], wrong: string[], named: string,
+ *   crossed: string[], wrong: string[], named: string, guided?: boolean,
  *   stars: Record<string, number>, tries: Record<string, number>,
  *   caught: boolean, egg: number }} QuestState
  *
@@ -64,7 +71,7 @@ export const TOYS = ['spot', 'taps', 'pulse', 'song', 'rub'];
 export const newQuestState = () => ({
   step: 0, entered: false, drove: false, event: '', eventsDone: [], treats: 0, puzzleN: 0, toyN: 0, disk: 1,
   clues: [], sign: false, digits: 0, route: [],
-  crossed: [], wrong: [], named: '',
+  crossed: [], wrong: [], named: '', guided: false,
   stars: {}, tries: {},
   caught: false, egg: 0,
 });
@@ -129,8 +136,10 @@ export function startStory(story, pack, history) {
  * @param {import('./pack.js').Pack} pack
  * @param {import('./dealer.js').Plan} plan
  * @param {QuestState} state
+ * @param {number} [guide]  level of GUIDE_SKILL; 0 shows the cards in English
  */
-export function casebook(pack, plan, state) {
+export function casebook(pack, plan, state, guide = 0) {
+  const spanish = guide > 0 && spanishTraits(pack);
   const words = { ...WORDS, ...pack.words };
   const creature = pack.creatures[plan.creature];
   const keys = traitKeys(pack);
@@ -146,11 +155,12 @@ export function casebook(pack, plan, state) {
     places: state.route.map(place),
     stars: sum(state.stars),
     treats: { left: Math.max(0, treatsIn(pack) - (state.treats || 0)), total: treatsIn(pack) },
+    guide: spanish ? guide : 0,
     lineup: Object.keys(pack.creatures).map((id) => ({
       id,
       name: pack.creatures[id].name || id,
       sprite: pack.creatures[id].sprite || null,
-      traits: keys.map((k) => { const v = traitValue(pack, pack.creatures[id], k); return { title: v.title, label: v.label }; }),
+      traits: keys.map((k) => { const v = traitValue(pack, pack.creatures[id], k); return { title: v.title, label: v.label, es: spanish ? v.es : '' }; }),
       crossed: state.crossed.includes(id),
       wrong: state.wrong.includes(id),
     })),
@@ -450,7 +460,12 @@ export async function runQuest({ pack, plan, story, state, ui, hooks }) {
       }
       while (!state.named) {
         hooks.checkpoint();
-        const pick = await ui.lineup(casebook(pack, plan, state));
+        const pick = await ui.lineup(casebook(pack, plan, state, hooks.level(GUIDE_SKILL)));
+        // The first pick moves the Spanish cards' level, once a run.
+        if (spanishTraits(pack) && !state.guided && !state.wrong.length && pack.creatures[pick]) {
+          state.guided = true;
+          hooks.result({ pass: true, firstTry: pick === plan.creature, skill: GUIDE_SKILL, type: '' });
+        }
         if (pick === plan.creature) {
           state.named = pick;
           ui.cue('right');

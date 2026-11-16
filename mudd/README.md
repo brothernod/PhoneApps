@@ -10,7 +10,7 @@ keeps its saves.
 
 ## What's playable now
 
-Phases 1 to 5 of the completion plan are built. The whole game is here:
+Phases 1 to 6 of the completion plan are built. The whole game is here:
 three of ten places a run, and all eight dragons can hatch.
 
 - **Museum.** Doña Luz hands over the casebook, and the empty shell gives the
@@ -28,9 +28,15 @@ three of ten places a run, and all eight dragons can hatch.
 - **The casebook.** The CASEBOOK button opens it any time, even in the middle
   of a puzzle: clues, lock numbers, stars, and the lineup of all eight
   dragons, which he can cross out
-- **Case File.** He names the dragon from the lineup. A wrong pick is a drive
-  to that dragon's home, a real animal with a true fact, and the clue that
-  didn't fit
+- **Case File.** He names the dragon from the lineup. The clues in the
+  casebook are in English, but the dragon cards show their traits in
+  Spanish (ESCAMAS, EN LO ALTO, HACE RUIDO), so he has to match the two. At
+  first each Spanish word has its English in small letters under it; after
+  two runs where he names the right dragon on the first pick, the cards are
+  Spanish only, and two misses bring the English back. A wrong pick is a
+  drive to that dragon's home, a real animal with a true fact, and the clue
+  that didn't fit. The Field Guide shows each caught dragon's traits in both
+  languages
 - **The lair.** Each dragon has its own: the iguana dragon in the big plaza
   tree (spot the tail), the anole dragon on El Morro's sunniest wall (count
   its push-ups and tap them back), the bat dragon in the deepest tunnel room
@@ -83,7 +89,7 @@ Prose lives in ink, data lives in YAML, and code lives in the engine.
 
 | File in `games/el-morro/` | What it holds |
 | --- | --- |
-| `game.yaml` | Title, cast, clock, the run shape (hub, pool, places per run, the events card and how many events, treats), the traits clues reveal, the eggs a run can earn, the words around the story, and the picture list |
+| `game.yaml` | Title, cast, clock, the run shape (hub, pool, places per run, the events card and how many events, treats), the traits clues reveal (each with its Spanish, `es:`, for the dragon cards), the eggs a run can earn, the words around the story, and the picture list |
 | `scenes/<id>.ink` + `scenes/<id>.yaml` | One scene card per place: the prose, plus its puzzle slots, toys, drive time, and spot on the map. Tags are listed at the top of `scenes/museum.ink`. `scenes/on-the-road` is the event deck |
 | `creatures.yaml` | The creatures: traits and clue lines, sprite, lair, the detour when one is named by mistake, and Field Guide entry |
 | `banks.yaml` | Word-problem templates, rules for the board puzzles, Spanish words and sentences, facts and fibs, puzzle wording, and tunes |
@@ -156,7 +162,9 @@ reaches; a case file that opens before every clue is found; a lock whose code
 isn't the numbers found; a puzzle question longer than four lines on an
 iPhone; a board puzzle that takes a wrong answer or refuses its own right
 one; a path that doesn't reach its goal; a weather table with two right
-hours; a Memoria word too long for its card; a fact without a source; a
+hours; a Memoria word too long for its card; a trait with no Spanish, or
+Spanish too long for a dragon card; dragon cards never shown at both
+levels; a fact without a source; a
 puzzle that offers a treat and has no hint; an event that never happens;
 and anything from the pack hard-wired into the engine. A full run takes
 about five minutes.

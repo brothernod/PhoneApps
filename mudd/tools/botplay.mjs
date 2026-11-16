@@ -26,10 +26,10 @@ import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import path from 'node:path';
 
-import { eventFits, loadPack, checkPack, compileStory, hatchable, traitKeys } from '../engine/pack.js';
+import { eventFits, loadPack, checkPack, compileStory, hatchable, traitKeys, spanishTraits } from '../engine/pack.js';
 import { deal, offers, slotCombos } from '../engine/dealer.js';
 import { ARCHETYPES, TILE_COLS, TILE_LINES } from '../engine/puzzles.js';
-import { runQuest, newQuestState, startStory, toggleCrossed, TOYS } from '../engine/quest.js';
+import { runQuest, newQuestState, startStory, toggleCrossed, TOYS, GUIDE_SKILL } from '../engine/quest.js';
 import { Pix } from '../engine/art.js';
 import { makeRng, countLines, CARD_COLS, KEY_COLS } from '../engine/util.js';
 
@@ -202,6 +202,7 @@ if (road) {
 const detoured = new Set();     // creatures a run was sent to by mistake
 const toysPlayed = new Set();   // "card.toy" played by some run
 const levelsPlayed = new Set(); // "skill@level" of pick-one puzzles played
+const guideLevels = new Set(); // levels the Spanish dragon cards were shown at
 const braces = /\{[^}]*\}/;
 const run = pack.game.run;
 const hub = pack.scenes[run.hub];
@@ -274,6 +275,12 @@ async function playRun(plan, history, bot, want = {}) {
       for (const c of view.clues) see(c.text, 'a clue');
       see(view.sign, 'a clue');
       if (view.lineup.length !== Object.keys(pack.creatures).length) fail(`${tag}: the lineup is missing creatures`);
+      // Spanish dragon cards: every trait on every card in Spanish, at the skill's level.
+      if (spanishTraits(pack)) {
+        if (view.guide !== hooks.level(GUIDE_SKILL)) fail(`${tag}: the dragon cards show level ${view.guide}, not ${hooks.level(GUIDE_SKILL)}`);
+        for (const c of view.lineup) for (const t of c.traits) if (!t.es) fail(`${tag}: ${c.name}'s card shows ${t.label} without its Spanish`);
+        guideLevels.add(view.guide);
+      }
       // Crossing out must never hide the answer for good.
       const open = view.lineup.filter((c) => !c.wrong);
       const fiddle = open[Math.floor(bot.next() * open.length)];
@@ -645,6 +652,7 @@ for (const card of Object.values(pack.scenes)) {
   for (const t of Object.keys(card.toys)) if (!toysPlayed.has(`${card.id}.${t}`)) fail(`scenes/${card.id}.yaml: toy "${t}" was never played`);
 }
 // Every level gets played, for each puzzle whose levels change what is on the screen.
+if (spanishTraits(pack)) for (const lvl of [1, 2]) if (!guideLevels.has(lvl)) fail(`the Spanish dragon cards were never shown at level ${lvl}`);
 for (const skill of new Set([...levelsPlayed].map((k) => k.split('@')[0]))) {
   for (const lvl of [1, 2, 3]) if (!levelsPlayed.has(`${skill}@${lvl}`)) fail(`${skill}: no run played level ${lvl}`);
 }

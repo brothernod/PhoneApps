@@ -154,8 +154,14 @@ export function traitValue(pack, creature, key) {
   const def = (pack.game.traits || {})[key] || {};
   const is = ((creature.traits || {})[key] || {}).is;
   const v = (def.values || {})[is] || {};
-  return { is, title: def.title || key, label: v.label || String(is), clue: v.clue || v.label || String(is) };
+  return { is, title: def.title || key, label: v.label || String(is), clue: v.clue || v.label || String(is), es: v.es || '' };
 }
+
+/** Whether the pack gives its trait values in Spanish (es:), for the Spanish dragon cards. */
+export const spanishTraits = (pack) => traitKeys(pack).some((k) => Object.values((pack.game.traits[k] || {}).values || {}).some((v) => v && v.es));
+
+/** Longest Spanish trait word that still fits on one line of a dragon card. */
+export const TRAIT_ES_MAX = 15;
 
 /** Creatures that can hatch: the ones whose lair card exists. */
 export const hatchable = (pack) => Object.keys(pack.creatures).filter((id) => pack.scenes[pack.creatures[id].lair]);
@@ -189,6 +195,11 @@ export function checkPack(pack, known) {
     const values = Object.entries((pack.game.traits[k] || {}).values || {});
     if (values.length < 2) bad(`game.yaml: traits.${k} needs at least two values`);
     for (const [name, v] of values) if (!v || !v.label || !v.clue) bad(`game.yaml: traits.${k}.values.${name} needs a label and a clue`);
+  }
+  // Spanish dragon cards: once one value has es:, every value needs one.
+  if (spanishTraits(pack)) for (const k of keys) for (const [name, v] of Object.entries((pack.game.traits[k] || {}).values || {})) {
+    if (!v || !v.es) bad(`game.yaml: traits.${k}.values.${name} needs es: (the dragon cards show every trait in Spanish once one has it)`);
+    else if (String(v.es).length > TRAIT_ES_MAX) bad(`game.yaml: traits.${k}.values.${name}.es "${v.es}" is longer than ${TRAIT_ES_MAX} letters, too long for a dragon card`);
   }
 
   // Rating: the eggs, best first. The last one must have no conditions.

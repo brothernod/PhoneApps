@@ -6,10 +6,10 @@
 import { Screen } from './screen.js';
 import { Sound } from './sound.js';
 import { Pictures } from './art.js';
-import { loadPack, checkPack, compileStory, hatchable } from './pack.js';
+import { loadPack, checkPack, compileStory, hatchable, traitKeys, traitValue, spanishTraits } from './pack.js';
 import { deal } from './dealer.js';
 import { ARCHETYPES } from './puzzles.js';
-import { runQuest, newQuestState, startStory, casebook, toggleCrossed, TOYS } from './quest.js';
+import { runQuest, newQuestState, startStory, casebook, toggleCrossed, TOYS, GUIDE_SKILL } from './quest.js';
 import { clock, fill, store } from './util.js';
 
 const VERSION = 'MUDD 0.5.1';
@@ -135,7 +135,7 @@ function recordResult(res) {
   if (s.down >= 2) { s.level = Math.max(1, s.level - 1); s.down = 0; }
   profile.log.push({ skill: res.skill, firstTry: res.firstTry, pass: res.pass, at: Date.now() });
   if (profile.log.length > 300) profile.log.splice(0, profile.log.length - 300);
-  profile.recent.push(res.type);
+  if (res.type) profile.recent.push(res.type);
   if (profile.recent.length > 12) profile.recent.splice(0, profile.recent.length - 12);
   saveProfile();
 }
@@ -193,7 +193,7 @@ function openBook() {
   if (!live || screen.overlay.querySelector('.pagebox')) return;
   const { plan, state } = live;
   screen.nudgeBook(false);
-  screen.page(word('book', 'CASEBOOK'), (body) => screen.bookBody(body, casebook(pack, plan, state), { words: bookWords(), toggle: crossOut }));
+  screen.page(word('book', 'CASEBOOK'), (body) => screen.bookBody(body, casebook(pack, plan, state, skillOf(GUIDE_SKILL).level), { words: bookWords(), toggle: crossOut }));
 }
 
 // ---------------------------------------------------------------------------
@@ -298,6 +298,13 @@ function savedGame() {
 // ---------------------------------------------------------------------------
 // Screens outside the story
 
+/** A chip with a Spanish word and its English in small letters under it. */
+function chipBoth(el, es, en) {
+  const chip = el('span', 'chip seen two');
+  chip.append(el('b', '', es), el('small', '', en));
+  return chip;
+}
+
 function fieldGuide() {
   return screen.page(word('guide', 'FIELD GUIDE'), (body, el) => {
     const ids = Object.keys(pack.creatures);
@@ -320,6 +327,12 @@ function fieldGuide() {
         if (egg) card.appendChild(el('p', `egg egg-${egg.id || ''}`, egg.name));
         if (pack.words.guide_entry) card.appendChild(el('p', '', fill(pack.words.guide_entry, names)));
         if (c.fact) card.appendChild(el('p', '', c.fact));
+        // Its traits in both languages, so the Spanish on the dragon cards can be learned here.
+        if (spanishTraits(pack)) {
+          const both = el('div', 'bookrow');
+          for (const k of traitKeys(pack)) { const v = traitValue(pack, c, k); both.appendChild(chipBoth(el, v.es, v.label)); }
+          card.appendChild(both);
+        }
         if (pack.words.guide_source) card.appendChild(el('p', 'dim', fill(pack.words.guide_source, names)));
         if (got.n > 1) card.appendChild(el('p', 'dim', fill(word('guide_times', 'Found {n} times.'), { n: String(got.n) })));
       } else card.appendChild(el('p', 'dim', word('guide_locked', 'Not found yet.')));
@@ -372,6 +385,7 @@ function grownUp() {
     /** @type {Record<string, string>} */
     const label = {};
     for (const a of Object.values(ARCHETYPES)) label[a.skill({})] = a.label;
+    label[GUIDE_SKILL] = 'Spanish dragon cards (Case File)';
     for (const [k, s] of Object.entries(profile.skills)) {
       const tr = el('tr');
       [label[k] || k, String(s.level), s.total ? `${s.right} of ${s.total} (${Math.round((100 * s.right) / s.total)}%)` : '-'].forEach((v) => tr.appendChild(el('td', '', v)));

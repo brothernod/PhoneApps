@@ -57,28 +57,33 @@ levels:
 # What a clue can reveal. Every creature in creatures.yaml has one value for
 # each trait, and no two creatures share all of them, so the clues name
 # exactly one. A value shared by several creatures makes a better clue.
-#   label: what the lineup shows
+#   label: what the casebook's clue chips show, in English
+#   es:    the same in Spanish, on the dragon cards in the lineup. The case
+#          file is a puzzle: English clues, Spanish cards. On level 1 of the
+#          spanish_guide skill the English is small under the Spanish; from
+#          level 2 on, Spanish only. Naming the right dragon on the first
+#          pick moves the level. The Field Guide shows both.
 #   clue:  how a sentence about it ends: "the hatchling <clue>"
 traits:
   covering:
     title: SKIN
     values:
-      scaly:  { label: SCALES,      clue: has SCALES }
-      smooth: { label: SMOOTH SKIN, clue: has SMOOTH SKIN }
-      fluffy: { label: FLUFFY,      clue: is FLUFFY }
+      scaly:  { label: SCALES,      es: ESCAMAS,         clue: has SCALES }
+      smooth: { label: SMOOTH SKIN, es: PIEL LISA,       clue: has SMOOTH SKIN }
+      fluffy: { label: FLUFFY,      es: PELUDO,          clue: is FLUFFY }
   spot:
     title: HOME
     values:
-      sunny: { label: SUNNY SPOTS, clue: loves warm SUNNY SPOTS }
-      high:  { label: UP HIGH,     clue: lives UP HIGH }
-      dark:  { label: DARK PLACES, clue: hides in DARK PLACES }
-      wet:   { label: WET PLACES,  clue: loves WET PLACES }
+      sunny: { label: SUNNY SPOTS, es: AL SOL,          clue: loves warm SUNNY SPOTS }
+      high:  { label: UP HIGH,     es: EN LO ALTO,      clue: lives UP HIGH }
+      dark:  { label: DARK PLACES, es: EN LO OSCURO,    clue: hides in DARK PLACES }
+      wet:   { label: WET PLACES,  es: EN EL AGUA,      clue: loves WET PLACES }
   habit:
     title: HABIT
     values:
-      noisy: { label: MAKES NOISE,    clue: MAKES NOISE }
-      trail: { label: LEAVES A TRAIL, clue: LEAVES A TRAIL }
-      bobs:  { label: BOBS ITS HEAD,  clue: BOBS ITS HEAD }
+      noisy: { label: MAKES NOISE,    es: HACE RUIDO,      clue: MAKES NOISE }
+      trail: { label: LEAVES A TRAIL, es: DEJA UN RASTRO,  clue: LEAVES A TRAIL }
+      bobs:  { label: BOBS ITS HEAD,  es: MUEVE LA CABEZA, clue: BOBS ITS HEAD }
 
 # How a run is rated. The game checks the eggs from the top and gives the
 # first one the run earned; the last egg has no conditions, so every run gets
@@ -132,7 +137,7 @@ words:
   book_hint: "TAP a dragon to cross it out. TAP again to bring it back."
   case: "CASE FILE: WHICH DRAGON?"
   case_open: OPEN THE CASE FILE
-  case_hint: "Check each dragon against your clues. TAP one to cross it out."
+  case_hint: "The dragon cards are in Spanish! Match each card to your clues. TAP one to cross it out."
   case_pick: "IT'S THIS ONE!"
   case_not: NOT THIS ONE
   case_free: "{pet} sniffs out the clue you were missing."

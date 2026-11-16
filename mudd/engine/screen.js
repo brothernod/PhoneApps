@@ -856,7 +856,13 @@ export class Screen {
       card.append(face, el('h3', '', c.name));
       for (const t of c.traits) {
         const known = view.clues.some((k) => k.title === t.title);
-        card.appendChild(el('span', known ? 'chip seen' : 'chip', t.label));
+        const cls = known ? 'chip seen' : 'chip';
+        if (!t.es) { card.appendChild(el('span', cls, t.label)); continue; }
+        // Spanish dragon cards: level 1 shows the English small underneath.
+        const chip = el('span', cls + (view.guide === 1 ? ' two' : ''));
+        chip.appendChild(el('b', '', t.es));
+        if (view.guide === 1) chip.appendChild(el('small', '', t.label));
+        card.appendChild(chip);
       }
       if (c.wrong) card.appendChild(el('div', 'stamp', words.case_not));
       else {
