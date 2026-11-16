@@ -1525,6 +1525,97 @@ function tunnel(p) {
   p.sprite(PUP, PUP_PAL, 160, 176);
 }
 
+
+/** A palm frond: a curved stem from (x, y) with leaflets down both sides. */
+function frond(p, x, y, ang, len, droop, cols = ['#1e5a2a', '#2f7d33', '#4cae4f']) {
+  let px = x, py = y, a = ang;
+  for (let i = 0; i < len; i++) {
+    a += droop;
+    px += Math.cos(a); py += Math.sin(a);
+    p.set(Math.round(px), Math.round(py), cols[0]);
+    if (i % 2 === 0 && i > 2) {
+      const l = Math.round(Math.min(i, len - i) * 0.45) + 2;
+      for (const side of [-1, 1]) {
+        const b = a + side * 1.1 + 0.5;
+        for (let k = 1; k <= l; k++) p.set(Math.round(px + Math.cos(b) * k), Math.round(py + Math.sin(b) * k), k > l - 2 ? cols[2] : cols[1]);
+      }
+    }
+  }
+}
+
+/** A tree fern: a thin trunk and a spray of fronds. */
+function treeFern(p, x, y, h) {
+  for (let i = 0; i < h; i++) p.rect(x + Math.round(Math.sin(i / 9) * 2), y - i, 3, 1, i % 4 < 2 ? '#4a3a26' : '#3a2c1c');
+  for (let k = 0; k < 9; k++) frond(p, x + 1, y - h, -Math.PI + (k / 8) * Math.PI, 20 + (k % 3) * 4, 0.03 * (k < 4 ? -1 : 1) + 0.02);
+}
+
+/** A bank of rainforest leaves: blobs in three greens. */
+function canopy(p, x0, x1, y, rnd, size = 10, cols = ['#184a22', '#256a2c', '#3f8a40']) {
+  const n = Math.round(((x1 - x0) / size) * 2.2);
+  for (let i = 0; i < n; i++) {
+    const r = Math.round(size * (0.6 + rnd() * 0.6));
+    p.blob(Math.round(x0 + rnd() * (x1 - x0)), Math.round(y + (rnd() - 0.3) * size * 1.4), r, Math.round(r * (0.6 + rnd() * 0.3)), cols[0], cols[1], cols[2]);
+  }
+}
+
+const YOKAHU = ['#7a5244', '#94665a', '#ae7e6e', '#c49484', '#d6aa98'];
+
+/** Yokahú Tower poking up out of the rainforest, with El Yunque's peaks behind. */
+function yokahu(p) {
+  sky(p, 120, ['#7fa8d8', '#a8c8e8', '#d0e2f0', '#e8f0f4']);
+  // El Yunque's peaks in the mist, then the near hills
+  for (let x = 0; x < W; x++) {
+    const y = 70 + Math.round(Math.sin(x / 34) * 8 + Math.sin(x / 13 + 1) * 3 - Math.max(0, 24 - Math.abs(x - 60) * 0.5) - Math.max(0, 16 - Math.abs(x - 250) * 0.4));
+    p.rect(x, y, 1, H - y, '#8aa89a'); p.set(x, y, '#a8c0b0');
+  }
+  for (let i = 0; i < 6; i++) p.blob(20 + i * 56, 74 + (i % 2) * 6, 26, 5, '#c4d4d8', '#d8e4e8', '#eef4f6');
+  const rnd = seeded(31);
+  p.rect(0, 104, W, 80, '#3a7050');
+  canopy(p, -8, W + 8, 98, rnd, 14, ['#3a7050', '#4a8460', '#64a072']);
+
+  // the tower: an octagon, three faces showing, the left one in the sun
+  const x0 = 122, x1 = 198, top = 44, bot = 176;
+  const face = (a, b, light) => { for (let x = a; x < b; x++) for (let y = top; y < bot; y++) p.set(x, y, toneAt(YOKAHU, light + ((x * 7 + y * 3) % 11 === 0 ? -0.15 : 0), x, y)); };
+  face(x0 - 16, x0, 0.85); face(x0, x1, 0.55); face(x1, x1 + 14, 0.2);
+  for (let y = top + 6; y < bot; y += 10) { p.rect(x0 - 16, y, 16, 1, YOKAHU[2]); p.rect(x0, y, x1 - x0, 1, YOKAHU[1]); p.rect(x1, y, 14, 1, YOKAHU[0]); }
+  p.rect(x0, top, 1, bot - top, YOKAHU[4]); p.rect(x1, top, 1, bot - top, YOKAHU[0]);
+  // arched windows, climbing round and round with the stairs inside
+  const win = (x, y, w, h, frame) => {
+    const r = Math.floor(w / 2), cx = x + r;
+    p.rect(x - 1, y, w + 2, h, frame); p.ellipse(cx, y, r + 1, r + 1, frame);
+    p.rect(x, y, w, h - 1, '#2a2a22'); p.ellipse(cx, y, r, r, '#2a2a22');
+    p.rect(x + 1, y, w - 2, h - 2, '#3f6a3a'); p.ellipse(cx, y, r - 1, r - 1, '#3f6a3a');
+  };
+  for (const [x, y] of [[138, 62], [170, 74], [138, 98], [170, 110], [138, 134], [170, 146]]) win(x, y, 10, 14, '#d6aa98');
+  for (const y of [80, 116, 152]) win(x0 - 11, y, 6, 12, '#e8c4b4');
+  for (const y of [68, 104, 140]) win(x1 + 4, y, 5, 12, '#94665a');
+  // the lookout on top: wider, with arches all round and square teeth
+  p.rect(x0 - 24, top - 22, x1 - x0 + 54, 22, YOKAHU[3]);
+  p.rect(x0 - 24, top - 22, 22, 22, YOKAHU[4]); p.rect(x1 + 6, top - 22, 24, 22, YOKAHU[1]);
+  for (let x = x0 - 20; x < x1 + 26; x += 12) { p.rect(x, top - 17, 7, 12, '#e8f0f4'); p.ellipse(x + 3, top - 17, 3, 2, '#e8f0f4'); }
+  p.rect(x0 - 26, top - 2, x1 - x0 + 58, 4, YOKAHU[0]); p.rect(x0 - 26, top - 2, x1 - x0 + 58, 1, YOKAHU[4]);
+  for (let x = x0 - 24; x < x1 + 30; x += 10) p.rect(x, top - 28, 6, 6, x < x0 ? YOKAHU[4] : x > x1 ? YOKAHU[1] : YOKAHU[3]);
+  p.rect(x0 - 24, top - 23, x1 - x0 + 54, 1, YOKAHU[4]);
+  // vines hanging down the sunny face
+  for (const vx of [x0 - 10, x0 + 6, x1 + 8]) for (let i = 0; i < 70 + (vx % 30); i++) p.set(vx + Math.round(Math.sin(i / 7 + vx) * 2), top + i, i % 5 ? '#2f7d33' : '#4cae4f');
+  // the door and its steps
+  p.rect(150, 146, 20, 30, '#2a221c'); p.ellipse(160, 146, 10, 6, '#2a221c'); p.rect(149, 140, 1, 36, YOKAHU[4]);
+  for (let i = 0; i < 3; i++) p.rect(144 - i * 4, 176 + i * 3, 32 + i * 8, 3, i % 2 ? '#a8a49c' : '#bcb8b0');
+
+  // the forest closing in, and the path
+  p.rect(0, 160, 106, 24, '#184a22'); p.rect(214, 158, W - 214, 26, '#184a22');
+  canopy(p, -10, 100, 150, rnd, 16); canopy(p, 222, W + 10, 146, rnd, 16);
+  p.grad(0, 184, W, 16, ['#5a7a3a', '#4a6a2e']);
+  for (let y = 184; y < H; y++) { const hw = 20 + (y - 184) * 3; p.rect(160 - hw, y, hw * 2, 1, (y & 1) ? '#b0a080' : '#a49474'); }
+  treeFern(p, 262, 186, 58);
+  for (let k = 0; k < 7; k++) frond(p, -4, 120, -1.2 + k * 0.32, 52, 0.022);
+  for (let k = 0; k < 5; k++) frond(p, 26, 196, -2.0 + k * 0.35, 30, -0.015);
+  p.sprite(LUZ, LUZ_PAL, 196, 166);
+  p.sprite(HERO, HERO_PAL, 112, 170);
+  p.sprite(SIDEKICK, SIDEKICK_PAL, 96, 176);
+  p.sprite(PUP, PUP_PAL, 126, 186);
+}
+
 // ---------------------------------------------------------------------------
 // Icons: small pictures for puzzle boards (the cards in Memoria, the marks in
 // a picture graph, what goes in a tray). Each fits in iconBox and is called
@@ -1969,6 +2060,7 @@ export const scenes = {
   'old-san-juan': oldSanJuan,
   garita,
   tunnel,
+  yokahu,
   lawn,
   lookout,
   bay: (p, t) => bay(p, 'day', t),
