@@ -11,6 +11,7 @@ import { deal } from './dealer.js';
 import { ARCHETYPES } from './puzzles.js';
 import { runQuest, newQuestState, startStory, casebook, toggleCrossed, TOYS, GUIDE_SKILL } from './quest.js';
 import { clock, fill, store } from './util.js';
+import { passwordLayout, encodePassword, decodePassword } from './password.js';
 
 const VERSION = 'MUDD 0.6.0';
 const SAVE_VERSION = 6;
@@ -155,6 +156,24 @@ function recordRating(id, rating) {
   const c = profile.caught[id];
   if (!c) return;
   c.egg = Math.max(Number(c.egg) || 0, rating.rank);
+  saveProfile();
+}
+
+/**
+ * Put a password's progress on this device, in place of what is here: the
+ * caught list and eggs, every skill level, and the endings seen. Sound and
+ * screen settings stay. The run count is never less than the creatures caught.
+ * @param {import('./password.js').Saved} saved
+ */
+function restoreProfile(saved) {
+  const now = Date.now();
+  profile.caught = {};
+  let n = 0;
+  for (const [id, c] of Object.entries(saved.caught)) { profile.caught[id] = { n: c.n, first: now, last: now, egg: c.egg }; n += c.n; }
+  profile.skills = {};
+  for (const [k, level] of Object.entries(saved.skills)) profile.skills[k] = { level, up: 0, down: 0, right: 0, total: 0 };
+  profile.finales = [...saved.finales];
+  profile.runs = Math.max(Number(profile.runs) || 0, n);
   saveProfile();
 }
 
@@ -426,6 +445,8 @@ function grownUp() {
     toggle('SOUND', () => !profile.settings.muted, (v) => { profile.settings.muted = !v; applySettings(); });
     toggle('SCANLINES', () => profile.settings.scanlines, (v) => { profile.settings.scanlines = v; applySettings(); });
 
+    if (pack) passwordBox(body, el);
+
     if (pack) {
       const pics = el('button', 'key wide', `CHECK PICTURES (${pictures.names.length})`);
       pics.addEventListener('click', () => { pictureCheck(); });
@@ -441,6 +462,64 @@ function grownUp() {
     });
     body.appendChild(wipe);
     body.appendChild(el('p', 'dim', `Data stays on this device. Engine: ${VERSION}, game: ${GAME} ${gameVersion()}.`));
+  });
+}
+
+/**
+ * The password backup on the grown-up screen: the code for this device's
+ * progress, a key to copy it, and a box to type one in.
+ */
+function passwordBox(body, el) {
+  const layout = passwordLayout(pack, ARCHETYPES, [GUIDE_SKILL]);
+  body.appendChild(el('h3', '', 'PASSWORD BACKUP'));
+  body.appendChild(el('p', 'dim', 'Write this down. Typed in on another device, or after this browser forgets its data, it brings back the caught list, the eggs, the special endings, and every skill level.'));
+  const code = encodePassword(layout, profile);
+  body.appendChild(el('p', 'password', code));
+  const copy = el('button', 'key wide', 'COPY THE PASSWORD');
+  copy.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(code); copy.textContent = 'COPIED'; } catch { copy.textContent = 'COPY DID NOT WORK: WRITE IT DOWN'; }
+  });
+  body.appendChild(copy);
+
+  const open = el('button', 'key wide', 'ENTER A PASSWORD');
+  body.appendChild(open);
+  const box = el('div', 'pwbox');
+  box.hidden = true;
+  const input = /** @type {HTMLInputElement} */ (el('input', 'pw'));
+  input.type = 'text';
+  input.autocapitalize = 'characters';
+  input.autocomplete = 'off';
+  input.spellcheck = false;
+  input.placeholder = 'XXXX-XXXX-...';
+  const say = el('p', 'dim', '');
+  const load = el('button', 'key wide ok', 'LOAD THIS PASSWORD');
+  box.append(input, load, say);
+  body.appendChild(box);
+  open.addEventListener('click', () => { box.hidden = false; open.style.display = 'none'; input.focus(); });
+
+  /** @type {import('./password.js').Saved | null} */
+  let ready = null;
+  input.addEventListener('input', () => { ready = null; load.textContent = 'LOAD THIS PASSWORD'; say.textContent = ''; });
+  load.addEventListener('click', () => {
+    if (ready) { restoreProfile(ready); location.reload(); return; }
+    const res = decodePassword(layout, input.value);
+    if (!res.ok) {
+      say.textContent = {
+        short: 'That password is too short or too long. Check that no group of letters is missing.',
+        letters: 'That has a letter a password never uses. Check each one.',
+        typo: 'One of the letters is wrong. Check each one against what you wrote down.',
+        other: 'That password is from another game, or from a different version of this one.',
+      }[res.why];
+      return;
+    }
+    ready = res.saved;
+    const ids = Object.keys(res.saved.caught);
+    const eggs = ids.map((id) => eggOfRank(res.saved.caught[id].egg)).filter(Boolean).map((e) => e.name);
+    const count = {};
+    for (const e of eggs) count[e] = (count[e] || 0) + 1;
+    const eggText = Object.entries(count).map(([e, k]) => `${k} ${e}`).join(', ');
+    say.textContent = `This password has ${ids.length} caught${eggText ? ` (${eggText})` : ''} and ${Object.keys(res.saved.skills).length} skill levels. It REPLACES the progress on this device.`;
+    load.textContent = 'TAP AGAIN TO LOAD IT';
   });
 }
 

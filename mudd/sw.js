@@ -7,7 +7,7 @@ const FILES = [
   './', 'index.html', 'manifest.webmanifest', 'apple-touch-icon.png',
   'vendor/ink-full.js', 'vendor/js-yaml.min.js', 'vendor/vt323.woff2',
   'engine/main.js', 'engine/screen.js', 'engine/art.js', 'engine/sound.js',
-  'engine/pack.js', 'engine/dealer.js', 'engine/quest.js', 'engine/puzzles.js', 'engine/util.js',
+  'engine/pack.js', 'engine/dealer.js', 'engine/quest.js', 'engine/puzzles.js', 'engine/util.js', 'engine/password.js',
 ];
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)).then(() => self.skipWaiting()));
