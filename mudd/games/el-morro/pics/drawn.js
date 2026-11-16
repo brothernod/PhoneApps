@@ -1764,6 +1764,75 @@ function juanDiego(p, t = {}) {
 }
 juanDiego.fps = 6;
 
+
+// The girl on the beach towel, with her picture cards.
+const GIRL = [
+  '..kkkk..',
+  '.kkkkkk.',
+  'kkttttkk',
+  'kktkktkk',
+  'k.tttt.k',
+  'k..tt..k',
+  '.yyyyyy.',
+  'tyyyyyyt',
+  't.yyyy.t',
+  '..tttt..',
+  '..t..t..',
+];
+const GIRL_PAL = { k: '#2a1a14', t: '#b9784f', y: '#f2c531' };
+
+/** A palm tree: a curved trunk from (x, y) up h, leaning by lean, and its fronds. */
+function palmTree(p, x, y, h, lean, s = 1) {
+  let tx = x, ty = y;
+  for (let i = 0; i < h; i++) { tx = x + Math.round(lean * i + Math.sin(i / 14) * 2 * s); ty = y - i; p.rect(tx, ty, Math.max(2, Math.round(4 * s)), 1, i % 6 < 3 ? '#8a6238' : '#6a4626'); }
+  for (let k = 0; k < 7; k++) frond(p, tx + 1, ty, -Math.PI * 0.95 + k * 0.48, Math.round(26 * s), 0.035 * (k < 3 ? -1 : 1) + 0.01);
+  p.blob(tx + 2, ty + 2, Math.max(1, Math.round(2 * s)), Math.max(1, Math.round(2 * s)), '#3a2a12', '#6a4a1a', '#8a6a2a');
+}
+
+/** The beach on the north coast: a long quiet shore, palms all the way along, and waves that go shhhh. */
+function beach(p, t = {}) {
+  const frame = t.frame || 0, rnd = seeded(61);
+  sky(p, 90, ['#4a80d8', '#7fb2ee', '#bcdcf8', '#e4f0fa']);
+  // bands of puffy clouds, gray underneath, like the trip photo
+  cloud(p, 70, 14, 0.8); cloud(p, 210, 22, 0.6);
+  for (let i = 0; i < 12; i++) { const x = (i * 31) % 340 - 10, y = 54 + (i % 4) * 6; p.blob(x, y + 5, 26, 6, '#7a8898', '#98a6b4', '#b8c4cc'); cloud(p, x, y, 1.3 - (i % 3) * 0.2); }
+  // the sea, and a headland far away down the coast
+  p.grad(0, 82, W, H - 82, ['#1d4f86', '#2a6fb0', '#3b8ac4', '#5aa6cc']);
+  for (let x = 236; x < W; x++) { const y = 82 - Math.round(Math.max(0, Math.sin((x - 236) / 52)) * 9); p.rect(x, y, 1, 82 - y + 1, '#5a8a72'); }
+  // the shore runs from near you on the left to far away on the right
+  const shore = (x) => 196 - Math.round(x * 0.36 + Math.sin(x / 23) * 3);
+  for (let x = 0; x < W; x++) { const y = shore(x); p.rect(x, y, 1, H - y, '#e8cf8c'); }
+  for (let y = 86; y < H; y++) for (let x = 0; x < W; x++) if (y >= shore(x) + 4 && ((x * 31 + y * 17) % 23 === 0)) p.set(x, y, (x + y) % 2 ? '#c8a860' : '#fff2c8');
+  // waves rolling in toward the shore, and the foam sliding up and back
+  for (let i = 0; i < 6; i++) {
+    const off = ((frame * 0.5 + i * 7) % 42) - 6;
+    for (let x = 0; x < W; x++) {
+      const y = shore(x) - 34 + i * 6 + Math.round(off * 0.3 + Math.sin(x / 11 + i) * 1.5);
+      if (y > 84 && y < shore(x) - 2) {
+        if (i === 5) { p.rect(x, y - 2, 1, 2, '#2a6a90'); p.set(x, y, '#ffffff'); p.set(x, y + 1, (x + frame) % 3 ? '#ffffff' : '#cfe8f4'); p.set(x, y + 2, '#cfe8f4'); p.set(x, y - 1, (x * 7 + frame) % 5 ? '#e4f4fa' : '#ffffff'); }
+        else p.set(x, y, i > 3 ? '#ffffff' : '#8fc8e6');
+      }
+    }
+  }
+  const reach = Math.round(Math.sin(frame / 8) * 4);
+  for (let x = 0; x < W; x++) { const y = shore(x) + reach - 1; p.rect(x, y - 2, 1, 3, '#f4fbff'); p.set(x, y + 1, '#d8c890'); }
+  // palms along the beach, smaller as they go away
+  for (const [x, s] of [[300, 1.0], [262, 0.8], [226, 0.62], [200, 0.5], [180, 0.4]]) palmTree(p, x, shore(x) + 24 + Math.round(s * 30), Math.round(72 * s), -0.18, s);
+  // the girl's towel, her cards, and a beach chair under an umbrella
+  for (let y = 0; y < 18; y++) p.rect(206 + Math.round(y * 0.6), 168 + y, 46, 1, y % 6 < 3 ? '#d23a32' : '#f4f1e8');
+  for (let i = 0; i < 6; i++) p.rect(214 + (i % 3) * 9 + Math.round(Math.floor(i / 3) * 5), 172 + Math.floor(i / 3) * 7, 7, 5, i % 2 ? '#fbf6ee' : '#cfe6fa');
+  p.sprite(GIRL, GIRL_PAL, 254, 162);
+  p.rect(280, 128, 2, 52, '#e8e2d2');
+  for (let r = 0; r < 12; r++) p.rect(281 - (r * 2 + 2), 124 + r, (r * 2 + 2) * 2, 1, r % 4 < 2 ? '#2f6fd1' : '#f4f1e8');
+  p.rect(276, 166, 22, 3, '#f2c531'); p.rect(292, 154, 3, 14, '#f2c531'); p.rect(276, 169, 2, 10, '#c8a030'); p.rect(296, 169, 2, 10, '#c8a030');
+  // Quentin's heap of shells
+  for (let i = 0; i < 16; i++) { const x = 120 + Math.floor(rnd() * 22), y = 182 + Math.floor(rnd() * 8); p.blob(x, y, 4, 3, '#a87a5a', ['#f4c8b0', '#fbf6ee', '#f0a888'][i % 3], '#ffffff'); }
+  p.sprite(HERO, HERO_PAL, 80, 164);
+  p.sprite(SIDEKICK, SIDEKICK_PAL, 100, 172);
+  p.sprite(PUP, PUP_PAL, 146, 182);
+}
+beach.fps = 4;
+
 // ---------------------------------------------------------------------------
 // Icons: small pictures for puzzle boards (the cards in Memoria, the marks in
 // a picture graph, what goes in a tray). Each fits in iconBox and is called
@@ -2211,6 +2280,7 @@ export const scenes = {
   yokahu,
   'la-coca': laCoca,
   'juan-diego': juanDiego,
+  beach,
   lawn,
   lookout,
   bay: (p, t) => bay(p, 'day', t),
