@@ -44,7 +44,7 @@ A small, silly phone game for Ashley (and Corbin) about **Nala**, their shar-pei
 
 ## Art style
 
-**Chosen style: #2, Glow-in-the-Dark Neon** (picked 2026-11-16). The canvas board is `project/Neon.dc.html`.
+**Bonk mode (dark gameplay): #2, Glow-in-the-Dark Neon** (picked 2026-11-16, confirmed). The canvas board is `project/Neon.dc.html`. Neon is *how Nala sees herself and the world*.
 
 - Background: deep indigo `#0b0620` with a faint grid `#2a1859`.
 - Furniture lights up as **cyan neon tubes** (`#29f6ff`) when revealed.
@@ -55,7 +55,14 @@ A small, silly phone game for Ashley (and Corbin) about **Nala**, their shar-pei
 
 **Nala must look great.** She is the star, and her outline should read as *her* (shar-pei rolls, hippo muzzle) at phone size.
 
-The "lights on" look (the replay and win reveal) is still open. Phase 1 added 5 options in a new "Lights-on options" row on the canvas: **A · Neon Blueprint**, **B · Black-light Party**, **C · Warm Lamplight**, **D · Retro Arcade**, **E · Photo-negative X-ray** (files `project/Lights*.dc.html`). **Jonathan: pick one and write it here before Phase 2.**
+**Lights on (the replay and win reveal) is NOT neon.** It shows the real house with real drawn furniture. Keep it simple, but a bed must look like a bed and a couch like a couch. The neon replay path and bonk stickers are drawn on top. The v1 line styles (A–E) were passed on. The v2 options are on the canvas as `project/Real*.dc.html`:
+**F · Clean Flat**, **G · Bold Cartoon**, **H · Storybook Sketch**, **I · Cozy Night**, **J · Felt Cut-out**.
+
+**Nala's look** (used in both modes). Options are on the canvas as `project/Nala*.dc.html`:
+**K · Nala as herself**, **L · Super Sniffer** (an original blind superhero: domino mask, teal cape, sonar-nose emblem), **M · Captain Nala** (pirate: tricorn hat and eye patch).
+Not Daredevil: he's a Marvel character, so the hero look must stay our own design (no red horned suit, no "DD").
+
+**Jonathan picks F–J and K–M, then starts Phase 2 with both in the kickoff line.**
 
 The other four day-one styles stay on the canvas for reference only: 1 Daredevil Sonar, 3 Bedtime Storybook, 4 16-bit Pixel, 5 Chalk Mental Map.
 
@@ -92,14 +99,15 @@ Kickoff: `Read NalaGolf/PLAN.md in brothernod/PhoneApps and do Phase 1.`
 
 ### Phase 2 — Art pass in Neon · effort: **high**
 
-Kickoff: `Read NalaGolf/PLAN.md in brothernod/PhoneApps and do Phase 2. Lights-on style: <name>.`
+Kickoff: `Read NalaGolf/PLAN.md in brothernod/PhoneApps and do Phase 2. Lights-on style: <F–J name>. Nala look: <K–M name>.`
 
-- [ ] Rewrite `render.js` drawing in the Neon style (canvas board `project/Neon.dc.html`), using the "Nala's look" spec above. The lights-on view (replay and win) uses the lights-on option Jonathan picked.
+- [ ] Rewrite `render.js`. The dark gameplay is in the Neon style (canvas board `project/Neon.dc.html`), using the "Nala's look" spec above. The lights-on view (replay and win) uses the real-furniture style Jonathan picked (`project/Real*.dc.html`). Port the board's top-down furniture drawings to canvas code, and cache them in an offscreen layer.
+- [ ] Draw Nala's chosen look (herself / Super Sniffer / Captain Nala) in **both** modes: a neon outline in the dark and full colour with lights on. Port it from the matching `project/Nala*.dc.html` board.
 - [ ] **Make Nala look great** in neon: shar-pei rolls, a thick neck fold, hippo muzzle and tight ears, all readable at phone size. Iterate on screenshots until she's clearly *Nala*, not a generic dog.
 - [ ] Draw Nala's poses: walking, dizzy stars, and a flop on fail.
 - [ ] **Bonk animation (delightful, top priority):** on impact Nala squashes flat against the surface, the neon tube flickers like a sign getting smacked, her wrinkles jiggle (each roll wobbles on a short spring delay), and she springs back. Hard hits add a cartoon "boing" stretch plus orbiting stars. Scale it with impact speed, and keep the light-tap version subtle.
 - [ ] Draw Stella (thin, grey) and Binx (black cat, yellow eyes), plus their pop-up toasts.
-- [ ] Draw furniture in the "lights on" view (replay and win) so each item reads clearly: couch, coffee table, dresser, bed, space heater, lamps, plant, TV stand, fridge, counter, kitchen table, chairs, trash, water bowl, laundry basket, shoes, radiator, toys.
+- [ ] Draw *real* furniture in the lights-on view (replay and win) so each item reads clearly without a label: couch, coffee table, dresser, bed, space heater, lamps, plant, TV stand, fridge, counter, kitchen table, chairs, trash, water bowl, laundry basket, shoes, radiator, toys.
 - [ ] Redo the sonar reveal, BONK words, knock-over debris and the scent hint in the style.
 - [ ] Restyle the HTML cards (intro, fail, results, settings) and the HUD to match. Use Google Fonts via `<link>`.
 - [ ] Keep it at 60 fps on iPhone. Avoid per-frame canvas `filter` and shadows on many objects; cache static layers offscreen.
@@ -142,3 +150,4 @@ Update this after every phase: what was done, what changed from the plan, and an
 - **Phase 0 (done, 2026-11-16):** Single-file POC with 2 levels, sonar pings, knock-overs, replay, results and workshop settings. Pushed as `NalaGolf/index.html`. Five art-style boards are on the Design canvas, with Nala, Stella and Binx updated to match the photos and descriptions. **Style #2 Neon chosen.** Bonk animation and lights-on options added to the plan.
 - **Phase 1 (done, 2026-11-16):** Split into `game.js` / `levels.js` / `audio.js` / `render.js` / `version.js`, with a revision stamp on the intro card and `tools/bump.sh`. Full power now needs an 85 px drag, the drag can start anywhere on screen (letterbox bars included), and a power ring at the finger shows % / MAX. Ghost memory is hidden behind `?debug`. Added level `ents` (treat, Stella, Binx) with placeholder circles. Binx's yellow eyes blink in the dark now and then. Paws pop in and out with +1/−1, Stella and Binx speak in a top toast, and replay events record all of it. Best tries/shots per level are saved and shown, with a Clear button in settings. Level 2 is renamed **Bone Hunt** (goal = bone) so it doesn't clash with the hidden treat, and loosened: door 90→130 px, table legs 72→96 px apart, chairs moved out, and the win radius is now a true touch. `tools/smoke.py` passes with no console errors. Changes from the plan: Binx's hard bounce only applies to the smack (after that he's a normal bouncy cat). Funny emergent combo: Binx can smack Nala into Stella, who hands the move right back.
   - Lights-on boards: all five use the real Level 1 layout and show the same replay: try 1 (coffee-table bonk, Binx smack, treat, wall bonk, out of moves) and try 2 (Stella BORF, dresser THUNK, floor lamp CRASH, into bed). Each also has Stella, Binx, Nala asleep in bed and the results strip. Each board has an accent-colour tweak.
+- **Art follow-up (2026-11-16):** Jonathan confirmed Neon for bonk mode and wants real drawn furniture for lights-on, so lights-on v1 (A–E) was passed on. Added lights-on v2 F–J (real top-down furniture: dog bed, couch, rug and coffee table with mug and books, dresser, TV stand, plant, heater and laundry basket, with the replay drawn on top) and Nala looks K–M. He asked for a Daredevil costume; we're using an original hero look instead because of the Marvel IP.
