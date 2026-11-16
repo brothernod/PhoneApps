@@ -12,7 +12,7 @@ import { ARCHETYPES } from './puzzles.js';
 import { runQuest, newQuestState, startStory, casebook, toggleCrossed, TOYS, GUIDE_SKILL } from './quest.js';
 import { clock, fill, store } from './util.js';
 
-const VERSION = 'MUDD 0.5.1';
+const VERSION = 'MUDD 0.6.0';
 const SAVE_VERSION = 6;
 
 // Which game: ?game=<folder> in the address, or data-game on the page.
