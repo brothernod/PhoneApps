@@ -1437,6 +1437,94 @@ function garita(p) {
   p.sprite(PUP, PUP_PAL, 146, 176);
 }
 
+
+const WALL_SC = ['#8a6a42', '#a8844e', '#c29c62', '#d6b47a', '#e6c896'];
+
+/**
+ * Castillo San Cristóbal: its high wall, a garita on the corner, and the
+ * mouth of the lantern tunnel, which runs down and away to daylight.
+ */
+function tunnel(p) {
+  sky(p, 60, ['#3b6fd1', '#5d93e6', '#8fc0f2', '#cfe6fa']);
+  cloud(p, 70, 18, 0.9); cloud(p, 250, 30, 0.7);
+  const rnd = seeded(23);
+  // the wall, leaning back a little, in sandy blocks
+  for (let y = 34; y < 156; y++) {
+    const x0 = Math.round((y - 34) * -0.02);
+    p.rect(x0, y, W - x0, 1, WALL_SC[2]);
+  }
+  for (let y = 36, r = 0; y < 154; y += 9, r++) for (let x = (r % 2) * 13 - 13; x < W; x += 26) {
+    p.rect(x + 1, y + 1, 24, 7, WALL_SC[1 + Math.floor(rnd() * 3)]);
+    p.rect(x + 1, y + 1, 24, 1, WALL_SC[4]);
+  }
+  p.rect(0, 26, W, 9, WALL_SC[3]); p.rect(0, 26, W, 2, WALL_SC[4]); p.rect(0, 34, W, 2, WALL_SC[0]);   // the parapet on top
+  // a garita on the corner, and the flag
+  cylinder(p, 290, 14, 30, 9, WALL_SC, { lit: -0.2 });
+  p.rect(279, 11, 23, 3, WALL_SC[4]); dome(p, 290, 11, 10, 8, WALL_SC); p.blob(290, 2, 2, 2, WALL_SC[0], WALL_SC[2], WALL_SC[4]);
+  p.rect(288, 18, 4, 9, '#3a2a1e');
+  prFlag(p, 44, 6, 15);
+
+  // The tunnel, in one-point perspective: every pixel inside the arch is on
+  // the floor, a wall, or the round ceiling, at some depth.
+  const vx = 152, vy = 112, hw = 46, low = 46, up = 6;
+  const lamps = [1.7, 3.0, 4.6, 6.6];
+  for (let y = 60; y < 162; y++) for (let x = vx - hw - 1; x <= vx + hw + 1; x++) {
+    const dx = x - vx, dy = y - vy;
+    // is it inside the mouth at all (scale 1)?
+    if (dy > low || Math.abs(dx) > hw || (dy < -up && dx * dx + (dy + up) ** 2 > hw * hw)) continue;
+    let s = Math.max(dy / low, Math.abs(dx) / hw), part = dy / low >= Math.abs(dx) / hw ? 'floor' : 'wall';
+    if (dy < -up * s) {
+      const a = hw * hw - up * up, sc = (-up * dy + Math.sqrt(up * up * dy * dy + a * (dx * dx + dy * dy))) / a;
+      if (sc > s) { s = sc; part = 'ceil'; }
+    }
+    const z = 1 / Math.max(s, 0.001);
+    if (z > 9) { p.set(x, y, z > 11 ? '#fffbe8' : toneAt(['#ffd890', '#fff2c0', '#fffbe8'], (z - 9) / 2, x, y)); continue; }
+    // light: daylight from the far end, plus each lantern's warm pool
+    let light = Math.max(0, (z - 5) / 4) * 0.6;
+    for (const lz of lamps) light += 0.75 * Math.exp(-((z - lz) ** 2) * 3) * (part === 'ceil' ? 1.2 : part === 'wall' ? 0.8 : 0.6);
+    light = Math.min(1, light + 0.08);
+    const course = (z * 3) % 1 < 0.12;       // the rings of stone
+    if (part === 'floor') {
+      const X = (dx * z) / 100;
+      const cob = (z * 6) % 1 < 0.2 || ((X * 8 + Math.floor(z * 6) * 0.5) % 1) < 0.15;
+      p.set(x, y, cob && z < 5 ? '#24160e' : toneAt(['#2e1c12', '#4a2e1c', '#6e4428', '#a0683a', '#e0b070'], light * 0.9, x, y));
+    } else {
+      p.set(x, y, course && z < 6 ? toneAt(['#2a160c', '#4a2a16', '#7a4422'], light, x, y) : toneAt(['#3a2010', '#5e3418', '#8a4a22', '#c06a2c', '#ec9a48', '#ffd890'], light, x, y));
+    }
+  }
+  // the lanterns, hanging from the top of the ceiling
+  for (const lz of lamps.slice().reverse()) {
+    const s = 1 / lz, x = vx, top = Math.round(vy - (up + hw) * s), k = Math.max(1, Math.round(4 * s));
+    p.rect(x, top, 1, Math.round(10 * s) + 1, '#24140e');
+    const ly = top + Math.round(10 * s);
+    p.rect(x - k, ly, k * 2 + 1, k * 3, '#24140e'); p.rect(x - k + 1, ly + 1, Math.max(1, k * 2 - 1), Math.max(1, k * 3 - 2), '#ffd860');
+  }
+  // the stones around the mouth, and the open gate folded back
+  for (let a = 0; a <= 16; a++) {
+    const t = Math.PI * (a / 16), r = hw + 6;
+    const x = Math.round(vx - Math.cos(t) * r), y = Math.round(vy - up - Math.sin(t) * r);
+    p.blob(x, y, 5, 5, WALL_SC[1], WALL_SC[3], WALL_SC[4]);
+  }
+  for (const side of [-1, 1]) for (let y = vy - up; y < 162; y += 9) p.rect(vx + side * (hw + 6) - 4, y, 9, 8, (y >> 3) & 1 ? WALL_SC[3] : WALL_SC[4]);
+  for (let x = 74; x < 98; x += 4) p.rect(x, 104, 2, 56, '#2a2a30');
+  p.rect(72, 104, 28, 2, '#2a2a30'); p.rect(72, 130, 28, 2, '#2a2a30'); p.rect(72, 156, 28, 2, '#2a2a30');
+  for (let x = 74; x < 98; x += 4) p.rect(x, 100, 2, 4, '#2a2a30'), p.set(x, 99, '#2a2a30');
+
+  // the sign and the kids' puzzle board on the wall
+  p.rect(222, 92, 34, 26, '#5a3a22'); p.rect(224, 94, 30, 22, '#e8dcc0');
+  for (let y = 98; y < 112; y += 3) p.rect(227, y, 24, 1, '#6a5a4a');
+  p.rect(262, 96, 26, 22, '#2f6fd1'); p.rect(264, 98, 22, 18, '#f4f1e8');
+  for (let i = 0; i < 9; i++) p.rect(266 + (i % 3) * 7, 100 + Math.floor(i / 3) * 5, 5, 4, ['#d23a32', '#f2c531', '#3f9e4a'][i % 3]);
+
+  // the plaza in front, in old brick
+  p.grad(0, 156, W, 44, ['#a8744a', '#b8845a', '#c8946a']);
+  for (let y = 160, r = 0; y < H; y += 6 + r, r++) { p.rect(0, y, W, 1, '#8a5a36'); for (let x = (r % 2) * 9; x < W; x += 18 + r * 2) p.rect(x, y, 1, 6 + r, '#8a5a36'); }
+  p.rect(0, 156, W, 2, WALL_SC[0]);
+  p.sprite(HERO, HERO_PAL, 120, 160);
+  p.sprite(SIDEKICK, SIDEKICK_PAL, 138, 166);
+  p.sprite(PUP, PUP_PAL, 160, 176);
+}
+
 // ---------------------------------------------------------------------------
 // Icons: small pictures for puzzle boards (the cards in Memoria, the marks in
 // a picture graph, what goes in a tray). Each fits in iconBox and is called
@@ -1880,6 +1968,7 @@ export const scenes = {
   'sand-dragon': (p, t) => sandNest(p, 'found', t),
   'old-san-juan': oldSanJuan,
   garita,
+  tunnel,
   lawn,
   lookout,
   bay: (p, t) => bay(p, 'day', t),
