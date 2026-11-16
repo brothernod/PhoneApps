@@ -215,6 +215,22 @@ export function checkPack(pack, known) {
   }
 
   const hub = pack.scenes[run.hub];
+  // Finales: once-only endings, each a "= part" of the hub card.
+  const fins = pack.game.finales;
+  if (fins !== undefined && !Array.isArray(fins)) bad('game.yaml: finales: must be a list');
+  const finIds = new Set();
+  for (const [i, f] of (Array.isArray(fins) ? fins : []).entries()) {
+    const at = `game.yaml: finales[${i + 1}]`;
+    if (!f || !f.id || !ident.test(f.id)) { bad(`${at} needs an id: one plain word`); continue; }
+    if (finIds.has(f.id)) bad(`${at}: the id "${f.id}" is used twice`);
+    finIds.add(f.id);
+    if (!f.part || (hub && !hub.stitches.includes(f.part))) bad(`${at}: part: must name a "= part" of the hub's ink`);
+    if (f.caught === undefined && f.eggs === undefined) bad(`${at} needs caught: all or eggs: <egg id>, or it would play after the very first run`);
+    if (f.caught !== undefined && f.caught !== 'all') bad(`${at}: caught: can only be all`);
+    if (f.eggs !== undefined && !(Array.isArray(eggs) && eggs.some((e) => e && e.id === f.eggs))) bad(`${at}: eggs: "${f.eggs}" is not the id of an egg under rating.eggs`);
+    pic(f.pic, at);
+  }
+
   if (hub) {
     const at = `scenes/${hub.id}`;
     if (hub.role !== 'hub') bad(`${at}.yaml: the hub card needs role: hub`);
@@ -334,4 +350,31 @@ export function checkPack(pack, known) {
   if (!pics.map) bad('game.yaml: pics.map is missing. The map needs a picture');
   pic(pics.map, 'game.yaml: pics.map');
   return problems;
+}
+
+/**
+ * The once-only endings (finales: in game.yaml) the player has earned and
+ * not seen yet, in the order the pack lists them.
+ *   caught: all   every creature that can hatch has been caught
+ *   eggs: <id>    every creature that can hatch has that egg, or a better one
+ * @param {Pack} pack
+ * @param {{ caught?: Record<string, any>, seen?: string[] } | null | undefined} progress
+ *   caught: creature id -> { egg: best rank } (1 is the lowest egg); seen: finale ids already played
+ * @returns {{ id: string, part: string, title?: string, guide?: string, pic?: string }[]}
+ */
+export function finalesDue(pack, progress) {
+  if (!progress) return [];
+  const caught = progress.caught || {}, seen = progress.seen || [];
+  const eggs = (pack.game.rating || {}).eggs || [];
+  const all = hatchable(pack);
+  return (pack.game.finales || []).filter((f) => {
+    if (!f || seen.includes(f.id) || !all.length) return false;
+    if (f.caught === 'all' && !all.every((id) => caught[id])) return false;
+    if (f.eggs !== undefined) {
+      const i = eggs.findIndex((e) => e.id === f.eggs);
+      const need = eggs.length - i;
+      if (i < 0 || !all.every((id) => caught[id] && Number(caught[id].egg) >= need)) return false;
+    }
+    return true;
+  });
 }

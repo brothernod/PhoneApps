@@ -107,6 +107,25 @@ rating:
     - { id: silver, name: SILVER EGG, pic: egg-silver, stars: 0.5, before_sunset: true }
     - { id: bronze, name: BRONZE EGG, pic: egg-bronze }
 
+# Endings that play once, after a run's own ending, the first time they are
+# earned. Each is a "= part" of the hub card (scenes/museum.ink).
+#   caught: all   every creature that can hatch is in the Field Guide
+#   eggs: <id>    every creature that can hatch has this egg (or a better one)
+#   title, guide, pic: the page the Field Guide shows once it has played
+finales:
+  - id: mother
+    part: mother
+    caught: all
+    title: LA MAMÁ DRAGÓN
+    guide: "The mother dragon crossed the ocean to find her eight babies, and {hero} found them first. She landed on El Morro at sunset to say GRACIAS."
+    pic: mother
+  - id: mother_gold
+    part: mother_gold
+    eggs: gold
+    title: "GUARDIÁN DE LOS DRAGONES"
+    guide: "Eight gold eggs! The mother dragon came back and flew {hero}, {sibling}, and {pet} over the whole island at night. She named {hero} the guardian of the dragons."
+    pic: mother-flight
+
 # Words the engine shows around the story. Leave one out and the engine uses
 # plain wording of its own.
 words:
@@ -120,6 +139,7 @@ words:
   guide_source: "Source: {source}. Discovered by {hero}."
   guide_locked: Not discovered yet.
   guide_times: "Found {n} times."
+  guide_finales: "SPECIAL PAGES"
   # Typed when the story reaches a "# caught" tag.
   caught:
     - "{name}. Based on the {based_on}. Discovered by {hero}."

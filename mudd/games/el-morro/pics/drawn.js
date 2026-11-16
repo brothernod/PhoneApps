@@ -2249,6 +2249,323 @@ export const icons = {
  * this run is after, t.frame counts up for a scene that moves (set fn.fps),
  * and t.pose comes from a lair toy.
  */
+// ---------------------------------------------------------------------------
+// The mother dragon (Phase 7). She is one big sprite, painted from shapes
+// into a grid of cells and drawn like the hatchlings, outline and all, so she
+// looks like them, only much bigger. A bit of every hatchling is in her: the
+// iguana's gold spines, the parrot's red forehead and blue wing feathers,
+// the turtle's cream belly, and the glow dragon's shining tail tip.
+
+/** A grid of palette keys to paint shapes into. rows() goes to p.sprite. */
+class Cells {
+  constructor(w, h) { this.w = w; this.h = h; this.g = Array.from({ length: h }, () => Array(w).fill('.')); }
+  dot(x, y, k) { x = Math.round(x); y = Math.round(y); if (x >= 0 && y >= 0 && x < this.w && y < this.h) this.g[y][x] = k; }
+  at(x, y) { return x >= 0 && y >= 0 && x < this.w && y < this.h ? this.g[y][x] : '.'; }
+  disc(cx, cy, rx, ry, k) {
+    for (let y = Math.floor(cy - ry); y <= Math.ceil(cy + ry); y++) for (let x = Math.floor(cx - rx); x <= Math.ceil(cx + rx); x++) {
+      const dx = (x - cx) / rx, dy = (y - cy) / ry;
+      if (dx * dx + dy * dy <= 1) this.dot(x, y, k);
+    }
+  }
+  /** A filled polygon, by scanlines through the middle of each cell. */
+  poly(pts, k) {
+    const ys = pts.map((q) => q[1]);
+    for (let y = Math.floor(Math.min(...ys)); y <= Math.ceil(Math.max(...ys)); y++) {
+      const yc = y + 0.5, xs = [];
+      for (let i = 0; i < pts.length; i++) {
+        const [x0, y0] = pts[i], [x1, y1] = pts[(i + 1) % pts.length];
+        if ((y0 <= yc && y1 > yc) || (y1 <= yc && y0 > yc)) xs.push(x0 + ((yc - y0) / (y1 - y0)) * (x1 - x0));
+      }
+      xs.sort((a, b) => a - b);
+      for (let i = 0; i + 1 < xs.length; i += 2) for (let x = Math.round(xs[i]); x < Math.round(xs[i + 1]); x++) this.dot(x, y, k);
+    }
+  }
+  line(x0, y0, x1, y1, k) {
+    const n = Math.max(1, Math.ceil(Math.max(Math.abs(x1 - x0), Math.abs(y1 - y0))));
+    for (let i = 0; i <= n; i++) this.dot(x0 + ((x1 - x0) * i) / n, y0 + ((y1 - y0) * i) / n, k);
+  }
+  /** Discs along a list of points, each with its own radius: a neck or a tail. */
+  chain(pts, k) { for (const [x, y, r] of pts) this.disc(x, y, r, r, k); }
+  rows() { return this.g.map((r) => r.join('')); }
+}
+
+const MOTHER_PAL = {
+  b: '#2e9a7a', B: '#4cc094', d: '#1e6a56', l: '#ecdc94', L: '#c9b468', t: '#f2b630', T: '#c08a1e',
+  C: '#c8b890', r: '#d23a32', w: '#2f6fd1', W: '#1c4596', m: '#25529e', c: '#f4ecd0', e: '#1e1414', h: '#ffffff',
+  g: '#c8fff4', G: '#5fd8e0',
+};
+/** Her size in cells. She is drawn at scale 2, so 184 x 112 pixels. */
+const MOTHER_BOX = [92, 56];
+
+/** Points along a curve from a to b that bows by `bend` (positive bows up). */
+function arc(a, b, bend, n, r0, r1) {
+  const out = [];
+  for (let i = 0; i <= n; i++) {
+    const t = i / n;
+    out.push([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t - Math.sin(t * Math.PI) * bend, r0 + (r1 - r0) * t]);
+  }
+  return out;
+}
+
+/**
+ * Paint the mother dragon facing left, top-left corner at x, y.
+ * wing: 1 is wings up high, 0 is wings level (for flapping).
+ * fly: neck out in front and legs tucked, for the flight.
+ */
+function motherDragon(p, x, y, { scale = 2, wing = 1, fly = false, glow = 0, outline = '#141a24' } = {}) {
+  const c = new Cells(...MOTHER_BOX);
+  const tipY = 1 + Math.round((1 - wing) * 16);   // how high the wing tips reach
+  const sh = fly ? 4 : 0;                           // she flies a little lower in her box
+  // The far wing, behind everything: up and forward, over her neck.
+  const fwrist = [52, tipY + 3], ftips = [[42, tipY], [35, tipY + 5], [33, tipY + 12], [38, tipY + 17]];
+  c.poly([[52, 29 + sh], fwrist, ...ftips, [44, 24 + sh], [46, 30 + sh]], 'm');
+  for (const t of ftips) c.line(fwrist[0], fwrist[1], t[0], t[1], 'W');
+  c.line(52, 29 + sh, fwrist[0], fwrist[1], 'W');
+  // The tail: out behind her and curled up at the end, with a glowing tip.
+  const tail = fly
+    ? arc([68, 38 + sh], [90, 32 + sh], 3, 14, 7, 2)
+    : [...arc([68, 42], [84, 50], -2, 10, 7.5, 3.5), ...arc([84, 50], [89, 40], -5, 6, 3.5, 2)];
+  c.chain(tail, 'b');
+  const tip = tail[tail.length - 1];
+  c.disc(tip[0], tip[1], 2.8, 2.8, 'G'); c.disc(tip[0], tip[1], 1.5, 1.5, 'g');
+  // Legs with cream claws, tucked under her when she flies.
+  const foot = (fx, fy) => { c.disc(fx, fy, 5, 2.4, 'b'); for (const dx of [-5, -2, 1]) { c.dot(fx + dx, fy + 2, 'c'); c.dot(fx + dx + 1, fy + 2, 'c'); } };
+  if (fly) {
+    c.chain(arc([44, 42 + sh], [52, 47 + sh], 0, 4, 5, 3.5), 'b'); c.chain(arc([64, 42 + sh], [74, 47 + sh], 0, 4, 7, 3.5), 'b');
+  } else {
+    c.chain(arc([45, 40], [43, 50], 0, 5, 5, 4.5), 'b'); foot(42, 51);
+    c.chain(arc([64, 38], [66, 50], 0, 6, 9, 4.5), 'b'); foot(65, 51);
+  }
+  // The body and the neck, up to the head.
+  c.disc(56, 35 + sh, 18, 13, 'b');
+  const neck = fly ? arc([42, 32 + sh], [26, 24 + sh], 2, 7, 8.5, 7) : arc([44, 30], [32, 17], -2, 7, 9, 7.5);
+  c.chain(neck, 'b');
+  const [hx, hy] = fly ? [19, 22 + sh] : [25, 13];
+  c.disc(hx + 1, hy, 10.5, 8, 'b');                 // the head
+  c.disc(hx - 9, hy + 3, 7.5, 5, 'b');              // the snout
+  // Light on top, shadow underneath: every body cell next to the edge.
+  const edge = (xx, yy, dy) => c.at(xx, yy) === 'b' && c.at(xx, yy + dy) === '.';
+  const top = [], bottom = [];
+  for (let yy = 0; yy < c.h; yy++) for (let xx = 0; xx < c.w; xx++) { if (edge(xx, yy, -1)) top.push([xx, yy]); if (edge(xx, yy, 1) || edge(xx, yy - 1, 1)) bottom.push([xx, yy]); }
+  for (const [xx, yy] of bottom) c.dot(xx, yy, 'd');
+  for (const [xx, yy] of top) c.dot(xx, yy, 'B');
+  // The belly and throat, cream with bands, only where there is body.
+  const belly = (cx, cy, rx, ry) => {
+    for (let yy = Math.floor(cy - ry); yy <= cy + ry; yy++) for (let xx = Math.floor(cx - rx); xx <= cx + rx; xx++) {
+      const dx = (xx - cx) / rx, dy = (yy - cy) / ry;
+      if (dx * dx + dy * dy <= 1 && 'bBd'.includes(c.at(xx, yy))) c.dot(xx, yy, yy % 3 ? 'l' : 'L');
+    }
+  };
+  belly(50, 41 + sh, 13, 7);
+  for (const [nx, ny, r] of neck.slice(1)) belly(nx - r * 0.6, ny + r * 0.35, r * 0.4, r * 0.55);
+  belly(hx - 6, hy + 6, 6, 1.6);                    // under the jaw
+  // Scales: a sprinkle of dark on the body.
+  for (let yy = 0; yy < c.h; yy++) for (let xx = 0; xx < c.w; xx++) if (c.at(xx, yy) === 'b' && (xx * 3 + yy * 7) % 13 === 0) c.dot(xx, yy, 'd');
+  // The face: a smile, a nostril, a big kind eye, and the parrot's red forehead.
+  c.line(hx - 15, hy + 4, hx - 3, hy + 5, 'd');
+  c.dot(hx - 15, hy, 'e'); c.dot(hx - 14, hy, 'e');
+  c.disc(hx, hy - 1, 2.6, 2.6, 'h'); c.disc(hx + 0.6, hy - 0.4, 1.8, 1.8, 'e'); c.dot(hx - 1, hy - 2, 'h');
+  c.disc(hx - 8, hy - 3, 4.5, 2.2, 'r');
+  // Two cream horns, sweeping back.
+  for (const [ox, oy, len] of [[3, -6, 10], [7, -3, 8]]) {
+    const ex = hx + ox + len, ey = hy + oy - Math.round(len * 0.55);
+    c.line(hx + ox, hy + oy, ex, ey, 'c');
+    c.line(hx + ox, hy + oy + 1, ex, ey + 1, 'C');
+    c.line(hx + ox - 1, hy + oy + 1, ex - 2, ey + 2, 'C');
+  }
+  // Her lashes, over the eye.
+  for (const [lx, ly] of [[-3, -4], [-2, -5], [0, -5], [1, -6], [2, -4], [3, -5]]) c.dot(hx + lx, hy + ly, 'e');
+  // The iguana's gold spines: from the back of her head down her neck, back, and tail.
+  const ridge = [
+    ...neck.slice().reverse().map(([nx, ny, r]) => [nx + r * 0.25, ny - r]),
+    ...arc([46, 25 + sh], [66, 25 + sh], 2, 8, 0, 0),
+    ...tail.slice(1, -4).map(([tx, ty, r]) => [tx, ty - r]),
+  ];
+  ridge.forEach(([sx, sy], i) => {
+    sx = Math.round(sx); sy = Math.round(sy);
+    const tall = i % 2 ? 2 : 3;
+    for (let k = 1; k <= tall; k++) c.dot(sx, sy - k, 't');
+    c.dot(sx + 1, sy - 1, 'T');
+  });
+  // The near wing, last: up and back from her shoulder, parrot blue, with
+  // five long feathers along its edge.
+  const wrist = [62, tipY];
+  const tips = [[76, tipY - 1], [88, tipY + 3], [88, tipY + 13], [81, tipY + 19], [72, tipY + 21]];
+  const near = [[48, 31 + sh], [52, 25 + sh], wrist];
+  tips.forEach((t, i) => { near.push(t); const nx = tips[i + 1]; if (nx) near.push([(t[0] + nx[0]) / 2 - 2, (t[1] + nx[1]) / 2 - 1]); });
+  near.push([66, 27 + sh], [58, 31 + sh]);
+  c.poly(near, 'w');
+  c.line(50, 28 + sh, wrist[0], wrist[1], 'W');
+  for (const t of tips) c.line(wrist[0], wrist[1], t[0], t[1], 'W');
+  c.dot(wrist[0], wrist[1] - 1, 'c'); c.dot(wrist[0] - 1, wrist[1] - 2, 'c');
+  p.sprite(c.rows(), glow ? { ...MOTHER_PAL, g: '#ffffff', G: '#b8fff0' } : MOTHER_PAL, x, y, { scale, outline });
+}
+
+/** The eight hatchlings, as creatures.yaml paints them, for the scenes with all of them in. */
+const BROOD = [
+  { shape: 'lizard', body: '#4cae4f', dark: '#2f7d33', belly: '#b2dc74', trim: '#f2b630', wing: '#3aa6a0' },
+  { shape: 'bird', body: '#3fae4a', dark: '#2a7a34', belly: '#9ade6e', trim: '#d23a32', wing: '#2f6fd1' },
+  { shape: 'frog', body: '#c8964e', dark: '#8a6230', belly: '#f2e2b4', trim: '#e8734a', wing: '#e0b070' },
+  { shape: 'anole', body: '#b8935a', dark: '#7a5c30', belly: '#efe0b4', trim: '#f28a2c', wing: '#d8b070' },
+  { shape: 'wisp', body: '#3f7fc0', dark: '#28558c', belly: '#8fd8f0', trim: '#b8fff0', wing: '#5fb0e0' },
+  { shape: 'turtle', body: '#5a7a8a', dark: '#2e3e4e', belly: '#c8d4dc', trim: '#7a94a4', wing: '#5a7a8a' },
+  { shape: 'bat', body: '#7a5a44', dark: '#4a3426', belly: '#b89a80', trim: '#e8b0a0', wing: '#5a4034' },
+  { shape: 'snake', body: '#c09a62', dark: '#6e4a2a', belly: '#ecd9a8', trim: '#c09a62', wing: '#c09a62' },
+];
+
+/** A sky full of stars, the same every frame; a few twinkle. */
+function stars(p, h, frame = 0, n = 70) {
+  const rnd = seeded(77);
+  for (let i = 0; i < n; i++) {
+    const x = Math.floor(rnd() * W), y = Math.floor(rnd() * h), big = rnd() < 0.15;
+    const on = !big || (i + frame) % 5;
+    p.set(x, y, on ? '#fff8e0' : '#8a90c0');
+    if (big && on) { p.set(x - 1, y, '#c8c8f0'); p.set(x + 1, y, '#c8c8f0'); p.set(x, y - 1, '#c8c8f0'); p.set(x, y + 1, '#c8c8f0'); }
+  }
+}
+
+/**
+ * El Morro's wall, low and close, with the mother dragon on top of it.
+ * when: 'sunset' (she lands) or 'night' (she brings everyone back).
+ */
+function motherOnWall(p, { frame = 0, when = 'sunset' } = {}) {
+  const night = when === 'night';
+  const horizon = 110;
+  if (night) {
+    p.grad(0, 0, W, horizon, ['#0c1030', '#1a2050', '#2a3470', '#3a4a86']);
+    stars(p, horizon - 20, frame);
+    p.blob(44, 30, 9, 9, '#c8c0a0', '#f4ecc8', '#fffbe8');   // the moon
+  } else {
+    p.grad(0, 0, W, horizon, ['#2a2352', '#5a3a7a', '#a8507e', '#ec8456', '#f8be6a']);
+    cloud(p, 250, 40, 0.8); cloud(p, 60, 56, 0.6);
+    p.blob(70, horizon - 2, 15, 15, '#f8a850', '#ffd27a', '#fff2b8');  // the sun, going down
+  }
+  // The sea, with the sun or the moon on it.
+  p.grad(0, horizon - 4, W, 14, night ? ['#1a2a5a', '#101a40'] : ['#7a4a78', '#4a3466']);
+  for (let i = 0; i < 26; i++) {
+    const y = horizon - 3 + (i % 6) * 2, w = 3 + ((i * 7) % 5), x = (night ? 44 : 70) - 14 + ((i * 37 + frame * 5) % 28) - w / 2;
+    p.rect(x, y, w, 1, night ? '#c8d4f0' : '#ffd27a');
+  }
+  // The outer wall: teeth, slits, a sentry box on the corner.
+  const stone = night ? '#4a4a5e' : '#9a7e78', lit = night ? '#6a6a80' : '#d0a88a', dark = night ? '#2e2e3e' : '#6a5258';
+  p.rect(0, 118, W, 24, stone); p.rect(0, 118, W, 2, lit); p.rect(0, 136, W, 6, dark);
+  for (let x = 0; x < W; x += 9) p.rect(x, 114, 5, 4, stone);
+  for (let x = 12; x < W; x += 24) p.rect(x, 124, 2, 7, dark);
+  p.rect(14, 100, 12, 20, lit); p.ellipse(20, 100, 6, 5, dark); p.rect(19, 106, 2, 5, '#1a1a22'); p.rect(19, 93, 2, 3, dark);
+  // The lawn, and the eight hatchlings tumbling across it toward their mother.
+  p.grad(0, 142, W, 58, night ? ['#1e3a2a', '#163020', '#10261a'] : ['#4a8a3a', '#3a7a30', '#2c6a28']);
+  for (let i = 0; i < 120; i++) { const x = (i * 73) % W, y = 145 + ((i * 41) % 54); p.rect(x, y, 1, 2, night ? '#2a4a34' : '#5a9a44'); }
+  BROOD.forEach((who, i) => {
+    const hop = (frame + i) % 4 === 0 ? 2 : 0;
+    creature(p, who, 116 + i * 24, 150 + (i % 3) * 7 - hop, { scale: 1, flip: true, outline: '#14240f' });
+  });
+  // Her, on the wall: claws over the edge, wings up, tail tip shining.
+  motherDragon(p, 120, 12, { wing: frame % 8 < 6 ? 1 : 0.85, glow: frame % 2 });
+  // The explorers, looking up.
+  p.sprite(LUZ, LUZ_PAL, 20, 160);
+  p.sprite(HERO, HERO_PAL, 42, 162);
+  p.sprite(SIDEKICK, SIDEKICK_PAL, 62, 168);
+  p.sprite(PUP, PUP_PAL, 80, 182);
+}
+/** Eight gold eggs in a row on the museum shelf, after dark, glowing one after another. */
+function goldEggs(p, t = {}) {
+  const frame = t.frame || 0;
+  p.grad(0, 0, W, 132, ['#5a3e3a', '#6e4c40', '#7e5a46']);
+  for (let ax = 8; ax < W; ax += 78) {
+    p.rect(ax, 14, 56, 82, '#6a4a3a'); p.ellipse(ax + 28, 14, 28, 13, '#6a4a3a');
+    p.rect(ax + 4, 16, 48, 80, '#5a3c30'); p.ellipse(ax + 28, 16, 24, 11, '#5a3c30');
+  }
+  // the window in the second arch: the night sky over the sea
+  p.grad(90, 20, 44, 64, ['#0c1030', '#1a2050', '#2a3470']);
+  p.ellipse(112, 20, 22, 10, '#0c1030');
+  for (const [sx, sy] of [[98, 22], [120, 30], [106, 44], [126, 52], [96, 60], [116, 14]]) p.set(sx, sy, '#fff8e0');
+  p.rect(111, 12, 2, 72, '#3a2a20'); p.rect(90, 48, 44, 2, '#3a2a20');
+  // the shelf, and a plaque under each egg with its dragon on it
+  p.rect(10, 96, 300, 6, '#8a5a32'); p.rect(10, 96, 300, 2, '#b07a46'); p.rect(10, 102, 300, 16, '#6a4224');
+  BROOD.forEach((who, i) => {
+    const cx = 28 + i * 38;
+    const on = (Math.floor(frame / 2) % 8) === i;          // the glow runs along the row
+    if (on || frame % 2) { p.ellipse(cx, 80, 15, 18, on ? '#a8783a' : '#7a5838'); p.ellipse(cx, 80, 12, 15, on ? '#d8a848' : '#86603a'); }
+    p.blob(cx, 82, 9, 12, '#b8862a', '#f2c531', '#fff2b0');
+    p.rect(cx - 13, 104, 26, 12, '#3a2a1e'); p.rect(cx - 12, 105, 24, 10, '#e8dcc0');
+    creature(p, who, cx - 11, 105, { scale: 1, outline: '' });
+  });
+  // the floor and the explorers
+  p.rect(0, 132, W, 68, '#8a4e32');
+  for (let y = 132, row = 0; y < H; row++) {
+    const h = 6 + row * 2;
+    for (let x = -(row % 2) * 20; x < W; x += 40) { p.rect(x + 1, y + 1, 38, h - 1, row % 2 ? '#9a5a3a' : '#a46242'); p.rect(x + 1, y + 1, 38, 1, '#b8744e'); }
+    y += h;
+  }
+  p.sprite(LUZ, LUZ_PAL, 120, 160);
+  p.sprite(HERO, HERO_PAL, 150, 164);
+  p.sprite(SIDEKICK, SIDEKICK_PAL, 172, 170);
+  p.sprite(PUP, PUP_PAL, 190, 184);
+}
+goldEggs.fps = 4;
+
+/** Riding on her back at night: the coast, El Morro, El Yunque, and the bay glowing where her tail touches it. */
+function motherFlight(p, t = {}) {
+  const frame = t.frame || 0;
+  const horizon = 112;
+  p.grad(0, 0, W, horizon, ['#0a0c2a', '#141a44', '#22306a', '#34488a']);
+  stars(p, horizon - 24, frame, 90);
+  p.blob(282, 26, 10, 10, '#c8c0a0', '#f4ecc8', '#fffbe8');
+  // El Yunque far off on the right, with a cloud on its peak
+  for (const [cx, w, h] of [[250, 60, 26], [290, 50, 34], [214, 40, 16], [316, 30, 20]]) {
+    for (let dy = 0; dy < h; dy++) { const hw = Math.round(w * (dy / h) * 0.7 + 2); p.rect(cx - hw, horizon - h + dy, hw * 2, 1, dy < 3 ? '#2a4a5a' : '#1a3040'); }
+  }
+  cloud(p, 290, horizon - 36, 0.7);
+  // the sea, and the island running back to the mountains on the right
+  p.grad(0, horizon, W, H - horizon, ['#16284a', '#101e3a', '#0a1428']);
+  for (let y = horizon; y < H; y++) {
+    const cx = 128 + Math.round((y - horizon) * 0.8 + Math.sin(y * 0.35) * 3);
+    p.rect(cx, y, W - cx, 1, y < horizon + 30 ? '#18301f' : '#14281a');
+    p.rect(cx, y, 2, 1, '#2a4a5a');                                          // a line of surf
+  }
+  for (let i = 0; i < 60; i++) { const y = horizon + 2 + ((i * 29) % 86), x = 140 + (y - horizon) * 0.8 + ((i * 53) % 150); if (x < W) p.rect(x, y, 2, 2, i % 3 ? '#0e1e14' : '#24442e'); }
+  // Old San Juan on its point: lit windows, and El Morro's walls at the tip
+  p.rect(30, horizon + 6, 110, 10, '#2a2a3e');
+  for (let i = 0; i < 26; i++) p.rect(34 + ((i * 41) % 104), horizon + 7 + ((i * 7) % 7), 2, 1, ['#f8d070', '#f8a850', '#fff0b0'][i % 3]);
+  p.rect(14, horizon + 10, 30, 6, '#3a3a50'); for (let x = 14; x < 44; x += 4) p.rect(x, horizon + 8, 2, 2, '#3a3a50');
+  p.rect(20, horizon + 2, 4, 8, '#4a4a60'); p.set(21, horizon + 2, '#f8e8a0'); p.set(22, horizon + 2, '#f8e8a0');   // the lighthouse
+  // the glowing bay, bottom right, ringed with mangroves: it lights up where she flies over
+  p.ellipse(250, 174, 58, 15, '#0c1a12');
+  p.ellipse(250, 174, 52, 12, '#06101e');
+  const rnd = seeded(5);
+  for (let i = 0; i < 80; i++) {
+    const a = rnd() * Math.PI * 2, r = Math.sqrt(rnd());
+    const x = 250 + Math.cos(a) * r * 50, y = 174 + Math.sin(a) * r * 11;
+    if ((i + frame) % 3) p.set(x, y, i % 4 ? '#5fd8e0' : '#c8fff4');
+  }
+  for (let k = 0; k < 16; k++) {
+    const x = 214 + k * 5, y = 172 + Math.round(Math.sin((k + frame) * 0.6) * 2);
+    p.rect(x, y, 3, 1, (k + frame) % 4 ? '#5fd8e0' : '#ffffff');
+  }
+  // the hatchlings that can fly, alongside
+  const bob = (i) => Math.round(Math.sin((frame + i * 2) * 1.2) * 2);
+  creature(p, BROOD[1], 18, 52 + bob(0), { scale: 2, outline: '#0a0c1a' });
+  creature(p, BROOD[6], 34, 92 + bob(1), { scale: 2, outline: '#0a0c1a' });
+  creature(p, BROOD[4], 186, 140 + bob(2), { scale: 2, outline: '#0a3a4a' });
+  // her, with everyone on her back
+  const flap = [1, 0.45, -0.2, 0.45][frame % 4];
+  motherDragon(p, 76, 10 + (frame % 4 === 2 ? 2 : 0), { fly: true, wing: flap, glow: frame % 2, outline: '#0a0c1a' });
+  const lift = frame % 4 === 2 ? 2 : 0;
+  p.sprite(HERO, HERO_PAL, 166, 50 + lift);
+  p.sprite(SIDEKICK, SIDEKICK_PAL, 180, 58 + lift);
+  p.sprite(PUP, PUP_PAL, 188, 68 + lift);
+}
+motherFlight.fps = 4;
+
+
+/** She lands on El Morro at sunset. */
+function motherLands(p, t) { motherOnWall(p, { frame: t.frame }); }
+motherLands.fps = 4;
+/** She brings everyone back to El Morro under the stars. */
+function motherStars(p, t) { motherOnWall(p, { frame: t.frame, when: 'night' }); }
+motherStars.fps = 4;
+
+
 export const scenes = {
   museum,
   nest: (p, t) => museum(p, { egg: 'dragon', who: t.who }),
@@ -2293,4 +2610,8 @@ export const scenes = {
   'egg-silver': eggPic('#7a8490', '#c4ccd4', '#ffffff'),
   'egg-bronze': eggPic('#7a4a2a', '#c98a4e', '#f0c8a0'),
   title,
+  mother: motherLands,
+  'mother-stars': motherStars,
+  'gold-eggs': goldEggs,
+  'mother-flight': motherFlight,
 };

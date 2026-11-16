@@ -12,10 +12,12 @@
 //            is a detour to that creature's lair, then back to the lineup
 //   lair     the right creature's own card: the reveal and the rescue
 //   home     the hub's ending: the lock, the creature caught, the run rated
+//   finale   any once-only ending the player has just earned (finales: in
+//            game.yaml), each a part of the hub card
 
 import { offers } from './dealer.js';
 import { playPuzzle } from './puzzles.js';
-import { traitKeys, traitValue, eventFits, spanishTraits } from './pack.js';
+import { traitKeys, traitValue, eventFits, spanishTraits, finalesDue } from './pack.js';
 import { makeRng, fill, clock } from './util.js';
 
 /** Toys a lair card can ask for with "# toy: <name>". The screen plays them. */
@@ -54,7 +56,7 @@ export const GUIDE_SKILL = 'spanish_guide';
  *   clues: string[], sign: boolean, digits: number, route: string[],
  *   crossed: string[], wrong: string[], named: string, guided?: boolean,
  *   stars: Record<string, number>, tries: Record<string, number>,
- *   caught: boolean, egg: number }} QuestState
+ *   caught: boolean, egg: number, finale?: string }} QuestState
  *
  * @typedef {{
  *   level: (skill: string) => number,
@@ -64,6 +66,8 @@ export const GUIDE_SKILL = 'spanish_guide';
  *   rated: (creature: string, rating: ReturnType<typeof rate>) => void,
  *   checkpoint: () => void,
  *   problem?: (msg: string) => void,
+ *   progress?: () => { caught: Record<string, any>, seen: string[] },
+ *   finale?: (id: string) => void,
  * }} QuestHooks
  */
 
@@ -73,7 +77,7 @@ export const newQuestState = () => ({
   clues: [], sign: false, digits: 0, route: [],
   crossed: [], wrong: [], named: '', guided: false,
   stars: {}, tries: {},
-  caught: false, egg: 0,
+  caught: false, egg: 0, finale: '',
 });
 
 // Plain wording for what the engine says itself. A pack's words: replace any of these.
@@ -210,7 +214,7 @@ export async function runQuest({ pack, plan, story, state, ui, hooks }) {
   const words = { ...WORDS, ...pack.words };
   const problem = hooks.problem || (() => {});
   const disks = plan.stops + 3;
-  const stages = ['hub', ...Array.from({ length: plan.stops }, () => 'place'), 'case', 'lair', 'home'];
+  const stages = ['hub', ...Array.from({ length: plan.stops }, () => 'place'), 'case', 'lair', 'home', 'finale'];
 
   // Names are set every time, so an older save can't bring back different ones.
   for (const [role, name] of Object.entries(pack.cast)) vars[role] = name;
@@ -490,6 +494,22 @@ export async function runQuest({ pack, plan, story, state, ui, hooks }) {
       }, plan.stops);
     } else if (stage === 'home') {
       await visit(hub, `${hub.knot}.${hub.finish}`, () => drive(hub.drive));
+    } else if (stage === 'finale') {
+      // Once-only endings, after the run's own: the profile already counts
+      // this run's creature and egg. A saved game picks up inside one.
+      const played = new Set();
+      for (;;) {
+        const due = finalesDue(pack, hooks.progress ? hooks.progress() : null).filter((x) => !played.has(x.id));
+        const f = (state.finale && (pack.game.finales || []).find((x) => x.id === state.finale)) || due[0];
+        if (!f) break;
+        state.finale = f.id;
+        await visit(hub, `${hub.knot}.${f.part}`);
+        if (hooks.finale) hooks.finale(f.id);
+        played.add(f.id);
+        state.finale = '';
+        state.entered = false;
+        state.drove = false;
+      }
     }
   }
 }
