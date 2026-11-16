@@ -1700,6 +1700,70 @@ function laCoca(p, t = {}) {
 }
 laCoca.fps = 6;
 
+
+// The hiker resting on a rock by the pool: a big backpack and a sun hat.
+const HIKER = [
+  '...hhhh...',
+  '.hhhhhhhh.',
+  '..tttttbb.',
+  '..tkttkbbB',
+  '..ttttbbbB',
+  '...ttbbbbB',
+  '.ggggbbbbB',
+  'tggggbbbbB',
+  'tggggbbbb.',
+  '.ppppppp..',
+  '.pppppppp.',
+  '......pp..',
+  '......oo..',
+];
+const HIKER_PAL = { h: '#e8c66a', t: '#c98d63', k: '#2a1e1a', g: '#d23a32', b: '#2f6fd1', B: '#1e4a9a', p: '#5a6a3a', o: '#3a2a1e' };
+
+/** Juan Diego Falls: a waterfall dropping into a green pool, and a stream with stepping rocks. */
+function juanDiego(p, t = {}) {
+  const frame = t.frame || 0, rnd = seeded(53);
+  p.rect(0, 0, W, 150, '#184a22');
+  canopy(p, -10, W + 10, 0, rnd, 18, ['#1e5a2a', '#2f7d33', '#4cae4f']);
+  canopy(p, -10, W + 10, 18, rnd, 14, ['#184a22', '#256a2c', '#3f8a40']);
+  // the cliff behind the falls
+  rockFace(p, 30, 140, (y) => 64 + Math.round(Math.sin(y / 9) * 4), (y) => 262 + Math.round(Math.sin(y / 7) * 4), 7);
+  for (let y = 30; y < 140; y++) for (let x = 140; x < 176; x++) if (((x - 158) / 18) ** 2 + ((y - 30) / 26) ** 2 < 1) p.set(x, y, ((x + y) & 1) ? ROCK[0] : ROCK[1]);
+  // a big boulder on the left, mossy on top, and moss hanging down the right
+  const bw = (y) => Math.round(Math.sqrt(Math.max(0, 1 - ((y - 96) / 56) ** 2)) * 48);
+  rockFace(p, 40, 140, (y) => 96 - bw(y), (y) => 96 + bw(y), 12);
+  for (let y = 40; y < 140; y++) { const hw = bw(y), m = 68 - Math.abs(Math.sin(y / 5)) * 6; for (let x = 96 - hw; x < 96 + hw; x++) if (y < m - (x - 96) * 0.25 + Math.sin(x / 4) * 4) p.set(x, y, toneAt(MOSS, 0.35 + 0.5 * Math.max(0, (60 - y) / 30 + (96 - x) / 120), x, y)); }
+  mossy(p, 52, 44, 84, 40, rnd, 16); mossy(p, 54, 80, 20, 56, rnd, 8);
+  for (let x = 196; x < 268; x++) { const len = 30 + Math.floor(rnd() * 80); for (let y = 30; y < 30 + len; y++) if (rnd() < 0.55 - (y - 30) / (len * 2)) p.set(x, y, MOSS[1 + ((x + y) % 3)]); }
+  mossy(p, 200, 36, 64, 90, rnd, 18);
+  // the falls: one ribbon that widens as it drops, and a thin one beside it
+  falling(p, 151, 30, 136, 14, frame, { spread: 16 });
+  falling(p, 182, 64, 136, 3, frame, { spread: 3 });
+
+  // the ground in front: mud, then the pool and the stream it feeds
+  p.rect(0, 132, W, 68, '#5a3e22');
+  for (let i = 0; i < 80; i++) p.rect(Math.floor(rnd() * W), 134 + Math.floor(rnd() * 66), 3, 1, rnd() < 0.5 ? '#6a4a2a' : '#4a321c');
+  const water = (x, y) => toneAt(['#1e5a4a', '#2a6a5a', '#3a8a6a', '#6ab494'], 0.35 + (((x >> 3) * 5 + y * 3 + frame * 2) % 11) / 30, x, y);
+  for (let y = 128; y < 156; y++) { const hw = Math.round(118 * Math.sqrt(Math.max(0, 1 - ((y - 140) / 16) ** 2))); for (let x = 160 - hw; x < 160 + hw; x++) p.set(x, y, water(x, y)); }
+  for (let y = 148; y < H; y++) {
+    const cx = 172 + Math.round((y - 148) * 0.35 + Math.sin(y / 14) * 6), hw = 30 + Math.round((y - 148) * 0.9);
+    for (let x = cx - hw; x < cx + hw; x++) p.set(x, y, water(x, y));
+    p.set(cx - hw, y, '#3a2a18'); p.set(cx + hw - 1, y, '#3a2a18');
+  }
+  for (let i = 0; i < 40; i++) { const y = 132 + Math.floor(rnd() * 66), x = 150 + Math.floor(rnd() * 70) + (y - 132) * 0.3; p.rect(Math.round(x), y, 4, 1, (i + frame) % 3 ? '#9ad4c0' : '#e4f4f8'); }
+  splash(p, 159, 138, 20, frame);
+  for (const [x, y, r] of [[146, 194, 12], [168, 180, 10], [194, 170, 9], [214, 160, 8]]) p.blob(x, y, r, Math.round(r * 0.6), ROCK[1], ROCK[3], ROCK[5]);
+  // ferns at the edges
+  for (let k = 0; k < 6; k++) frond(p, 306, 160, -2.6 + k * 0.4, 32, 0.02);
+  for (let k = 0; k < 6; k++) frond(p, 4, 132, -1.3 + k * 0.35, 34, 0.025);
+  // the hiker, resting on a rock by the pool
+  p.blob(252, 140, 15, 9, ROCK[1], ROCK[3], ROCK[5]);
+  p.sprite(HIKER, HIKER_PAL, 244, 120);
+  p.sprite(HERO, HERO_PAL, 58, 156);
+  p.sprite(SIDEKICK, SIDEKICK_PAL, 78, 162);
+  p.sprite(PUP, PUP_PAL, 100, 178);
+}
+juanDiego.fps = 6;
+
 // ---------------------------------------------------------------------------
 // Icons: small pictures for puzzle boards (the cards in Memoria, the marks in
 // a picture graph, what goes in a tray). Each fits in iconBox and is called
@@ -2146,6 +2210,7 @@ export const scenes = {
   tunnel,
   yokahu,
   'la-coca': laCoca,
+  'juan-diego': juanDiego,
   lawn,
   lookout,
   bay: (p, t) => bay(p, 'day', t),
