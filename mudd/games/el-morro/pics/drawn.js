@@ -1616,6 +1616,90 @@ function yokahu(p) {
   p.sprite(PUP, PUP_PAL, 126, 186);
 }
 
+
+const ROCK = ['#22241f', '#33362f', '#474a40', '#5e6052', '#787a6a', '#929484'];
+const MOSS = ['#2a4a1a', '#3f6a24', '#5a8a2e', '#7aaa3a'];
+
+/** A sheet of falling water w wide, from y0 to y1; it shimmers as frame counts up. */
+function falling(p, x, y0, y1, w, frame, { spread = 0 } = {}) {
+  for (let y = y0; y < y1; y++) {
+    const t = (y - y0) / Math.max(1, y1 - y0), ww = Math.round(w + spread * t);
+    const sx = Math.round(x - (ww - w) / 2 + Math.sin(y / 9 + x) * 0.8);
+    for (let i = 0; i < ww; i++) {
+      const k = (y * 3 - frame * 4 + (sx + i) * 5) % 13;
+      p.set(sx + i, y, k < 3 ? '#ffffff' : k < 8 ? '#d8eef4' : (i === 0 || i === ww - 1) ? '#7aa4b4' : '#a8cce0');
+    }
+  }
+}
+
+/** White water where a fall lands. */
+function splash(p, x, y, w, frame) {
+  for (let i = 0; i < w * 2; i++) {
+    const a = (i * 2.4 + frame * 0.7) % (Math.PI * 2), r = (i * 7 + frame) % 6;
+    p.blob(Math.round(x + Math.cos(a) * w * 0.5 + (i % 5) - 2), Math.round(y - Math.abs(Math.sin(a)) * r), 3, 2, '#a8cce0', '#e4f4f8', '#ffffff');
+  }
+}
+
+/** A craggy face of rock in layers, from y0 to y1 between the edges left(y) and right(y). */
+function rockFace(p, y0, y1, left, right, seed = 1) {
+  for (let y = y0; y < y1; y++) for (let x = left(y); x < right(y); x++) {
+    const wob = Math.sin(x / 17 + seed) * 5 + Math.sin(x / 6.3 + seed * 2) * 2;
+    const band = Math.floor((y + wob) / 11), f = (y + wob) / 11 - band;
+    const chunk = Math.floor((x + band * 13) / (14 + (band % 3) * 5));
+    const h = ((band * 7919 + chunk * 104729 + seed * 31) >>> 0) % 5;
+    let c = ROCK[2 + (h % 3)];
+    if (f < 0.14) c = ROCK[Math.min(5, 4 + (h & 1))];
+    else if (f > 0.8) c = ROCK[0];
+    else if (((x + band * 13) % (14 + (band % 3) * 5)) === 0) c = ROCK[1];
+    else if (((x + y) & 1) && f > 0.6) c = ROCK[1 + (h % 2)];
+    p.set(x, y, c);
+  }
+}
+
+/** Moss and little plants growing on the rock. */
+function mossy(p, x0, y0, w, h, rnd, n) {
+  for (let i = 0; i < n; i++) {
+    const x = x0 + Math.floor(rnd() * w), y = y0 + Math.floor(rnd() * h), r = 2 + Math.floor(rnd() * 5);
+    p.blob(x, y, r + 2, r, MOSS[0], MOSS[1 + Math.floor(rnd() * 2)], MOSS[3]);
+  }
+}
+
+/** La Coca Falls: water sliding down a wall of dark rock as tall as a building, right beside the road. */
+function laCoca(p, t = {}) {
+  const frame = t.frame || 0, rnd = seeded(41);
+  sky(p, 60, ['#6a9ad8', '#9cc0e8', '#cfe2f2']);
+  p.rect(0, 30, W, 145, '#184a22');
+  canopy(p, -10, W + 10, 26, rnd, 16, ['#1e5a2a', '#2f7d33', '#4cae4f']);
+  canopy(p, -10, W + 10, 44, rnd, 14, ['#184a22', '#256a2c', '#3f8a40']);
+  // the rock wall, a narrow lip at the top and wide at the bottom
+  rockFace(p, 50, 170, (y) => 112 - Math.round((y - 50) * 0.55) + Math.round(Math.sin(y / 7) * 2), (y) => 206 + Math.round((y - 50) * 0.5) + Math.round(Math.sin(y / 5) * 2), 3);
+  mossy(p, 50, 120, 30, 40, rnd, 6); mossy(p, 240, 116, 30, 44, rnd, 6); mossy(p, 104, 50, 16, 20, rnd, 3); mossy(p, 200, 52, 14, 20, rnd, 3);
+  // the water: a sheet over the lip, then streams sliding down the rock
+  falling(p, 120, 50, 64, 76, frame, { spread: 8 });
+  for (const [x, y0, y1, w, sp] of [[112, 62, 166, 4, 4], [126, 62, 168, 7, 6], [142, 62, 120, 3, 2], [145, 118, 168, 4, 4], [156, 62, 168, 8, 6], [174, 62, 166, 5, 5], [190, 62, 140, 3, 3], [196, 138, 168, 2, 3], [102, 88, 166, 2, 2], [212, 80, 166, 2, 2], [226, 110, 168, 2, 1]]) falling(p, x, y0, y1, w, frame, { spread: sp });
+  // the pool at the bottom, and the spray
+  p.grad(40, 164, 240, 12, ['#5a8a9a', '#3a6a7a']);
+  splash(p, 122, 168, 14, frame); splash(p, 162, 168, 20, frame); splash(p, 200, 168, 10, frame);
+  // ferns and trees down both sides
+  p.rect(0, 70, 56, 110, '#184a22'); p.rect(270, 70, 50, 110, '#184a22');
+  canopy(p, -10, 60, 90, rnd, 18); canopy(p, 262, W + 10, 84, rnd, 18);
+  treeFern(p, 30, 170, 70); treeFern(p, 292, 168, 62);
+  // the road and its railing, along the bottom
+  p.rect(0, 174, W, 26, '#4a4a52'); p.rect(0, 174, W, 2, '#74747c');
+  for (let x = 4; x < W; x += 28) p.rect(x, 188, 14, 2, '#f2e8a0');
+  p.rect(0, 168, W, 3, '#c8c8cc'); p.rect(0, 171, W, 1, '#8a8a90');
+  for (let x = 6; x < W; x += 24) p.rect(x, 168, 3, 8, '#9a9aa0');
+  // Ranger Inés's rain gauge, and the sign at the lookout
+  p.rect(262, 140, 2, 30, '#5a5a62'); p.rect(259, 128, 8, 14, '#cfe6fa'); p.rect(259, 128, 8, 1, '#ffffff'); p.rect(260, 135, 6, 6, '#5d93e6');
+  for (let y = 130; y < 142; y += 3) p.rect(259, y, 2, 1, '#2a2a30');
+  p.rect(44, 150, 3, 22, '#5a3a22'); p.rect(30, 134, 32, 20, '#3a5a2a'); p.rect(32, 136, 28, 16, '#e8dcc0');
+  for (let y = 139; y < 150; y += 3) p.rect(35, y, 22, 1, '#6a5a4a');
+  p.sprite(HERO, HERO_PAL, 130, 162, {});
+  p.sprite(SIDEKICK, SIDEKICK_PAL, 148, 168);
+  p.sprite(PUP, PUP_PAL, 168, 178);
+}
+laCoca.fps = 6;
+
 // ---------------------------------------------------------------------------
 // Icons: small pictures for puzzle boards (the cards in Memoria, the marks in
 // a picture graph, what goes in a tray). Each fits in iconBox and is called
@@ -2061,6 +2145,7 @@ export const scenes = {
   garita,
   tunnel,
   yokahu,
+  'la-coca': laCoca,
   lawn,
   lookout,
   bay: (p, t) => bay(p, 'day', t),
