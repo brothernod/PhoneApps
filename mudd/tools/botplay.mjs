@@ -31,6 +31,7 @@ import { deal, offers, slotCombos } from '../engine/dealer.js';
 import { ARCHETYPES, TILE_COLS, TILE_LINES } from '../engine/puzzles.js';
 import { runQuest, newQuestState, startStory, toggleCrossed, TOYS, GUIDE_SKILL } from '../engine/quest.js';
 import { Pix } from '../engine/art.js';
+import { passwordLayout, encodePassword, decodePassword } from '../engine/password.js';
 import { makeRng, countLines, CARD_COLS, KEY_COLS } from '../engine/util.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -725,6 +726,45 @@ for (const egg of (pack.game.rating || {}).eggs || []) if (!eggCount[egg.id || e
 }
 
 // ---------------------------------------------------------------------------
+// 5. Password backup: every progress a player can have comes back exactly,
+// and a code with one letter changed is turned away.
+
+const layout = passwordLayout(pack, ARCHETYPES, [GUIDE_SKILL]);
+const pwRng = makeRng(777);
+const skillsSeen = new Set(Object.keys(history.skills));
+for (const k of skillsSeen) if (!layout.skills.includes(k)) fail(`password: the skill "${k}" was played but a password can't hold it`);
+let pwChecks = 0, pwLength = 0;
+for (let i = 0; i < 400; i++) {
+  /** @type {any} */
+  const prof = { caught: {}, skills: {}, finales: [] };
+  for (const id of layout.creatures) if (pwRng.next() < 0.6) prof.caught[id] = { n: 1 + Math.floor(pwRng.next() * 8), egg: 1 + Math.floor(pwRng.next() * layout.eggs) };
+  for (const k of layout.skills) if (pwRng.next() < 0.7) prof.skills[k] = { level: 1 + Math.floor(pwRng.next() * 3) };
+  for (const f of layout.finales) if (pwRng.next() < 0.3) prof.finales.push(f);
+  if (i === 0) { prof.caught = {}; prof.skills = {}; prof.finales = []; }    // a brand-new player
+  const code = encodePassword(layout, prof);
+  pwLength = code.replace(/-/g, '').length;
+  const back = decodePassword(layout, code);
+  const want = {
+    caught: Object.fromEntries(Object.entries(prof.caught).map(([id, c]) => [id, { n: c.n, egg: c.egg }])),
+    skills: Object.fromEntries(Object.entries(prof.skills).map(([k, v]) => [k, v.level])),
+    finales: prof.finales,
+  };
+  if (!back.ok || JSON.stringify(back.saved) !== JSON.stringify(want)) { fail(`password: ${code} did not come back as it went in`); break; }
+  // Typed sloppily, it still works.
+  if (!decodePassword(layout, code.toLowerCase().replace(/-/g, ' ').replace(/0/g, 'o')).ok) fail(`password: ${code} typed in lower case with spaces didn't load`);
+  // One letter wrong, it is turned away.
+  const plain = code.replace(/-/g, '');
+  const at = Math.floor(pwRng.next() * plain.length);
+  const alphabet = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+  const other = alphabet[(alphabet.indexOf(plain[at]) + 1 + Math.floor(pwRng.next() * 31)) % 32];
+  const typo = plain.slice(0, at) + other + plain.slice(at + 1);
+  if (decodePassword(layout, typo).ok && typo !== plain) fail(`password: ${typo} (one letter off ${code}) was accepted`);
+  pwChecks++;
+}
+if (pwLength > 28) fail(`password: ${pwLength} letters is too many to write down (limit 28)`);
+if (decodePassword(layout, encodePassword(layout, {}).slice(0, -5)).ok) fail('password: a code with a group missing was accepted');
+
+// ---------------------------------------------------------------------------
 
 const n = stats.finished || 1, onTime = (stats.finished - lateRuns) || 1;
 const places = Math.min(Number(run.places_per_run) || 1, run.pool.length);
@@ -744,6 +784,7 @@ console.log(`eggs: ${((pack.game.rating || {}).eggs || []).map((e) => `${e.name}
   const clockCfg = pack.game.clock || {};
   console.log(`dealt runs, ${playerKind} player: ${at(0.1)} / ${at(0.5)} / ${at(0.9)} minutes used (10th / median / 90th), ${pct(late)} home after sunset (${(Number(clockCfg.sunset) || 1125) - (Number(clockCfg.start) || 540)} minutes in the day); ${eggs}`);
 }
+console.log(`password: ${pwLength} letters, ${pwChecks} round trips and typos checked`);
 console.log(`estimated playtime: ~${(stats.words / n / WORDS_PER_MIN + ((stats.puzzles / n) * SECONDS_PER_PUZZLE + stats.seconds / n) / 60).toFixed(1)} minutes`);
 if (process.env.MUDD_DUMP) (await import('node:fs')).writeFileSync(process.env.MUDD_DUMP, JSON.stringify(dealtRuns));
 if (quick) console.log('MUDD_QUICK: only the dealt runs were played. Run without it before pushing.');
