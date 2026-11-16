@@ -43,6 +43,7 @@ const word = (key, fallback) => (pack && pack.words[key]) || fallback;
 function defaultProfile() {
   return {
     caught: {},   // creature id -> { n: times caught, first: when, last: when, egg: best rating }
+    finales: [],  // once-only endings already played (finales: in game.yaml)
     recent: [],   // the last dozen puzzle kinds played, so the dealer can vary them
     skills: {},
     log: [],
@@ -268,6 +269,8 @@ async function playQuest(run) {
       result: recordResult,
       caught: recordCaught,
       rated: recordRating,
+      progress: () => ({ caught: profile.caught, seen: profile.finales }),
+      finale: (id) => { if (!profile.finales.includes(id)) profile.finales.push(id); saveProfile(); },
       checkpoint: () => {
         store.set(SAVE_KEY, { v: SAVE_VERSION, plan: run.plan, state, ink: story.state.ToJson(), pic: screen.currentPic, lines: screen.transcript() });
         saveProfile();
@@ -310,6 +313,21 @@ function fieldGuide() {
     const ids = Object.keys(pack.creatures);
     const counts = { found: String(caughtCount()), total: String(ids.length), ready: String(hatchable(pack).length) };
     body.appendChild(el('p', 'dim', fill(word('guide_count', '{found} of {total} found.'), counts)));
+    // The once-only endings he has seen get a page of their own, first.
+    const seen = (pack.game.finales || []).filter((f) => profile.finales.includes(f.id));
+    if (seen.length) body.appendChild(el('h3', '', word('guide_finales', 'SPECIAL PAGES')));
+    for (const f of seen) {
+      const card = el('div', 'card special');
+      if (f.pic && pictures.has(f.pic)) {
+        const c = /** @type {HTMLCanvasElement} */ (el('canvas', 'scene'));
+        c.width = 320; c.height = 200;
+        pictures.draw(c, f.pic);
+        card.appendChild(c);
+      }
+      card.appendChild(el('h3', '', f.title || f.id));
+      if (f.guide) card.appendChild(el('p', '', fill(f.guide, pack.cast)));
+      body.appendChild(card);
+    }
     for (const id of ids) {
       const c = pack.creatures[id];
       const got = profile.caught[id];
@@ -377,6 +395,8 @@ function grownUp() {
         return `${pack.creatures[id].name} x${profile.caught[id].n}${egg ? ` (${egg.name})` : ''}`;
       });
       body.appendChild(el('p', '', `Caught: ${got.length ? got.join(', ') : 'none yet'}.`));
+      const fins = (pack.game.finales || []).filter((f) => profile.finales.includes(f.id)).map((f) => f.title || f.id);
+      if ((pack.game.finales || []).length) body.appendChild(el('p', '', `Special endings seen: ${fins.length ? fins.join(', ') : 'none yet'}.`));
     }
     const table = el('table');
     const head = el('tr');

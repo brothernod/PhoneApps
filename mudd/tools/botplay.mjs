@@ -26,7 +26,7 @@ import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import path from 'node:path';
 
-import { eventFits, loadPack, checkPack, compileStory, hatchable, traitKeys, spanishTraits } from '../engine/pack.js';
+import { eventFits, loadPack, checkPack, compileStory, hatchable, traitKeys, spanishTraits, finalesDue } from '../engine/pack.js';
 import { deal, offers, slotCombos } from '../engine/dealer.js';
 import { ARCHETYPES, TILE_COLS, TILE_LINES } from '../engine/puzzles.js';
 import { runQuest, newQuestState, startStory, toggleCrossed, TOYS, GUIDE_SKILL } from '../engine/quest.js';
@@ -507,8 +507,14 @@ async function playRun(plan, history, bot, want = {}) {
       // Walk the levels so every template gets played.
       history.skills[res.skill] = 1 + ((history.skills[res.skill] || 1) % 3);
     },
-    caught: (id) => { caughtNow = id; },
-    rated: (id, r) => { rating = r; },
+    caught: (id) => { caughtNow = id; history.caught[id] = history.caught[id] || { egg: 0 }; },
+    rated: (id, r) => { rating = r; if (history.caught[id]) history.caught[id].egg = Math.max(Number(history.caught[id].egg) || 0, r.rank); },
+    progress: () => ({ caught: history.caught, seen: history.seen }),
+    finale: (id) => {
+      if (history.seen.includes(id)) fail(`${tag}: the finale "${id}" played a second time`);
+      history.seen.push(id);
+      finalesPlayed.add(id);
+    },
     checkpoint: () => {
       if (bot.next() < 0.1) {
         saved = { ink: story.state.ToJson(), state: JSON.parse(JSON.stringify(state)) };
@@ -558,6 +564,8 @@ async function playRun(plan, history, bot, want = {}) {
 
   const rank = rating ? rating.rank : 1;
   history.caught[plan.creature] = { egg: Math.max(rank, (history.caught[plan.creature] || {}).egg || 0) };
+  const left = finalesDue(pack, { caught: history.caught, seen: history.seen });
+  if (left.length) fail(`${tag}: the run ended with the finale "${left[0].id}" earned and not played`);
   history.runs++;
   stats.finished++;
   stats.words += words;
@@ -584,7 +592,8 @@ async function playRun(plan, history, bot, want = {}) {
   }
 }
 
-const newHistory = () => ({ caught: {}, recent: [], skills: {}, runs: 0 });
+const newHistory = () => ({ caught: {}, recent: [], skills: {}, runs: 0, seen: [] });
+const finalesPlayed = new Set(); // once-only endings some run played
 /** The dealt runs (4a) one by one, for the clock and egg report. */
 const dealtRuns = [];
 
@@ -610,7 +619,7 @@ for (let r = 0; r < runs; r++) {
 }
 const dealtCountRuns = stats.played;
 
-let combos = 0, forcedEvents = 0, wrongs = 0, lateRuns = 0;
+let combos = 0, forcedEvents = 0, wrongs = 0, lateRuns = 0, finaleRuns = 0;
 const sunsetAt = Number((pack.game.clock || {}).sunset) || 1125;
 if (!quick) {
 // 4b. Every creature, in every place, with every puzzle its slots can hold.
@@ -667,6 +676,37 @@ for (const id of canHatch) {
   }
 }
 
+// 4g. The once-only endings: the run that catches the last creature, the
+// run that turns the last egg into the best one, and both at once. Each plays
+// exactly once, and never again.
+const eggList = (pack.game.rating || {}).eggs || [];
+for (const f of pack.game.finales || []) {
+  const best = f.eggs !== undefined ? eggList.length - eggList.findIndex((e) => e.id === f.eggs) : 1;
+  for (const id of canHatch) {
+    const h = newHistory();
+    // Everything else done: caught with the egg this finale needs; this one already that good, too, for an eggs: finale.
+    for (const other of canHatch) if (other !== id || f.eggs !== undefined) h.caught[other] = { egg: best };
+    h.seen = (pack.game.finales || []).filter((x) => x.id !== f.id).map((x) => x.id);
+    await playRun(deal(pack, 8000 + finaleRuns, h, { creature: id }), h, bot, { typical: true });
+    if (!h.seen.includes(f.id)) fail(`game.yaml: the finale "${f.id}" did not play when it was earned (${id} last)`);
+    // And never again.
+    const again = h.seen.length;
+    await playRun(deal(pack, 8500 + finaleRuns, h), h, bot, { typical: true });
+    if (h.seen.length !== again) fail(`game.yaml: a finale played twice`);
+    finaleRuns++;
+  }
+}
+{
+  // Both at once: every egg already the best, nothing seen yet.
+  const h = newHistory();
+  for (const id of canHatch) h.caught[id] = { egg: eggList.length };
+  await playRun(deal(pack, 8900, h), h, bot, { typical: true });
+  const want = (pack.game.finales || []).map((f) => f.id);
+  if (h.seen.join() !== want.join()) fail(`game.yaml: with every finale earned at once, ${h.seen.join(', ') || 'none'} played, not ${want.join(', ')}`);
+  finaleRuns++;
+}
+for (const f of pack.game.finales || []) if (!finalesPlayed.has(f.id)) fail(`game.yaml: the finale "${f.id}" never played`);
+
 // 4e. Nothing unreachable, and every puzzle option and toy actually gets played.
 for (const card of Object.values(pack.scenes)) {
   for (const st of card.stitches) if (!visited.has(`${card.id}.${st}`)) fail(`scenes/${card.id}.ink: no run ever reached "= ${st}"`);
@@ -688,7 +728,7 @@ for (const egg of (pack.game.rating || {}).eggs || []) if (!eggCount[egg.id || e
 
 const n = stats.finished || 1, onTime = (stats.finished - lateRuns) || 1;
 const places = Math.min(Number(run.places_per_run) || 1, run.pool.length);
-console.log(`${game}: ${stats.finished}/${stats.played} runs finished (${dealtCountRuns} dealt, ${combos} combinations x3, ${wrongs} wrong guesses, ${lateRuns} late starts, ${stats.resumes} quit-and-continue)`);
+console.log(`${game}: ${stats.finished}/${stats.played} runs finished (${dealtCountRuns} dealt, ${combos} combinations x3, ${wrongs} wrong guesses, ${lateRuns} late starts, ${finaleRuns} finales, ${stats.resumes} quit-and-continue)`);
 console.log(`pack: ${Object.keys(pack.scenes).length} scene cards, ${run.pool.length} in the pool, ${creatureCount} creatures (${canHatch.length} can hatch), ${drawn.length} drawn + ${pack.pngs.length} photo scenes`);
 if (run.pool.length < Number(run.places_per_run)) console.log(`note: the pool has ${run.pool.length} place${run.pool.length === 1 ? '' : 's'}, so a run visits ${places}, not ${run.places_per_run}`);
 console.log(`avg ${Math.round(stats.words / n)} words, ${(stats.puzzles / n).toFixed(1)} puzzles, ${(stats.choices / stats.played).toFixed(1)} choices, ${(stats.detours / n).toFixed(2)} detours; ${measured} question templates fit the card`);
