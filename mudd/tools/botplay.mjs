@@ -41,6 +41,21 @@ const jsyaml = require('../vendor/js-yaml.min.js');
 
 const game = process.argv[2] || 'el-morro';
 const runs = Number(process.argv[3] || 1000);
+// What kind of player the robot is on the dealt runs (4a). The default is a
+// typical player. careful and careless are for tuning the clock and the eggs:
+//   MUDD_PLAYER=careful node mudd/tools/botplay.mjs el-morro 1000
+// MUDD_QUICK=1 plays only the dealt runs and skips the checks that need the
+// rest (every combination, event, detour, and late start). Never push on it.
+const PLAYERS = {
+  //        right: ends right   first: right on the first try, of those   wrong: names a wrong creature first
+  typical:  { right: 0.8,  first: 0.7,  wrong: 0.17 },
+  careful:  { right: 0.97, first: 0.92, wrong: 0.03, near: true },  // near: picks the shorter drive on the map
+  careless: { right: 0.6,  first: 0.4,  wrong: 0.45 },
+};
+const playerKind = process.env.MUDD_PLAYER || 'typical';
+const player = PLAYERS[playerKind];
+if (!player) { console.error(`MUDD_PLAYER must be one of ${Object.keys(PLAYERS).join(', ')}`); process.exit(2); }
+const quick = !!process.env.MUDD_QUICK;
 const base = path.join(root, 'games', game);
 
 const problems = new Set();
@@ -266,7 +281,9 @@ async function playRun(plan, history, bot, want = {}) {
         if (Math.abs(a[0] - b[0]) < 18 && Math.abs(a[1] - b[1]) < 14) fail(`${tag}: ${view.offers[i].name} and ${view.offers[j].name} sit on top of each other on the map`);
       }
       const wanted = view.offers.findIndex((p) => (want.go || []).includes(p.id));
-      return wanted >= 0 ? wanted : Math.floor(bot.next() * view.offers.length);
+      if (wanted >= 0) return wanted;
+      if (!want.typical && player.near) return view.offers.reduce((best, p, i) => (p.drive < view.offers[best].drive ? i : best), 0);
+      return Math.floor(bot.next() * view.offers.length);
     },
     lineup: async (view) => {
       step();
@@ -289,7 +306,7 @@ async function playRun(plan, history, bot, want = {}) {
       const next = wrongFirst.shift();
       if (next && next !== plan.creature) return next;
       // About one run in six names a wrong creature first.
-      if (bot.next() < 0.17) return open[Math.floor(bot.next() * open.length)].id;
+      if (bot.next() < (want.typical ? PLAYERS.typical : player).wrong) return open[Math.floor(bot.next() * open.length)].id;
       return plan.creature;
     },
     toy: async (toy) => {
@@ -310,7 +327,8 @@ async function playRun(plan, history, bot, want = {}) {
     card: {
       open: async (pz) => {
         // About 80% of puzzles end right: most on the first try, some on the second.
-        current = { pz, right: bot.next() < 0.8, first: bot.next() < 0.7, tries: 0 };
+        const who = want.typical ? PLAYERS.typical : player;
+        current = { pz, right: bot.next() < who.right, first: bot.next() < who.first, tries: 0 };
         puzzles++;
         read(pz.question, 'a puzzle question');
         measure(`${tag}: ${pz.skill}`, pz.question, pz.maxLines || MAX_QUESTION_LINES, []);
@@ -555,6 +573,8 @@ async function playRun(plan, history, bot, want = {}) {
     stats.minutes += end - (Number((pack.game.clock || {}).start) || 540);
     if (end > sunset) stats.late++;
   }
+  if (want.dealt) dealtRuns.push({ used: end - (Number((pack.game.clock || {}).start) || 540), left: sunset - end, egg: rating ? rating.egg.id || rating.egg.name : '',
+    share: rating ? (rating.stars + rating.treats) / ((rating.puzzles + rating.treatsTotal) || 1) : 0, firstPick: rating ? rating.firstPick : false });
   for (const card of Object.values(pack.scenes)) {
     for (const st of card.stitches) if (story.state.VisitCountAtPathString(`${card.knot}.${st}`) > 0) visited.add(`${card.id}.${st}`);
   }
@@ -565,6 +585,8 @@ async function playRun(plan, history, bot, want = {}) {
 }
 
 const newHistory = () => ({ caught: {}, recent: [], skills: {}, runs: 0 });
+/** The dealt runs (4a) one by one, for the clock and egg report. */
+const dealtRuns = [];
 
 // 4a. Dealt runs, the way a player meets them: a history that grows from a
 // first visit until every creature is caught and a few runs beyond, then a
@@ -584,12 +606,15 @@ for (let r = 0; r < runs; r++) {
   if (!canHatch.includes(plan.creature)) fail(`quest ${seed}: dealt ${plan.creature}, which has no lair`);
   const uncaught = canHatch.filter((id) => !history.caught[id]);
   if (uncaught.length && !uncaught.includes(plan.creature)) fail(`quest ${seed}: dealt ${plan.creature}, already caught, while ${uncaught.join(', ')} still to find`);
-  await playRun(plan, history, bot);
+  await playRun(plan, history, bot, { dealt: true });
 }
-const dealtRuns = stats.played;
+const dealtCountRuns = stats.played;
 
+let combos = 0, forcedEvents = 0, wrongs = 0, lateRuns = 0;
+const sunsetAt = Number((pack.game.clock || {}).sunset) || 1125;
+if (!quick) {
 // 4b. Every creature, in every place, with every puzzle its slots can hold.
-let combos = 0;
+combos = 0;
 for (const id of canHatch) {
   const lair = pack.scenes[pack.creatures[id].lair];
   for (const place of run.pool) {
@@ -600,7 +625,7 @@ for (const id of canHatch) {
       for (let again = 0; again < 3; again++) {
         const leveled = newHistory();
         leveled.skills = new Proxy({}, { get: (t, k) => (k in t ? t[k] : again + 1) });
-        await playRun(deal(pack, 1000 + combos * 3 + again, newHistory(), force), leveled, bot, { go: [place] });
+        await playRun(deal(pack, 1000 + combos * 3 + again, newHistory(), force), leveled, bot, { go: [place], typical: true });
       }
       combos++;
     }
@@ -608,13 +633,13 @@ for (const id of canHatch) {
 }
 
 // 4f. Every event, on a drive it fits.
-let forcedEvents = 0;
+forcedEvents = 0;
 for (const name of Object.keys(road ? road.events : {})) {
   const place = run.pool.find((p) => eventFits(road.events[name], pack.scenes[p]));
   if (!place) { fail(`scenes/${road.id}.yaml: event "${name}" fits no place in the pool, so the bot can't play it`); continue; }
   const deck = [place, ...run.pool.filter((p) => p !== place)];
   for (let again = 0; again < 4; again++) {
-    await playRun(deal(pack, 9000 + forcedEvents * 4 + again, newHistory(), { deck, events: [name], eventLegs: [0] }), newHistory(), bot, { go: [place] });
+    await playRun(deal(pack, 9000 + forcedEvents * 4 + again, newHistory(), { deck, events: [name], eventLegs: [0] }), newHistory(), bot, { go: [place], typical: true });
   }
   if (!eventsPlayed.has(name)) fail(`event "${name}" was dealt first on the way to ${place}, and did not happen`);
   forcedEvents++;
@@ -622,11 +647,11 @@ for (const name of Object.keys(road ? road.events : {})) {
 
 // 4c. Every wrong guess: each creature that can hatch, with each other
 // creature named first, so every detour is played.
-let wrongs = 0;
+wrongs = 0;
 for (const id of canHatch) {
   for (const other of Object.keys(pack.creatures)) {
     if (other === id) continue;
-    await playRun(deal(pack, 5000 + wrongs, newHistory(), { creature: id }), newHistory(), bot, { wrong: [other] });
+    await playRun(deal(pack, 5000 + wrongs, newHistory(), { creature: id }), newHistory(), bot, { wrong: [other], typical: true });
     if (!detoured.has(other)) fail(`naming ${other} for ${id} did not lead to a detour`);
     wrongs++;
   }
@@ -634,11 +659,10 @@ for (const id of canHatch) {
 
 // 4d. Slow days: runs that start late, so they come home just before sunset,
 // right at it, and well after it. Every ending gets read.
-let lateRuns = 0;
-const sunsetAt = Number((pack.game.clock || {}).sunset) || 1125;
+lateRuns = 0;
 for (const id of canHatch) {
   for (const before of [150, 120, 90, 60, 30, 0, -60]) {
-    await playRun(deal(pack, 7000 + lateRuns, newHistory(), { creature: id }), newHistory(), bot, { start: sunsetAt - before });
+    await playRun(deal(pack, 7000 + lateRuns, newHistory(), { creature: id }), newHistory(), bot, { start: sunsetAt - before, typical: true });
     lateRuns++;
   }
 }
@@ -658,17 +682,30 @@ for (const skill of new Set([...levelsPlayed].map((k) => k.split('@')[0]))) {
 }
 // Every egg can be earned.
 for (const egg of (pack.game.rating || {}).eggs || []) if (!eggCount[egg.id || egg.name]) fail(`game.yaml: no run ever earned the ${egg.name}`);
+}
 
 // ---------------------------------------------------------------------------
 
 const n = stats.finished || 1, onTime = (stats.finished - lateRuns) || 1;
 const places = Math.min(Number(run.places_per_run) || 1, run.pool.length);
-console.log(`${game}: ${stats.finished}/${stats.played} runs finished (${dealtRuns} dealt, ${combos} combinations x3, ${wrongs} wrong guesses, ${lateRuns} late starts, ${stats.resumes} quit-and-continue)`);
+console.log(`${game}: ${stats.finished}/${stats.played} runs finished (${dealtCountRuns} dealt, ${combos} combinations x3, ${wrongs} wrong guesses, ${lateRuns} late starts, ${stats.resumes} quit-and-continue)`);
 console.log(`pack: ${Object.keys(pack.scenes).length} scene cards, ${run.pool.length} in the pool, ${creatureCount} creatures (${canHatch.length} can hatch), ${drawn.length} drawn + ${pack.pngs.length} photo scenes`);
 if (run.pool.length < Number(run.places_per_run)) console.log(`note: the pool has ${run.pool.length} place${run.pool.length === 1 ? '' : 's'}, so a run visits ${places}, not ${run.places_per_run}`);
 console.log(`avg ${Math.round(stats.words / n)} words, ${(stats.puzzles / n).toFixed(1)} puzzles, ${(stats.choices / stats.played).toFixed(1)} choices, ${(stats.detours / n).toFixed(2)} detours; ${measured} question templates fit the card`);
 console.log(`game clock: avg ${Math.round(stats.minutes / onTime)} minutes used, ${stats.late} of ${onTime} runs home after sunset (late starts not counted)`);
 console.log(`eggs: ${((pack.game.rating || {}).eggs || []).map((e) => `${e.name} ${Math.round((100 * (eggCount[e.id || e.name] || 0)) / n)}%`).join(', ')}`);
+{
+  // The dealt runs alone: how the clock and the eggs come out for this player.
+  const d = dealtRuns.length || 1, used = dealtRuns.map((r) => r.used).sort((a, b) => a - b);
+  const at = (q) => used[Math.min(used.length - 1, Math.floor(q * used.length))] || 0;
+  const late = dealtRuns.filter((r) => r.left < 0).length;
+  const pct = (x) => `${Math.round((100 * x) / d)}%`;
+  const eggs = ((pack.game.rating || {}).eggs || []).map((e) => `${e.name} ${pct(dealtRuns.filter((r) => r.egg === (e.id || e.name)).length)}`).join(', ');
+  const clockCfg = pack.game.clock || {};
+  console.log(`dealt runs, ${playerKind} player: ${at(0.1)} / ${at(0.5)} / ${at(0.9)} minutes used (10th / median / 90th), ${pct(late)} home after sunset (${(Number(clockCfg.sunset) || 1125) - (Number(clockCfg.start) || 540)} minutes in the day); ${eggs}`);
+}
 console.log(`estimated playtime: ~${(stats.words / n / WORDS_PER_MIN + ((stats.puzzles / n) * SECONDS_PER_PUZZLE + stats.seconds / n) / 60).toFixed(1)} minutes`);
+if (process.env.MUDD_DUMP) (await import('node:fs')).writeFileSync(process.env.MUDD_DUMP, JSON.stringify(dealtRuns));
+if (quick) console.log('MUDD_QUICK: only the dealt runs were played. Run without it before pushing.');
 if (stats.finished < stats.played) fail(`${stats.played - stats.finished} runs did not finish`);
 finish();

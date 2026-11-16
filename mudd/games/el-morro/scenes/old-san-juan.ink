@@ -5,7 +5,7 @@
 
 Old San Juan. Blue cobblestones, houses painted every color, and the smell of the sea. # clear # pic: old-san-juan
 The footprints are faint here. {pet} pulls toward a little cart with a striped umbrella.
-"¡Buenos días!" calls Don Tito, the piragua man. A piragua is shaved ice with sweet syrup poured on top.
+"¡Buenas tardes!" calls Don Tito, the piragua man. A piragua is shaved ice with sweet syrup poured on top.
 -> choose
 
 = choose

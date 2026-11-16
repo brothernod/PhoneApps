@@ -19,10 +19,17 @@ cast:
   sibling: Quentin
   pet: Cheddar
 
-# Minutes since midnight: 540 is 9:00 AM, 1125 is sunset (6:45 PM).
+# Minutes since midnight: 810 is 1:30 PM, 1125 is sunset (6:45 PM).
+# The day is short on purpose (Phase 7): 315 minutes, so the drives he picks
+# and the puzzles he misses decide whether he beats the sunset. With the bot,
+# a careful player is almost never late, a typical one about 1 run in 12,
+# and a careless one about 1 in 3.
+#   retry: minutes a puzzle solved on the second try costs. A puzzle not
+#          solved at all costs what its card's [@fail] part says.
 clock:
-  start: 540
+  start: 810
   sunset: 1125
+  retry: 10
 
 # The shape of one run: the hub, then places_per_run places chosen on the map
 # from the pool, then the case file, the creature's lair, and the hub again.
@@ -95,7 +102,7 @@ traits:
 #   before_sunset:  home before clock.sunset
 rating:
   eggs:
-    - { id: gold,   name: GOLD EGG,   pic: egg-gold,   stars: 0.8, first_pick: true, before_sunset: true }
+    - { id: gold,   name: GOLD EGG,   pic: egg-gold,   stars: 0.75, first_pick: true, before_sunset: true }
     - { id: silver, name: SILVER EGG, pic: egg-silver, stars: 0.5, before_sunset: true }
     - { id: bronze, name: BRONZE EGG, pic: egg-bronze }
 
@@ -156,6 +163,7 @@ words:
   rate_early: "HOME {left} BEFORE SUNSET"
   rate_late: "HOME AFTER SUNSET, under the stars"
   rate_egg: "YOU EARNED A {egg}!"
+  retry_time: "Second try! That took {n} more minutes."
 
 # Pictures. "# pic: <name>" in a scene card shows a scene drawn in code
 # (pics/drawn.js) or, failing that, a PNG pics/<name>.png listed under png:.
