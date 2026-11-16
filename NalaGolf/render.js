@@ -234,7 +234,7 @@ function ensureLayers(){
     R.bg=mkCanvas(W*px,H*px); const b=R.bg.getContext('2d'); b.setTransform(px,0,0,px,0,0);
     b.fillStyle=C.bg; b.fillRect(0,0,W,H); b.globalAlpha=.5; b.strokeStyle=C.grid; b.lineWidth=1; b.beginPath();
     for(let x=0;x<=W;x+=26){ b.moveTo(x+.5,0); b.lineTo(x+.5,H); } for(let y=0;y<=H;y+=26){ b.moveTo(0,y+.5); b.lineTo(W,y+.5); } b.stroke(); b.globalAlpha=1;
-    if(!R.litPending){ R.litPending=true; setTimeout(()=>{ R.litPending=false; if(L) buildLit(); },40); }   // build the sketch house while the intro card is up
+    if(!R.litPending){ R.litPending=true; setTimeout(()=>{ R.litPending=false; if(L){ buildLit(); for(const o of objs) if(o.knock){ sprite(o,false); sprite(o,true); } } },40); }   // build the sketch house while the intro card is up
   }
   const nk=objs.filter(o=>o.down).map(o=>o.id).join(',');
   if(nk!==R.neonKey){ R.neonKey=nk; buildNeon(); }
@@ -296,13 +296,15 @@ function drawNala(c,x,y,a,o){
   // legs (walk cycle: diagonal pairs) — splay to one side on a flop
   const st=Math.sin(ph)*2.2*mv;
   const legs=[[-11,-8,st],[11,-8,-st],[-11,9,-st],[11,9,st]];
-  for(const [lx,ly,s] of legs){ const fx=fl?lx+(15-lx)*fl*.85+ (ly<0?-2:2)*fl:lx, fy=ly+s;
-    S(el(fx,fy,3+fl*1.6,4-fl*1.2,fl*1.2),NK.leg,1.3); }
+  const FLOP=[[16,-10],[17,-3],[16,6],[17,13]];   // on a flop all four legs stick straight out to one side
+  if(fl) c.rotate(fl*.32);
+  legs.forEach(([lx,ly,s],i)=>{ const fx=lx+(FLOP[i][0]-lx)*fl, fy=ly+s+(FLOP[i][1]-ly)*fl;
+    S(el(fx,fy,3+fl*3.6,4-fl*1.6,0),NK.leg,1.3); });
   // tail nub wag
   const wag=Math.sin(t*(o.sleep?2:mv>.1?18:7))*(o.sleep?.4:1.4);
   S(ci(wag,18.5,3.6),NK.body,1.3);
-  c.save(); if(fl) c.rotate(fl*.12);
-  S(el(0,2,12.5+fl*1.5,16,0),NK.body,1.5);
+  c.save();
+  S(el(fl*1.5,2,12.5+fl*2.5,16,0),NK.body,1.5);
   // back wrinkles: each roll springs on a short delay after a bonk
   const J=(i,k)=>spring(bt-.03*i,2.4*bs*(k||1),6);
   [[-9,1,-3,9],[-10,6,2,10],[-9,11,7,9]].forEach(([x1,y1,cy,x2],i)=>{ const j=J(i+3); Lq(x1-j*.3,y1+j,0,cy+j*1.5,x2+j*.3,y1+j,NK.wr,1,.7); });
@@ -320,7 +322,7 @@ function drawNala(c,x,y,a,o){
   if(o.hero){ c.fillStyle=NK.gold; c.fill(ci(-9,-6+J(1),1.6)); c.fill(ci(9,-6+J(1),1.6)); }
   c.restore();
   // head
-  c.save(); if(fl) c.rotate(-fl*.3); if(o.diz) c.rotate(Math.sin(t*11)*.12*Math.min(1,o.diz));
+  c.save(); if(fl){ c.translate(0,-10); c.rotate(-fl*.55); c.translate(0,10); } if(o.diz) c.rotate(Math.sin(t*11)*.12*Math.min(1,o.diz));
   const hj=J(0,.8);
   S(ci(0,-14+hj*.3,10.5),NK.head,1.5);
   [[-7,-9,-12,7],[-7,-13,-16,7],[-6,-17,-20,6]].forEach(([x1,y1,cy,x2],i)=>{ const j=spring(bt-.02*i,1.8*bs,6); Lq(x1-j*.3,y1+j,0,cy+j*1.4,x2+j*.3,y1+j,NK.wr,1,.75); });
@@ -602,6 +604,8 @@ function render(){
     let f=null, prev=null; for(let i=end;i>=0;i--){ if(!rec.frames[i].reset){ if(!f) f=rec.frames[i]; else { prev=rec.frames[i]; break; } } }
     f=f||{x:L.start.x,y:L.start.y,a:-Math.PI/2};
     const sp=prev?Math.hypot(f.x-prev.x,f.y-prev.y)*60:0, done=rp.i>=rec.frames.length;
+    if(done && !rec.frames[rec.frames.length-1].reset){ const g=goalCenter(), k=clamp(rp.done/.5,0,1), e=1-Math.pow(1-k,3);   // ...and into her bed
+      f={x:f.x+(g.x-f.x)*e,y:f.y+(g.y-f.y)*e,a:f.a}; }
     drawNala(ctx,f.x,f.y,f.a,dogOpts(false,false,{bonk:rp.bonk,speed:done?0:sp,diz:rp.diz,sleep:done}));
     if(done) zzz(f.x,f.y);
     drawWords(true); drawToast(true);
