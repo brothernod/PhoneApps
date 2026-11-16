@@ -10,8 +10,9 @@ keeps its saves.
 
 ## What's playable now
 
-Phases 1 to 6 of the completion plan are built. The whole game is here:
-three of ten places a run, and all eight dragons can hatch.
+All seven phases of the completion plan are built. The whole game is here:
+three of ten places a run, all eight dragons can hatch, and two endings
+wait at the end.
 
 - **Museum.** Doña Luz hands over the casebook, and the empty shell gives the
   first clue
@@ -51,6 +52,20 @@ three of ten places a run, and all eight dragons can hatch.
 - **Home.** The **Code Lock** on the nest case, three endings by the clock,
   and a gold, silver, or bronze egg for the run. The best egg is kept on the
   dragon's Field Guide page
+- **The clock.** The museum visit starts at 1:30 PM and the hatchling must be
+  home by sunset (6:45). Drives cost their minutes, a puzzle solved on the
+  second try costs 10, a miss costs more, and a wrong dragon is a long
+  detour, so the places he picks and how carefully he plays decide whether
+  he beats the sunset. A run home after sunset still catches the dragon but
+  earns the bronze egg
+- **The eggs.** Gold: about three misses at most in a run (a treat that is
+  saved counts like a star), the right dragon on the first pick, and home
+  before sunset. Silver: half the stars and home before sunset. Bronze:
+  everything else
+- **The mother dragon.** After the run that catches the eighth dragon, the
+  mother dragon lands on El Morro at sunset. After the run that makes all
+  eight eggs gold, she comes back and flies everyone over the island at
+  night. Each plays once, and the Field Guide keeps a page for it
 - Seventeen puzzles: **Dragon Hoard** (two-step word problems),
   **Trading Post** (money and change), **Sunset Clock** (time; he types 3:25
   on the pad), **Stepping Stones** (find the rule, fill the missing number),
@@ -81,7 +96,11 @@ three of ten places a run, and all eight dragons can hatch.
   autosave and Continue
 - Difficulty that steps up after 2 right in a row and down after 2 misses
 - Grown-up screen: **hold the top-left corner for 3 seconds**. It has a
-  CHECK PICTURES page that shows every scene and dragon in the pack
+  CHECK PICTURES page that shows every scene and dragon in the pack, and a
+  **password backup**: a 21-letter code for the caught list, the eggs, the
+  special endings, and every skill level. Write it down; typed in on another
+  device (ENTER A PASSWORD), it brings all of that back. A wrong letter is
+  caught, and so is a code from another game or version
 
 ## A game pack
 
@@ -89,7 +108,7 @@ Prose lives in ink, data lives in YAML, and code lives in the engine.
 
 | File in `games/el-morro/` | What it holds |
 | --- | --- |
-| `game.yaml` | Title, cast, clock, the run shape (hub, pool, places per run, the events card and how many events, treats), the traits clues reveal (each with its Spanish, `es:`, for the dragon cards), the eggs a run can earn, the words around the story, and the picture list |
+| `game.yaml` | Title, cast, clock (start, sunset, and what a second try costs), the run shape (hub, pool, places per run, the events card and how many events, treats), the traits clues reveal (each with its Spanish, `es:`, for the dragon cards), the eggs a run can earn, the once-only endings (`finales:`), the words around the story, and the picture list |
 | `scenes/<id>.ink` + `scenes/<id>.yaml` | One scene card per place: the prose, plus its puzzle slots, toys, drive time, and spot on the map. Tags are listed at the top of `scenes/museum.ink`. `scenes/on-the-road` is the event deck |
 | `creatures.yaml` | The creatures: traits and clue lines, sprite, lair, the detour when one is named by mistake, and Field Guide entry |
 | `banks.yaml` | Word-problem templates, rules for the board puzzles, Spanish words and sentences, facts and fibs, puzzle wording, and tunes |
@@ -138,11 +157,42 @@ dealt. A lair belongs to one creature, so its card may name it.
 | `quest.js` | Plays a dealt run: hub, map and places, events on the drives, case file and detours, lair, home, treats, and the rating. Also the casebook |
 | `puzzles.js` | Puzzle rule sets. Each makes a puzzle for a shared answer screen |
 | `screen.js`, `art.js`, `sound.js` | The screen, puzzle card and its boards, map, casebook and lair toys; pictures and icons; and music |
+| `password.js` | The password backup: the profile in a short code and back |
 | `main.js` | Wires it together: title, saves, profile, Field Guide, grown-up screen |
 
 There is no build step. The ink compiles in the browser, so editing a file and
 pushing is enough. If the pack has a mistake, the boot screen names the file
 and line.
+
+## Making a new game
+
+`games/blank/` is the smallest game the engine can play: a clubhouse, two
+places, two critters to find, and one ending. It boots and passes the bot,
+so it is the place to start a new game.
+
+1. Copy `games/blank/` to `games/<your-game>/` (lowercase letters, numbers,
+   and dashes).
+2. In `game.yaml`, set the title, the cast (`hero`, `sibling`, `pet`), the
+   clock, and the run shape. List your places under `run.pool`.
+3. Write one scene card per place: `scenes/<id>.ink` for the story and
+   `scenes/<id>.yaml` for its puzzle slots, drive time, and spot on the map.
+   Each place needs a `# clue` and a `# digit`. Rename the hub card and its
+   parts to fit your game.
+4. In `creatures.yaml`, write the things to find: their traits (from
+   `traits:` in `game.yaml`), the line that turns up for each clue, a sprite,
+   a lair card, and a detour for a wrong guess. A creature with no lair card
+   is in the lineup but never hatches, so you can add them one at a time.
+5. Fill `banks.yaml` with what your puzzles need. `games/el-morro/banks.yaml`
+   has a bank for every kind of puzzle, each with a comment on how to write it.
+6. Draw your pictures in `pics/drawn.js`: one function per scene, listed in
+   `scenes` at the bottom, and the creature shapes.
+7. Play it at `mudd/?game=<your-game>`, and check it:
+   `node mudd/tools/botplay.mjs <your-game> 1000`. The bot names the file
+   and the line of anything that's wrong.
+
+Ids (places and creatures), the cast's names, and the long words of the
+title must not be words the engine itself uses, or the bot fails: that check
+is what keeps every game out of the engine. Pick your own words.
 
 ## Check before pushing
 
@@ -150,6 +200,7 @@ Needs Node:
 
 ```
 node mudd/tools/botplay.mjs el-morro 1000
+node mudd/tools/botplay.mjs blank 1000
 ```
 
 The bot checks the pack, then plays 1,000 dealt runs, picking places on the
@@ -166,13 +217,24 @@ hours; a Memoria word too long for its card; a trait with no Spanish, or
 Spanish too long for a dragon card; dragon cards never shown at both
 levels; a fact without a source; a
 puzzle that offers a treat and has no hint; an event that never happens;
+a finale that doesn't play once when it is earned, or plays twice; a
+password that doesn't bring back what went in, or takes a wrong letter;
 and anything from the pack hard-wired into the engine. A full run takes
 about five minutes.
 
+To tune the clock and the eggs, the bot can play as a different kind of
+player on its dealt runs, and skip the rest:
+`MUDD_PLAYER=careful MUDD_QUICK=1 node mudd/tools/botplay.mjs el-morro 1000`
+(players: `careful`, `typical`, `careless`). It prints how many minutes the
+runs use, how many come home after sunset, and the share of each egg. Run it
+once more without `MUDD_QUICK` before pushing.
+
 ## Not built yet
 
-Phase 7 of the completion plan. It tunes the clock and the eggs, and adds both
-mother-dragon endings, the password backup, and a blank game pack.
+Every phase of the completion plan is built. Before Game 1 is called
+finished, a grown-up reviews every fact against its `source:` (in
+`banks.yaml` and `creatures.yaml`), and Holden plays it on an iPhone until a
+whole round of play turns up nothing new to fix.
 
 ## Credits
 

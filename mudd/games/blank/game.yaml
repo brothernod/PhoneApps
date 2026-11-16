@@ -1,0 +1,86 @@
+# A BLANK GAME PACK. Copy this folder to games/<your-game>/ and change
+# everything in it: this is the smallest game the engine can play, so each
+# file shows its own shape. The README (mudd/README.md) says how, step by step.
+# Play it at mudd/?game=blank. Check it with:
+#   node mudd/tools/botplay.mjs blank 1000
+#
+#   game.yaml        this file: title, cast, run shape, clock, traits, rating, words, pictures
+#   scenes/          one scene card per place: <id>.ink (prose) + <id>.yaml (data)
+#   creatures.yaml   the collectibles: traits, clue lines, sprite, lair, detour
+#   banks.yaml       word problems and the other puzzle banks
+#   pics/            drawn.js: every scene and creature, drawn in code
+#
+# The engine holds no names. Ids here (places, creatures) must not be words
+# the engine itself uses, or the bot fails: pick your own.
+
+title: THE UNTITLED ADVENTURE
+studio: YOUR NAME GAMES
+version: "0.1.0"
+
+# The heroes. Scene cards use these as {hero}, {sibling}, and {pet}.
+cast:
+  hero: Tess
+  sibling: Milo
+  pet: Pip
+
+# Minutes since midnight. 540 is 9:00 AM; 1020 is 5:00 PM.
+#   retry: minutes a puzzle solved on its second try costs
+clock:
+  start: 540
+  sunset: 1020
+  retry: 10
+
+# One run: the hub, then places_per_run places picked on the map from the
+# pool, the case file, the creature's lair, and home to the hub.
+run:
+  hub: clubhouse
+  pool:
+    - meadow
+    - pond
+  places_per_run: 2
+  treats: 2
+
+# What a clue can reveal. Every creature has one value of each trait, and no
+# two creatures share all of them. Add es: to every value to show the
+# lineup cards in Spanish (see El Morro's game.yaml).
+traits:
+  color:
+    title: COLOR
+    values:
+      green: { label: GREEN, clue: is GREEN }
+      gray:  { label: GRAY,  clue: is GRAY }
+  home:
+    title: HOME
+    values:
+      dry: { label: DRY PLACES, clue: likes DRY PLACES }
+      wet: { label: WET PLACES, clue: likes WET PLACES }
+
+# How a run is rated, best egg first. The last egg has no conditions.
+rating:
+  eggs:
+    - { id: gold,   name: GOLD EGG,   stars: 0.75, first_pick: true, before_sunset: true }
+    - { id: silver, name: SILVER EGG, stars: 0.5, before_sunset: true }
+    - { id: bronze, name: BRONZE EGG }
+
+# Endings that play once, the first time they are earned (a "= part" of the
+# hub card). caught: all, or eggs: <egg id> for every creature's best egg.
+finales:
+  - id: all_found
+    part: all_found
+    caught: all
+    title: ALL FOUND!
+    guide: "{hero}, {sibling}, and {pet} found every critter."
+    pic: clubhouse
+
+# Words the engine shows around the story. Leave any out for plain wording.
+words:
+  clues: CLUES
+  guide: FIELD GUIDE
+  case: "WHICH CRITTER IS IT?"
+  caught:
+    - "{name} goes in the Field Guide."
+
+pics:
+  title: title
+  map: map
+  drawn: pics/drawn.js
