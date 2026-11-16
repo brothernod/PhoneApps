@@ -5,7 +5,7 @@
 #   scenes/          one scene card per place: <id>.ink (prose) + <id>.yaml (data)
 #   creatures.yaml   the collectibles: traits, clue lines, sprite, lair, detour, Field Guide entry
 #   banks.yaml       word problems, Spanish words and sentences, facts and fibs, tunes
-#   pics/            scene art: 320x200 PNGs, plus drawn.js for scenes and creatures drawn in code
+#   pics/            drawn.js: every scene, creature, and icon, drawn in code
 
 title: THE DRAGON OF EL MORRO
 studio: HOLDEN A GAME STUDIO
@@ -153,16 +153,10 @@ words:
   rate_egg: "YOU EARNED A {egg}!"
 
 # Pictures. "# pic: <name>" in a scene card shows a scene drawn in code
-# (pics/drawn.js) or, failing that, the PNG pics/<name>.png listed here.
+# (pics/drawn.js) or, failing that, a PNG pics/<name>.png listed under png:.
 pics:
   title: title
   map: map               # the picture the map screen puts its flags on
   drawn: pics/drawn.js
-  png:
-    - old-san-juan
-    - garita
-    - tunnel
-    - yokahu
-    - la-coca
-    - juan-diego
-    - beach
+  # png: [name, ...] would add 320x200 PNGs from pics/. Every picture in this
+  # game is drawn in code, so it lists none.

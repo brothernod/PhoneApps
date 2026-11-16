@@ -1,6 +1,6 @@
 // @ts-check
-// Scenes drawn in code for THE DRAGON OF EL MORRO. Places with a trip photo
-// use the PNG in this folder instead (see pics: in game.yaml).
+// Scenes drawn in code for THE DRAGON OF EL MORRO. Every place is drawn
+// here; the trip photos were only reference.
 // Each scene is a function that paints a 320x200 framebuffer. The hatchlings
 // are drawn here too: the engine asks for one with creature().
 

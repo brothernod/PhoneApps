@@ -69,9 +69,8 @@ three of ten places a run, and all eight dragons can hatch.
   size ("Toca la puerta ROJA y GRANDE") over big and small doors; and a "not"
   sentence ("No es ROJA ni AZUL"). Colores and Hola y Gracias start on level
   2 (`levels:` in `game.yaml`)
-- Every place is meant to be drawn in code, in one style, with the trip
-  photos as reference. The three newest places and all the lairs are drawn.
-  Seven older places still show a converted trip photo until Phase 6
+- Every place, lair, and event is drawn in code in one style, with the
+  trip photos as reference only. The waterfalls and the beach's waves move
 - A caught list that carries across runs, a sunset clock, FM-synth music,
   autosave and Continue
 - Difficulty that steps up after 2 right in a row and down after 2 misses
@@ -88,7 +87,7 @@ Prose lives in ink, data lives in YAML, and code lives in the engine.
 | `scenes/<id>.ink` + `scenes/<id>.yaml` | One scene card per place: the prose, plus its puzzle slots, toys, drive time, and spot on the map. Tags are listed at the top of `scenes/museum.ink`. `scenes/on-the-road` is the event deck |
 | `creatures.yaml` | The creatures: traits and clue lines, sprite, lair, the detour when one is named by mistake, and Field Guide entry |
 | `banks.yaml` | Word-problem templates, rules for the board puzzles, Spanish words and sentences, facts and fibs, puzzle wording, and tunes |
-| `pics/` | `drawn.js`: the scenes, the map, the creatures, and the small icons on puzzle boards, all drawn in code at 320×200. Also the 320×200 PNGs of the places not redrawn yet |
+| `pics/` | `drawn.js`: the scenes, the map, the creatures, and the small icons on puzzle boards, all drawn in code at 320×200. A pack may also list 320×200 PNGs under `pics.png` in `game.yaml`; this one has none |
 
 A place card never names the creature or a puzzle. It marks a puzzle moment
 with `# slot: cart`, a clue with `# clue`, and a lock number with `# digit`,
@@ -164,10 +163,7 @@ about five minutes.
 
 ## Not built yet
 
-Phases 6 and 7 of the completion plan. Phase 6 redraws the seven places
-that still show a trip photo (Old San Juan, the sentry box, the tunnel,
-Yokahú Tower, La Coca Falls, Juan Diego Falls, the beach) and takes the
-PNGs out of the pack. Phase 7 tunes the clock and the eggs, and adds both
+Phase 7 of the completion plan. It tunes the clock and the eggs, and adds both
 mother-dragon endings, the password backup, and a blank game pack.
 
 ## Credits
