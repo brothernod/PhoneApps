@@ -99,6 +99,7 @@ const WORDS = {
   rate_early: 'HOME {left} BEFORE SUNSET',
   rate_late: 'HOME AFTER SUNSET',
   rate_egg: 'YOU EARNED A {egg}!',
+  retry_time: 'Second try! That took {n} more minutes.',
 };
 
 const sum = (obj) => Object.values(obj || {}).reduce((a, b) => a + b, 0);
@@ -349,6 +350,14 @@ export async function runQuest({ pack, plan, story, state, ui, hooks }) {
           });
           hooks.result(res);
           pass = res.pass;
+          // Right on the second try costs clock.retry minutes. A miss costs
+          // what the card's own [@fail] part says.
+          const retry = Number((pack.game.clock || {}).retry) || 0;
+          if (res.pass && !res.firstTry && retry) {
+            vars.minutes = Number(vars.minutes) + retry;
+            status();
+            await say('retry_time', { n: String(retry) }, 'dim');
+          }
           // A first-try solve earns a star for this stop.
           state.tries[card.id] = (state.tries[card.id] || 0) + 1;
           if (res.firstTry) {

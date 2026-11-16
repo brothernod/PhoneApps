@@ -36,7 +36,7 @@
 + [LET'S GO!] -> briefing
 
 = briefing
-Museo de Leyendas, Old San Juan. A quiet morning. # clear # pic: museum
+Museo de Leyendas, Old San Juan. A quiet afternoon. # clear # pic: museum
 Doña Luz, the curator, hurries over with her keys jingling. "¡Ay, bendito! Look at the Sleeping Egg!"
 The glass case is open. The stone-gray egg is cracked... and EMPTY.
 Tiny FOOTPRINTS lead out the door. {pet} sniffs them and wags.

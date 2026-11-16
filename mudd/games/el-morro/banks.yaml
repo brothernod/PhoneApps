@@ -871,8 +871,8 @@ spanish:
 # topic may share a reply.
 hola:
   street:
-    - says: "¡Buenos días! ¿Cómo estás?"
-      en: "Good morning! How are you?"
+    - says: "¡Buenas tardes! ¿Cómo estás?"
+      en: "Good afternoon! How are you?"
       reply: "Muy bien, gracias."
       reply_en: "Very well, thank you."
       hint: "¿CÓMO ESTÁS? asks how you ARE."
