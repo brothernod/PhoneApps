@@ -1,0 +1,11 @@
+# THE CLUBHOUSE: the hub. Every run starts and ends here.
+name: The clubhouse
+role: hub
+casefile: casefile  # the part of clubhouse.ink that plays before the case file opens
+finish: home        # the part that plays when the run comes home
+drive: 10           # minutes on the clock for the drive back
+map: [70, 100]      # where it sits on the map picture
+
+slots:
+  lock:
+    - { puzzle: code_lock }

@@ -1,0 +1,9 @@
+# THE POND: a pool place.
+name: The pond
+role: place
+drive: 30
+map: [250, 130]
+
+slots:
+  snack:
+    - { puzzle: dragon_hoard, topic: snacks }

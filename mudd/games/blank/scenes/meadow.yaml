@@ -1,0 +1,11 @@
+# THE MEADOW: a pool place.
+name: The meadow
+role: place
+drive: 20           # minutes on the clock to get here
+map: [170, 60]      # where it sits on the map picture
+
+# Each slot is one puzzle moment in meadow.ink ("# slot: snack"). A slot can
+# list several puzzles; the dealer picks one each run.
+slots:
+  snack:
+    - { puzzle: dragon_hoard, topic: snacks }

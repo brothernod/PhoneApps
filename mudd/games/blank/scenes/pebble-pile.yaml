@@ -1,0 +1,9 @@
+# THE PEBBLE PILE: Pebble's lair.
+name: The pebble pile
+role: lair
+drive: 25
+map: [270, 50]
+
+slots:
+  count:
+    - { puzzle: dragon_hoard, topic: snacks }

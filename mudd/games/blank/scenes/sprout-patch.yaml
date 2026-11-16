@@ -1,0 +1,19 @@
+# THE SPROUT PATCH: Sprout's lair. A lair belongs to one creature.
+name: The sprout patch
+role: lair
+drive: 15
+map: [130, 160]
+
+slots:
+  count:
+    - { puzzle: dragon_hoard, topic: snacks }
+
+# Toys: small things to do with the picture. Nothing is scored.
+#   spot: tap something in the picture. at: [x, y, width, height]
+# Keep boxes out of the top-left corner (the grown-up corner).
+toys:
+  leaf:
+    kind: spot
+    at: [150, 110, 24, 24]
+    prompt: "TAP the leaf that MOVES"
+    miss: "Not that one. Look for a leaf that wiggles."

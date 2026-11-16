@@ -1,0 +1,40 @@
+# Content banks. A slot picks a bank by topic: { puzzle: dragon_hoard, topic: snacks }.
+# Names in {braces} are filled in by the game. Each puzzle kind's bank is
+# shaped like El Morro's (games/el-morro/banks.yaml has one of every kind).
+
+praise: ["RIGHT!", "YES!", "GREAT!"]
+
+# Word problems: level 1, 2, and 3. vars: are ranges for the letters, where:
+# keeps only the numbers that make sense, answer: is the math.
+dragon_hoard:
+  snacks:
+    - level: 1
+      vars: { a: [2, 9], b: [2, 9] }
+      text: "{pet} found {a} crackers, then {b} more. How many crackers is that?"
+      hint: "Add the two piles together."
+      explain: "{a} + {b} = {answer}."
+      answer: "a + b"
+    - level: 2
+      vars: { a: [12, 40], b: [3, 11] }
+      where: "a > b"
+      text: "{sibling} had {a} grapes and ate {b}. How many grapes are left?"
+      hint: "Take away the ones he ate."
+      explain: "{a} - {b} = {answer}."
+      answer: "a - b"
+    - level: 3
+      vars: { a: [3, 6], b: [3, 9], c: [1, 9] }
+      where: "a * b > c"
+      text: "There are {a} bags with {b} nuts in each. {pet} ate {c}. How many nuts are left?"
+      hint: "First {a} groups of {b}. Then take away {c}."
+      explain: "{a} x {b} = {a*b}. {a*b} - {c} = {answer}."
+      answer: "a * b - c"
+
+# Music and sounds, by name. notes: are NOTE+OCTAVE:BEATS, and - is a rest.
+tunes:
+  title:  { tempo: 150, notes: "C5:1 E5:1 G5:1 C6:3 G5:1 E5:1 C5:4" }
+  ending: { tempo: 140, notes: "G4:1 C5:1 E5:1 G5:3 E5:1 C6:4" }
+  right:  { tempo: 320, notes: "C5:1 E5:1 G5:1 C6:3" }
+  miss:   { tempo: 240, notes: "E4:1 C4:3" }
+  find:   { tempo: 300, notes: "G5:1 C6:1 E6:2" }
+  hatch:  { tempo: 260, notes: "C5:1 E5:1 G5:1 C6:3" }
+  disk:   { tempo: 400, notes: "A2:1 -:1 A2:1 C3:4" }

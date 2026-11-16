@@ -1,0 +1,36 @@
+# The creatures. Each one needs every trait from game.yaml (is: and a found:
+# line), a sign: for a clue moment past the traits, a sprite: (a shape from
+# pics/drawn.js and its colors), a lair: card, and a detour: for when it is
+# named by mistake. A fact: needs a source:, which the game never shows.
+
+sprout:
+  name: SPROUT
+  based_on: seedling
+  lair: sprout-patch
+  sprite: { shape: sprout, body: "#5ab04a", dark: "#2f7d33", belly: "#c8e890", trim: "#f2c531" }
+  traits:
+    color: { is: green, found: "{sibling} finds a leaf with a tiny GREEN smudge on it." }
+    home:  { is: dry,   found: "The trail stays on the DRY path and goes around every puddle." }
+  sign: "a trail of little seeds"
+  detour:
+    place: The garden
+    drive: 20
+    lines:
+      - "The garden is quiet. No critter here."
+  # fact: "A true fact for the Field Guide."
+  # source: "Where it came from"
+
+pebble:
+  name: PEBBLE
+  based_on: river stone
+  lair: pebble-pile
+  sprite: { shape: pebble, body: "#9a9aa8", dark: "#5a5a6a", belly: "#d0d0dc", trim: "#5a8ad6" }
+  traits:
+    color: { is: gray, found: "{pet} sniffs a GRAY rock that wasn't there before." }
+    home:  { is: wet,  found: "The tracks go straight into the WET mud." }
+  sign: "a wet, round print"
+  detour:
+    place: The rock pile
+    drive: 20
+    lines:
+      - "Just rocks. None of them roll away."
