@@ -153,8 +153,16 @@ for (let li = 0; li < nLv; li++) {
   console.log(`\n== ${li + 1}. ${L.name} ==`);
   console.log(`path start→goal ${dGoal(L.start.x, L.start.y).toFixed(0)} px` + (tr ? ` · start→treat ${dTreat(L.start.x, L.start.y).toFixed(0)} px · treat→goal ${dGoal(tr.x, tr.y).toFixed(0)} px` : ''));
   for (const e of L.ents) { const d = dGoal(e.x, e.y); if (!isFinite(d)) console.log(`  !! ${e.k} at ${e.x},${e.y} is unreachable`); }
-  const furn = objs.filter(o => !o.ent), tight = [];
-  for (let i = 0; i < furn.length; i++) for (let j = i + 1; j < furn.length; j++) { const d = shapeGap(furn[i], furn[j]); if (d >= 2 * G.R && d < 6 * G.R) tight.push(`${furn[i].name}↔${furn[j].name} ${d.toFixed(0)}px`); }
+  // only gaps you can actually roll into: the midpoint between the two shapes must be open floor
+  const furn = objs.filter(o => !o.ent && o.name !== 'squeaky toy'), tight = [];
+  const near = (o, x, y) => o.t === 'r' ? [Math.max(o.x, Math.min(x, o.x + o.w)), Math.max(o.y, Math.min(y, o.y + o.h))] : (() => { const d = Math.hypot(x - o.x, y - o.y) || 1; return [o.x + (x - o.x) / d * o.r, o.y + (y - o.y) / d * o.r]; })();
+  for (let i = 0; i < furn.length; i++) for (let j = i + 1; j < furn.length; j++) {
+    const a = furn[i], b = furn[j], d = shapeGap(a, b); if (d < 2 * G.R || d >= 6 * G.R) continue;
+    let pa = near(a, b.t === 'c' ? b.x : b.x + b.w / 2, b.t === 'c' ? b.y : b.y + b.h / 2), pb = near(b, pa[0], pa[1]); pa = near(a, pb[0], pb[1]);
+    const mx = (pa[0] + pb[0]) / 2, my = (pa[1] + pb[1]) / 2;
+    if (blockedAt(furn.filter(o => o !== a && o !== b), mx, my, 1) || mx < 20 || mx > 380 || my < 70 || my > 680) continue;
+    tight.push(`${a.name}↔${b.name} ${d.toFixed(0)}px @${mx.toFixed(0)},${my.toFixed(0)}`);
+  }
   console.log(tight.length ? `tight gaps (<78px): ${tight.join(', ')}` : 'tight gaps: none');
   const perfect = rate(dGoal, 'goal', 0, 0, 1);
   const human = rate(dGoal, 'goal', 5, .10, TRIALS);

@@ -209,7 +209,7 @@ function win(){
   state='winning'; winT=0; dog.vx=dog.vy=0; dog.from={x:dog.x,y:dog.y};
   stats.best=saveBest(L.name,attempt,stats.shots);
   const g=goalCenter(); sfx('win'); buzz([30,40,30]);
-  addWord(pick(['GOOD GIRL!','SHE DID IT!','WHAT A GIRL!']),g.x+40,g.y+40,1.3,'#ffd27a');
+  addWord(pick((GOALFX[L.goal.kind]||GOALFX.bed).words),clamp(g.x+40,90,W-90),clamp(g.y+40,HUD+40,H-40),1.3,'#ffd27a');
 }
 
 /* ---------- recap ---------- */
