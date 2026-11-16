@@ -41,15 +41,20 @@ A small, silly phone game for Ashley (and Corbin) about **Nala**, their shar-pei
 
 ## Art style
 
-**Chosen style: _NOT YET PICKED_.** The five options are on the Design canvas:
+**Chosen style: #2, Glow-in-the-Dark Neon** (picked 2026-11-16). The canvas board is `project/Neon.dc.html`.
 
-1. Daredevil Sonar
-2. Glow-in-the-Dark Neon
-3. Bedtime Storybook
-4. 16-bit Pixel
-5. Chalk Mental Map
+- Background: deep indigo `#0b0620` with a faint grid `#2a1859`.
+- Furniture lights up as **cyan neon tubes** (`#29f6ff`) when revealed.
+- The sonar ring is **magenta** (`#ff3df2`), and the scent hint is a soft yellow glow (`#ffe066`).
+- Nala is a **warm-orange neon outline** (`#ffb36b`) with her wrinkles, neck roll and dark muzzle traced in the tubes.
+- Binx: black body, purple `#b44dff` rim and yellow eyes. Stella: a thin grey neon outline.
+- Fonts: **Audiowide** for titles and bonk words, **Space Grotesk** for body text and the HUD.
 
-Jonathan fills this in before Phase 2. Phase 1 does not depend on it.
+**Nala must look great.** She is the star, and her outline should read as *her* (shar-pei rolls, hippo muzzle) at phone size.
+
+The "lights on" look (the replay and win reveal) is still open. Phase 1 makes 5 options to choose from; Jonathan picks one before Phase 2.
+
+The other four day-one styles stay on the canvas for reference only: 1 Daredevil Sonar, 3 Bedtime Storybook, 4 16-bit Pixel, 5 Chalk Mental Map.
 
 ---
 
@@ -57,7 +62,7 @@ Jonathan fills this in before Phase 2. Phase 1 does not depend on it.
 
 Each phase has a ready-to-paste kickoff prompt. Paste it into a new conversation with this repo attached.
 
-### Phase 1 — Core rework (mechanics, no art) · effort: **medium**
+### Phase 1 — Core rework (mechanics, no final art) + lights-on art options · effort: **medium-high**
 
 Kickoff: `Read NalaGolf/PLAN.md in brothernod/PhoneApps and do Phase 1.`
 
@@ -73,13 +78,23 @@ Kickoff: `Read NalaGolf/PLAN.md in brothernod/PhoneApps and do Phase 1.`
 - [ ] Keep the 2 POC levels working (loosen POC level 2). Add a treat, Stella and Binx to each for testing.
 - [ ] Headless smoke test: Playwright loads the page, makes a shot, forces a win, and the replay runs with no console errors.
 - [ ] Commit + push. Update the Phase log.
+- [ ] **Lights-on art options:** add **5 new artboards** to the existing Design canvas (https://claude.ai/artifact/B6K5u2dghaGohhQ8vztego) showing the *lights-on* view (the instant replay and win reveal, with the whole house visible) in five different takes that all work with the Neon dark mode. Ideas to start from:
+  - neon blueprint (cyan line drawing of the whole house)
+  - "black-light party" (everything fluorescent)
+  - warm lamplight (cozy room with neon accents)
+  - retro arcade attract-screen
+  - photo-negative / x-ray
+  
+  Each board should show the replay path, bonk markers, Nala in her bed, Stella and Binx, and the results stats strip. Put them in a new row under the existing boards, with a title note "Lights-on options". Jonathan picks one and records it in the Art style section above before Phase 2.
 
-### Phase 2 — Art pass in the chosen style · effort: **high**
+### Phase 2 — Art pass in Neon · effort: **high**
 
-Kickoff: `Read NalaGolf/PLAN.md in brothernod/PhoneApps and do Phase 2. Art style: <name>.`
+Kickoff: `Read NalaGolf/PLAN.md in brothernod/PhoneApps and do Phase 2. Lights-on style: <name>.`
 
-- [ ] Rewrite `render.js` drawing in the chosen style. Match the matching Design canvas board for palette, fonts and treatments, and use the "Nala's look" spec above.
-- [ ] Draw Nala in that style: walking pose, squash on bonk, dizzy stars, and a flop on fail.
+- [ ] Rewrite `render.js` drawing in the Neon style (canvas board `project/Neon.dc.html`), using the "Nala's look" spec above. The lights-on view (replay and win) uses the lights-on option Jonathan picked.
+- [ ] **Make Nala look great** in neon: shar-pei rolls, a thick neck fold, hippo muzzle and tight ears, all readable at phone size. Iterate on screenshots until she's clearly *Nala*, not a generic dog.
+- [ ] Draw Nala's poses: walking, dizzy stars, and a flop on fail.
+- [ ] **Bonk animation (delightful, top priority):** on impact Nala squashes flat against the surface, the neon tube flickers like a sign getting smacked, her wrinkles jiggle (each roll wobbles on a short spring delay), and she springs back. Hard hits add a cartoon "boing" stretch plus orbiting stars. Scale it with impact speed, and keep the light-tap version subtle.
 - [ ] Draw Stella (thin, grey) and Binx (black cat, yellow eyes), plus their pop-up toasts.
 - [ ] Draw furniture in the "lights on" view (replay and win) so each item reads clearly: couch, coffee table, dresser, bed, space heater, lamps, plant, TV stand, fridge, counter, kitchen table, chairs, trash, water bowl, laundry basket, shoes, radiator, toys.
 - [ ] Redo the sonar reveal, BONK words, knock-over debris and the scent hint in the style.
@@ -121,4 +136,4 @@ Kickoff: `Read NalaGolf/PLAN.md in brothernod/PhoneApps and do Phase 4.`
 
 Update this after every phase: what was done, what changed from the plan, and any open issues.
 
-- **Phase 0 (done, 2026-11-16):** Single-file POC with 2 levels, sonar pings, knock-overs, replay, results and workshop settings. Pushed as `NalaGolf/index.html`. Five art-style boards are on the Design canvas, with Nala, Stella and Binx updated to match the photos and descriptions.
+- **Phase 0 (done, 2026-11-16):** Single-file POC with 2 levels, sonar pings, knock-overs, replay, results and workshop settings. Pushed as `NalaGolf/index.html`. Five art-style boards are on the Design canvas, with Nala, Stella and Binx updated to match the photos and descriptions. **Style #2 Neon chosen.** Bonk animation and lights-on options added to the plan.
