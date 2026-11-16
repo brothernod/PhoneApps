@@ -251,13 +251,20 @@ export function buy(db, id, kid) {
 // Free on Chill and Cozy. Hard 25 and Extreme 50 for every player (kids pay the same, Jonathan's
 // call), in dailies, past days, Climb holds and Bonus Yards alike. A puzzle that already paid out
 // (a replay after Start over) has nothing left to earn, so its hints are free.
+// v1.28: the price is split across the two taps. The lesson (where to look + the technique's name)
+// is 1/5 of it, the answer the other 4/5: Hard 5 + 20, Extreme 10 + 40.
 export const SNIFF_PRICE = { hd: 25, hc: 25, hb: 25, xd: 50, xc: 50, xb: 50 };
-export const sniffPrice = (db, pid) => (db.paid?.[pid] ? 0 : SNIFF_PRICE[String(pid).split(':')[0]] ?? 0);
-// Spend coins on one Sniff. Returns false (and spends nothing) if the player can't afford it.
-export function paySniff(db, pid) {
+// part: 'look' (tap 1), 'answer' (tap 2), or leave it out for the whole step.
+export function sniffPrice(db, pid, part) {
+  const all = db.paid?.[pid] ? 0 : SNIFF_PRICE[String(pid).split(':')[0]] ?? 0;
+  const look = all / 5;
+  return part === 'look' ? look : part === 'answer' ? all - look : all;
+}
+// Spend coins on one part of a Sniff. Returns false (and spends nothing) if the player can't afford it.
+export function paySniff(db, pid, part) {
   shopDefaults(db);
-  const cost = sniffPrice(db, pid);
-  if (db.coins < cost) return false;
-  db.coins -= cost;
+  const cost = sniffPrice(db, pid, part);
+  if (!(Number(db.coins) >= cost)) return false;
+  db.coins = Number(db.coins) - cost;
   return true;
 }

@@ -4,7 +4,7 @@ import { ITEMS, SLOTS, item, outfit, colorsOf, baseId, ownsLine, priceFor, shopD
 
 // ---------- constants ----------
 const NAME = 'Halina'; // the Default player's name until they set their own in Settings
-const VERSION = '1.27'; // bump with CACHE in sw.js on every release
+const VERSION = '1.28'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const YARD_NAMES = ['pink', 'purple', 'blue', 'mint', 'yellow', 'orange', 'red', 'lavender', 'teal', 'lime']; // how Sniff names each yard color
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
@@ -341,7 +341,13 @@ function renderClimb() {
 let G = null; // current game
 let tick = null;
 
+// Every level opens on the plum (dark) paw, whatever color was picked last.
+function plumPaws() {
+  db.settings.pawColor = 0; save();
+  document.querySelectorAll('#swatches .sw').forEach((x) => x.classList.toggle('on', x.dataset.k === '0'));
+}
 function play(pid) {
+  db.settings.pawColor = 0; save();
   const P = load(pid);
   let saved = prog(pid);
   // A bonus yard's board can change when the pool grows (laps start later), so drop progress from another board.
@@ -357,7 +363,9 @@ function play(pid) {
     hints: saved?.hints ?? 0,
     rating: saved?.rating,
     solvedAt: saved?.solvedAt,
-    sn: saved?.sn || null, // the last Sniff: { k: step key, s: 1 look / 2 answer, f: a free peek (answer not paid) }
+    // The last Sniff: { k: step key, a: answer paid }. Before v1.28 it was { k, s, f }: f was a free
+    // peek (answer not paid); otherwise the whole step was paid.
+    sn: saved?.sn ? ('a' in saved.sn ? saved.sn : { k: saved.sn.k, a: !saved.sn.f }) : null,
     history: [],
   };
   if (G.solved) { G.cells = G.cells.map((v, i) => (G.sol[Math.floor(i / G.n)] === i % G.n ? CORGI : v === CORGI ? EMPTY : v)); }
@@ -374,7 +382,7 @@ function play(pid) {
       <button class="tool" id="clearpaws"><span class="e">🧽</span>Clear paws</button>
     </div>`;
   $('play').querySelector('.back').onclick = () => { stopClock(); P.kind === 'c' ? renderClimb() : renderHome(); };
-  $('restart').onclick = () => confirmSheet('Start this puzzle over?', 'Your corgis and paw marks will be cleared.', () => { snapshot(); G.cells.fill(EMPTY); G.treats = 3; G.solved = false; persist(); drawBoard(); drawTreats(); say(''); startClock(); });
+  $('restart').onclick = () => confirmSheet('Start this puzzle over?', 'Your corgis and paw marks will be cleared.', () => { snapshot(); G.cells.fill(EMPTY); G.treats = 3; G.solved = false; persist(); plumPaws(); drawBoard(); drawTreats(); say(''); startClock(); });
   $('undo').onclick = undo;
   // Tapping Cheddar's bubble also puts a Sniff clue away.
   $('play').querySelector('.bubble').onclick = () => { if (sniffShown()) dismissSniff(); };
@@ -617,16 +625,16 @@ function outOfTreats() {
   sheet(`<div style="width:120px;margin:0 auto">${cheddarLoaf(dressed())}</div><h3>Snack break!</h3>
     <p>Cheddar ate all the treats. Want to try this puzzle again from the start?</p>
     <button class="cta" id="again">Try again</button><button class="cta alt" id="home2">Home</button>`);
-  $('again').onclick = () => { closeSheet(); G.cells.fill(EMPTY); G.treats = 3; G.history = []; persist(); drawBoard(); drawTreats(); say('Fresh start! You\'ve got this.'); startClock(); };
+  $('again').onclick = () => { closeSheet(); G.cells.fill(EMPTY); G.treats = 3; G.history = []; persist(); plumPaws(); drawBoard(); drawTreats(); say('Fresh start! You\'ve got this.'); startClock(); };
   $('home2').onclick = () => { closeSheet(); G.treats = 3; G.cells.fill(EMPTY); persist(); renderHome(); };
 }
 
 // ---------- Sniff (hints) ----------
 // Sniff finds the next logical step from the board as it is (engine.js sniff(): the lowest rung of
 // the SPEC ladder that makes progress) and shows it in two taps: first where to look and the
-// technique's name, then the answer with the cells that justify it. On Hard and Extreme a Sniff
-// costs coins (shop.js sniffPrice); one price covers both taps of the same step. A player who
-// can't afford it still gets the "where to look" tap free. Plum paws on a corgi spot come first.
+// technique's name, then the answer with the cells that justify it. On Hard and Extreme each tap
+// costs coins (shop.js sniffPrice): the lesson is 1/5 of the price, the answer the other 4/5.
+// Plum paws on a corgi spot come first, at the lesson price.
 const TECH = ['', 'Last spot', 'Confined', 'Would block', 'Pair lock', 'Group lock', 'What if'];
 let snMemo = { cells: '', st: null };
 // What Sniff knows: corgis, and the cells known to be empty (red paws, auto paws, plum paws).
@@ -717,36 +725,54 @@ function showAnswer(st) {
   else for (const i of st.cells) b.children[i].insertAdjacentHTML('beforeend', `<span class="snx">${paw(false)}</span>`);
   say(explain(st).answer, false, true, true);
 }
-// The Sniff button: the nose, "Sniff" and the price (Hard/Extreme), or "Show me" when the
-// answer to the step already paid for is one tap away. Greyed after a free peek the player can't pay for.
+// The Sniff button: the nose and what the next tap costs. "Sniff" + the lesson price (Hard/Extreme),
+// "Answer" + the answer price once the lesson for this step is bought, or "Show me" when the answer
+// is already paid (or free). Greyed when the next tap costs more than the player has.
 function sniffButton() {
   const btn = $('hint'), lbl = $('hintlbl');
   if (!btn || !G) return;
-  const st = G.solved ? null : sniffStep(), price = sniffPrice(db, G.pid);
-  const same = st && G.sn && G.sn.k === stepKey(st) && st.type !== 'wrong';
-  const poor = same && G.sn.f && db.coins < price;
-  btn.classList.toggle('poor', !!poor);
-  lbl.innerHTML = same && !G.sn.f ? 'Show me' : price && !G.solved ? `Sniff <small>${coin(price)}</small>` : 'Sniff';
-  btn.setAttribute('aria-label', same && !G.sn.f ? 'Show me the answer' : price ? `Sniff for ${price} coins` : 'Sniff for a hint');
+  const st = G.solved ? null : sniffStep();
+  const look = sniffPrice(db, G.pid, 'look'), ans = sniffPrice(db, G.pid, 'answer');
+  const mine = st && G.sn && G.sn.k === stepKey(st) && st.type !== 'wrong';
+  const free = mine && (G.sn.a || !ans);
+  const price = !st || free ? 0 : mine ? ans : look;
+  btn.classList.toggle('poor', price > 0 && db.coins < price);
+  lbl.innerHTML = free ? 'Show me' : mine ? `Answer <small>${coin(ans)}</small>` : price ? `Sniff <small>${coin(look)}</small>` : 'Sniff';
+  btn.setAttribute('aria-label', free ? 'Show me the answer' : mine ? `Show the answer for ${ans} coins` : price ? `Sniff for ${look} coins` : 'Sniff for a hint');
 }
-function spendSheet(price, ok) {
-  sheet(`<div class="bignose">${sniffIcon()}</div><h3>Sniff for ${coin(price)}?</h3>
-    <p>You have ${coin(db.coins)}. Cheddar shows where to look first; if you need it, the answer is the next tap, free.</p>
-    <button class="cta" id="ok">Sniff ${coin(price)}</button><button class="cta alt" id="no">Not now</button>`);
-  $('ok').onclick = () => { closeSheet(); ok(); };
-  $('no').onclick = closeSheet;
+// Ask before spending. Pays first, and only then closes the sheet and shows the clue, so a tap can
+// never close the sheet without either paying and showing, or saying why not.
+function spendSheet(part, price, ok) {
+  const ans = sniffPrice(db, G.pid, 'answer');
+  sheet(part === 'look'
+    ? `<div class="bignose">${sniffIcon()}</div><h3>Sniff for ${coin(price)}?</h3>
+      <p>You have ${coin(db.coins)}. Cheddar shows where to look and names the trick to use. Try it yourself; if you still need it, the answer is ${coin(ans)} more.</p>
+      <button class="cta" id="snok">Sniff ${coin(price)}</button><button class="cta alt" id="snno">Not now</button>`
+    : `<div class="bignose">${sniffIcon()}</div><h3>Answer for ${coin(price)}?</h3>
+      <p>You have ${coin(db.coins)}. Cheddar shows the exact move and why it works.</p>
+      <button class="cta" id="snok">Show me ${coin(price)}</button><button class="cta alt" id="snno">Not now</button>`);
+  const box = $('sheet');
+  box.querySelector('#snok').onclick = () => {
+    const paid = paySniff(db, G.pid, part);
+    closeSheet();
+    if (!paid) { sniffButton(); return say(`That costs ${price} coins and you have ${db.coins}. Solve a puzzle or two to earn more!`, true); }
+    save(); ok();
+  };
+  box.querySelector('#snno').onclick = closeSheet;
 }
 function hint() {
   if (G.solved) return;
   const st = sniffStep();
   if (!st) return;
-  const key = stepKey(st), price = sniffPrice(db, G.pid);
-  // Second tap on the same step: the answer (already paid for), or a reminder after a free peek.
+  const key = stepKey(st), look = sniffPrice(db, G.pid, 'look'), ans = sniffPrice(db, G.pid, 'answer');
+  // Second tap on the same step: the answer. Free if already bought (or in a free mode), else ask.
   if (G.sn?.k === key && st.type !== 'wrong') {
-    if (!G.sn.f) { G.sn.s = 2; persist(); showAnswer(st); return; }
-    if (db.coins < price) return showLook(st, ` The answer costs ${price} coins and you have ${db.coins}. Solve a puzzle or two to earn more!`);
-    return spendSheet(price, () => { if (!paySniff(db, G.pid)) return; save(); G.sn = { k: key, s: 2, f: false }; persist(); sniffButton(); showAnswer(st); });
+    const answer = () => { G.sn = { k: key, a: true }; persist(); sniffButton(); showAnswer(st); };
+    if (G.sn.a || !ans) return answer();
+    if (db.coins < ans) return showLook(st, ` The answer costs ${ans} coins and you have ${db.coins}. Solve a puzzle or two to earn more!`);
+    return spendSheet('answer', ans, answer);
   }
+  // First tap: the lesson (where to look + the technique). Wrong plum paws come first, at the same price.
   const go = () => {
     G.hints++;
     if (st.type === 'wrong') {
@@ -759,18 +785,14 @@ function hint() {
       say(`Cheddar smelled a corgi under ${k === 1 ? 'one of your paw marks' : `${k} of your paw marks`}, so he took ${k === 1 ? 'it' : 'them'} off. Look at the glowing spot${k === 1 ? '' : 's'}!`, false, true, true);
       return;
     }
-    G.sn = { k: key, s: 1, f: false }; persist(); sniffButton(); showLook(st);
+    G.sn = { k: key, a: false }; persist(); sniffButton(); showLook(st);
   };
-  if (!price) return go();
-  if (db.coins < price) {
-    // Can't afford it: a free peek at where to look. The answer stays locked.
+  if (!look) return go();
+  if (db.coins < look) {
     if (st.type === 'wrong') return say('Hmm, one of your paw marks is on a corgi spot. Check your paws!', false, true);
-    G.hints++;
-    G.sn = { k: key, s: 1, f: true }; persist(); sniffButton();
-    showLook(st, ` Free peek: the answer costs ${price} coins.`);
-    return;
+    return say(`A Sniff costs ${look} coins and you have ${db.coins}. Solve a puzzle or two to earn more!`, true);
   }
-  spendSheet(price, () => { if (!paySniff(db, G.pid)) return; save(); go(); });
+  spendSheet('look', look, go);
 }
 
 function win() {
@@ -956,7 +978,7 @@ function help() {
     <p>Tap for a 🐾 paw mark (“no corgi here”); tap it again to remove it. <b>Double-tap</b> to place a corgi. Drag to paw-mark lots of cells; start a drag on a paw to erase instead.</p>
     <p>Pick a paw color under the board to brainstorm "what if" ideas in different colors. Double-tap a color to clear just those paws.</p>
     <p>${isKid() ? 'Ready for more? Try <b>🌈 Cozy</b> on the home screen.' : mode() === 'extreme' ? '<b>⚡ Extreme</b> boards need a "what if": picture a corgi on a spot, follow the corgis it forces, and if a row, column or yard runs out of room, that spot is out. No guessing needed, just looking ahead.' : mode() === 'hard' ? 'Breezing through? Switch to <b>⚡ Extreme</b> on the home screen.' : 'Want more challenge? Switch to <b>🔥 Hard</b> or <b>⚡ Extreme</b> on the home screen.'}</p>
-    <p>A wrong corgi costs a treat. Stuck? Tap <b>Sniff</b>: Cheddar shows where to look, and tap again for the answer. Tap <b>Undo</b> to put a clue away.${mode() === 'hard' || mode() === 'extreme' ? ` In ${MODES[mode()].label} a Sniff costs ${coin(mode() === 'hard' ? 25 : 50)} (free on a puzzle you already solved).` : ''}</p>
+    <p>A wrong corgi costs a treat. Stuck? Tap <b>Sniff</b>: Cheddar shows where to look, and tap again for the answer. Tap <b>Undo</b> to put a clue away.${mode() === 'hard' || mode() === 'extreme' ? ` In ${MODES[mode()].label} the where-to-look tap costs ${coin(mode() === 'hard' ? 5 : 10)} and the answer ${coin(mode() === 'hard' ? 20 : 40)} more (free on a puzzle you already solved).` : ''}</p>
     <button class="cta" id="gotit">Let's go!</button>`);
   $('gotit').onclick = () => { db.seenHelp = true; save(); closeSheet(); };
 }
@@ -1139,7 +1161,7 @@ function welcomeSheet() {
   const u = unlocked; unlocked = []; // scenes and frames their Climb progress already earned
   const kid = isKid();
   sheet(`<div style="width:120px;margin:0 auto">${cheddarLoaf(dressed())}</div><h3>Welcome to the closet!</h3>
-    <p>Solve puzzles to earn coins, then spend them on outfits for Cheddar. Hints are free in Chill and Cozy; in Hard and Extreme a Sniff costs ${coin(25)} / ${coin(50)}.</p>
+    <p>Solve puzzles to earn coins, then spend them on outfits for Cheddar. Hints are free in Chill and Cozy; in Hard and Extreme, where to look costs ${coin(5)} / ${coin(10)} and the answer ${coin(20)} / ${coin(40)} more.</p>
     ${w.coins || w.start ? `<div class="earn">${coinIcon()} +${w.coins + w.start} coins${w.coins ? `<span>for ${w.puzzles} puzzle${w.puzzles === 1 ? '' : 's'} you already solved${w.start ? `, plus ${w.start} to start` : ''}</span>` : `<span>to start you off</span>`}</div>` : ''}
     <p>${kid ? 'Everything in the closet is half price for you!' : 'Every puzzle pays once. Today\'s daily pays the most.'}</p>
     ${u.length ? `<p>Your climbing also earned:</p><div class="ulist">${u.map(({ kind, it }) => `<div>${kind === 'scene' ? sceneThumb(it) : `<div class="fthumb" style="margin:0 auto 4px">${miniBoard(it, 54)}</div>`}${kind === 'scene' ? it.name : `${it.name} frame`}</div>`).join('')}</div>` : ''}
