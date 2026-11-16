@@ -72,7 +72,7 @@ function loadLevel(i){
   stats={shots:0,bonks:0,knocked:[],by:{},treats:0,stella:0,binx:0};
   state='intro'; showIntro(true);
 }
-function resetDog(){ dog={x:L.start.x,y:L.start.y,vx:0,vy:0,a:-Math.PI/2,squash:0,dizzy:0}; }
+function resetDog(){ dog={x:L.start.x,y:L.start.y,vx:0,vy:0,a:-Math.PI/2,squash:0,dizzy:0,bonk:null}; }
 function resetTry(){ for(const o of objs) if(o.ent){ o.used=false; o.gone=false; } }
 function newAttempt(){
   resetDog(); resetTry(); shotsLeft=settings.shots; attempt++; aim=null; toast=null; hudFx=[];
@@ -112,6 +112,8 @@ function collide(o){
     if(o.mat==='cat'){ const kick=o.ent==='binx'&&!o.used?280:120; dog.vx+=nx*kick; dog.vy+=ny*kick; }
     const sp=Math.hypot(dog.vx,dog.vy), cap=MAXSPEED*1.15;
     if(sp>cap){ dog.vx*=cap/sp; dog.vy*=cap/sp; }
+    // bonk animation: squash against the surface (normal points from the surface to Nala)
+    if(-vn>25 || o.ent) dog.bonk={nx,ny,str:clamp(-vn/650,.12,1),t:0};
     onHit(o,-vn,cx,cy);
   }
 }
@@ -127,7 +129,7 @@ function onHit(o,imp,x,y){
     o.cd=.18; stats.bonks++; stats.by[o.name]=(stats.by[o.name]||0)+1;
     const m=MAT[o.mat], w=pick(m.words);
     addWord(w,x,y,str); sfx(m.snd,str); sfx('ping',str);
-    rec.events.push({f:rec.frames.length,k:'hit',x,y,w,snd:m.snd});
+    const b=dog.bonk; rec.events.push({f:rec.frames.length,k:'hit',x,y,w,snd:m.snd,nx:b?b.nx:0,ny:b?b.ny:-1,str});
     if(imp>480){ dog.dizzy=1.6; }
     dog.squash=Math.min(1,str*1.2); buzz(Math.round(10+25*str));
   }
@@ -214,13 +216,14 @@ function win(){
 function startRecap(){
   hideCard(); state='recap'; pings=[]; words=[]; parts=[]; toast=null; banner=null;
   const n=rec.frames.length;
-  rp={i:0,speed:Math.max(2.5,n/(9*60)),ev:0,bonks:0,knocked:new Set(),gone:new Set(),used:new Set(),att:1,done:0,shown:false,sb:3};
+  rp={i:0,speed:Math.max(2.5,n/(9*60)),ev:0,bonks:0,knocked:new Set(),gone:new Set(),used:new Set(),att:1,done:0,shown:false,sb:3,bonk:null,diz:0};
 }
 function updateRecap(dt){
   rp.i+=rp.speed*dt*60; rp.sb=Math.min(3,rp.sb+dt*9);
+  if(rp.bonk) rp.bonk.t+=dt*Math.min(2,rp.speed*.6); rp.diz=Math.max(0,rp.diz-dt);
   while(rp.ev<rec.events.length && rec.events[rp.ev].f<=rp.i){
     const e=rec.events[rp.ev++];
-    if(e.k==='hit'){ rp.bonks++; addWord(e.w,e.x,e.y,.5); pings.push({x:e.x,y:e.y,t:0,life:.6,maxR:55}); if(rp.sb>=1){ rp.sb--; sfx(e.snd,.35);} }
+    if(e.k==='hit'){ rp.bonks++; rp.bonk={nx:e.nx||0,ny:e.ny||-1,str:e.str||.5,t:0}; if((e.str||0)>.85) rp.diz=1; addWord(e.w,e.x,e.y,.5); pings.push({x:e.x,y:e.y,t:0,life:.6,maxR:55}); if(rp.sb>=1){ rp.sb--; sfx(e.snd,.35);} }
     if(e.k==='knock'){ rp.knocked.add(e.id); addWord(e.w,e.x,e.y-10,1,'#ffd27a'); sfx(e.snd,.7); spawnDebris(e.x,e.y,e.cols); }
     if(e.k==='reset'){ rp.gone.clear(); rp.att++; }
     if(e.k==='treat'){ rp.gone.add(e.id); addWord('+1 TREAT!',e.x,e.y-12,.8,'#ffe066'); sfx('pickup'); }
@@ -263,8 +266,8 @@ document.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
 
 /* ---------- UI cards ---------- */
 function hideCard(){ ov.classList.add('hidden'); }
-function showCard(html,btns,revFooter){
-  card.innerHTML=html;
+function showCard(html,btns,revFooter,theme){
+  card.innerHTML=html; card.className='card'+(theme?' '+theme:''); ov.className=theme||'';
   const row=document.createElement('div'); row.className='row';
   (btns||[]).forEach(b=>{ const el=document.createElement('button'); el.textContent=b.t; if(b.primary) el.className='primary'; if(b.disabled) el.disabled=true; el.onclick=()=>{ensureAudio(); b.fn();}; row.appendChild(el); });
   card.appendChild(row);
@@ -302,18 +305,19 @@ function showResults(){
   const top=Object.entries(stats.by).sort((a,b)=>b[1]-a[1])[0];
   const last=lvlIdx>=LEVELS.length-1, nb=stats.best||{};
   const fx=[stats.treats&&`🍪 ${stats.treats} treat${stats.treats>1?'s':''}`,stats.stella&&`🐕 Stella pep talks ×${stats.stella}`,stats.binx&&`🐈‍⬛ Binx smacks ×${stats.binx}`].filter(Boolean).join(' · ');
-  showCard(`<div class="kicker">Level ${lvlIdx+1} complete</div><h2>Good girl, Nala! ${L.emoji}</h2>
-    <div class="title">“${rating()}”</div>
-    <ul class="stats">
-      <li><b>${attempt}</b> attempt${attempt>1?'s':''} · <b>${stats.shots}</b> shot${stats.shots!==1?'s':''}${nb.tries||nb.shots?' <span class="newbest">NEW BEST!</span>':''}</li>
-      <li><b>${stats.bonks}</b> bonks</li>
-      ${top?`<li>Most bonked: <b>${/^[A-Z]/.test(top[0])?top[0]:'the '+top[0]}</b> ×${top[1]}</li>`:''}
-      <li>Casualties: <b>${stats.knocked.length?stats.knocked.join(', '):'none! suspicious.'}</b></li>
-      ${fx?`<li>${fx}</li>`:''}
-      <li class="small">🏆 Best: ${bestText(L.name)}</li>
-    </ul>`,
-    [{t:'📼 Replay',fn:startRecap},{t:'↻ Retry',fn:()=>loadLevel(lvlIdx)},
-     {t:last?'Back to level 1':'Next level →',primary:true,fn:()=>loadLevel(last?0:lvlIdx+1)}]);
+  const tb=top?top[0]:'—';
+  showCard(`<div class="kicker">Level ${lvlIdx+1} complete</div>
+    <div class="rhead"><h2>Good girl, Nala!</h2><div class="title">“${rating()}”</div></div>
+    <div class="grid">
+      <div><b>${attempt}</b><span>tr${attempt===1?'y':'ies'}</span></div>
+      <div><b>${stats.shots}</b><span>shot${stats.shots!==1?'s':''}</span></div>
+      <div><b>${stats.bonks}</b><span>bonks</span></div>
+      <div><b>${top?'×'+top[1]:'0'}</b><span>${top?tb:'no bonks?!'}</span></div>
+    </div>
+    ${nb.tries||nb.shots?'<div class="nbwrap"><span class="newbest">NEW BEST!</span></div>':''}
+    <div class="small">Casualties: <b>${stats.knocked.length?stats.knocked.join(' · '):'none! suspicious.'}</b>${fx?`<br>${fx}`:''}<br>🏆 Best: ${bestText(L.name)}</div>`,
+    [{t:'Replay',fn:startRecap},{t:'Retry',fn:()=>loadLevel(lvlIdx)},
+     {t:last?'Back to level 1':'Next level →',primary:true,fn:()=>loadLevel(last?0:lvlIdx+1)}],false,'paper');
 }
 function showSettings(){
   const chk=(k,label,sub)=>`<label><span>${label}<small>${sub}</small></span><input type="checkbox" data-k="${k}" ${settings[k]?'checked':''}></label>`;
@@ -345,7 +349,7 @@ function update(dt){
   for(const o of objs){ o.glow=Math.max(0,o.glow-dt*.9); o.cd-=dt; }
   for(const p of prints) p.age+=dt; prints=prints.filter(p=>p.age<3);
   for(const f of hudFx) f.t+=dt; hudFx=hudFx.filter(f=>f.t<.9);
-  dog.squash=Math.max(0,dog.squash-dt*4); dog.dizzy=Math.max(0,dog.dizzy-dt);
+  dog.squash=Math.max(0,dog.squash-dt*4); dog.dizzy=Math.max(0,dog.dizzy-dt); if(dog.bonk){ dog.bonk.t+=dt; if(dog.bonk.t>1.2) dog.bonk=null; }
   if(banner){ banner.t+=dt; if(banner.t>2.8) banner=null; }
   if(toast){ toast.t+=dt; if(toast.t>(state==='recap'?1.6:3.2)) toast=null; }
   if(state==='moving') physics(dt);

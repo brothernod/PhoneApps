@@ -5,7 +5,9 @@
    Level fields:
      name, emoji, start{x,y}, intro (Ashley's directions)
      goal: {t:'r',x,y,w,h,kind:'bed'} or {t:'c',x,y,r,kind:'bone'}  — Nala only has to TOUCH it
-     decor: non-solid floor shapes drawn in the lights-on view (e.g. a table she fits under)
+     floors: [{x,y,w,h,kind:'wood'|'carpet'|'tile'}] room floors for the lights-on view (default wood)
+     decor: non-solid things drawn in the lights-on view: {x,y,w,h,kind:'rug'|'runner'|'table',name}
+            ('table' = a table she fits under; its solid legs live in objs)
      objs(): solid things. Rc(x,y,w,h,name,mat,extra) / Ci(x,y,r,name,mat,extra)
              extra.knock = {at:impactSpeed, snd, word, msg, cols} → falls over, stays down for the level
      ents: characters & pickups, each once per try:
@@ -32,7 +34,8 @@ const LEVELS=[
 { name:'Bedtime', emoji:'🛏️', start:{x:110,y:640},
   goal:{t:'r',x:30,y:80,w:100,h:70,kind:'bed'},
   intro:'Hey Nala, it’s bedtime! Go straight up past the couch. Turn right at the coffee table, then head up through the bedroom door. Hang a left at the dresser — your bed is right next to the space heater.',
-  decor:[],
+  floors:[{x:20,y:70,w:360,h:230,kind:'carpet'},{x:20,y:312,w:360,h:368,kind:'wood'},{x:250,y:300,w:80,h:12,kind:'wood'}],
+  decor:[{x:80,y:324,w:140,h:76,kind:'rug'}],
   ents:[{k:'treat',x:48,y:338},{k:'stella',x:300,y:565},{k:'binx',x:290,y:465}],
   objs:()=>[...walls(),
     Rc(20,300,230,12,'wall','wall'), Rc(330,300,50,12,'wall','wall'),
@@ -50,7 +53,8 @@ const LEVELS=[
 { name:'Bone Hunt', emoji:'🦴', start:{x:320,y:110},
   goal:{t:'c',x:120,y:605,r:11,kind:'bone'},
   intro:'Bone time, Nala! Head down the hallway — mind the shoes. Hang a right into the kitchen; the trash can is right by the door. Your bone rolled under the kitchen table, so squeeze in between the legs.',
-  decor:[{x:62,y:557,w:116,h:96,name:'kitchen table (you fit under it!)'}],
+  floors:[{x:20,y:70,w:230,h:220,kind:'carpet'},{x:262,y:70,w:118,h:610,kind:'wood'},{x:20,y:300,w:230,h:380,kind:'tile'},{x:250,y:450,w:12,h:130,kind:'tile'}],
+  decor:[{x:282,y:84,w:76,h:140,kind:'runner'},{x:62,y:557,w:116,h:96,kind:'table',name:'kitchen table (you fit under it!)'}],
   ents:[{k:'treat',x:44,y:662},{k:'stella',x:322,y:640},{k:'binx',x:195,y:350}],
   objs:()=>[...walls(),
     Rc(20,290,230,10,'wall','wall'), Rc(250,70,12,380,'wall','wall'), Rc(250,580,12,100,'wall','wall'),

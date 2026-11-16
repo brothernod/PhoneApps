@@ -8,8 +8,25 @@ Checks: page loads with the rev stamp, a real drag shot fires, the treat / Stell
 each change the move count, a forced win runs the replay through to the results card,
 best scores are saved, and nothing logs a console error.
 """
-import sys, json
+import sys, json, os
 from playwright.sync_api import sync_playwright
+
+# Google Fonts: serve local copies if NALA_FONTS points at a folder with audiowide.woff2 /
+# space-grotesk-{400,600,700}.woff2 (e.g. from @fontsource), otherwise stub them out so an
+# offline sandbox doesn't count the blocked request as a console error.
+FONTS = os.environ.get('NALA_FONTS')
+def route_fonts(route):
+    url = route.request.url
+    if 'fonts.googleapis.com' in url:
+        css = ''
+        if FONTS:
+            css = "@font-face{font-family:Audiowide;src:url(https://fonts.gstatic.com/local/audiowide.woff2)}" + ''.join(
+                f"@font-face{{font-family:'Space Grotesk';font-weight:{w};src:url(https://fonts.gstatic.com/local/space-grotesk-{w}.woff2)}}" for w in (400, 600, 700))
+        return route.fulfill(status=200, content_type='text/css', body=css)
+    name = url.rsplit('/', 1)[-1]
+    if FONTS and os.path.exists(os.path.join(FONTS, name)):
+        return route.fulfill(status=200, content_type='font/woff2', body=open(os.path.join(FONTS, name), 'rb').read())
+    return route.fulfill(status=404, body='')
 
 URL = sys.argv[1] if len(sys.argv) > 1 else 'http://localhost:8765/NalaGolf/'
 SHOTS = sys.argv[2] if len(sys.argv) > 2 else None
@@ -32,7 +49,8 @@ def bump_into(pg, kind):
 with sync_playwright() as p:
     b = p.chromium.launch()
     pg = b.new_page(viewport={'width': 390, 'height': 760}, device_scale_factor=2)
-    pg.on('console', lambda m: errs.append(m.text) if m.type == 'error' else None)
+    pg.route('**/fonts.googleapis.com/**', route_fonts); pg.route('**/fonts.gstatic.com/**', route_fonts)
+    pg.on('console', lambda m: errs.append(m.text) if m.type == 'error' and 'gstatic' not in m.text else None)
     pg.on('pageerror', lambda e: errs.append(str(e)))
     pg.goto(URL); pg.wait_for_timeout(500)
     check('rev ' in pg.inner_text('#card'), 'intro card shows rev stamp')

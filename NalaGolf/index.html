@@ -4,50 +4,76 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Nala's Bonk Golf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-html,body{margin:0;height:100%;background:#000;overflow:hidden;touch-action:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#eee;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
-#wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+:root{--ink:#0b0620;--bar:#120a2e;--line:#3a1f6e;--cyan:#29f6ff;--mag:#ff3df2;--yel:#ffe066;--pur:#b44dff;--nala:#ffb36b;--txt:#efe9ff;--dim:#b3a6d9}
+html,body{margin:0;height:100%;background:var(--ink);overflow:hidden;touch-action:none;font-family:"Space Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--txt);-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+#wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--ink)}
 canvas{display:block;touch-action:none}
 #hud{position:fixed;display:flex;align-items:center;justify-content:flex-end;gap:6px;padding-right:8px;box-sizing:border-box;z-index:5;pointer-events:none}
-#hud button{pointer-events:auto;background:rgba(255,255,255,.09);border:none;color:#fff;font-size:17px;width:38px;height:34px;border-radius:9px;cursor:pointer}
-#ov{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.62);z-index:10;padding:16px;box-sizing:border-box}
+#hud button{pointer-events:auto;width:38px;height:38px;border-radius:11px;border:1px solid var(--line);background:#1a0f3d;color:var(--cyan);display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+#hud button:active{background:#2a1859}
+#hud button svg{width:21px;height:21px}
+#hud.lit button{background:#efe3cb;border-color:#4a3426;color:#4a3426}
+#ov{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(5,2,18,.66);z-index:10;padding:16px;box-sizing:border-box}
+#ov.paper{background:rgba(40,26,14,.28)}
 #ov.hidden{display:none}
-.card{background:#17120f;border:1px solid #3d2c22;border-radius:18px;padding:20px 18px;max-width:350px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.6);max-height:90vh;overflow:auto}
-.card h2{margin:2px 0 10px;font-size:23px}
-.card .kicker{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#e0624f;font-weight:700}
-.bubble{background:#2a1f19;border-radius:14px;padding:12px 14px;line-height:1.45;font-size:15.5px;margin:8px 0 12px;position:relative}
-.bubble b{color:#ffb38a}
-.small{font-size:13px;color:#b9a99c;line-height:1.45}
-.how{background:#100c0a;border-radius:12px;padding:10px 12px;margin:10px 0;font-size:13px;line-height:1.5;color:#cdbdb0}
+.card{background:#140a33;border:1.5px solid var(--line);border-radius:18px;padding:20px 18px;max-width:350px;width:100%;box-shadow:0 0 0 1px rgba(180,77,255,.18),0 0 28px rgba(180,77,255,.35),0 12px 40px rgba(0,0,0,.6);max-height:90vh;overflow:auto;box-sizing:border-box}
+.card h2{margin:2px 0 10px;font:400 22px/1.2 Audiowide,"Space Grotesk",sans-serif;color:var(--cyan);text-shadow:0 0 10px rgba(41,246,255,.55)}
+.card .kicker{font:400 12px Audiowide,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--mag);text-shadow:0 0 8px rgba(255,61,242,.5)}
+.bubble{background:#1a0f3d;border:1px solid var(--line);border-radius:14px;padding:12px 14px;line-height:1.45;font-size:15.5px;margin:8px 0 12px}
+.bubble b{color:var(--nala)}
+.small{font-size:13px;color:var(--dim);line-height:1.5}
+.small b{color:var(--nala)}
+.how{background:#0f0828;border:1px solid #24134d;border-radius:12px;padding:10px 12px;margin:10px 0;font-size:13px;line-height:1.55;color:#c9bfe8}
+.how b{color:var(--cyan);font-weight:600}
 .row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
-.row button{padding:11px 16px;border-radius:11px;border:none;background:#332822;color:#fff;font-size:15px;cursor:pointer;font-weight:600}
-.row button.primary{background:#e0453a}
+.row button{padding:11px 16px;border-radius:12px;border:1px solid var(--line);background:#1a0f3d;color:var(--cyan);font:600 15px "Space Grotesk",system-ui,sans-serif;cursor:pointer}
+.row button.primary{background:var(--mag);border-color:var(--mag);color:#22052a;box-shadow:0 0 14px rgba(255,61,242,.6)}
 .row button:disabled{opacity:.35}
 .stats{list-style:none;padding:0;margin:10px 0;font-size:15px;line-height:1.75}
-.stats b{color:#ffb38a}
-.title{font-size:18px;font-weight:700;color:#ffd27a;margin:4px 0 6px}
-.set label{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #2a201a;font-size:15px}
+.stats b{color:var(--nala)}
+.title{font:400 15px Audiowide,sans-serif;color:var(--yel);margin:4px 0 6px}
+.set label{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #24134d;font-size:15px}
 .set label span{display:block}
-.set label small{display:block;color:#9d8d80;font-size:12px;margin-top:2px}
-.set input[type=checkbox]{width:22px;height:22px;accent-color:#e0453a;flex:none}
-.set select{font-size:15px;background:#2a1f19;color:#fff;border:1px solid #4a3a30;border-radius:8px;padding:4px 6px}
-.newbest{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:8px;background:#ffd27a;color:#2a1a0a;font-size:11px;font-weight:800;letter-spacing:.06em}
-.set button{font-size:14px;background:#332822;color:#fff;border:none;border-radius:8px;padding:6px 12px}
-.rev{margin-top:12px;text-align:center;font-size:11px;color:#6f6157;letter-spacing:.04em}
+.set label small{display:block;color:#8f84b5;font-size:12px;margin-top:2px}
+.set input[type=checkbox]{width:22px;height:22px;accent-color:var(--mag);flex:none}
+.set select{font:15px "Space Grotesk",sans-serif;background:#1a0f3d;color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:4px 6px}
+.set button{font:14px "Space Grotesk",sans-serif;background:#1a0f3d;color:var(--cyan);border:1px solid var(--line);border-radius:8px;padding:6px 12px}
+.newbest{display:inline-block;padding:2px 8px;border-radius:8px;background:var(--yel);color:#2a1a0a;font:400 11px Audiowide,sans-serif;letter-spacing:.06em}
+.rev{margin-top:12px;text-align:center;font-size:11px;color:#6d5f98;letter-spacing:.04em}
+/* lights-on (Storybook Sketch) cards: the results card sits over the lit replay */
+.card.paper{background:#f7efdf;border-color:#4a3426;color:#2b2420;box-shadow:0 6px 22px rgba(0,0,0,.28)}
+.card.paper h2{color:#4a3426;text-shadow:none;margin:0;font-size:19px}
+.card.paper .kicker{color:#b0523f;text-shadow:none}
+.card.paper .title{color:#d42fc8;margin:0;font-size:13px}
+.card.paper .small{color:#4a4038}
+.card.paper .small b{color:#4a3426}
+.card.paper .row button{background:#efe3cb;border-color:#4a3426;color:#4a3426}
+.card.paper .row button.primary{background:var(--mag);border-color:#4a3426;color:#2a0626;box-shadow:none}
+.card.paper .rev{color:#9a8a78}
+.rhead{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
+.grid{display:flex;gap:4px;margin:6px 0 10px;padding:8px 0;border-top:1px dashed #c9ad86;border-bottom:1px dashed #c9ad86}
+.grid div{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
+.grid b{font:400 20px Audiowide,sans-serif;color:#2b2420}
+.grid span{font-size:11px;color:#4a4038;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.nbwrap{text-align:center;margin:-2px 0 8px}
 </style>
 </head>
 <body>
 <div id="wrap"><canvas id="c"></canvas></div>
 <div id="hud">
-  <button id="bDir" title="Directions">📜</button>
-  <button id="bRst" title="Restart this attempt">↻</button>
-  <button id="bSet" title="Workshop settings">⚙️</button>
+  <button id="bDir" title="Directions" aria-label="Directions"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M3 6l5-2 6 2 5-2v13l-5 2-6-2-5 2z"/><path d="M8 4v13M14 6v13"/></svg></button>
+  <button id="bRst" title="Restart this attempt" aria-label="Restart attempt"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 11a6 6 0 1 0 2-4.5"/><path d="M5 3.5v4h4"/></svg></button>
+  <button id="bSet" title="Workshop settings" aria-label="Settings"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="3"/><path d="M11 2.5v2.6M11 16.9v2.6M2.5 11h2.6M16.9 11h2.6M5 5l1.8 1.8M15.2 15.2L17 17M5 17l1.8-1.8M15.2 6.8L17 5"/></svg></button>
 </div>
 <div id="ov" class="hidden"><div class="card" id="card"></div></div>
-<script src="version.js?v=202611161751"></script>
-<script src="levels.js?v=202611161751"></script>
-<script src="audio.js?v=202611161751"></script>
-<script src="game.js?v=202611161751"></script>
-<script src="render.js?v=202611161751"></script>
+<script src="version.js?v=202611161824"></script>
+<script src="levels.js?v=202611161824"></script>
+<script src="audio.js?v=202611161824"></script>
+<script src="game.js?v=202611161824"></script>
+<script src="render.js?v=202611161824"></script>
 </body>
 </html>
