@@ -28,7 +28,8 @@ wait at the end.
   wind, the shark statue. Three of them carry a puzzle
 - **The casebook.** The CASEBOOK button opens it any time, even in the middle
   of a puzzle: clues, lock numbers, stars, and the lineup of all eight
-  dragons, which he can cross out
+  dragons, which he can cross out. Once the case file is waiting to open,
+  the CASEBOOK button opens the case file instead
 - **Case File.** He names the dragon from the lineup. The clues in the
   casebook are in English, but the dragon cards show their traits in
   Spanish (ESCAMAS, EN LO ALTO, HACE RUIDO), so he has to match the two. At

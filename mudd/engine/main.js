@@ -13,7 +13,7 @@ import { runQuest, newQuestState, startStory, casebook, toggleCrossed, TOYS, GUI
 import { clock, fill, store } from './util.js';
 import { passwordLayout, encodePassword, decodePassword } from './password.js';
 
-const VERSION = 'MUDD 0.7.0';
+const VERSION = 'MUDD 0.7.1';
 const SAVE_VERSION = 7;
 
 // Which game: ?game=<folder> in the address, or data-game on the page.
@@ -202,6 +202,14 @@ const bookWords = () => ({
   case_not: word('case_not', 'NOT THIS ONE'),
 });
 
+/**
+ * Set while the run waits on OPEN THE CASE FILE. The casebook and the case
+ * file look alike, so tapping CASEBOOK then opens the case file (where he can
+ * name the creature) instead of the casebook (where he can only cross out).
+ * @type {(() => void) | null}
+ */
+let caseWaiting = null;
+
 /** Cross a creature out or bring it back. Says whether it is crossed out now. */
 function crossOut(id) {
   if (!live) return false;
@@ -211,6 +219,7 @@ function crossOut(id) {
 
 function openBook() {
   if (!live || screen.overlay.querySelector('.pagebox')) return;
+  if (caseWaiting) { caseWaiting(); return; }
   const { plan, state } = live;
   screen.nudgeBook(false);
   screen.page(word('book', 'CASEBOOK'), (body) => screen.bookBody(body, casebook(pack, plan, state, skillOf(GUIDE_SKILL).level), { words: bookWords(), toggle: crossOut }));
@@ -252,8 +261,17 @@ async function playQuest(run) {
     },
     map: async (view) => { await screen.waitIfUnread(); return screen.map(view); },
     lineup: async (view) => {
-      if (screen.unread) await screen.waitTap(word('case_open', 'OPEN THE CASE FILE'));
+      // One way in: the button, or the CASEBOOK tab, which stops pulsing here.
       screen.nudgeBook(false);
+      if (screen.unread) {
+        await Promise.race([
+          screen.waitTap(word('case_open', 'OPEN THE CASE FILE')),
+          new Promise((r) => { caseWaiting = () => r(undefined); }),
+        ]);
+        caseWaiting = null;
+        screen.unread = false;
+        screen.clearControls();
+      }
       return screen.page(word('case', 'CASE FILE'), (body, el, done) => {
         screen.bookBody(body, view, { words: bookWords(), toggle: crossOut, pick: done });
       }, { back: '' });
