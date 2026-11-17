@@ -2,22 +2,38 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Nala's Bonk Golf</title>
+<meta name="description" content="A dark house, a blind shar-pei, and a lot of bonks. For Ashley & Corbin.">
+<meta name="theme-color" content="#0b0620">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Nala Golf">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#0b0620;--bar:#120a2e;--line:#3a1f6e;--cyan:#29f6ff;--mag:#ff3df2;--yel:#ffe066;--pur:#b44dff;--nala:#ffb36b;--txt:#efe9ff;--dim:#b3a6d9}
 html,body{margin:0;height:100%;background:var(--ink);overflow:hidden;touch-action:none;font-family:"Space Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--txt);-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
-#wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--ink)}
+/* safe areas: #wrap's padding is read by resize() so the 400×700 world sits clear of the notch and home bar */
+#wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--ink);box-sizing:border-box;
+  padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
 canvas{display:block;touch-action:none}
 #hud{position:fixed;display:flex;align-items:center;justify-content:flex-end;gap:6px;padding-right:8px;box-sizing:border-box;z-index:5;pointer-events:none}
 #hud button{pointer-events:auto;width:38px;height:38px;border-radius:11px;border:1px solid var(--line);background:#1a0f3d;color:var(--cyan);display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
 #hud button:active{background:#2a1859}
+#hud.off{display:none}
 #hud button svg{width:21px;height:21px}
 #hud.lit button{background:#efe3cb;border-color:#4a3426;color:#4a3426}
-#ov{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(5,2,18,.66);z-index:10;padding:16px;box-sizing:border-box}
+#ov{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(5,2,18,.66);z-index:10;box-sizing:border-box;
+  padding:calc(16px + env(safe-area-inset-top,0px)) calc(16px + env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) calc(16px + env(safe-area-inset-left,0px))}
+/* title + end cards sit low so the neon scene above stays visible */
+#ov.front{background:transparent;align-items:flex-end;pointer-events:none;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}
+#ov.front .card{pointer-events:auto;background:rgba(20,10,51,.9)}
 #ov.paper{background:rgba(40,26,14,.28)}
 #ov.hidden{display:none}
 .card{background:#140a33;border:1.5px solid var(--line);border-radius:18px;padding:20px 18px;max-width:350px;width:100%;box-shadow:0 0 0 1px rgba(180,77,255,.18),0 0 28px rgba(180,77,255,.35),0 12px 40px rgba(0,0,0,.6);max-height:90vh;overflow:auto;box-sizing:border-box}
@@ -60,6 +76,25 @@ canvas{display:block;touch-action:none}
 .grid b{font:400 20px Audiowide,sans-serif;color:#2b2420}
 .grid span{font-size:11px;color:#4a4038;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .nbwrap{text-align:center;margin:-2px 0 8px}
+.center{text-align:center}
+.note{margin-top:10px;font-size:12px;color:#8f84b5}
+.ded{text-align:center;font-size:17px;line-height:1.45;margin:2px 0 8px;color:var(--txt)}
+.ded b{color:var(--nala);font-weight:700}
+.ded span{font-size:14px;color:var(--dim)}
+.lvls{display:flex;flex-direction:column;gap:7px;margin:10px 0 6px}
+.lvl{display:flex;align-items:center;gap:12px;width:100%;padding:9px 12px;border-radius:12px;border:1px solid var(--line);background:#1a0f3d;color:var(--txt);text-align:left;cursor:pointer;font-family:inherit}
+.lvl:active{background:#2a1859}
+.lvl.done{border-color:rgba(41,246,255,.45)}
+.lvl:disabled{opacity:.42;cursor:default}
+.lvl .em{font-size:24px;width:30px;text-align:center;flex:none}
+.lvl .tx{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.lvl .nm{font:400 15px Audiowide,"Space Grotesk",sans-serif;color:var(--cyan)}
+.lvl .bs{font-size:12px;color:var(--dim)}
+.lvl .ck{color:var(--yel);font-size:18px;flex:none}
+.set input[type=range]{width:140px;accent-color:var(--mag)}
+.endn{display:flex;flex-direction:column;align-items:center;margin:6px 0 4px}
+.endn b{font:400 40px Audiowide,sans-serif;color:var(--yel);text-shadow:0 0 14px rgba(255,224,102,.55)}
+.endn span{font-size:13px;color:var(--dim)}
 </style>
 </head>
 <body>
@@ -70,10 +105,10 @@ canvas{display:block;touch-action:none}
   <button id="bSet" title="Workshop settings" aria-label="Settings"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="3"/><path d="M11 2.5v2.6M11 16.9v2.6M2.5 11h2.6M16.9 11h2.6M5 5l1.8 1.8M15.2 15.2L17 17M5 17l1.8-1.8M15.2 6.8L17 5"/></svg></button>
 </div>
 <div id="ov" class="hidden"><div class="card" id="card"></div></div>
-<script src="version.js?v=202611161918"></script>
-<script src="levels.js?v=202611161918"></script>
-<script src="audio.js?v=202611161918"></script>
-<script src="game.js?v=202611161918"></script>
-<script src="render.js?v=202611161918"></script>
+<script src="version.js?v=202611161935"></script>
+<script src="levels.js?v=202611161935"></script>
+<script src="audio.js?v=202611161935"></script>
+<script src="game.js?v=202611161935"></script>
+<script src="render.js?v=202611161935"></script>
 </body>
 </html>

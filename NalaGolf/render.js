@@ -439,8 +439,8 @@ function drawTreat(c,o,mode,al){
   c.restore();
 }
 function drawEnt(o,mode,al){
-  if(o.ent==='stella'){ let f=R.face.get(o.id); const want=Math.atan2(dog.y-o.y,dog.x-o.x)+Math.PI/2;
-    f=f==null?want:lerpAngle(f,want,.05); R.face.set(o.id,f); drawStella(ctx,o,mode,al,f); }
+  if(o.ent==='stella'){ const p=entPos(o), q=p===o?o:Object.assign({},o,p); let f=R.face.get(o.id); const want=Math.atan2(dog.y-q.y,dog.x-q.x)+Math.PI/2;
+    f=f==null?want:lerpAngle(f,want,.05); R.face.set(o.id,f); drawStella(ctx,q,mode,al,f); }
   else if(o.ent==='binx') drawBinx(ctx,o,mode,al);
   else if(o.ent==='treat') drawTreat(ctx,o,mode,al);
 }
@@ -465,6 +465,7 @@ function drawGlows(){
     if(a>.25 && o.name!=='wall' && o.name!=='table leg'){ const c=center(o);
       glowText(o.name.toUpperCase(),c.x,o.t==='c'?c.y-o.r-9:c.y+4,`10px ${FT}`,'#bffcff',C.cyan,a); }
   }
+  for(const o of objs) if(o.ent==='stella' && o.used && !o.glow && STELLA_KEEPS){ const a=.18+.06*Math.sin(t*2); drawEnt(o,'neon',a); }   // met: she waits to the side, faintly
   for(const o of objs) if(o.down && o.glow<=0){ const [bx,by,bw,bh]=bbox(o,34); blitNeon(bx,by,bw,bh,.16); }   // knocked-over things keep a faint afterglow
 }
 function glowText(txt,x,y,font,fill,glow,al){
@@ -638,6 +639,72 @@ function drawHUD(lit){
   ctx.globalAlpha=1; ctx.textBaseline='alphabetic';
 }
 
+/* ---------- title screen + credits ---------- */
+// The neon sign is drawn once (glow baked with shadowBlur) and rebuilt only when the fonts arrive.
+function titleSign(){
+  const px=R.px||layerPx(), key=px+'|'+R.fonts; if(R.sign&&R.sign.key===key) return R.sign;
+  const x=22, y=TITLE.signY, w=W-44, h=TITLE.signH, pad=24, cv=mkCanvas((w+pad*2)*px,(h+pad*2)*px), c=cv.getContext('2d');
+  c.setTransform(px,0,0,px,(pad-x)*px,(pad-y)*px); c.lineJoin='round'; c.lineCap='round';
+  const tube=(fn,col,lw)=>{ c.shadowColor=col; c.shadowBlur=9*px; c.strokeStyle=col; c.lineWidth=lw; fn(); c.shadowBlur=0; c.strokeStyle='rgba(255,255,255,.55)'; c.lineWidth=lw*.35; fn(); };
+  tube(()=>c.stroke(rr(x,y,w,h,18)),C.cyan,2.4);
+  c.textAlign='center'; c.textBaseline='middle';
+  c.font=`22px ${FT}`; c.shadowColor=C.mag; c.shadowBlur=10*px; c.fillStyle='#ffd0fb'; c.fillText('NALA’S',W/2,y+30); c.shadowBlur=0;
+  let fs=50; c.font=`${fs}px ${FT}`; while(c.measureText('BONK GOLF').width>w-34 && fs>24){ fs--; c.font=`${fs}px ${FT}`; }
+  c.shadowColor=C.cyan; c.shadowBlur=12*px; c.lineWidth=2; c.strokeStyle=C.cyan; c.strokeText('BONK GOLF',W/2,y+76); c.fillStyle='#d8feff'; c.fillText('BONK GOLF',W/2,y+76); c.shadowBlur=0;
+  // a little neon golf flag in the corner
+  tube(()=>{ c.beginPath(); c.moveTo(x+w-30,y+h-14); c.lineTo(x+w-30,y+h-44); c.stroke(); },C.yel,2);
+  c.shadowColor=C.yel; c.shadowBlur=8*px; c.fillStyle=C.yel; c.beginPath(); c.moveTo(x+w-30,y+h-44); c.lineTo(x+w-16,y+h-39); c.lineTo(x+w-30,y+h-34); c.fill(); c.shadowBlur=0;
+  R.sign={key,cv,x:x-pad,y:y-pad,w:w+pad*2,h:h+pad*2}; return R.sign;
+}
+function hitFlicker(at){ const d=t-at; if(d<0||d>.5) return 1; return [1,.15,.9,.05,1,.35,.8,.1,1,.6,1,.85][Math.floor(d*24)%12]; }
+function drawSign(y,al){ const s=titleSign(); ctx.globalAlpha=al; ctx.drawImage(s.cv,s.x,s.y+y,s.w,s.h); ctx.globalAlpha=1; }
+function bigNala(x,y,S,a,o){ ctx.save(); ctx.translate(x,y); ctx.scale(S,S); drawNala(ctx,0,0,a,dogOpts(o.hero!==false,o.dark!==false,o)); ctx.restore(); }
+function bigEnt(kind,x,y,S,a,al,glow){ ctx.save(); ctx.translate(x,y); ctx.scale(S,S); const o={x:0,y:0,glow:glow||0,used:false,id:-3};
+  if(kind==='stella') drawStella(ctx,o,'neon',al,a); else drawBinx(ctx,o,'neon',al); ctx.restore(); }
+function drawTitle(){
+  ctx.drawImage(R.bg,0,0,W,H);
+  drawPings(true);
+  drawSign(0,hitFlicker(ti.hitAt));
+  // Stella cheering on the left (wags faster right after a bonk), Binx unimpressed on the right
+  const hype=clamp(1-(t-ti.hitAt)/1.2,0,1);
+  bigEnt('stella',84,352,2.1,.45+Math.sin(t*1.3)*.06,1,hype);
+  bigEnt('binx',318,356,2.1,0,1,0);
+  glowText('STELLA',84,410,`11px ${FT}`,'#e6e9f0','#c9ccd6',.8); glowText('BINX',318,410,`11px ${FT}`,'#e3c4ff',C.pur,.8);
+  if(hype>.3) glowText('BORF!',100,290-hype*8,`15px ${FT}`,'#fff','#e6e9f0',hype);
+  bigNala(TITLE.x,ti.y,TITLE.S,-Math.PI/2,{bonk:ti.bonk,speed:ti.sp,diz:ti.diz});
+  drawWords(false);
+}
+function drawCredits(){
+  ctx.drawImage(R.bg,0,0,W,H);
+  const T=cr.T; ctx.textAlign='center'; ctx.textBaseline='middle';
+  for(const b of cr.blocks){
+    const y0=H+b.y-cr.y; if(y0>H+10||y0+b.h<-10) continue; const cy=y0+b.h/2;
+    if(b.k==='sign') drawSign(y0+24-TITLE.signY,1);
+    else if(b.k==='head') glowText(b.txt,W/2,cy,`15px ${FT}`,'#ffd0fb',C.mag,1);
+    else if(b.k==='cast'){
+      if(b.who==='nala'){ bigNala(W/2-34,y0+40,1.5,-Math.PI/2+.25,{hero:true}); bigNala(W/2+34,y0+40,1.5,-Math.PI/2-.25,{hero:false,dark:true}); }
+      else bigEnt(b.who,W/2,y0+44,2.1,b.who==='stella'?Math.sin(t)*.3:0,1,b.who==='stella'?1:0);
+      glowText(b.name,W/2,y0+b.h-38,`22px ${FT}`,'#d8feff',C.cyan,1);
+      ctx.font=`14px ${FB}`; ctx.fillStyle=C.dim; ctx.fillText(b.role,W/2,y0+b.h-14);
+    }
+    else if(b.k==='role'){ glowText(b.name,W/2,y0+18,`18px ${FT}`,'#d8feff',C.cyan,1); ctx.font=`14px ${FB}`; ctx.fillStyle=C.dim; ctx.fillText(b.role,W/2,y0+44,W-40); }
+    else if(b.k==='big'){ glowText(String(b.n),W/2,y0+32,`46px ${FT}`,'#fff4c2',C.yel,1); ctx.font=`600 14px ${FB}`; ctx.fillStyle=C.yel; ctx.fillText(b.txt.toUpperCase(),W/2,y0+70); }
+    else if(b.k==='stats'||b.k==='small'){ ctx.font=b.k==='stats'?`15px ${FB}`:`14px ${FB}`; ctx.fillStyle=b.k==='stats'?C.txt:C.dim;
+      b.lines.forEach((l,i)=>ctx.fillText(l,W/2,y0+16+i*26,W-30)); }
+    else if(b.k==='sleep'){
+      ctx.save(); ctx.translate(W/2,y0+52); ctx.strokeStyle=C.nala; ctx.globalAlpha=.8; ctx.lineWidth=2; ctx.shadowColor=C.nala;
+      ctx.stroke(el(0,0,42,32)); ctx.globalAlpha=.35; ctx.lineWidth=6; ctx.stroke(el(0,0,42,32)); ctx.restore();   // her bed, in neon
+      bigNala(W/2,y0+56,1.3,-Math.PI/2-.4,{hero:false,sleep:true});
+      for(let i=0;i<3;i++){ const ph=(t*.6+i/3)%1; glowText('z',W/2+34+ph*18,y0+30-ph*22,`${10+ph*8}px ${FT}`,'#fff4c2',C.yel,Math.sin(ph*Math.PI)); }
+      glowText(b.txt,W/2,y0+b.h-22,`18px ${FT}`,'#ffd0fb',C.mag,1);
+    }
+  }
+  // soft fade at the top and bottom edges
+  for(const [y,dir] of [[0,1],[H,-1]]){ const g=ctx.createLinearGradient(0,y,0,y+dir*70); g.addColorStop(0,'rgba(11,6,32,1)'); g.addColorStop(1,'rgba(11,6,32,0)'); ctx.fillStyle=g; ctx.fillRect(0,dir>0?0:H-70,W,70); }
+  if(!cr.shown){ ctx.font=`12px ${FB}`; ctx.fillStyle='rgba(179,166,217,.7)'; ctx.fillText(cr.fast?'⏩':'hold to fast-forward',W/2,H-18); }
+  ctx.textBaseline='alphabetic';
+}
+
 /* ---------- frame ---------- */
 function goalSleeps(){ return (GOALFX[L.goal.kind]||GOALFX.bed).sleep; }
 function dogOpts(hero,dark,extra){ return Object.assign({hero,dark,bonk:null,speed:0,diz:0,flop:0,sleep:false},extra); }
@@ -649,6 +716,10 @@ function render(){
   if(state!==R.prevState){ if(state==='fail') R.failAt=t; R.prevState=state; }
   const recap=state==='recap';
   if(R.hudLit!==recap){ R.hudLit=recap; hudEl.classList.toggle('lit',recap); }
+  const menu=state==='title'||state==='credits';
+  if(R.hudOff!==menu){ R.hudOff=menu; hudEl.classList.toggle('off',menu); }
+  if(state==='title'){ drawTitle(); return; }
+  if(state==='credits'){ drawCredits(); return; }
 
   if(recap){
     const isDown=o=>rp.knocked.has(o.id)||rp.gone.has(o.id);

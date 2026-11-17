@@ -39,10 +39,10 @@ sandbox.window = sandbox;
 const ctx = vm.createContext(sandbox);
 for (const f of ['version.js', 'levels.js', 'game.js']) vm.runInContext(fs.readFileSync(path.join(root, f), 'utf8'), ctx, { filename: f });
 vm.runInContext(`
-function SIM_snap(){ return {dog:Object.assign({},dog), shotsLeft, o:objs.map(o=>[o.solid,o.down,o.used,o.gone])}; }
+function SIM_snap(){ return {dog:Object.assign({},dog), shotsLeft, o:objs.map(o=>[o.solid,o.down,o.used,o.gone,o.x,o.y,o.walk&&Object.assign({},o.walk)]), met:stellaMet}; }
 function SIM_restore(s){
   dog=Object.assign({},s.dog); shotsLeft=s.shotsLeft; state='aim';
-  objs.forEach((o,i)=>{ [o.solid,o.down,o.used,o.gone]=s.o[i]; o.cd=0; o.glow=0; });
+  objs.forEach((o,i)=>{ [o.solid,o.down,o.used,o.gone,o.x,o.y,o.walk]=s.o[i]; if(o.walk) o.walk=Object.assign({},o.walk); o.cd=0; o.glow=0; }); stellaMet=s.met;
   pings=[];words=[];parts=[];prints=[];banner=null;toast=null;hudFx=[];aim=null;
   rec={frames:[],events:[]}; stats={shots:0,bonks:0,knocked:[],by:{},treats:0,stella:0,binx:0};
 }
