@@ -1,7 +1,9 @@
 // Headless solvability check for Nala's Bonk Golf.
 // Runs the REAL game.js physics (in a Node vm with stubbed DOM) — no re-implementation to drift.
 //
-// Usage (from NalaGolf/):  node tools/solve.mjs [levelNumber…] [--trials=N] [--quick]
+// Usage (from NalaGolf/):  node tools/solve.mjs [levelNumber…] [--trials=N] [--quick] [--remix=K] [--cand=FILE]
+//   --remix=K   test the K-th baked remix layout of each level (what round K+1 plays)
+//   --cand=FILE test one candidate layout {level, m, treat} (used by tools/remix.mjs); prints a RESULT json line
 //
 // For each level it reports:
 //   • geodesic path length start → goal (and → treat)
@@ -22,6 +24,9 @@ const args = process.argv.slice(2);
 const opt = k => { const a = args.find(a => a.startsWith('--' + k)); return a ? (a.split('=')[1] ?? true) : null; };
 const QUICK = !!opt('quick'), TRIALS = +(opt('trials') || (QUICK ? 20 : 50));
 const only = args.filter(a => /^\d+$/.test(a)).map(n => +n - 1);
+const REMIX = +(opt('remix') || 0), CAND = opt('cand') ? JSON.parse(fs.readFileSync(opt('cand'), 'utf8')) : null;
+if (CAND) { only.length = 0; only.push(CAND.level - 1); }
+const PROG = (REMIX || CAND) ? JSON.stringify({ beat: CAND ? 1 : REMIX, lap: {} }) : null;
 
 // ---------- load the game in a sandbox ----------
 const stub = new Proxy(function () {}, {
@@ -32,7 +37,7 @@ const sandbox = {
   console, Math, JSON, Object, Array, Set, Map, Float32Array, Promise, Symbol,
   document: stub, location: { search: '' }, innerWidth: 390, innerHeight: 760, devicePixelRatio: 1,
   addEventListener() {}, requestAnimationFrame() {}, setTimeout() {}, performance: { now: () => 0 },
-  localStorage: { getItem: () => null, setItem() {}, removeItem() {} }, speechSynthesis: stub, navigator: {},
+  localStorage: { getItem: k => k === 'nalaGolf.prog.v1' ? PROG : null, setItem() {}, removeItem() {} }, speechSynthesis: stub, navigator: {},
   sfx() {}, buzz() {}, ensureAudio() {}, shapePath() {}, render() {},
 };
 sandbox.window = sandbox;
@@ -54,6 +59,7 @@ function SIM_shot(ang,pow){
 function SIM_load(i){ loadLevel(i); state='aim'; }
 `, ctx);
 const run = s => vm.runInContext(s, ctx);
+if (CAND) run(`LEVELS[${CAND.level - 1}].remix=[${JSON.stringify({ m: CAND.m, treat: CAND.treat })}]`);
 const G = { W: 400, H: 700, R: run('DOG_R') };
 
 // ---------- geodesic distance field (Dijkstra on a 4px grid) ----------
@@ -146,13 +152,13 @@ const results = [];
 for (let li = 0; li < nLv; li++) {
   if (only.length && !only.includes(li)) continue;
   run(`var LVL=${li}; SIM_load(LVL)`);
-  const L = run('({name:L.name, start:L.start, goal:L.goal, ents:L.ents})'), objs = run('objs.map(o=>({t:o.t,x:o.x,y:o.y,w:o.w,h:o.h,r:o.r,name:o.name,ent:o.ent,knock:!!o.knock}))');
+  const L = run('({name:L.name, start:L.start, goal:L.goal, ents:L.ents})'), objs = run('objs.filter(o=>o.sensor!=="toy").map(o=>({t:o.t,x:o.x,y:o.y,w:o.w,h:o.h,r:o.r,name:o.name,ent:o.ent,knock:!!o.knock}))');
   const g = L.goal, inGoal = (x, y) => g.t === 'r' ? Math.hypot(x - Math.max(g.x, Math.min(x, g.x + g.w)), y - Math.max(g.y, Math.min(y, g.y + g.h))) < G.R : Math.hypot(x - g.x, y - g.y) < g.r + G.R;
-  const tr = L.ents.find(e => e.k === 'treat');
+  const tr = objs.find(e => e.ent === 'treat');   // (from objs: a remix may have moved it)
   const dGoal = field(objs, inGoal), dTreat = tr ? field(objs, (x, y) => Math.hypot(x - tr.x, y - tr.y) < 7 + G.R) : null;
-  console.log(`\n== ${li + 1}. ${L.name} ==`);
+  console.log(`\n== ${li + 1}. ${L.name}${run('remix') ? ' (remix)' : ''} ==`);
   console.log(`path start→goal ${dGoal(L.start.x, L.start.y).toFixed(0)} px` + (tr ? ` · start→treat ${dTreat(L.start.x, L.start.y).toFixed(0)} px · treat→goal ${dGoal(tr.x, tr.y).toFixed(0)} px` : ''));
-  for (const e of L.ents) { const d = dGoal(e.x, e.y); if (!isFinite(d)) console.log(`  !! ${e.k} at ${e.x},${e.y} is unreachable`); }
+  for (const e of objs.filter(o => o.ent)) { const d = dGoal(e.x, e.y); if (!isFinite(d)) console.log(`  !! ${e.ent} at ${e.x},${e.y} is unreachable`); }
   // only gaps you can actually roll into: the midpoint between the two shapes must be open floor
   const furn = objs.filter(o => !o.ent && o.name !== 'squeaky toy'), tight = [];
   const near = (o, x, y) => o.t === 'r' ? [Math.max(o.x, Math.min(x, o.x + o.w)), Math.max(o.y, Math.min(y, o.y + o.h))] : (() => { const d = Math.hypot(x - o.x, y - o.y) || 1; return [o.x + (x - o.x) / d * o.r, o.y + (y - o.y) / d * o.r]; })();
@@ -172,6 +178,7 @@ for (let li = 0; li < nLv; li++) {
   const row = { level: li + 1, name: L.name, perfect: perfect.rate ? `yes, ${perfect.avgShots} shots` : 'NO', human: pct(human.rate), humanShots: human.avgShots.toFixed(1), sloppy: sloppy ? pct(sloppy.rate) : '-', treat: treat ? pct(treat.rate) : '-', blind: pct(blind) };
   console.log(`no aim error: ${row.perfect} · map-knower (σ5°,10%): ${row.human} (avg ${row.humanShots} shots) · sloppy (σ9°,18%): ${row.sloppy} · treat in one try: ${row.treat} · blind random: ${row.blind}`);
   results.push(row);
+  if (CAND) console.log('RESULT ' + JSON.stringify({ level: li + 1, perfect: perfect.rate, human: human.rate, treat: treat ? treat.rate : 1, blind }));
 }
 console.log('\n| # | Level | No aim error | Map-knower σ5° | Sloppy σ9° | Treat reachable | Blind random |\n|---|---|---|---|---|---|---|');
 for (const r of results) console.log(`| ${r.level} | ${r.name} | ${r.perfect} | ${r.human} (${r.humanShots} shots) | ${r.sloppy} | ${r.treat} | ${r.blind} |`);

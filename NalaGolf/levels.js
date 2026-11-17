@@ -11,6 +11,9 @@
             ('table' = a table she fits under; its solid legs live in objs)
      objs(): solid things. Rc(x,y,w,h,name,mat,extra) / Ci(x,y,r,name,mat,extra)
              extra.knock = {at:impactSpeed, snd, word, msg, cols} → falls over, stays down for the level
+     pin: names of clutter a remix must not move (because Ashley's directions mention where it is)
+     remix: [{m:{objIndex:[x,y]}, treat:[x,y]}] alternate clutter layouts for round 2+ (generated +
+            solver-checked by tools/remix.mjs; objIndex = position in the objs() list)
      ents: characters & pickups, each once per try:
              {k:'treat', x,y}   hidden treat: touch = +1 move, gone for the rest of that try
              {k:'stella',x,y}   Stella (pitbull): bump = pep talk + "BORF!" + 1 move
@@ -40,13 +43,16 @@ function Ci(x,y,r,name,mat,extra){return Object.assign({t:'c',x,y,r,name,mat},ex
 function walls(){return [Rc(10,60,380,10,'wall','wall'),Rc(10,680,380,10,'wall','wall'),Rc(10,60,10,630,'wall','wall'),Rc(380,60,10,630,'wall','wall')]}
 
 // Knock-overs: impact speed needed, sound, word, banner, debris colours.
+// Thresholds are low on purpose: small clutter tips over on most real hits (and she plows on
+// through, see collide() in game.js) instead of pinballing her off at a random angle.
 const KO={
-  floorLamp:(msg)=>({knock:{at:200,snd:'crash',word:'CRASH!',msg:msg||'Nala knocked over the floor lamp 💡',cols:['#ffd27a','#fff2c0','#999']}}),
-  tableLamp:(msg)=>({knock:{at:200,snd:'crash',word:'SMASH!',msg:msg||'RIP table lamp 💡',cols:['#ffd27a','#fff2c0','#c96']}}),
-  basket:(msg)=>({knock:{at:300,snd:'fwump',word:'FLOOMP!',msg:msg||'Socks. Socks everywhere 🧦',cols:['#eee','#88aaff','#ff8899']}}),
-  plant:(msg)=>({knock:{at:220,snd:'crash',word:'THUD!',msg:msg||'Dirt everywhere. The plant did not make it 🪴',cols:['#5c9e4a','#7a4a2a','#3d7a30']}}),
-  trash:(msg)=>({knock:{at:180,snd:'trash',word:'CLATTER!',msg:msg||'Trash. Everywhere. 🗑️ (Nala is thrilled.)',cols:['#9a9','#c8b28a','#eee','#a55']}}),
-  water:(msg)=>({knock:{at:150,snd:'splash',word:'SPLOOSH!',msg:msg||'Water bowl: flipped. Floor: wet 💦',cols:['#5ab0ff','#9ad4ff']}}),
+  floorLamp:(msg)=>({knock:{at:100,snd:'crash',word:'CRASH!',msg:msg||'Nala knocked over the floor lamp 💡',cols:['#ffd27a','#fff2c0','#999']}}),
+  tableLamp:(msg)=>({knock:{at:100,snd:'crash',word:'SMASH!',msg:msg||'RIP table lamp 💡',cols:['#ffd27a','#fff2c0','#c96']}}),
+  basket:(msg)=>({knock:{at:140,snd:'fwump',word:'FLOOMP!',msg:msg||'Socks. Socks everywhere 🧦',cols:['#eee','#88aaff','#ff8899']}}),
+  plant:(msg)=>({knock:{at:110,snd:'crash',word:'THUD!',msg:msg||'Dirt everywhere. The plant did not make it 🪴',cols:['#5c9e4a','#7a4a2a','#3d7a30']}}),
+  trash:(msg)=>({knock:{at:100,snd:'trash',word:'CLATTER!',msg:msg||'Trash. Everywhere. 🗑️ (Nala is thrilled.)',cols:['#9a9','#c8b28a','#eee','#a55']}}),
+  water:(msg)=>({knock:{at:90,snd:'splash',word:'SPLOOSH!',msg:msg||'Water bowl: flipped. Floor: wet 💦',cols:['#5ab0ff','#9ad4ff']}}),
+  shoes:(msg)=>({knock:{at:90,snd:'fwump',word:'SCATTER!',msg:msg||'Shoes. Everywhere. 👟',cols:['#e05a47','#f2efe8','#6b4a32']}}),
 };
 
 /* Directions are written from Nala's point of view: she starts facing up the screen, so
@@ -78,6 +84,7 @@ const LEVELS=[
 { name:'Breakfast', emoji:'🥣', start:{x:190,y:122},
   goal:{t:'c',x:50,y:640,r:12,kind:'food'},
   intro:'Rise and shine, Nala — breakfast! The bedroom door is right there on your right. Go through it and turn right: that’s the long hallway. Stella’s out there somewhere. At the very bottom, turn right into the kitchen. Your bowl is all the way at the far wall, next to your water. Please don’t flip the water. Again.',
+  pin:['water bowl'],   // the directions say it's next to her food bowl, so remixes leave it there
   floors:[{x:20,y:70,w:230,h:260,kind:'carpet'},{x:262,y:70,w:118,h:470,kind:'wood'},{x:20,y:342,w:230,h:338,kind:'tile'},{x:250,y:540,w:130,h:140,kind:'tile'},{x:250,y:90,w:12,h:110,kind:'wood'}],
   decor:[{x:144,y:90,w:92,h:64,kind:'dogbed'},{x:282,y:86,w:78,h:300,kind:'runner'}],
   ents:[{k:'treat',x:214,y:304},{k:'stella',x:320,y:330},{k:'binx',x:66,y:540}],
@@ -86,7 +93,7 @@ const LEVELS=[
     Rc(20,70,90,40,'dresser','wood'),
     Ci(122,84,10,'floor lamp','metal',KO.floorLamp()),
     Rc(20,212,140,118,'big bed','soft',{front:'N'}),
-    Ci(364,86,10,'pile of shoes','soft'),
+    Ci(364,86,10,'pile of shoes','soft',KO.shoes()),
     Rc(362,400,18,80,'radiator','metal'),
     Ci(355,496,15,'laundry basket','soft',KO.basket('The laundry basket has been defeated 🧦')),
     Rc(20,342,56,62,'fridge','metal'),
@@ -120,7 +127,7 @@ const LEVELS=[
     Rc(70,532,50,50,'dryer','metal'),
     Ci(150,560,15,'laundry basket','soft',KO.basket('FLOOMP. Laundry day is cancelled 🧺')),
     Rc(352,532,28,148,'shoe bench','wood'),
-    Ci(200,662,10,'pile of boots','soft'),
+    Ci(200,662,10,'pile of boots','soft',KO.shoes('Boots: scattered. Mud: everywhere 🥾')),
     Ci(250,600,7,'squeaky toy','squeak'),
   ]},
 
@@ -171,7 +178,7 @@ const LEVELS=[
     // hallway
     Rc(362,300,18,70,'radiator','metal'),
     Ci(366,284,10,'floor lamp','metal',KO.floorLamp('Hallway lamp down. Nala does not care 💡')),
-    Ci(364,388,10,'pile of shoes','soft'),
+    Ci(364,388,10,'pile of shoes','soft',KO.shoes()),
     // kitchen + living room
     Rc(20,470,30,120,'counter','wood'),
     Ci(150,483,13,'trash can','metal',KO.trash()),

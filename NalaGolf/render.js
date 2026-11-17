@@ -333,7 +333,9 @@ const NK={leg:'#b8743a',body:'#c98446',head:'#cf8c4c',out:'#6e3f1c',wr:'#8a5428'
 function spring(tt,str,k){ return tt<=0?0:str*Math.exp(-tt*k)*Math.sin(tt*30); }
 function bonkCurve(b){ if(!b||b.t>1.1) return 0; const A=.06+.5*b.str, v=A*Math.exp(-b.t*7)*Math.cos(b.t*24); return v<0&&b.str>.55?v*1.7:v; }
 function drawNala(c,x,y,a,o){
-  // o: {hero, dark, bonk, speed, diz, flop(0..1), sleep, alpha}
+  // o: {hero, look, dark, bonk, speed, diz, flop(0..1), sleep, alpha}
+  // look = 'sniffer' | 'herself' | 'pirate' | 'sensei' | 'astro'; hero:true means "whatever costume is picked"
+  const look=o.look||(o.hero?costume():'herself');
   const mv=clamp((o.speed||0)/220,0,1), ph=t*(6+16*mv), bt=o.bonk?o.bonk.t:9, bs=o.bonk?o.bonk.str:0, fl=o.flop||0;
   c.save(); c.translate(x,y); if(o.alpha!=null) c.globalAlpha=o.alpha;
   if(o.dark){ c.drawImage(halo(),-46,-46,92,92); }
@@ -361,7 +363,9 @@ function drawNala(c,x,y,a,o){
   // back wrinkles: each roll springs on a short delay after a bonk
   const J=(i,k)=>spring(bt-.03*i,2.4*bs*(k||1),6);
   [[-9,1,-3,9],[-10,6,2,10],[-9,11,7,9]].forEach(([x1,y1,cy,x2],i)=>{ const j=J(i+3); Lq(x1-j*.3,y1+j,0,cy+j*1.5,x2+j*.3,y1+j,NK.wr,1,.7); });
-  if(o.hero){
+  if(look==='sensei') giBody(c,S,Lq,mv,bt,bs);
+  else if(look==='astro') astroBody(c,S,mv);
+  if(look==='sniffer'){
     const fx=mv*4+Math.sin(t*(4+10*mv))*(.6+1.6*mv), fy=19+mv*5, wv=Math.sin(t*(5+12*mv)+1)*(.8+2*mv);
     const cape=pth(p=>{ p.moveTo(-12,-5); p.quadraticCurveTo(0,-9,12,-5); p.lineTo(17+fx*.5,fy+wv*.5); p.quadraticCurveTo(0,fy+8+wv,-17-fx*.5,fy-wv*.5); p.closePath(); });
     S(cape,NK.cape,1.1,NK.gold);
@@ -372,7 +376,7 @@ function drawNala(c,x,y,a,o){
   }
   // the neck roll — the big one
   [[-12,-6,-13,12],[-11,-2,-8,11]].forEach(([x1,y1,cy,x2],i)=>{ const j=J(i+1,1.35); Lq(x1-j*.4,y1+j,0,cy+j*1.6,x2+j*.4,y1+j,NK.roll,2.2,1); });
-  if(o.hero){ c.fillStyle=NK.gold; c.fill(ci(-9,-6+J(1),1.6)); c.fill(ci(9,-6+J(1),1.6)); }
+  if(look==='sniffer'){ c.fillStyle=NK.gold; c.fill(ci(-9,-6+J(1),1.6)); c.fill(ci(9,-6+J(1),1.6)); }
   c.restore();
   // head
   c.save(); if(fl){ c.translate(0,-10); c.rotate(-fl*.55); c.translate(0,10); } if(o.diz) c.rotate(Math.sin(t*11)*.12*Math.min(1,o.diz));
@@ -387,13 +391,82 @@ function drawNala(c,x,y,a,o){
   S(el(0,-25.5-sn,5.5,4,0),NK.muz,1);
   c.fillStyle=NK.nose; c.fill(el(0,-28-sn*1.4,2.6,2,0));
   if(fl){ c.fillStyle=NK.tongue; c.fill(el(5.5,-25,2,3.2,-.6)); c.lineWidth=.6; c.strokeStyle='#9c3f52'; c.stroke(el(5.5,-25,2,3.2,-.6)); }
-  if(o.hero){ S(pth(p=>{ p.moveTo(-9,-19.5); p.quadraticCurveTo(0,-22,9,-19.5); p.quadraticCurveTo(9,-15.5,5,-15.5); p.quadraticCurveTo(0,-17.5,-5,-15.5); p.quadraticCurveTo(-9,-15.5,-9,-19.5); p.closePath(); }),NK.mask,.9,NK.maskO); }
-  c.strokeStyle=o.hero?NK.slit:NK.eye; c.lineWidth=.9; c.beginPath(); c.moveTo(-4.6,-17.6); c.quadraticCurveTo(-3,-16.5,-1.4,-17.6); c.moveTo(1.4,-17.6); c.quadraticCurveTo(3,-16.5,4.6,-17.6); c.stroke();
+  if(look==='sniffer'){ S(pth(p=>{ p.moveTo(-9,-19.5); p.quadraticCurveTo(0,-22,9,-19.5); p.quadraticCurveTo(9,-15.5,5,-15.5); p.quadraticCurveTo(0,-17.5,-5,-15.5); p.quadraticCurveTo(-9,-15.5,-9,-19.5); p.closePath(); }),NK.mask,.9,NK.maskO); }
+  if(look!=='pirate'){ c.strokeStyle=look==='sniffer'?NK.slit:NK.eye; c.lineWidth=.9; c.beginPath(); c.moveTo(-4.6,-17.6); c.quadraticCurveTo(-3,-16.5,-1.4,-17.6); c.moveTo(1.4,-17.6); c.quadraticCurveTo(3,-16.5,4.6,-17.6); c.stroke(); }
+  if(look==='pirate') pirateHead(c,S);
+  else if(look==='sensei') headband(c,S);
+  else if(look==='astro') astroHelmet(c,S);
   c.restore();
+  if(look==='pirate') parrot(c,S,bt,bs,mv);
   c.restore();
   // dizzy stars orbit her head
   if(o.diz>0){ const hx=x+Math.cos(a)*16, hy=y+Math.sin(a)*16, al=Math.min(1,o.diz);
     for(let i=0;i<3;i++){ const an=t*6+i*TAU/3; star4(c,hx+Math.cos(an)*15,hy+Math.sin(an)*6-4,3.6,C.yel,al,o.dark); } }
+}
+/* ---------- costumes (unlocked by beating the game: COSTUMES in game.js) ---------- */
+const CK={hat:'#231c26',hatO:'#0d0a10',trim:'#f2c14e',patch:'#141016',strap:'#2a2228',
+  par:'#3fbf4f',parW:'#2a8f3a',parO:'#1c4f26',parH:'#e04a3a',beak:'#f2c14e',tailR:'#e04a3a',tailB:'#3f7fbf',
+  gi:'#3f9a4a',giO:'#1f5a28',giL:'#8fd69a',belt:'#1d1a1c',band:'#f4f1ea',bandO:'#9a8f7a',dot:'#d9534f',
+  suit:'#eef0f2',suitO:'#7d8894',pack:'#e8742e',packO:'#8a3f14',glass:'rgba(190,235,255,.2)',glassO:'#bfe6f7'};
+// Captain Nala: tricorn hat, an eye patch on EACH eye (she can't see anyway), and a parrot.
+function pirateHead(c,S){
+  // eye patches first (the hat brim sits behind them), straps crossing up and out over her forehead
+  c.strokeStyle=CK.strap; c.lineWidth=.9; c.beginPath();
+  c.moveTo(1.6,-21.4); c.quadraticCurveTo(-5,-17,-10.4,-11.6); c.moveTo(-1.6,-21.4); c.quadraticCurveTo(5,-17,10.4,-11.6); c.stroke();
+  for(const sx of [-1,1]) S(el(sx*3.2,-17.3,2.4,1.9,sx*.35),CK.patch,.6,'#000');
+  // tricorn: three upturned corners (one forward), gold trim, a raised crown and a tiny skull
+  const hat=pth(p=>{ p.moveTo(0,-14.6); p.quadraticCurveTo(-5.5,-12.4,-13.5,-4.4); p.quadraticCurveTo(0,-8.6,13.5,-4.4); p.quadraticCurveTo(5.5,-12.4,0,-14.6); p.closePath(); });
+  S(hat,CK.hat,1.1,CK.hatO);
+  c.strokeStyle=CK.trim; c.lineWidth=1.1; c.stroke(hat);
+  S(el(0,-8.6,5.4,3.6,0),'#3a2f40',.8,CK.hatO);
+  c.fillStyle='#f4f1ea'; c.fill(ci(0,-9.2,1.5)); c.fillRect(-1.5,-8.1,3,.8);
+}
+function parrot(c,S,bt,bs,mv){
+  const flap=Math.max(Math.abs(spring(bt-.05,1,5))*bs*2.2, mv>.6?Math.abs(Math.sin(t*20))*.6:0);
+  c.save(); c.translate(10.5,-3); c.rotate(.25);
+  S(pth(p=>{ p.moveTo(-1.6,3); p.lineTo(-2.4,11); p.lineTo(0,9); p.lineTo(2.4,11); p.lineTo(1.6,3); p.closePath(); }),CK.tailR,.7,'#7a2018');
+  c.fillStyle=CK.tailB; c.fill(pth(p=>{ p.moveTo(-.6,5); p.lineTo(-.9,9.6); p.lineTo(.9,9.6); p.lineTo(.6,5); p.closePath(); }));
+  for(const sx of [-1,1]) S(el(sx*(2.6+flap*3),1.4,2+flap*1.6,4.6,sx*(.25+flap*.9)),CK.parW,.7,CK.parO);
+  S(el(0,0,3.3,5.2,0),CK.par,.8,CK.parO);
+  S(ci(0,-5.4,2.7),CK.parH,.8,'#7a2018');
+  S(pth(p=>{ p.moveTo(-1.1,-7.4); p.quadraticCurveTo(0,-10.4,1.1,-7.4); p.closePath(); }),CK.beak,.5,'#8a6a1c');
+  c.fillStyle='#fff'; c.fill(ci(-1.4,-6,.7)); c.fill(ci(1.4,-6,.7)); c.fillStyle='#111'; c.fill(ci(-1.4,-6,.35)); c.fill(ci(1.4,-6,.35));
+  c.restore();
+}
+// Sensei Nala: a green martial-arts gi with a black belt, and a headband whose tails fly when she runs.
+function giBody(c,S,Lq,mv,bt,bs){
+  S(el(0,2,13.2,16.4,0),CK.gi,1.2,CK.giO);
+  Lq(-8,-7,-4,-2,0,3,CK.giL,1.6,.9); Lq(8,-7,4,-2,0,3,CK.giL,1.6,.9);
+  c.save(); c.clip(el(0,2,13.2,16.4,0)); c.fillStyle=CK.belt; c.fillRect(-14,5.2,28,3.4); c.restore();
+  c.fillStyle=CK.belt; c.fill(rr(-2,4.6,4,4.6,1));
+  const w=Math.sin(t*(5+12*mv))*(.6+1.8*mv), j=spring(bt,2*bs,6);
+  Lq(-1,8.6,-2+w*.4,12,-3.5+w,15+j,CK.belt,1.6,1); Lq(1,8.6,2+w*.4,12,3+w,14.5+j,CK.belt,1.6,1);
+  // headband tails, tied at the back of her head
+  const tw=Math.sin(t*(4+14*mv)+1)*(1+2.4*mv), tl=11+mv*8;
+  for(const [x0,x1,k] of [[6,10,1],[5,7,.85]]){ const ex=x1+tw*k, ey=-6+tl*k;
+    Lq(x0,-7,x0+3+tw*.4,-7+tl*.5*k,ex,ey,CK.bandO,2.9,1); Lq(x0,-7,x0+3+tw*.4,-7+tl*.5*k,ex,ey,CK.band,2,1); }
+}
+function headband(c,S){
+  const band=pth(p=>{ p.moveTo(-10.3,-12.6); p.quadraticCurveTo(0,-17.4,10.3,-12.6); p.lineTo(10.1,-10.4); p.quadraticCurveTo(0,-15,-10.1,-10.4); p.closePath(); });
+  S(band,CK.band,.8,CK.bandO);
+  c.fillStyle=CK.dot; c.fill(ci(0,-14.4,1.4));
+}
+// Astro Nala: a little space suit, a jetpack (it fires when she's moving) and a bubble helmet with an antenna.
+function astroBody(c,S,mv){
+  if(mv>.15){ const fl=4+mv*9+Math.sin(t*40)*1.5;
+    for(const sx of [-5,5]){ c.fillStyle='rgba(255,200,80,.85)'; c.fill(pth(p=>{ p.moveTo(sx-2.4,14); p.quadraticCurveTo(sx,14+fl*1.4,sx+2.4,14); p.closePath(); }));
+      c.fillStyle='#fff6d0'; c.fill(pth(p=>{ p.moveTo(sx-1.2,14); p.quadraticCurveTo(sx,14+fl*.7,sx+1.2,14); p.closePath(); })); } }
+  S(el(0,2,13,16.3,0),CK.suit,1.2,CK.suitO);
+  S(rr(-6.5,-2,13,7,2),'#3f7fbf',.8,'#24507a'); c.fillStyle='#ffe066'; c.fill(ci(-3,1.5,1)); c.fillStyle='#e04a3a'; c.fill(ci(0,1.5,1)); c.fillStyle='#7ac04a'; c.fill(ci(3,1.5,1));
+  for(const sx of [-5,5]) S(rr(sx-2.6,4.5,5.2,10,2.2),CK.pack,.9,CK.packO);
+}
+function astroHelmet(c,S){
+  const h=ci(0,-18,13);
+  c.fillStyle=CK.glass; c.fill(h); c.lineWidth=1.3; c.strokeStyle=CK.glassO; c.stroke(h);
+  c.strokeStyle='rgba(255,255,255,.75)'; c.lineWidth=1.4; c.beginPath(); c.arc(0,-18,10.5,3.6,4.4); c.stroke();
+  c.lineWidth=2.2; c.strokeStyle=CK.suitO; c.beginPath(); c.arc(0,-18,13,.55,Math.PI-.55); c.stroke();   // collar ring
+  c.strokeStyle=CK.suitO; c.lineWidth=.8; c.beginPath(); c.moveTo(7,-28); c.lineTo(10,-33); c.stroke();
+  c.fillStyle=Math.sin(t*5)>0?'#ff5a4a':'#ffe066'; c.fill(ci(10,-33,1.6));
 }
 let HALO=null;
 function halo(){ if(HALO) return HALO; HALO=mkCanvas(92,92); const c=HALO.getContext('2d'), g=c.createRadialGradient(46,46,6,46,46,46);
@@ -457,7 +530,7 @@ function blitNeon(x,y,w,h,al){ const x0=Math.max(0,x), y0=Math.max(0,y), x1=Math
 function drawGlows(){
   for(const o of objs){
     const fk=flicker(o);
-    if(o.glow<=0 || (!o.solid && !o.down)) continue;
+    if(o.glow<=0 || (!o.solid && !o.down && o.sensor!=='toy')) continue;
     const a=Math.min(1,o.glow)*fk;
     if(o.ent){ drawEnt(o,'neon',a); continue; }
     const [bx,by,bw,bh]=bbox(o,o.down?34:9); blitNeon(bx,by,bw,bh,a);
@@ -671,7 +744,9 @@ function drawTitle(){
   bigEnt('binx',318,356,2.1,0,1,0);
   glowText('STELLA',84,410,`11px ${FT}`,'#e6e9f0','#c9ccd6',.8); glowText('BINX',318,410,`11px ${FT}`,'#e3c4ff',C.pur,.8);
   if(hype>.3) glowText('BORF!',100,290-hype*8,`15px ${FT}`,'#fff','#e6e9f0',hype);
-  bigNala(TITLE.x,ti.y,TITLE.S,-Math.PI/2,{bonk:ti.bonk,speed:ti.sp,diz:ti.diz});
+  const pop=ti.swapAt!=null&&t-ti.swapAt<.35?Math.sin((t-ti.swapAt)/.35*Math.PI)*.14:0;
+  bigNala(TITLE.x,ti.y,TITLE.S*(1+pop),-Math.PI/2,{bonk:ti.bonk,speed:ti.sp,diz:ti.diz});
+
   drawWords(false);
 }
 function drawCredits(){

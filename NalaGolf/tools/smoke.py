@@ -107,8 +107,17 @@ with sync_playwright() as p:
         pg.evaluate("NALA.setMoves(3)")
         check(bump_into(pg, 'stella') == 0, f'L{lvl+1}: Stella only once per level')
         if lvl == 0:
-            pg.evaluate("NALA.newAttempt()")
-            check(pg.evaluate("NALA.shotsLeft") == 4, "Stella's +1 sticks: the next try starts with 4 moves")
+            pg.evaluate("NALA.newAttempt()")   # try 3: Stella's +1 sticks, and "learning the house" adds one
+            check(pg.evaluate("NALA.attempt") == 3 and pg.evaluate("NALA.shotsLeft") == 5, "try 3 starts with 5 moves (3 + Stella + learning the house)")
+            # small clutter: a real hit tips the floor lamp over and she plows on through instead of bouncing
+            pg.evaluate("NALA.place(165,236); NALA.shoot(-1,0,.4)")
+            wait_state(pg, 'aim')
+            lamp = pg.evaluate("NALA.objs.find(o=>o.name==='floor lamp').down")
+            check(lamp and pg.evaluate("NALA.dog.x") < 110, 'floor lamp tips over and Nala plows on past it (x=%.0f)' % pg.evaluate("NALA.dog.x"))
+            # squeaky toys don't deflect her: she rolls right over (and it squeaks)
+            pg.evaluate("NALA.place(200,640); NALA.shoot(0,-1,.25)")
+            wait_state(pg, 'aim')
+            check(pg.evaluate("NALA.rec.events.some(e=>e.k==='squeak')") and abs(pg.evaluate("NALA.dog.x") - 200) < 2, 'squeaky toy squeaks and does not deflect her')
         if SHOTS and lvl == 0: pg.screenshot(path=f'{SHOTS}/3-after-bumps.png')
         ev = pg.evaluate("NALA.rec.events.map(e=>e.k)")
         check(all(k in ev for k in ('treat', 'stella', 'binx')), f'L{lvl+1}: replay recorded pickups/smacks')
@@ -129,10 +138,22 @@ with sync_playwright() as p:
             pg.evaluate("NALA.cr.y=NALA.cr.end-1"); pg.wait_for_timeout(600)
             end = pg.inner_text('#card')
             check('Good night' in end and str(total) in end and total > 0, f'end card shows total bonks ({total})')
+            check('Captain Nala' in end and pg.evaluate("NALA.loadProg().beat") == 1 and pg.evaluate("NALA.costume()") == 'pirate', 'beating it unlocks + equips Captain Nala')
             if SHOTS: pg.screenshot(path=f'{SHOTS}/7-end.png')
-            pg.click('text=Title'); pg.click('text=☰ Levels')
-            check(pg.locator('.lvl.done').count() == len(names), 'level select shows all 5 cleared')
+            pg.click('#card button:text-is("Title")'); pg.wait_for_timeout(300)
+            check('Round 2' in pg.inner_text('#card') and 'Captain Nala' in pg.inner_text('#cosLine'), 'title shows round 2 + the costume')
+            # tap Nala on the title to swap costumes
+            box = pg.locator('canvas').bounding_box(); sc = box['width'] / 400
+            pg.mouse.click(box['x'] + 200 * sc, box['y'] + 300 * sc); pg.wait_for_timeout(200)
+            check(pg.evaluate("NALA.costume()") == 'sniffer' and 'Super Sniffer' in pg.inner_text('#cosLine'), 'tapping Nala swaps the costume')
+            pg.click('text=☰ Levels')
+            check(pg.locator('.lvl:disabled').count() == 0 and pg.locator('.lvl.done').count() == 0 and 'Round 2' in pg.inner_text('#card'), 'round 2: all levels open, none cleared yet')
             pg.click('text=Back')
+            has = pg.evaluate("LEVELS.filter(l=>l.remix&&l.remix.length).length")
+            pg.evaluate("NALA.loadLevel(0)")
+            moved = pg.evaluate("NALA.objs.filter(o=>!o.ent&&(o.x!==LEVELS[0].objs()[o.id]?.x||o.y!==LEVELS[0].objs()[o.id]?.y)).length")
+            check(has == len(names) and pg.evaluate("!!NALA.remix") and moved > 0 and 'Remix' in pg.inner_text('#card'), f'round 2 plays the remix ({moved} things moved; {has}/{len(names)} levels have remixes)')
+            pg.evaluate("NALA.goTitle()")
 
     # mute is remembered across visits
     pg.evaluate("NALA.goTitle()"); pg.click('#bSnd'); pg.reload(); pg.wait_for_timeout(500)

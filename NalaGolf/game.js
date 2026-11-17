@@ -64,8 +64,8 @@ function clearBest(){ try{ localStorage.removeItem(BEST_KEY); }catch(e){} }
 function bestText(name){ const b=loadBest()[name]; return b?`${b.tries} tr${b.tries===1?'y':'ies'} · ${b.shots} shot${b.shots===1?'':'s'}`:''; }
 
 /* ---------- state ---------- */
-const settings={scent:true, ghost:false, lights:false, shots:3, sound:true, vol:.8, unlockAll:false};
-const SET_KEY='nalaGolf.settings.v1', SET_KEEP={scent:'boolean',shots:'number',sound:'boolean',vol:'number',unlockAll:'boolean'};   // remembered across visits
+const settings={scent:true, ghost:false, lights:false, shots:3, sound:true, vol:.8, unlockAll:false, costume:'sniffer'};
+const SET_KEY='nalaGolf.settings.v1', SET_KEEP={scent:'boolean',shots:'number',sound:'boolean',vol:'number',unlockAll:'boolean',costume:'string'};   // remembered across visits
 try{ const sv=JSON.parse(localStorage.getItem(SET_KEY))||{}; for(const k in SET_KEEP) if(typeof sv[k]===SET_KEEP[k]) settings[k]=sv[k]; }catch(e){}
 function saveSettings(){ try{ const o={}; for(const k in SET_KEEP) o[k]=settings[k]; localStorage.setItem(SET_KEY,JSON.stringify(o)); }catch(e){} }
 
@@ -73,9 +73,36 @@ function saveSettings(){ try{ const o={}; for(const k in SET_KEEP) o[k]=settings
 const RUN_KEY='nalaGolf.run.v1', CAREER_KEY='nalaGolf.career.v1';
 function loadJSON(k){ try{ return JSON.parse(localStorage.getItem(k))||{}; }catch(e){ return {}; } }
 function saveJSON(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
-function cleared(i){ return !!loadBest()[LEVELS[i].name]; }
-function unlocked(i){ return settings.unlockAll || i===0 || cleared(i-1); }
+/* Playthroughs ("laps"). prog = {beat: times the game was beaten, lap: {levelName:true} cleared this lap}.
+   Lap 1 unlocks levels in order. From lap 2 on everything is open, the clutter is remixed
+   (L.remix, solver-checked layouts) and clearing all five again counts as another beat. */
+const PROG_KEY='nalaGolf.prog.v1';
+function loadProg(){
+  let p=null; try{ p=JSON.parse(localStorage.getItem(PROG_KEY)); }catch(e){}
+  if(p && typeof p.beat==='number' && p.lap) return p;
+  const best=loadBest(), all=LEVELS.every(l=>best[l.name]);   // saves from before laps existed
+  p={beat:all?1:0, lap:{}}; if(!all) for(const l of LEVELS) if(best[l.name]) p.lap[l.name]=true;
+  saveJSON(PROG_KEY,p); return p;
+}
+function cleared(i){ return !!loadProg().lap[LEVELS[i].name]; }
+function lapDone(){ const p=loadProg(); return LEVELS.every(l=>p.lap[l.name]); }
+function unlocked(i){ return settings.unlockAll || i===0 || loadProg().beat>0 || cleared(i-1); }
+function nextAfter(i){ for(let k=1;k<=LEVELS.length;k++){ const j=(i+k)%LEVELS.length; if(!cleared(j)&&unlocked(j)) return j; } return Math.min(i+1,LEVELS.length-1); }
 function nextToPlay(){ for(let i=0;i<LEVELS.length;i++) if(!cleared(i)) return unlocked(i)?i:0; return 0; }
+function remixOf(L){ const b=loadProg().beat; return b>0&&L.remix&&L.remix.length?L.remix[(b-1)%L.remix.length]:null; }
+
+/* Costumes (bonk mode only; the lights coming on always shows Nala as herself). need = times beaten. */
+const COSTUMES=[
+  {id:'sniffer',name:'Super Sniffer',need:0},
+  {id:'herself',name:'Just Nala',need:0},
+  {id:'pirate',name:'Captain Nala',need:1,em:'🏴‍☠️'},
+  {id:'sensei',name:'Sensei Nala',need:2,em:'🥋'},
+  {id:'astro',name:'Astro Nala',need:3,em:'🚀'},
+];
+const COSTUME_WORDS={pirate:['SQUAWK!','ARRR!','*parrot noises*','YARR!'],sensei:['HI-YAH!','HWAH!','*dojo noises*'],astro:['Houston…','beep boop','ZERO-G!']};
+function costumesOpen(){ const b=loadProg().beat; return COSTUMES.filter(c=>c.need<=b); }
+function costume(){ const c=costumesOpen().find(c=>c.id===settings.costume); return c?c.id:'sniffer'; }
+function nextCostume(){ const o=costumesOpen(), i=o.findIndex(c=>c.id===costume()); settings.costume=o[(i+1)%o.length].id; saveSettings(); return o[(i+1)%o.length]; }
 function commitCareer(){   // bonks count toward the lifetime total even on levels you quit
   if(!stats) return; const d=stats.bonks-(stats.committed||0); if(d<=0) return;
   const c=loadJSON(CAREER_KEY); c.bonks=(c.bonks||0)+d; saveJSON(CAREER_KEY,c); stats.committed=stats.bonks;
@@ -95,13 +122,17 @@ function runTotals(){
   return T;
 }
 addEventListener('pagehide',()=>commitCareer());
-let L, lvlIdx=0, objs=[], dog, shotsLeft, attempt, state='intro', pings=[], words=[], parts=[], prints=[], rec, stats, aim=null, t=0, winT=0, banner=null, toast=null, rp=null, printAcc=0, hudFx=[], stellaMet=false, ti=null, cr=null;
+let remix=null, L, lvlIdx=0, objs=[], dog, shotsLeft, attempt, state='intro', pings=[], words=[], parts=[], prints=[], rec, stats, aim=null, t=0, winT=0, banner=null, toast=null, rp=null, printAcc=0, hudFx=[], stellaMet=false, ti=null, cr=null;
 
 function loadLevel(i,quiet){
   commitCareer();
   lvlIdx=i; L=LEVELS[i]; stellaMet=false;
-  const ents=(L.ents||[]).map(e=>{ const d=ENT[e.k]; return Ci(e.x,e.y,d.r,d.name,d.mat,{ent:e.k}); });
-  objs=[...L.objs(),...ents].map((o,id)=>Object.assign(o,{id,solid:o.ent!=='treat',sensor:o.ent==='treat',down:false,glow:0,cd:0,used:false,gone:false,hx:o.x,hy:o.y}));
+  const mix=remixOf(L); remix=mix;
+  const ents=(L.ents||[]).map(e=>{ const d=ENT[e.k], at=e.k==='treat'&&mix&&mix.treat||[e.x,e.y]; return Ci(at[0],at[1],d.r,d.name,d.mat,{ent:e.k}); });
+  const base=L.objs(); if(mix) for(const [i,[x,y]] of Object.entries(mix.m||{})){ base[i].x=x; base[i].y=y; }
+  // squeaky toys don't deflect her: she rolls over them (squeak + a little ping)
+  objs=[...base,...ents].map((o,id)=>{ const sen=o.ent==='treat'?'treat':o.mat==='squeak'?'toy':false;
+    return Object.assign(o,{id,solid:!sen,sensor:sen,down:false,glow:0,cd:0,used:false,gone:false,hx:o.x,hy:o.y}); });
   resetDog(); shotsLeft=settings.shots; attempt=1;
   pings=[];words=[];parts=[];prints=[];banner=null;toast=null;hudFx=[];
   mctx.clearRect(0,0,W,H);
@@ -118,9 +149,14 @@ function resetTry(){ for(const o of objs) if(o.ent){
   if(o.ent==='stella' && STELLA_KEEPS && o.used) continue;
   o.used=false; o.gone=false;
   if(o.ent==='stella'){ o.x=o.hx; o.y=o.hy; o.solid=true; o.walk=null; } } }
-function triesMoves(){ return settings.shots+(STELLA_KEEPS&&stellaMet&&settings.shots<99?1:0); }
+// Learning the house: after a couple of failed tries every try gets +1 move (+2 later on).
+// The first tries stay tense; a long losing streak doesn't. LEARN = the try numbers where it kicks in.
+const LEARN=[3,6];
+function learnBonus(n){ return settings.shots>=99?0:LEARN.filter(k=>n>=k).length; }
+function triesMoves(){ return settings.shots+(STELLA_KEEPS&&stellaMet&&settings.shots<99?1:0)+learnBonus(attempt); }
 function newAttempt(){
-  resetDog(); resetTry(); shotsLeft=triesMoves(); attempt++; aim=null; toast=null; hudFx=[];
+  resetDog(); resetTry(); attempt++; shotsLeft=triesMoves(); aim=null; toast=null; hudFx=[];
+  if(learnBonus(attempt)>learnBonus(attempt-1)) banner={txt:`Nala’s learning the house 🧠 every try gets ${shotsLeft} moves now`,t:0};
   rec.events.push({f:rec.frames.length,k:'reset'});
   rec.frames.push({reset:true,attempt});
   state='aim'; hideCard();
@@ -151,6 +187,12 @@ function collide(o){
   }
   dog.x+=nx*pen; dog.y+=ny*pen;
   const vn=dog.vx*nx+dog.vy*ny;
+  if(vn<0 && o.knock && !o.down && -vn>o.knock.at){
+    // hard enough to tip it over: she plows on through (a bit slower) instead of bouncing off
+    dog.vx-=.55*vn*nx; dog.vy-=.55*vn*ny; dog.vx*=.85; dog.vy*=.85;
+    dog.bonk={nx,ny,str:clamp(-vn/900,.12,.6),t:0};
+    onHit(o,-vn,cx,cy); return;
+  }
   if(vn<0){
     const e=MAT[o.mat].e;
     dog.vx-=(1+e)*vn*nx; dog.vy-=(1+e)*vn*ny;
@@ -174,6 +216,7 @@ function onHit(o,imp,x,y){
     o.cd=.18; stats.bonks++; stats.by[o.name]=(stats.by[o.name]||0)+1;
     const m=MAT[o.mat], w=pick(m.words);
     addWord(w,x,y,str); sfx(m.snd,str); sfx('ping',str);
+    const cw=COSTUME_WORDS[costume()]; if(cw && str>.45 && Math.random()<.35) addWord(pick(cw),x+rand(-30,30),y-30,.45,'#ffe066');
     const b=dog.bonk; rec.events.push({f:rec.frames.length,k:'hit',x,y,w,snd:m.snd,nx:b?b.nx:0,ny:b?b.ny:-1,str});
     if(imp>480){ dog.dizzy=1.6; }
     dog.squash=Math.min(1,str*1.2); buzz(Math.round(10+25*str));
@@ -224,6 +267,12 @@ function pickupTreat(o){
   banner={txt:pick(TREAT_LINES),t:0};
   rec.events.push({f:rec.frames.length,k:'treat',id:o.id,x:o.x,y:o.y});
 }
+function squeak(o){
+  if(o.cd>0) return; o.cd=.5; o.glow=1.2;
+  addWord(pick(MAT.squeak.words),o.x,o.y-10,.5,'#ff8fc8'); sfx('squeak',.8); buzz(8);
+  pings.push({x:o.x,y:o.y,t:0,life:.9,maxR:90,mem:true});
+  rec.events.push({f:rec.frames.length,k:'squeak',x:o.x,y:o.y});
+}
 function spawnDebris(x,y,cols){ for(let i=0;i<16;i++){ const a=rand(0,TAU), s=rand(60,240); parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:rand(.6,1.3),c:pick(cols),s:rand(2,4)}); } }
 function center(o){ return o.t==='r'?{x:o.x+o.w/2,y:o.y+o.h/2}:{x:o.x,y:o.y}; }
 function goalCenter(){ const g=L.goal; return g.t==='r'?{x:g.x+g.w/2,y:g.y+g.h/2}:{x:g.x,y:g.y}; }
@@ -240,7 +289,7 @@ function physics(dt){
     dog.x+=dog.vx*h; dog.y+=dog.vy*h;
     for(const o of objs){
       if(o.solid) collide(o);
-      else if(o.sensor && !o.gone && Math.hypot(dog.x-o.x,dog.y-o.y)<o.r+DOG_R) pickupTreat(o);
+      else if(o.sensor && !o.gone && Math.hypot(dog.x-o.x,dog.y-o.y)<o.r+DOG_R){ if(o.sensor==='treat') pickupTreat(o); else squeak(o); }
     }
     if(checkGoal()){ rec.frames.push({x:dog.x,y:dog.y,a:dog.a}); win(); return; }
   }
@@ -264,6 +313,7 @@ function stopped(){
 function win(){
   state='winning'; winT=0; dog.vx=dog.vy=0; dog.from={x:dog.x,y:dog.y};
   stats.best=saveBest(L.name,attempt,stats.shots); saveRun(); commitCareer();
+  const pg=loadProg(); pg.lap[L.name]=true; saveJSON(PROG_KEY,pg);
   const g=goalCenter(); sfx('win'); buzz([30,40,30]);
   addWord(pick((GOALFX[L.goal.kind]||GOALFX.bed).words),clamp(g.x+40,90,W-90),clamp(g.y+40,HUD+40,H-40),1.3,'#ffd27a');
 }
@@ -290,6 +340,7 @@ function updateRecap(dt){
     if(e.k==='reset'){ rp.gone.clear(); rp.att++; if(!STELLA_KEEPS) rp.stella=null; }
     if(e.k==='treat'){ rp.gone.add(e.id); addWord('+1 TREAT!',e.x,e.y-12,.8,'#ffe066'); sfx('pickup'); }
     if(e.k==='stella'){ if(e.to) rp.stella={x:e.to.x,y:e.to.y,fx:e.x,fy:e.y,t:0}; rp.bonks++; addWord('BORF! +1',e.x,e.y-18,.9,'#e6e9f0'); say('🐕 Stella',e.line,'#c9ccd6'); sfx('borf',.6); }
+    if(e.k==='squeak'){ addWord('squeak!',e.x,e.y-10,.5,'#d0559a'); if(rp.sb>=1){ rp.sb--; sfx('squeak',.35);} }
     if(e.k==='binx'){ rp.bonks++; addWord('SMACK! −1',e.x,e.y-8,1,'#ffe066'); say('🐈‍⬛ Binx',e.line,'#d9a8ff'); sfx('smack',.6); }
   }
   if(rp.i>=rec.frames.length){ rp.done+=dt; if(rp.done>1.2 && !rp.shown){ rp.shown=true; showResults(); } }
@@ -302,6 +353,7 @@ wrap.addEventListener('pointerdown',e=>{
   ensureAudio();
   if(state==='recap'){ rp.i=rec.frames.length; rp.ev=rec.events.length; rp.done=1.2; return; }
   if(state==='credits'){ cr.fast=true; return; }
+  if(state==='title'){ const p=toLocal(e); if(Math.abs(p.x-TITLE.x)<60 && p.y>ti.y-80 && p.y<ti.y+55) swapCostume(); return; }
   if(state!=='aim') return;
   const p=toLocal(e); if(p.y>=0 && p.y<HUD) return;
   try{ wrap.setPointerCapture(e.pointerId); }catch(_){}
@@ -343,8 +395,9 @@ function speak(){
 function showIntro(fresh){
   const how=(fresh&&lvlIdx===0)?`<div class="how">🐾 <b>Drag back anywhere</b> and let go to fling Nala (like a slingshot). A short drag is full power.<br>🌑 The house is dark. Bonking into stuff lights it up for a sec — use the directions + your bonks to find the way.<br>🎯 ${settings.shots>=99?'Unlimited':settings.shots} moves per try. 🍪 Hidden treats and 🐕 Stella give +1. 🐈‍⬛ Binx takes one.</div>`:'';
   const best=bestText(L.name);
-  showCard(`<div class="kicker">Nala's Bonk Golf · Level ${lvlIdx+1}</div><h2>${L.emoji} ${L.name}</h2>
-    <div class="bubble"><b>Ashley:</b> “${L.intro}”</div>${how}
+  const rmx=remix?`<div class="small rmx">🔀 <b>Remix:</b> the clutter has moved since last time (and so has the treat). Ashley’s directions still hold.</div>`:'';
+  showCard(`<div class="kicker">Nala's Bonk Golf · Level ${lvlIdx+1}${remix?' · 🔀 Remix':''}</div><h2>${L.emoji} ${L.name}</h2>
+    <div class="bubble"><b>Ashley:</b> “${L.intro}”</div>${how}${rmx}
     <div class="small">Memorize it — the lights are off. (📜 up top shows this again.)${best?`<br>🏆 Your best: <b>${best}</b>`:''}</div>`,
     [{t:'☰ Levels',fn:()=>showLevels(()=>showIntro(fresh))},{t:'🔊 Read it to me',fn:speak},{t:fresh?'Let’s go!':'Back to it',primary:true,fn:()=>{ hideCard(); if(state==='intro') state='aim'; }}],true);
 }
@@ -361,12 +414,22 @@ function goTitle(){
   showTitle();
 }
 function showTitle(){
-  const n=nextToPlay(), any=LEVELS.some((_,i)=>cleared(i));
+  const n=nextToPlay(), any=LEVELS.some((_,i)=>cleared(i)), pg=loadProg(), done=LEVELS.filter((_,i)=>cleared(i)).length;
+  const line=pg.beat>0?`<span class="rmx">🔀 <b>Round ${pg.beat+1}</b> (remixed) · ${done}/${LEVELS.length}</span> · next: <b>${LEVELS[n].emoji} ${LEVELS[n].name}</b>`
+    :any?`Up next: <b>${LEVELS[n].emoji} ${n+1}. ${LEVELS[n].name}</b>`:'A blind shar-pei. A dark house. A lot of bonks.';
   showCard(`<div class="ded">For <b>Ashley &amp; Corbin</b><br><span>(and Nala, Stella &amp; Binx)</span></div>
-    <div class="small center">${any?`Up next: <b>${LEVELS[n].emoji} ${n+1}. ${LEVELS[n].name}</b>`:'A blind shar-pei. A dark house. A lot of bonks.'}</div>`,
+    <div class="small center">${line}</div>
+    <div class="small center cos" id="cosLine">${cosLine()}</div>`,
     [{t:'☰ Levels',fn:()=>showLevels(showTitle)},{t:'▶ Play',primary:true,id:'bPlay',fn:()=>loadLevel(nextToPlay())},
      {t:soundLabel(),id:'bSnd',fn:el=>{ settings.sound=!settings.sound; saveSettings(); el.textContent=soundLabel(); if(settings.sound) sfx('paw+'); }}],true,'front');
   if(IOS){ const r=document.createElement('div'); r.className='small center note'; r.textContent='iPhone: the silent switch mutes game sound. Flip it off to hear the bonks.'; card.insertBefore(r,card.querySelector('.rev')); }
+}
+function cosLine(){ const c=COSTUMES.find(c=>c.id===costume()), lk=COSTUMES.length-costumesOpen().length;
+  return `🎭 Wearing <b>${c.name}</b> · tap Nala to swap${lk?` <span>(${lk} locked)</span>`:''}`; }
+function swapCostume(){
+  const c=nextCostume(); ti.swapAt=t; const el=document.getElementById('cosLine'); if(el) el.innerHTML=cosLine();
+  pings.push({x:TITLE.x,y:ti.y-12,t:0,life:.9,maxR:110});
+  addWord(c.name.toUpperCase()+'!',TITLE.x,ti.y-92,.9,'#ffe066'); sfx('pickup'); buzz(15);
 }
 function updateTitle(dt){
   ti.t+=dt; const T=TITLE.T, p=(ti.t%T)/T, cyc=Math.floor(ti.t/T), hitP=.32;
@@ -383,10 +446,12 @@ function updateTitle(dt){
 /* ---------- level select ---------- */
 function showLevels(back){
   const best=loadBest();
-  const rows=LEVELS.map((l,i)=>{ const ok=unlocked(i), b=best[l.name];
-    return `<button class="lvl${b?' done':''}" data-i="${i}" ${ok?'':'disabled'}><span class="em">${ok?l.emoji:'🔒'}</span>
-      <span class="tx"><span class="nm">${i+1}. ${l.name}</span><span class="bs">${b?`🏆 ${bestText(l.name)}`:ok?'Not cleared yet':`Clear ${LEVELS[i-1].name} to unlock`}</span></span>${b?'<span class="ck">✓</span>':''}</button>`; }).join('');
-  showCard(`<div class="kicker">Nala's Bonk Golf</div><h2>☰ Levels</h2><div class="lvls">${rows}</div>
+  const pg=loadProg();
+  const rows=LEVELS.map((l,i)=>{ const ok=unlocked(i), b=best[l.name], done=cleared(i);
+    return `<button class="lvl${done?' done':''}" data-i="${i}" ${ok?'':'disabled'}><span class="em">${ok?l.emoji:'🔒'}</span>
+      <span class="tx"><span class="nm">${i+1}. ${l.name}</span><span class="bs">${b?`🏆 ${bestText(l.name)}${pg.beat&&!done?' · not cleared this round':''}`:ok?'Not cleared yet':`Clear ${LEVELS[i-1].name} to unlock`}</span></span>${done?'<span class="ck">✓</span>':''}</button>`; }).join('');
+  const lap=pg.beat?`<div class="small rmx">🔀 Round ${pg.beat+1} (remixed). Clear all ${LEVELS.length} in any order to beat it again.</div>`:'';
+  showCard(`<div class="kicker">Nala's Bonk Golf</div><h2>☰ Levels</h2>${lap}<div class="lvls">${rows}</div>
     <div class="set"><label><span>Unlock all levels<small>Skip ahead. Your best scores stay.</small></span><input type="checkbox" id="chkUnlock" ${settings.unlockAll?'checked':''}></label></div>`,
     [{t:'Back',fn:back||showTitle}]);
   card.querySelectorAll('.lvl').forEach(el=>el.onclick=()=>{ ensureAudio(); sfx('ui'); loadLevel(+el.dataset.i); });
@@ -401,7 +466,7 @@ function creditBlocks(T){
   return [
     {k:'sign',h:170},
     {k:'head',txt:'STARRING',h:46},
-    {k:'cast',who:'nala',name:'NALA',role:'as herself, and as Super Sniffer',h:140},
+    {k:'cast',who:'nala',name:'NALA',role:costume()==='herself'?'as herself':`as herself, and as ${COSTUMES.find(c=>c.id===costume()).name}`,h:140},
     {k:'cast',who:'stella',name:'STELLA',role:'big sister · hype dog · +1 move',h:140},
     {k:'cast',who:'binx',name:'BINX',role:'as Binx. −1 move. Regrets nothing.',h:140},
     {k:'role',name:'ASHLEY',role:'the voice of directions',h:64},
@@ -416,12 +481,15 @@ function creditBlocks(T){
     {k:'sleep',txt:'Good night, Nala.',h:150},
   ];
 }
-function startCredits(){
+function startCredits(finish){
   hideCard(); commitCareer(); try{ speechSynthesis.cancel(); }catch(e){}
   const T=runTotals(), blocks=creditBlocks(T); let y=0; for(const b of blocks){ b.y=y; y+=b.h; }
   const last=blocks[blocks.length-1];
+  // a full lap of all five levels counts as beating the game: that's what unlocks costumes + remixes
+  let beat=null, unlock=null;
+  if(finish===true && lapDone()){ const pg=loadProg(); pg.beat++; pg.lap={}; saveJSON(PROG_KEY,pg); beat=pg.beat; unlock=COSTUMES.find(c=>c.need===pg.beat)||null; }
   state='credits'; words=[]; pings=[]; parts=[]; toast=null; banner=null;
-  cr={y:H-200,fast:false,blocks,T,end:H+last.y+last.h/2-250,shown:false};
+  cr={y:H-200,fast:false,blocks,T,end:H+last.y+last.h/2-250,shown:false,beat,unlock};
   sfx('win');
 }
 function updateCredits(dt){
@@ -430,17 +498,22 @@ function updateCredits(dt){
 }
 function endTitle(b){ return b<=40?'Certified Sniffer':b<=90?'Professional Bonker':b<=160?'Pinball Wizard':'Majestic Chaos Potato'; }
 function showEnd(){
-  const T=cr.T;
-  showCard(`<div class="kicker">The end</div><h2>🌙 Good night, Nala</h2>
-    <div class="endn"><b>${T.bonks}</b><span>total bonks · “${endTitle(T.bonks)}”</span></div>`,
+  const T=cr.T, u=cr.unlock;
+  if(u && !cr.equipped){ cr.equipped=true; settings.costume=u.id; saveSettings(); }   // she puts it on right away
+  const more=COSTUMES.filter(c=>c.need>(cr.beat||0)).length;
+  const news=cr.beat?`<div class="unlock">${u?`${u.em} New costume: <b>${u.name}</b><small>She’s wearing it now. Tap Nala on the title screen to swap costumes.</small>`:`🏆 Beaten ${cr.beat} times!<small>${more?'':'Every costume unlocked. '}Tap Nala on the title screen to swap costumes.</small>`}
+    <div class="sub">🔀 Next round the houses get remixed: the clutter and the treats move.${more?` ${more} more costume${more>1?'s':''} to find.`:''}</div></div>`:'';
+  showCard(`<div class="kicker">The end${cr.beat>1?` · round ${cr.beat}`:''}</div><h2>🌙 Good night, Nala</h2>
+    <div class="endn"><b>${T.bonks}</b><span>total bonks · “${endTitle(T.bonks)}”</span></div>${news}`,
     [{t:'↺ Watch again',fn:startCredits},{t:'☰ Levels',fn:()=>showLevels(showEnd)},{t:'Title',primary:true,fn:goTitle}],false,'front');
 }
 const FAILS=['Nala has decided this is her spot now.','Nala sits. Nala refuses. Nala is a shar-pei.','Nala flops down dramatically. Back to the door.','Nala is “resting her eyes.” Try again.','Nala has filed a formal complaint about the furniture.'];
 function showFail(){
   if(state!=='fail') return;
+  const nextMoves=settings.shots+(STELLA_KEEPS&&stellaMet?1:0)+learnBonus(attempt+1);
   showCard(`<div class="kicker">Attempt ${attempt}</div><h2>🐾 Out of sniffs!</h2>
     <div class="bubble">${pick(FAILS)}</div>
-    <div class="small">Total bonks so far: <b>${stats.bonks}</b>. The house remembers anything she knocked over. Treats, Stella and Binx reset each try.</div>`,
+    <div class="small">Total bonks so far: <b>${stats.bonks}</b>. The house remembers anything she knocked over. Treats, Stella and Binx reset each try.${settings.shots<99?`<br>Next try: <b>${nextMoves} moves</b>${learnBonus(attempt+1)>learnBonus(attempt)?' (Nala’s learning the house 🧠)':''}`:''}</div>`,
     [{t:'📜 Directions',fn:()=>showIntro(false)},{t:'Try again',primary:true,fn:newAttempt}]);
 }
 function rating(){
@@ -453,7 +526,7 @@ function rating(){
 }
 function showResults(){
   const top=Object.entries(stats.by).sort((a,b)=>b[1]-a[1])[0];
-  const last=lvlIdx>=LEVELS.length-1, nb=stats.best||{};
+  const last=lapDone()||lvlIdx>=LEVELS.length-1, nb=stats.best||{};
   const fx=[stats.treats&&`🍪 ${stats.treats} treat${stats.treats>1?'s':''}`,stats.stella&&`🐕 Stella pep talks ×${stats.stella}`,stats.binx&&`🐈‍⬛ Binx smacks ×${stats.binx}`].filter(Boolean).join(' · ');
   const tb=top?top[0]:'—';
   showCard(`<div class="kicker">Level ${lvlIdx+1} complete</div>
@@ -467,7 +540,7 @@ function showResults(){
     ${nb.tries||nb.shots?'<div class="nbwrap"><span class="newbest">NEW BEST!</span></div>':''}
     <div class="small">Casualties: <b>${stats.knocked.length?stats.knocked.join(' · '):'none! suspicious.'}</b>${fx?`<br>${fx}`:''}<br>🏆 Best: ${bestText(L.name)}</div>`,
     [{t:'Replay',fn:startRecap},{t:'Retry',fn:()=>loadLevel(lvlIdx)},{t:'☰',fn:()=>showLevels(showResults)},
-     {t:last?'The end →':'Next level →',primary:true,fn:()=>last?startCredits():loadLevel(lvlIdx+1)}],false,'paper');
+     {t:last?'The end →':'Next level →',primary:true,fn:()=>last?startCredits(true):loadLevel(nextAfter(lvlIdx))}],false,'paper');
 }
 function showSettings(){
   const chk=(k,label,sub)=>`<label><span>${label}<small>${sub}</small></span><input type="checkbox" data-k="${k}" ${settings[k]?'checked':''}></label>`;
@@ -480,13 +553,13 @@ function showSettings(){
     ${chk('unlockAll','Unlock all levels','Skip ahead without clearing them')}
     <label><span>Moves per try<small>Applies next attempt</small></span><select id="selShots">
       ${[3,4,5,99].map(n=>`<option value="${n}" ${settings.shots===n?'selected':''}>${n===99?'Unlimited':n}</option>`).join('')}</select></label>
-    <label><span>Progress<small>Best scores, unlocks and bonk totals on this device</small></span><button id="bClr" type="button">Reset</button></label>
+    <label><span>Progress<small>Best scores, unlocks, costumes and bonk totals on this device</small></span><button id="bClr" type="button">Reset</button></label>
     </div>`,[{t:'Title screen',fn:goTitle},{t:'☰ Levels',fn:()=>showLevels(showSettings)},{t:'Done',primary:true,fn:()=>{ hideCard(); if(state==='intro') showIntro(true);} }],true);
   card.querySelectorAll('input[type=checkbox]').forEach(el=>el.onchange=()=>{ settings[el.dataset.k]=el.checked; saveSettings(); if(el.dataset.k==='sound'&&el.checked) sfx('paw+'); });
   card.querySelector('#rngVol').oninput=e=>{ settings.vol=+e.target.value; setVolume(); };
   card.querySelector('#rngVol').onchange=()=>{ saveSettings(); sfx('bonk',.8); };
   card.querySelector('#selShots').onchange=e=>{settings.shots=+e.target.value; saveSettings();};
-  card.querySelector('#bClr').onclick=e=>{ if(e.target.dataset.sure){ clearBest(); try{ localStorage.removeItem(RUN_KEY); localStorage.removeItem(CAREER_KEY); }catch(_){} e.target.textContent='Done'; e.target.disabled=true; }
+  card.querySelector('#bClr').onclick=e=>{ if(e.target.dataset.sure){ clearBest(); try{ localStorage.removeItem(RUN_KEY); localStorage.removeItem(CAREER_KEY); localStorage.setItem(PROG_KEY,JSON.stringify({beat:0,lap:{}})); }catch(_){} settings.costume='sniffer'; saveSettings(); e.target.textContent='Done'; e.target.disabled=true; }
     else { e.target.dataset.sure=1; e.target.textContent='Sure? Tap again'; } };
 }
 document.getElementById('bDir').onclick=()=>{ensureAudio(); if(state!=='recap') showIntro(state==='intro');};
@@ -528,6 +601,6 @@ let last=performance.now();
 function frame(now){ const dt=Math.min(.033,(now-last)/1000); last=now; t+=dt; if(L) update(dt); render(); requestAnimationFrame(frame); }
 window.NALA={ get state(){return state}, get shotsLeft(){return shotsLeft}, get dog(){return dog}, get objs(){return objs}, get stats(){return stats}, get rec(){return rec}, get rp(){return rp},
   start(){ hideCard(); if(state==='intro') state='aim'; }, shoot, loadLevel, newAttempt,
-  get cr(){return cr}, get settings(){return settings}, get stellaMet(){return stellaMet}, goTitle, showLevels, startCredits, unlocked,
+  get cr(){return cr}, get settings(){return settings}, get stellaMet(){return stellaMet}, goTitle, showLevels, startCredits, unlocked, loadProg, costume, swapCostume, COSTUMES, get remix(){return remix}, get attempt(){return attempt},
   place(x,y){ dog.x=x; dog.y=y; }, setMoves(n){ shotsLeft=n; }, forceWin(){ if(state==='aim'||state==='moving') win(); } };
 addEventListener('DOMContentLoaded',()=>{ goTitle(); requestAnimationFrame(frame); });

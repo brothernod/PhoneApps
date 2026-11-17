@@ -1,10 +1,11 @@
 """Level design previews: every level fully lit, with collision shapes outlined.
 
 Usage (from the repo root, with `python3 -m http.server 8765 &` running):
-    python3 NalaGolf/tools/preview.py [out_dir] [level numbers…] [--clean]
+    python3 NalaGolf/tools/preview.py [out_dir] [level numbers…] [--clean] [--remix=K]
 
 Writes <out_dir>/L<n>-lit.png (lights on + red collision outlines, start marker, entities)
-and <out_dir>/L<n>-neon.png (the dark bonk view at the start of a try). --clean skips the outlines.
+and <out_dir>/L<n>-neon.png (the dark bonk view at the start of a try). --clean skips the outlines. --remix=K shows each
+level's K-th remix layout (what round K+1 plays).
 """
 import sys, os
 from playwright.sync_api import sync_playwright
@@ -13,6 +14,7 @@ args = [a for a in sys.argv[1:] if not a.startswith('--')]
 OUT = args[0] if args else '/tmp/nala-preview'
 ONLY = [int(a) - 1 for a in args[1:]]
 CLEAN = '--clean' in sys.argv
+REMIX = next((int(a.split('=')[1]) for a in sys.argv if a.startswith('--remix=')), 0)
 os.makedirs(OUT, exist_ok=True)
 
 PREVIEW_JS = """(dbg)=>{ render=function(){
@@ -33,6 +35,7 @@ with sync_playwright() as p:
     pg.on('pageerror', lambda e: errs.append(str(e)))
     pg.on('console', lambda m: errs.append(m.text) if m.type == 'error' else None)
     pg.goto('http://localhost:8765/NalaGolf/'); pg.wait_for_timeout(400)
+    pg.evaluate(f"localStorage.setItem('nalaGolf.prog.v1', JSON.stringify({{beat:{REMIX},lap:{{}}}}))"); pg.reload(); pg.wait_for_timeout(400)
     n = pg.evaluate('LEVELS.length')
     for i in range(n):
         if ONLY and i not in ONLY: continue
@@ -40,8 +43,10 @@ with sync_playwright() as p:
         pg.screenshot(path=f'{OUT}/L{i+1}-neon.png')
         pg.evaluate('window.__origRender=window.__origRender||render')
         pg.evaluate(PREVIEW_JS, not CLEAN); pg.wait_for_timeout(250)
-        pg.screenshot(path=f'{OUT}/L{i+1}-lit.png')
+        tag = f'-r{REMIX}' if REMIX else ''
+        pg.screenshot(path=f'{OUT}/L{i+1}{tag}-lit.png')
         pg.evaluate('render=window.__origRender')
-        print('wrote', f'{OUT}/L{i+1}-lit.png')
+        print('wrote', f'{OUT}/L{i+1}{tag}-lit.png')
+    pg.evaluate("localStorage.removeItem('nalaGolf.prog.v1')")
     b.close()
     if errs: print('ERRORS:', errs); sys.exit(1)
