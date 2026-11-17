@@ -24,7 +24,7 @@ A small, silly phone game for Ashley (and Corbin) about **Nala**, their shar-pei
 - **Ghost memory OFF** by default. Remove it from the player settings, or hide it behind a debug flag.
 - **Moves:** 3 per try (tunable).
 - **Hidden treat** on each level: touching it gives **+1 move** for that try. Its job is to tempt "one more move".
-- **Stella** (their pitbull, **thin and all grey**, long narrow face, no white markings) appears in the level. Touching her triggers a motivational line and a little bark burst ("BORF!"), worth **+1 move**, once per try.
+- **Stella** (their pitbull, **thin and all grey**, long narrow face, no white markings) appears in the level. Touching her triggers a motivational line and a little bark burst ("BORF!"), worth **+1 move**. *Updated in Phase 4 (Jonathan's idea):* after the BORF she trots aside and stops blocking, and her +1 lasts **for the rest of the level** (every later try gets 4 moves). Toggle with `STELLA_KEEPS` in `game.js`.
 - **Binx** (their **black cat**, yellow eyes) appears in the level. Touching him triggers a smack, worth **−1 move**, once per try. He should look like a regular black cat.
 - **5 levels** total. These are made-up houses (we don't know Ashley and Corbin's real layout).
 - **Each level** opens with Ashley giving directions in her own voice ("Hey Nala, it's bedtime! Turn right at the coffee table…"), with an optional read-aloud button.
@@ -133,14 +133,14 @@ Kickoff: `Read NalaGolf/PLAN.md in brothernod/PhoneApps and do Phase 3.`
 
 Kickoff: `Read NalaGolf/PLAN.md in brothernod/PhoneApps and do Phase 4.`
 
-- [ ] Title screen: "Nala's Bonk Golf", with a dedication "For Ashley & Corbin (and Nala, Stella & Binx)" and Play / Level select.
-- [ ] Level select with best results. Levels unlock in order, plus a toggle to unlock all.
-- [ ] Ending after level 5: a credits roll with the cast and a total-bonks stat.
-- [ ] Sound pass: volume balance, a mute toggle remembered across visits, and a note that the iOS silent switch mutes web audio.
-- [ ] PWA: `manifest.webmanifest` and apple-touch-icon (Nala's face in the chosen style), add-to-home-screen friendly, safe-area insets.
-- [ ] Add a `README.md` in `NalaGolf/` covering how to play and how to add levels.
-- [ ] Add a link to the repo root `README.md`.
-- [ ] Final Playwright smoke run on all 5 levels, then commit + push.
+- [x] Title screen: "Nala's Bonk Golf", with a dedication "For Ashley & Corbin (and Nala, Stella & Binx)" and Play / Level select.
+- [x] Level select with best results. Levels unlock in order, plus a toggle to unlock all.
+- [x] Ending after level 5: a credits roll with the cast and a total-bonks stat.
+- [x] Sound pass: volume balance, a mute toggle remembered across visits, and a note that the iOS silent switch mutes web audio.
+- [x] PWA: `manifest.webmanifest` and apple-touch-icon (Nala's face in the chosen style), add-to-home-screen friendly, safe-area insets.
+- [x] Add a `README.md` in `NalaGolf/` covering how to play and how to add levels.
+- [x] Add a link to the repo root `README.md`.
+- [x] Final Playwright smoke run on all 5 levels, then commit + push.
 
 ---
 
@@ -184,3 +184,15 @@ Update this after every phase: what was done, what changed from the plan, and an
   - **Testing:** `tools/smoke.py` now runs every level (drag shot, treat/Stella/Binx, replay, results, best saved) and parks Nala on the side of each character away from the goal, so Binx can't smack her into a win. Passes, no console errors.
   - **Changes from the plan:** Breakfast's goal is her food bowl (not the bed) and Treat Heist's is the jar. In Bedtime, Binx naps beside the treat instead of being completely out of the way. Best scores are keyed by level name, so any old "Bone Hunt" best just sits unused.
   - **Open:** the difficulty ramp is gentle and noisy (Potty Break can score above Breakfast). Tune after Ashley/Jonathan play on a phone: shrink a door or move Binx to make a level harder.
+- **Phase 4 (done, 2026-11-16):** Polish and gift wrap. Screens: `shots/7-title.jpg`, `shots/8-credits.jpg`.
+  - **Title screen** (new `title` state): a neon "NALA'S BONK GOLF" sign that Nala (Super Sniffer, 2.3× size) keeps walking into. Each bonk makes the sign flicker, sends out a ping and pops a BONK word, with dizzy stars. Stella cheers on the left ("BORF!"), Binx is unimpressed on the right. The card below holds the dedication, **▶ Play** (the first uncleared level), **☰ Levels**, and the sound toggle. The HUD is hidden on the title and in the credits.
+  - **Level select:** a card listing each level with its emoji and best score (or 🔒 "Clear X to unlock"). A level unlocks when the one before it has a saved best, so no separate unlock save. The **Unlock all levels** toggle is remembered. You can reach it from the title, intro, results and settings cards. The settings "Jump to level" picker was replaced by it.
+  - **Credits** after level 5 (the results button reads "The end →"): a neon roll with the sign, the cast (Nala as herself + Super Sniffer, Stella, Binx, Ashley, Corbin, The Furniture), **this run's totals** (total bonks, tries, shots, knock-overs, most-bonked thing, treats / pep talks / smacks, from the latest clear of each level), lifetime bonks on this phone, and a sleeping Nala ("Good night, Nala."). Hold to fast-forward. It ends on a card with the total bonks and a title (Certified Sniffer → Majestic Chaos Potato), plus Watch again / Levels / Title.
+  - **Sound:** every sfx call gets its own balance gain (`BAL`), then the master volume, then a compressor. `tools/loudness.py` renders each sound offline and measures it. Before balancing, crash, trash and smack peaked **above 0 dBFS** (+4.5 to +5.3), and splash, borf, fail and hmph were 10–30 dB quieter than a bonk. Now impacts sit within 2 dB of a bonk, events are about +2, UI sounds −4 to −12, and the ping is a −14 shimmer. Added a volume slider, a remembered mute (title button + settings), a soft UI tick on buttons, audio suspended when the tab is hidden and resumed on the next tap (covers iOS "interrupted"), and an iOS-only note that the silent switch mutes web audio.
+  - **Settings are remembered** (`nalaGolf.settings.v1`): scent, moves per try, sound, volume, unlock-all. The lights cheat and ghost memory are not. "Reset progress" (tap twice) clears bests, unlocks and bonk totals.
+  - **PWA:** `manifest.webmanifest` (standalone, portrait, indigo) and icons drawn by `tools/icons.py` with the real `drawNala()`: a Super Sniffer close-up inside a magenta sonar ring (180 apple-touch, 192, 512, maskable 512 inside the safe zone, 32 favicon). `viewport-fit=cover` with a black-translucent status bar. `#wrap` pads by `env(safe-area-inset-*)`, and `resize()` fits the 400×700 world inside that padding, so the HUD clears the notch and the home bar. Card overlays pad for it too.
+  - **Stella rework** (Jonathan's mid-phase idea): after the BORF she trots ~36 px to a clear spot beside Nala's path and turns non-solid. With `STELLA_KEEPS` (on) her +1 sticks for every later try on that level, and a banner says so. In later tries she waits there as a faint outline. The replay shows her stepping aside. Quick solver check: Bedtime map-knower went from 82% to ~95%, because she no longer plugs the bedroom door. The other levels are within noise.
+  - **Docs:** `NalaGolf/README.md` (how to play, phone tips, files, how to add a level, tools). The repo root `README.md` links to the game.
+  - **Testing:** `tools/smoke.py` now starts from a cleared save and covers the title, fresh locks, unlock-all on/off across a reload, Play → level 1, every level (shot, treat, Stella +1 + steps aside + once per level, Binx −1, replay, results, best), the 4-move retry after Stella, level 5 → credits → end card total, all levels ✓ in the select, mute across a reload, manifest + 5 icons, apple-touch-icon + viewport-fit, a simulated notch (59 px) + home bar (34 px), and Binx stealing the last move. **PASS, no console errors.** `tools/solve.mjs` snapshots Stella's position.
+  - **Changes from the plan:** Stella's bonus is per level, not per try (above). The Corbin credit ("executive producer of belly rubs") and the closing jokes are placeholders; swap in anything truer in `creditBlocks()` (`game.js`).
+  - **Open:** still untested on a real iPhone: Add to Home Screen, the notch layout, the silent switch, and the speed of the first sketch-layer build. No service worker (no offline play), on purpose: a cache would hide the rev stamp updates while things are being tuned. Add one once it's final if Ashley wants it to work offline. On iOS the Home Screen app keeps its own save, separate from Safari's.
