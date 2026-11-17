@@ -392,9 +392,6 @@ function showCard(html,btns,revFooter,theme){
   if(revFooter){ const r=document.createElement('div'); r.className='rev'; r.textContent='rev '+REV+(DEBUG?' · debug':''); card.appendChild(r); }
   ov.classList.remove('hidden');
 }
-function speak(){
-  try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(L.intro); u.rate=1; u.pitch=1.1; speechSynthesis.speak(u);}catch(e){}
-}
 function showIntro(fresh){
   const how=(fresh&&lvlIdx===0)?`<div class="how">🐾 <b>Drag back anywhere</b> and let go to fling Nala (like a slingshot). A short drag is full power.<br>🌑 The house is dark. Bonking into stuff lights it up for a sec — use the directions + your bonks to find the way.<br>🎯 ${settings.shots>=99?'Unlimited':settings.shots} moves per try. 🍪 Hidden treats and 🐕 Stella give +1. 🐈‍⬛ Binx takes one.</div>`:'';
   const best=bestText(L.name);
@@ -402,7 +399,7 @@ function showIntro(fresh){
   showCard(`<div class="kicker">Nala's Bonk Golf · Level ${lvlIdx+1}${remix?' · 🔀 Remix':''}</div><h2>${L.emoji} ${L.name}</h2>
     <div class="bubble"><b>Ashley:</b> “${L.intro}”</div>${how}${rmx}
     <div class="small">Memorize it — the lights are off. (📜 up top shows this again.)${best?`<br>🏆 Your best: <b>${best}</b>`:''}</div>`,
-    [{t:'☰ Levels',fn:()=>showLevels(()=>showIntro(fresh))},{t:'🔊 Read it to me',fn:speak},{t:fresh?'Let’s go!':'Back to it',primary:true,fn:()=>{ hideCard(); if(state==='intro') state='aim'; }}],true);
+    [{t:'☰ Levels',fn:()=>showLevels(()=>showIntro(fresh))},{t:fresh?'Let’s go!':'Back to it',primary:true,fn:()=>{ hideCard(); if(state==='intro') state='aim'; }}],true);
 }
 
 /* ---------- title screen ---------- */
@@ -416,7 +413,7 @@ const soundIcon=()=>SPK+(settings.sound?'<path d="M14.5 8.2a4 4 0 0 1 0 5.6M17 5
 const soundLabel=()=>settings.sound?'Sound on (tap to mute)':'Sound off (tap to unmute)';
 function setSoundBtn(el){ el.innerHTML=soundIcon(); el.classList.toggle('off',!settings.sound); el.title=soundLabel(); el.setAttribute('aria-label',soundLabel()); }
 function goTitle(){
-  commitCareer(); try{ speechSynthesis.cancel(); }catch(e){}
+  commitCareer();
   if(!L) loadLevel(0,true);
   state='title'; ti={t:0,y:TITLE.rest,sp:0,bonk:null,diz:0,cyc:-1,hitAt:-9}; words=[]; pings=[]; parts=[]; toast=null; banner=null;
   showTitle();
@@ -493,7 +490,7 @@ function creditBlocks(T){
   ];
 }
 function startCredits(finish){
-  hideCard(); commitCareer(); try{ speechSynthesis.cancel(); }catch(e){}
+  hideCard(); commitCareer();
   const T=runTotals(), blocks=creditBlocks(T); let y=0; for(const b of blocks){ b.y=y; y+=b.h; }
   const last=blocks[blocks.length-1];
   // a full lap of all five levels counts as beating the game: that's what unlocks costumes + remixes

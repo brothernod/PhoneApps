@@ -9,7 +9,7 @@ Nala is a shar-pei who went blind and now ping-pongs around the house. Fling her
 ## How to play
 
 - **Drag back anywhere and let go** to fling Nala, like a slingshot. A short drag (about a thumb's width) is full power.
-- **The house is dark.** Ashley's directions on the intro card (📜 shows them again, 🔊 reads them aloud) plus whatever your bonks light up are all you get. The yellow scent pulse gets stronger as Nala gets close.
+- **The house is dark.** Ashley's directions on the intro card (📜 shows them again) plus whatever your bonks light up are all you get. The yellow scent pulse gets stronger as Nala gets close.
 - **Touch the goal to win.** She doesn't have to stop on it.
 - **3 moves per try.** Out of moves means back to the start, but anything she knocked over stays knocked over. Every try teaches you more of the map.
 - 🍪 **Hidden treat:** +1 move for that try.

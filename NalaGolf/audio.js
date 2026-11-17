@@ -22,7 +22,7 @@ function ensureAudio(){
   // 'interrupted' is iOS after a call or backgrounding; resume needs a user gesture, and this runs on every tap
   if(AC && AC.state!=='running' && AC.state!=='closed') AC.resume().catch(()=>{});
 }
-document.addEventListener('visibilitychange',()=>{ if(document.hidden){ try{ speechSynthesis.cancel(); }catch(e){} if(AC&&AC.state==='running') AC.suspend().catch(()=>{}); } });
+document.addEventListener('visibilitychange',()=>{ if(document.hidden){ if(AC&&AC.state==='running') AC.suspend().catch(()=>{}); } });
 function nb(){ if(!NBUF){ NBUF=AC.createBuffer(1,AC.sampleRate,AC.sampleRate); const d=NBUF.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; } return NBUF; }
 function envGain(t0,vol,dur){ const g=AC.createGain(); g.gain.setValueAtTime(.0001,t0); g.gain.exponentialRampToValueAtTime(Math.max(.0002,vol),t0+.008); g.gain.exponentialRampToValueAtTime(.0001,t0+dur); g.connect(OUT||master); return g; }
 function tone(type,f0,f1,dur,vol,delay=0,lp){
