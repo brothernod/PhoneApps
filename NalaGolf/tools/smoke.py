@@ -4,9 +4,12 @@ Usage (from the repo root):
     python3 -m http.server 8765 &        # serve the repo
     python3 NalaGolf/tools/smoke.py [http://localhost:8765/NalaGolf/] [screenshot_dir]
 
-Checks: page loads with the rev stamp, a real drag shot fires, the treat / Stella / Binx
-each change the move count, a forced win runs the replay through to the results card,
-best scores are saved, and nothing logs a console error.
+Checks: the title screen (dedication, rev stamp, Play), level locks + unlock-all (remembered),
+a real drag shot fires on every level, the treat / Stella / Binx each change the move count,
+Stella steps aside and her +1 sticks for later tries, a forced win runs the replay through to
+the results card, best scores are saved, level 5 rolls the credits with a total-bonks stat, the
+mute toggle survives a reload, the PWA manifest + icons load, safe-area insets keep the game
+clear of the notch, and nothing logs a console error.
 """
 import sys, json, os
 from playwright.sync_api import sync_playwright
@@ -68,7 +71,19 @@ with sync_playwright() as p:
     pg.on('console', lambda m: errs.append(m.text) if m.type == 'error' and 'gstatic' not in m.text else None)
     pg.on('pageerror', lambda e: errs.append(str(e)))
     pg.goto(URL); pg.wait_for_timeout(500)
-    check('rev ' in pg.inner_text('#card'), 'intro card shows rev stamp')
+    pg.evaluate("localStorage.clear()"); pg.reload(); pg.wait_for_timeout(700)
+    card = pg.inner_text('#card')
+    check(pg.evaluate("NALA.state") == 'title' and 'Ashley & Corbin' in card and 'Nala, Stella & Binx' in card, 'title screen with dedication')
+    check('rev ' in card, 'title card shows rev stamp')
+    check(pg.evaluate("getComputedStyle(document.getElementById('hud')).display") == 'none', 'HUD hidden on the title')
+    if SHOTS: pg.screenshot(path=f'{SHOTS}/0-title.png')
+    pg.click('text=☰ Levels')
+    check(pg.locator('.lvl:disabled').count() == 4 and pg.locator('.lvl:enabled').count() == 1, 'fresh save: only level 1 unlocked')
+    pg.check('#chkUnlock'); pg.reload(); pg.wait_for_timeout(500); pg.click('text=☰ Levels')
+    check(pg.locator('.lvl:disabled').count() == 0, 'unlock-all opens every level and is remembered')
+    pg.uncheck('#chkUnlock'); check(pg.locator('.lvl:disabled').count() == 4, 'unlock-all off locks them again')
+    pg.click('text=Back'); pg.click('#bPlay')
+    check(pg.evaluate("NALA.state") == 'intro' and 'Bedtime' in pg.inner_text('#card'), 'Play starts level 1')
     if SHOTS: pg.screenshot(path=f'{SHOTS}/1-intro.png')
 
     names = pg.evaluate('LEVELS.map(l=>l.name)')
@@ -85,9 +100,15 @@ with sync_playwright() as p:
         pg.evaluate("NALA.newAttempt()")   # fresh try with 3 moves
         check(bump_into(pg, 'treat') == 1, f'L{lvl+1}: treat gives +1')
         check(bump_into(pg, 'stella') == 1, f'L{lvl+1}: Stella gives +1')
+        pg.wait_for_timeout(700)
+        moved = pg.evaluate("(()=>{ const o=NALA.objs.find(o=>o.ent==='stella'); return {solid:o.solid, d:Math.hypot(o.x-o.hx,o.y-o.hy)}; })()")
+        check(not moved['solid'] and moved['d'] > 12, f"L{lvl+1}: Stella stepped aside {moved['d']:.0f}px and stopped blocking")
         check(bump_into(pg, 'binx') == -1, f'L{lvl+1}: Binx takes 1')
         pg.evaluate("NALA.setMoves(3)")
-        check(bump_into(pg, 'stella') == 0, f'L{lvl+1}: Stella only once per try')
+        check(bump_into(pg, 'stella') == 0, f'L{lvl+1}: Stella only once per level')
+        if lvl == 0:
+            pg.evaluate("NALA.newAttempt()")
+            check(pg.evaluate("NALA.shotsLeft") == 4, "Stella's +1 sticks: the next try starts with 4 moves")
         if SHOTS and lvl == 0: pg.screenshot(path=f'{SHOTS}/3-after-bumps.png')
         ev = pg.evaluate("NALA.rec.events.map(e=>e.k)")
         check(all(k in ev for k in ('treat', 'stella', 'binx')), f'L{lvl+1}: replay recorded pickups/smacks')
@@ -100,6 +121,35 @@ with sync_playwright() as p:
         pg.wait_for_function("document.querySelector('#card').innerText.toLowerCase().includes('complete')", timeout=20000)
         check('NEW BEST' in pg.inner_text('#card'), f'L{lvl+1}: results card + new best')
         if SHOTS and lvl == 0: pg.screenshot(path=f'{SHOTS}/5-results.png')
+        if lvl == len(names) - 1:
+            pg.click('text=The end →'); pg.wait_for_timeout(1500)
+            check(pg.evaluate("NALA.state") == 'credits' and pg.evaluate("NALA.cr.y") > 20, 'level 5 rolls the credits')
+            if SHOTS: pg.screenshot(path=f'{SHOTS}/6-credits.png')
+            total = pg.evaluate("NALA.cr.T.bonks")
+            pg.evaluate("NALA.cr.y=NALA.cr.end-1"); pg.wait_for_timeout(600)
+            end = pg.inner_text('#card')
+            check('Good night' in end and str(total) in end and total > 0, f'end card shows total bonks ({total})')
+            if SHOTS: pg.screenshot(path=f'{SHOTS}/7-end.png')
+            pg.click('text=Title'); pg.click('text=☰ Levels')
+            check(pg.locator('.lvl.done').count() == len(names), 'level select shows all 5 cleared')
+            pg.click('text=Back')
+
+    # mute is remembered across visits
+    pg.evaluate("NALA.goTitle()"); pg.click('#bSnd'); pg.reload(); pg.wait_for_timeout(500)
+    check(pg.evaluate("NALA.settings.sound") is False and 'Sound off' in pg.inner_text('#bSnd'), 'mute survives a reload')
+    pg.click('#bSnd'); check(pg.evaluate("NALA.settings.sound") is True, 'sound back on')
+    # PWA bits
+    man = pg.evaluate("fetch('manifest.webmanifest').then(r=>r.json())")
+    icons = [i['src'] for i in man['icons']] + ['icons/apple-touch-icon.png', 'icons/favicon-32.png']
+    ok = pg.evaluate("(srcs)=>Promise.all(srcs.map(s=>fetch(s).then(r=>r.ok && r.headers.get('content-type').startsWith('image/'))))", icons)
+    check(man['display'] == 'standalone' and all(ok), 'manifest + %d icons load' % len(icons))
+    check(pg.locator('link[rel=apple-touch-icon]').count() == 1 and 'viewport-fit=cover' in pg.get_attribute('meta[name=viewport]', 'content'), 'apple-touch-icon + viewport-fit=cover')
+    # safe areas: fake an iPhone notch + home bar and check the game stays inside them
+    pg.add_style_tag(content='#wrap{padding:59px 0 34px 0 !important}'); pg.evaluate("dispatchEvent(new Event('resize'))")
+    r = pg.evaluate("(()=>{ const r=document.querySelector('canvas').getBoundingClientRect(), h=document.getElementById('hud'); return {t:r.top,b:r.bottom,ht:parseFloat(h.style.top),vh:innerHeight}; })()")
+    check(r['t'] >= 59 - .5 and r['b'] <= r['vh'] - 34 + .5 and abs(r['ht'] - r['t']) < 1, 'canvas + HUD stay inside safe-area insets')
+    if SHOTS: pg.screenshot(path=f'{SHOTS}/8-safe-area.png')
+    pg.reload(); pg.wait_for_timeout(400)
 
     best = pg.evaluate("localStorage.getItem('nalaGolf.best.v1')")
     check(best and all(n in best for n in names), 'best scores saved for all %d levels' % len(names))

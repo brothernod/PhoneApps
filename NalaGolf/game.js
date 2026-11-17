@@ -421,7 +421,7 @@ function startCredits(){
   const T=runTotals(), blocks=creditBlocks(T); let y=0; for(const b of blocks){ b.y=y; y+=b.h; }
   const last=blocks[blocks.length-1];
   state='credits'; words=[]; pings=[]; parts=[]; toast=null; banner=null;
-  cr={y:0,fast:false,blocks,T,end:H+last.y+last.h/2-250,shown:false};
+  cr={y:H-200,fast:false,blocks,T,end:H+last.y+last.h/2-250,shown:false};
   sfx('win');
 }
 function updateCredits(dt){
