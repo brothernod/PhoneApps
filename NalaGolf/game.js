@@ -156,6 +156,7 @@ function learnBonus(n){ return settings.shots>=99?0:LEARN.filter(k=>n>=k).length
 function triesMoves(){ return settings.shots+(STELLA_KEEPS&&stellaMet&&settings.shots<99?1:0)+learnBonus(attempt); }
 function newAttempt(){
   resetDog(); resetTry(); attempt++; shotsLeft=triesMoves(); aim=null; toast=null; hudFx=[];
+  if(learnBonus(attempt)>learnBonus(attempt-1)) hudFx.push({k:'slot',i:shotsLeft-1,t:0,col:'#ffe066',tag:'LEARNED'});
   if(learnBonus(attempt)>learnBonus(attempt-1)) banner={txt:`Nala’s learning the house 🧠 every try gets ${shotsLeft} moves now`,t:0};
   rec.events.push({f:rec.frames.length,k:'reset'});
   rec.frames.push({reset:true,attempt});
@@ -237,6 +238,8 @@ function stellaBump(o){
   const line=pick(STELLA_LINES);
   for(let i=0;i<3;i++) addWord('BORF!',o.x+rand(-26,26),o.y-18+rand(-14,8),.6+i*.2,'#e6e9f0');
   pings.push({x:o.x,y:o.y,t:0,life:1.2,maxR:120,mem:true});
+  const cap0=triesMoves(); stellaMet=true;
+  if(STELLA_KEEPS && triesMoves()>cap0) hudFx.push({k:'slot',i:triesMoves()-1,t:0,col:'#e6e9f0',tag:'STELLA'});   // the bar grows a 4th spot: that's hers
   addMove(); say('🐕 Stella',line+'  +1 move','#c9ccd6'); if(STELLA_KEEPS) banner={txt:`Stella’s +1 sticks: every try here gets ${settings.shots+1} moves 🐕`,t:0}; sfx('borf'); buzz([15,30,15]);
   stellaMet=true; o.solid=false; o.walk=stellaAside(o);
   rec.events.push({f:rec.frames.length,k:'stella',x:o.x,y:o.y,line,to:o.walk&&{x:o.walk.x,y:o.walk.y}});
@@ -511,8 +514,16 @@ const FAILS=['Nala has decided this is her spot now.','Nala sits. Nala refuses. 
 function showFail(){
   if(state!=='fail') return;
   const nextMoves=settings.shots+(STELLA_KEEPS&&stellaMet?1:0)+learnBonus(attempt+1);
+  // the very first time anyone runs out of sniffs: a short how-this-works, tutorial style (shown once per device)
+  let tut=''; const TK='nalaGolf.tut.fail';
+  try{ if(!localStorage.getItem(TK)){ localStorage.setItem(TK,'1');
+    tut=`<div class="tut"><b>You can do it, Nala! 🐾</b>
+      <ul><li>Every try teaches you the house. Remember where she bonked and aim <i>past</i> it next time.</li>
+      <li>Anything she knocked over stays down, so the path gets clearer.</li>
+      <li>Read 📜 Directions again: Ashley's turns plus your bonks are the map.</li>
+      <li>Keep at it: from try 3 on, Nala’s learning the house and gets an extra move.</li></ul></div>`; } }catch(e){}
   showCard(`<div class="kicker">Attempt ${attempt}</div><h2>🐾 Out of sniffs!</h2>
-    <div class="bubble">${pick(FAILS)}</div>
+    <div class="bubble">${pick(FAILS)}</div>${tut}
     <div class="small">Total bonks so far: <b>${stats.bonks}</b>. The house remembers anything she knocked over. Treats, Stella and Binx reset each try.${settings.shots<99?`<br>Next try: <b>${nextMoves} moves</b>${learnBonus(attempt+1)>learnBonus(attempt)?' (Nala’s learning the house 🧠)':''}`:''}</div>`,
     [{t:'📜 Directions',fn:()=>showIntro(false)},{t:'Try again',primary:true,fn:newAttempt}]);
 }
@@ -559,7 +570,7 @@ function showSettings(){
   card.querySelector('#rngVol').oninput=e=>{ settings.vol=+e.target.value; setVolume(); };
   card.querySelector('#rngVol').onchange=()=>{ saveSettings(); sfx('bonk',.8); };
   card.querySelector('#selShots').onchange=e=>{settings.shots=+e.target.value; saveSettings();};
-  card.querySelector('#bClr').onclick=e=>{ if(e.target.dataset.sure){ clearBest(); try{ localStorage.removeItem(RUN_KEY); localStorage.removeItem(CAREER_KEY); localStorage.setItem(PROG_KEY,JSON.stringify({beat:0,lap:{}})); }catch(_){} settings.costume='sniffer'; saveSettings(); e.target.textContent='Done'; e.target.disabled=true; }
+  card.querySelector('#bClr').onclick=e=>{ if(e.target.dataset.sure){ clearBest(); try{ localStorage.removeItem('nalaGolf.tut.fail'); localStorage.removeItem(RUN_KEY); localStorage.removeItem(CAREER_KEY); localStorage.setItem(PROG_KEY,JSON.stringify({beat:0,lap:{}})); }catch(_){} settings.costume='sniffer'; saveSettings(); e.target.textContent='Done'; e.target.disabled=true; }
     else { e.target.dataset.sure=1; e.target.textContent='Sure? Tap again'; } };
 }
 document.getElementById('bDir').onclick=()=>{ensureAudio(); if(state!=='recap') showIntro(state==='intro');};
@@ -575,7 +586,7 @@ function update(dt){
   for(const o of objs){ o.glow=Math.max(0,o.glow-dt*.9); o.cd-=dt;
     if(o.walk && o.walk.t<1){ const w=o.walk; w.t=Math.min(1,w.t+dt/.6); const e=1-Math.pow(1-w.t,2); o.x=w.fx+(w.x-w.fx)*e; o.y=w.fy+(w.y-w.fy)*e; } }
   for(const p of prints) p.age+=dt; prints=prints.filter(p=>p.age<3);
-  for(const f of hudFx) f.t+=dt; hudFx=hudFx.filter(f=>f.t<.9);
+  for(const f of hudFx) f.t+=dt; hudFx=hudFx.filter(f=>f.t<(f.k==='slot'?2.2:.9));
   dog.squash=Math.max(0,dog.squash-dt*4); dog.dizzy=Math.max(0,dog.dizzy-dt); if(dog.bonk){ dog.bonk.t+=dt; if(dog.bonk.t>1.2) dog.bonk=null; }
   if(banner){ banner.t+=dt; if(banner.t>2.8) banner=null; }
   if(toast){ toast.t+=dt; if(toast.t>(state==='recap'?1.6:3.2)) toast=null; }

@@ -5,7 +5,7 @@
 // Characters (Stella, Binx), furniture, the goal and anything a level lists in `pin` never move,
 // so Ashley's directions stay true.
 //
-// Usage (from NalaGolf/):  node tools/remix.mjs [level#…] [--n=10] [--keep=3] [--jobs=2] [--seed=7] [--min=.45]
+// Usage (from NalaGolf/):  node tools/remix.mjs [level#…] [--n=10] [--keep=3] [--jobs=2] [--seed=7] [--min=.45] [--mintreat=.3]
 // Writes tools/remix-out.json ({levelIndex: [{m,treat,score}]}) and prints `remix:` lines for levels.js.
 import vm from 'node:vm';
 import fs from 'node:fs';
@@ -17,7 +17,7 @@ import { fileURLToPath } from 'node:url';
 const here = path.dirname(fileURLToPath(import.meta.url)), root = path.join(here, '..');
 const args = process.argv.slice(2);
 const opt = (k, d) => { const a = args.find(a => a.startsWith('--' + k + '=')); return a ? a.split('=')[1] : d; };
-const N = +opt('n', 10), KEEP = +opt('keep', 3), JOBS = +opt('jobs', os.cpus().length), MIN = +opt('min', .45);
+const N = +opt('n', 10), KEEP = +opt('keep', 3), JOBS = +opt('jobs', os.cpus().length), MIN = +opt('min', .45), MINT = +opt('mintreat', .3);
 let seed = +opt('seed', 7);
 const only = args.filter(a => /^\d+$/.test(a)).map(n => +n - 1);
 const rnd = () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
@@ -100,7 +100,7 @@ for (let li = 0; li < LV.length; li++) {
   const res = new Array(cands.length); let next = 0;
   await Promise.all([...Array(JOBS)].map(async () => { while (next < cands.length) { const k = next++; res[k] = await solve(li, cands[k], k); const r = res[k];
     console.log(`  #${k} ${r.error ? 'ERROR ' + r.error : `perfect ${r.perfect ? 'yes' : 'NO'} · map-knower ${(r.human * 100).toFixed(0)}% · treat ${(r.treat * 100).toFixed(0)}%`}`); } }));
-  const good = cands.map((c, k) => ({ ...c, score: res[k] })).filter(c => !c.score.error && c.score.perfect > 0 && c.score.human >= MIN && c.score.treat >= .3)
+  const good = cands.map((c, k) => ({ ...c, score: res[k] })).filter(c => !c.score.error && c.score.perfect > 0 && c.score.human >= MIN && c.score.treat >= MINT)
     .sort((a, b) => b.score.human - a.score.human).slice(0, KEEP);
   console.log(`  kept ${good.length}`);
   all[li] = good; fs.writeFileSync(outFile, JSON.stringify(all, null, 1));

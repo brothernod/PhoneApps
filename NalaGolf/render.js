@@ -697,16 +697,22 @@ function drawHUD(lit){
   ctx.textAlign='center'; ctx.textBaseline='middle';
   if(settings.shots>=99){ pawIcon(170,30,1.1,C.mag,1); ctx.font=`16px ${FT}`; ctx.fillStyle=C.mag; ctx.fillText('∞',190,31); }
   else {
-    const n=Math.max(settings.shots,shotsLeft), step=n>5?100/n:22, x0=W-150-step*(n-1)-12;
+    // slots = moves a fresh try gets here (3, +1 once Stella's met, +1/+2 learning the house); a treat can overfill it
+    const n=Math.max(triesMoves(),shotsLeft), step=n>5?100/n:22, x0=W-150-step*(n-1)-12;
     for(let i=0;i<n;i++){
-      const fx=hudFx.find(f=>f.i===i&&f.k==='+'), px=x0+i*step;
+      const fx=hudFx.find(f=>f.i===i&&f.k==='+'), sl=hudFx.find(f=>f.i===i&&f.k==='slot'), px=x0+i*step;
       let sc=1; if(fx){ const k=fx.t/.35; sc=k>=1?1:k<.5?k*3:1.5-(k-.5); }
+      if(sl){ const k=sl.t/2.2, a=k<.15?k/.15:1-(k-.15)/.85;   // a brand-new slot: pops in with a glowing ring
+        sc*=sl.t<.18?.3+sl.t/.18:sl.t<.3?1.3-(sl.t-.18)/.12*.3:1;
+        ctx.save(); ctx.globalAlpha=a*.9; ctx.strokeStyle=sl.col; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(px,30,11+k*6,0,TAU); ctx.stroke();
+        ctx.globalAlpha=a*.25; ctx.lineWidth=6; ctx.stroke();
+        ctx.globalAlpha=Math.min(1,a*1.6); ctx.font=`8px ${FT}`; ctx.fillStyle=sl.col; ctx.fillText(sl.tag||'+1 SPOT',px,50); ctx.restore(); }
       pawIcon(px,30,sc*1.05,C.mag,i<shotsLeft?1:.22);
     }
     for(const f of hudFx){ if(f.k!=='-') continue; const px=x0+f.i*step, k=f.t/.9;
       ctx.save(); ctx.translate(px+k*10,30+k*k*40); ctx.rotate(k*2); pawIcon(0,0,1+k*.4,C.mag,1-k); ctx.restore(); }
     ctx.font=`12px ${FT}`;
-    for(const f of hudFx){ const px=x0+f.i*step, k=f.t/.9; ctx.globalAlpha=1-k*k;
+    for(const f of hudFx){ if(f.k==='slot') continue; const px=x0+f.i*step, k=f.t/.9; ctx.globalAlpha=1-k*k;
       ctx.fillStyle=f.k==='+'?'#7dff9a':'#ff6a8a'; ctx.fillText(f.k==='+'?'+1':'−1',px+11,48-k*6); }
   }
   ctx.globalAlpha=1; ctx.textBaseline='alphabetic';
