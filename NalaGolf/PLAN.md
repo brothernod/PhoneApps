@@ -11,6 +11,7 @@ A small, silly phone game for Ashley (and Corbin) about **Nala**, their shar-pei
 - Revision: shown at the bottom of the level intro card ("rev …"). Run `NalaGolf/tools/bump.sh` before every commit so you can tell when Pages has the update.
 - Test: `python3 -m http.server 8765 &` from the repo root, then `python3 NalaGolf/tools/smoke.py`
 - Debug: add `?debug` to the URL for ghost memory. Test hooks live on `window.NALA`.
+- Level design: `node NalaGolf/tools/solve.mjs [level#…] [--quick]` (solvability, runs the real `game.js` physics headless) and `python3 NalaGolf/tools/preview.py [out_dir] [level#…] [--clean]` (lit floor plans with collision outlines).
 
 ---
 
@@ -117,16 +118,16 @@ Kickoff: `Read NalaGolf/PLAN.md in brothernod/PhoneApps and do Phase 2. Lights-o
 
 Kickoff: `Read NalaGolf/PLAN.md in brothernod/PhoneApps and do Phase 3.`
 
-- [ ] Replace the POC levels with 5 levels that ramp in difficulty. Suggested set (adjust freely):
+- [x] Replace the POC levels with 5 levels that ramp in difficulty. Suggested set (adjust freely):
   1. **Bedtime** — living room → bedroom. Teaches aiming. Binx asleep off to the side.
   2. **Breakfast** — bedroom → kitchen food bowl. Stella in the hallway.
   3. **Potty Break** — find the back door. Mudroom clutter, a laundry basket to knock over.
   4. **Treat Heist** — the treat jar's on the coffee table side; squeeze under the dining table. Binx guards a chokepoint.
   5. **Zoomies** — the whole house, longest route, everything knock-over-able, then the bed for the finale.
-- [ ] Each level gets: Ashley's directions (her voice, correct left/right from Nala's heading), a hidden treat, Stella and Binx placements, 2–4 knock-overs, and a name and emoji.
-- [ ] Solvability check: a Node script runs the physics headless and tries random shots. Confirm each level is beatable in ≤3 moves without perfect aim, and that the treat is reachable. Record the solve-rate per level in the Phase log.
-- [ ] Gaps at least 3× Nala's diameter unless a squeeze is the point of the level.
-- [ ] Commit + push after each level.
+- [x] Each level gets: Ashley's directions (her voice, correct left/right from Nala's heading), a hidden treat, Stella and Binx placements, 2–4 knock-overs, and a name and emoji.
+- [x] Solvability check: a Node script runs the physics headless and tries random shots. Confirm each level is beatable in ≤3 moves without perfect aim, and that the treat is reachable. Record the solve-rate per level in the Phase log.
+- [x] Gaps at least 3× Nala's diameter unless a squeeze is the point of the level.
+- [x] Commit + push after each level.
 
 ### Phase 4 — Polish + gift wrap · effort: **medium**
 
@@ -160,3 +161,26 @@ Update this after every phase: what was done, what changed from the plan, and an
   - **Testing:** `tools/smoke.py` passes. It now routes Google Fonts: set `NALA_FONTS=<dir>` with `audiowide.woff2` and `space-grotesk-{400,600,700}.woff2` (e.g. from `@fontsource`) to render real fonts offline; otherwise the font requests are stubbed.
   - **Changes from the plan:** Nala in bonk mode is full colour (Jonathan's call), not a neon outline. The goal isn't revealed by pings (only the scent hint), as before.
   - **Open:** not yet tested on a real iPhone. Watch the first-load hitch from the sketch pass on older phones. If it's noticeable, cap that layer at 2× resolution.
+- **Phase 3 (done, 2026-11-16):** The two POC levels are replaced by five. Floor plans: `shots/3-levels-lit.jpg`.
+  1. **🛏️ Bedtime** — living room → bedroom: up past the couch, right to the door (Stella waits by it), left to the bed by the space heater. Binx naps in the corner by the treat. Knock-overs: floor lamp, laundry basket, table lamp, plant.
+  2. **🥣 Breakfast** — Nala starts in her dog bed; out the bedroom door, down the long hall (Stella), right into the kitchen to her food bowl. Knock-overs: floor lamp, laundry basket, water bowl (right next to the food bowl), trash.
+  3. **🚪 Potty Break** — zig-zag: living room → kitchen → mudroom → back door. Washer/dryer, boots, laundry basket in the mudroom doorway; Binx lurks near the back door. Knock-overs: plant, floor lamp, trash, laundry basket.
+  4. **🍪 Treat Heist** — squeeze between the chairs and under the dining table (73 px gaps, the one deliberate squeeze), then pick a door: Binx naps in the short one, Stella waits by the long one. The jar has fallen beside the coffee table. Knock-overs: floor lamp, plant, trash, water bowl.
+  5. **⚡ Zoomies** — the whole house in a C: across the living room, up the hall, left into the bedroom. Optional den detour for the treat. 8 knock-overs.
+  - **Directions** are checked turn by turn against Nala's heading (she starts facing up the screen).
+  - **New art:** goal kinds `food` (her bowl), `door` (back door in the outer wall + WOOF mat + grass outside) and `jar` (tipped treat jar), plus per-goal win words and end flourish in `GOALFX` (`levels.js`). Only the bed makes her curl up with `z z z`; the others get `nom` / `♪`. New furniture: big bed (headboard to the wall), bookshelf/china cabinet, washer/dryer, armchair, kitchen island, side table, litter box; decor `dogbed` and `mat`. Level objects can pin `front:'N'|'S'|'E'|'W'`.
+  - **Solvability** (`tools/solve.mjs`, real `game.js` physics in a Node vm). The "map-knower" is a player who has learned the map by dying: each move they scan ~640 shots, prefer ones that still work with slightly-off aim, then shoot with human aim error. A win means the goal within one try (3 moves, plus any treat/Stella bonus). Numbers are ±~10% run to run.
+
+    | # | Level | No aim error | Map-knower (σ5°, 10% power) | Sloppy (σ9°, 18%) | Treat in one try | 3 blind random shots |
+    |---|---|---|---|---|---|---|
+    | 1 | Bedtime | 2 shots | 82% | 52% | 80% | 0% |
+    | 2 | Breakfast | 3 shots | 66% | 72% | 100% | 0% |
+    | 3 | Potty Break | 3 shots | 80% | 52% | 20% | 0% |
+    | 4 | Treat Heist | 2 shots | 44% (100 runs) | 38% | 60% | 1% |
+    | 5 | Zoomies | 3 shots | 66% | 28% | 72% | 0% |
+
+    Every level is beatable in ≤3 moves without perfect aim, and every treat is reachable. Blind random is ~0% everywhere, so the dark and the directions carry the difficulty, as intended. The model knows the map; real first plays will be much harder.
+  - **Gaps:** ≥78 px everywhere Nala travels, except Treat Heist's chair squeezes (73 px) and the pocket where the food bowl sits beside the water bowl (62 px). The checker also lists a few "gaps" measured through walls; those aren't real.
+  - **Testing:** `tools/smoke.py` now runs every level (drag shot, treat/Stella/Binx, replay, results, best saved) and parks Nala on the side of each character away from the goal, so Binx can't smack her into a win. Passes, no console errors.
+  - **Changes from the plan:** Breakfast's goal is her food bowl (not the bed) and Treat Heist's is the jar. In Bedtime, Binx naps beside the treat instead of being completely out of the way. Best scores are keyed by level name, so any old "Bone Hunt" best just sits unused.
+  - **Open:** the difficulty ramp is gentle and noisy (Potty Break can score above Breakfast). Tune after Ashley/Jonathan play on a phone: shrink a door or move Binx to make a level harder.

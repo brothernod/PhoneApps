@@ -39,10 +39,25 @@ def check(cond, msg):
 def wait_state(pg, want, ms=8000):
     pg.wait_for_function(f"window.NALA && NALA.state==={json.dumps(want)}", timeout=ms)
 
+APPROACH_JS = """(kind)=>{
+  // park Nala ~28px from the entity on a side with open floor, aimed straight at it
+  const o=NALA.objs.find(o=>o.ent===kind), R=13;
+  const free=(x,y)=>NALA.objs.every(q=>{ if(!q.solid||q===o) return true;
+    if(q.t==='r'){ const cx=Math.max(q.x,Math.min(x,q.x+q.w)), cy=Math.max(q.y,Math.min(y,q.y+q.h)); return Math.hypot(x-cx,y-cy)>=R+2; }
+    return Math.hypot(x-q.x,y-q.y)>=q.r+R+2; });
+  const g=L.goal, gx=g.t==='r'?g.x+g.w/2:g.x, gy=g.t==='r'?g.y+g.h/2:g.y, d=o.r+28;
+  // prefer the side away from the goal, so a bounce (Binx!) can't fling her into it
+  const sides=[[0,1],[0,-1],[1,0],[-1,0]].sort((a,b)=>Math.hypot(o.x+b[0]*d-gx,o.y+b[1]*d-gy)-Math.hypot(o.x+a[0]*d-gx,o.y+a[1]*d-gy));
+  for(const [dx,dy] of sides){ const x=o.x+dx*d, y=o.y+dy*d, m={x:o.x+dx*d/2,y:o.y+dy*d/2};
+    if(free(x,y)&&free(m.x,m.y)) return {x,y,dx:-dx,dy:-dy}; }
+  return null; }"""
+
 def bump_into(pg, kind):
-    """Park Nala 40px below an entity and roll her gently into it; return move delta."""
+    """Park Nala next to an entity and roll her gently into it; return move delta."""
     before = pg.evaluate("NALA.shotsLeft")
-    pg.evaluate(f"""(()=>{{ const o=NALA.objs.find(o=>o.ent==='{kind}'); const up=o.y+o.r+28<660; NALA.place(o.x,up?o.y+o.r+28:o.y-o.r-28); NALA.shoot(0,up?-1:1,.25); }})()""")
+    a = pg.evaluate(APPROACH_JS, kind)
+    assert a, f'no open side next to {kind}'
+    pg.evaluate(f"NALA.place({a['x']},{a['y']}); NALA.shoot({a['dx']},{a['dy']},.25)")
     wait_state(pg, 'aim')
     return pg.evaluate("NALA.shotsLeft") - (before - 1)   # -1 for the shot itself
 
@@ -56,7 +71,8 @@ with sync_playwright() as p:
     check('rev ' in pg.inner_text('#card'), 'intro card shows rev stamp')
     if SHOTS: pg.screenshot(path=f'{SHOTS}/1-intro.png')
 
-    for lvl in (0, 1):
+    names = pg.evaluate('LEVELS.map(l=>l.name)')
+    for lvl in range(len(names)):
         pg.evaluate(f"NALA.loadLevel({lvl}); NALA.start()")
         # real drag: start anywhere, pull back ~60 CSS px (well under the old 150px)
         box = pg.locator('canvas').bounding_box()
@@ -86,11 +102,11 @@ with sync_playwright() as p:
         if SHOTS and lvl == 0: pg.screenshot(path=f'{SHOTS}/5-results.png')
 
     best = pg.evaluate("localStorage.getItem('nalaGolf.best.v1')")
-    check(best and 'Bedtime' in best and 'Bone Hunt' in best, 'best scores saved: ' + str(best))
+    check(best and all(n in best for n in names), 'best scores saved for all %d levels' % len(names))
     # Binx takes the LAST move mid-roll: she finishes that roll, then the try ends
     pg.evaluate("NALA.loadLevel(0); NALA.start(); NALA.shoot(1,0,.01)"); wait_state(pg, 'aim')   # 2 left
     pg.evaluate("NALA.objs.forEach(o=>{ if(o.ent==='stella'||o.ent==='treat'){ o.used=o.gone=true; } })")   # nothing can hand the move back
-    pg.evaluate("(()=>{ const o=NALA.objs.find(o=>o.ent==='binx'); NALA.place(o.x,o.y+o.r+28); NALA.shoot(0,-1,.25); })()")  # shot → 1
+    a = pg.evaluate(APPROACH_JS, 'binx'); pg.evaluate(f"NALA.place({a['x']},{a['y']}); NALA.shoot({a['dx']},{a['dy']},.25)")  # shot → 1
     pg.wait_for_function("NALA.stats.binx===1", timeout=5000)                                  # smack → 0
     check(pg.evaluate("NALA.state") == 'moving' and pg.evaluate("NALA.shotsLeft") == 0, 'Binx took the last move; roll keeps going')
     wait_state(pg, 'fail')
