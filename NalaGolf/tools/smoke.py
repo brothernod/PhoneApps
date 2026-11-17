@@ -157,7 +157,7 @@ with sync_playwright() as p:
 
     # mute is remembered across visits
     pg.evaluate("NALA.goTitle()"); pg.click('#bSnd'); pg.reload(); pg.wait_for_timeout(500)
-    check(pg.evaluate("NALA.settings.sound") is False and 'Sound off' in pg.inner_text('#bSnd'), 'mute survives a reload')
+    check(pg.evaluate("NALA.settings.sound") is False and 'Sound off' in (pg.get_attribute('#bSnd','aria-label') or ''), 'mute survives a reload')
     pg.click('#bSnd'); check(pg.evaluate("NALA.settings.sound") is True, 'sound back on')
     # PWA bits
     man = pg.evaluate("fetch('manifest.webmanifest').then(r=>r.json())")

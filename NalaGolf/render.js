@@ -746,10 +746,10 @@ function drawTitle(){
   drawSign(0,hitFlicker(ti.hitAt));
   // Stella cheering on the left (wags faster right after a bonk), Binx unimpressed on the right
   const hype=clamp(1-(t-ti.hitAt)/1.2,0,1);
-  bigEnt('stella',84,352,2.1,.45+Math.sin(t*1.3)*.06,1,hype);
-  bigEnt('binx',318,356,2.1,0,1,0);
-  glowText('STELLA',84,410,`11px ${FT}`,'#e6e9f0','#c9ccd6',.8); glowText('BINX',318,410,`11px ${FT}`,'#e3c4ff',C.pur,.8);
-  if(hype>.3) glowText('BORF!',100,290-hype*8,`15px ${FT}`,'#fff','#e6e9f0',hype);
+  bigEnt('stella',84,362,2.1,.45+Math.sin(t*1.3)*.06,1,hype);
+  bigEnt('binx',318,366,2.1,0,1,0);
+  glowText('STELLA',84,420,`11px ${FT}`,'#e6e9f0','#c9ccd6',.8); glowText('BINX',318,420,`11px ${FT}`,'#e3c4ff',C.pur,.8);
+  if(hype>.3) glowText('BORF!',100,300-hype*8,`15px ${FT}`,'#fff','#e6e9f0',hype);
   const pop=ti.swapAt!=null&&t-ti.swapAt<.35?Math.sin((t-ti.swapAt)/.35*Math.PI)*.14:0;
   bigNala(TITLE.x,ti.y,TITLE.S*(1+pop),-Math.PI/2,{bonk:ti.bonk,speed:ti.sp,diz:ti.diz});
 

@@ -387,7 +387,7 @@ function hideCard(){ ov.classList.add('hidden'); }
 function showCard(html,btns,revFooter,theme){
   card.innerHTML=html; card.className='card'+(theme?' '+theme:''); ov.className=theme||'';
   const row=document.createElement('div'); row.className='row';
-  (btns||[]).forEach(b=>{ const el=document.createElement('button'); el.textContent=b.t; if(b.primary) el.className='primary'; if(b.id) el.id=b.id; if(b.disabled) el.disabled=true; el.onclick=()=>{ensureAudio(); sfx('ui'); b.fn(el);}; row.appendChild(el); });
+  (btns||[]).forEach(b=>{ const el=document.createElement('button'); if(b.html) el.innerHTML=b.html; else el.textContent=b.t; el.className=(b.primary?'primary ':'')+(b.cls||''); if(b.label){ el.title=b.label; el.setAttribute('aria-label',b.label); } if(b.id) el.id=b.id; if(b.disabled) el.disabled=true; el.onclick=()=>{ensureAudio(); sfx('ui'); b.fn(el);}; row.appendChild(el); });
   card.appendChild(row);
   if(revFooter){ const r=document.createElement('div'); r.className='rev'; r.textContent='rev '+REV+(DEBUG?' · debug':''); card.appendChild(r); }
   ov.classList.remove('hidden');
@@ -407,28 +407,36 @@ function showIntro(fresh){
 
 /* ---------- title screen ---------- */
 // The title scene (drawn in render.js): a neon sign, and Nala walking up and bonking it every TITLE.T seconds.
-const TITLE={x:200,rest:322,hit:262,S:2.3,T:2.8,signY:84,signH:118};
+const TITLE={x:200,rest:330,hit:240,S:2.3,T:2.8,signY:62,signH:118};
 const IOS=/iPad|iPhone|iPod/.test(navigator.userAgent||'')||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
-const soundLabel=()=>settings.sound?'🔊 Sound on':'🔇 Sound off';
+// Sound is an icon button in the Play row. (A web page can't read the iPhone silent switch, so on iPhone
+// turning sound on flashes a one-line reminder about it; the Settings card says it too.)
+const SPK='<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5h3l4.5-4v13l-4.5-4h-3z"/>';
+const soundIcon=()=>SPK+(settings.sound?'<path d="M14.5 8.2a4 4 0 0 1 0 5.6M17 5.8a7.5 7.5 0 0 1 0 10.4"/>':'<path d="M14.5 8.5l5 5M19.5 8.5l-5 5"/>')+'</svg>';
+const soundLabel=()=>settings.sound?'Sound on (tap to mute)':'Sound off (tap to unmute)';
+function setSoundBtn(el){ el.innerHTML=soundIcon(); el.classList.toggle('off',!settings.sound); el.title=soundLabel(); el.setAttribute('aria-label',soundLabel()); }
 function goTitle(){
   commitCareer(); try{ speechSynthesis.cancel(); }catch(e){}
   if(!L) loadLevel(0,true);
   state='title'; ti={t:0,y:TITLE.rest,sp:0,bonk:null,diz:0,cyc:-1,hitAt:-9}; words=[]; pings=[]; parts=[]; toast=null; banner=null;
   showTitle();
 }
+function titleLine(){ const n=nextToPlay(), any=LEVELS.some((_,i)=>cleared(i)), pg=loadProg(), done=LEVELS.filter((_,i)=>cleared(i)).length;
+  return pg.beat>0?`<span class="rmx">🔀 <b>Round ${pg.beat+1}</b> · ${done}/${LEVELS.length}</span> · next: <b>${LEVELS[n].emoji} ${LEVELS[n].name}</b>`
+    :any?`Up next: <b>${LEVELS[n].emoji} ${n+1}. ${LEVELS[n].name}</b>`:'A blind shar-pei. A dark house. A lot of bonks.'; }
 function showTitle(){
-  const n=nextToPlay(), any=LEVELS.some((_,i)=>cleared(i)), pg=loadProg(), done=LEVELS.filter((_,i)=>cleared(i)).length;
-  const line=pg.beat>0?`<span class="rmx">🔀 <b>Round ${pg.beat+1}</b> (remixed) · ${done}/${LEVELS.length}</span> · next: <b>${LEVELS[n].emoji} ${LEVELS[n].name}</b>`
-    :any?`Up next: <b>${LEVELS[n].emoji} ${n+1}. ${LEVELS[n].name}</b>`:'A blind shar-pei. A dark house. A lot of bonks.';
   showCard(`<div class="ded">For <b>Ashley &amp; Corbin</b><br><span>(and Nala, Stella &amp; Binx)</span></div>
-    <div class="small center">${line}</div>
+    <div class="small center" id="tiLine">${titleLine()}</div>
     <div class="small center cos" id="cosLine">${cosLine()}</div>`,
     [{t:'☰ Levels',fn:()=>showLevels(showTitle)},{t:'▶ Play',primary:true,id:'bPlay',fn:()=>loadLevel(nextToPlay())},
-     {t:soundLabel(),id:'bSnd',fn:el=>{ settings.sound=!settings.sound; saveSettings(); el.textContent=soundLabel(); if(settings.sound) sfx('paw+'); }}],true,'front');
-  if(IOS){ const r=document.createElement('div'); r.className='small center note'; r.textContent='iPhone: the silent switch mutes game sound. Flip it off to hear the bonks.'; card.insertBefore(r,card.querySelector('.rev')); }
+     {html:soundIcon(),cls:'icon'+(settings.sound?'':' off'),label:soundLabel(),id:'bSnd',fn:el=>{
+       settings.sound=!settings.sound; saveSettings(); setSoundBtn(el);
+       if(settings.sound){ sfx('paw+'); if(IOS) flashTitleLine('🔔 No bonks? Flip off the iPhone’s silent switch.'); } }}],true,'front titlecard');
 }
+function flashTitleLine(msg){ const el=document.getElementById('tiLine'); if(!el) return; el.innerHTML=msg; clearTimeout(flashTitleLine.t);
+  flashTitleLine.t=setTimeout(()=>{ const e=document.getElementById('tiLine'); if(e&&state==='title') e.innerHTML=titleLine(); },4000); }
 function cosLine(){ const c=COSTUMES.find(c=>c.id===costume()), lk=COSTUMES.length-costumesOpen().length;
-  return `🎭 Wearing <b>${c.name}</b> · tap Nala to swap${lk?` <span>(${lk} locked)</span>`:''}`; }
+  return `🎭 <b>${c.name}</b> · tap her to swap${lk?` <span>(${lk} locked)</span>`:''}`; }
 function swapCostume(){
   const c=nextCostume(); ti.swapAt=t; const el=document.getElementById('cosLine'); if(el) el.innerHTML=cosLine();
   pings.push({x:TITLE.x,y:ti.y-12,t:0,life:.9,maxR:110});
