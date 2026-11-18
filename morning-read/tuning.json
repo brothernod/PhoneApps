@@ -1,0 +1,14 @@
+{
+ "lines": [
+  "No feedback yet — using the default mix. Rate a few and this fills in."
+ ],
+ "mix": {
+  "ai-eng": 70,
+  "ai-teach": 15,
+  "java": 8,
+  "focus": 7
+ },
+ "updatedAt": "2026-11-18T02:35:00Z",
+ "seen": {},
+ "nextHandledAt": null
+}

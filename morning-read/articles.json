@@ -1,0 +1,18 @@
+{
+ "articles": [
+  {
+   "id": "2026-11-17",
+   "date": "2026-11-17",
+   "title": "Code Mode: the better way to use MCP",
+   "url": "https://blog.cloudflare.com/code-mode/",
+   "source": "Cloudflare Blog",
+   "minutes": 9,
+   "topic": "ai-eng",
+   "why": "This is the original post behind the Code Mode idea from your YouTube video. Instead of handing the model a pile of tools to call one at a time, Cloudflare turns MCP tools into a TypeScript API and lets the model write code against it in a sandbox, which cuts tokens and round trips. The follow-up posts and the REPL-style agent patterns you're seeing now all build on it.",
+   "tryThis": "Pick one multi-step chore you run with Claude Code (e.g. checking several job logs) and ask it to write one script that does all the steps, instead of calling tools step by step. Compare how long it takes and how much context it uses.",
+   "pickReason": "Starter pick — the post you mentioned tonight. Rate it to begin tuning.",
+   "createdAt": "2026-11-18T02:35:00Z"
+  }
+ ],
+ "updatedAt": "2026-11-18T02:35:00Z"
+}
