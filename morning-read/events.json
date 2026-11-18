@@ -10,8 +10,18 @@
     }
    ],
    "firstOpenedAt": "2026-11-18T22:41:55.444Z",
-   "totalAwayMin": 4.8
+   "totalAwayMin": 4.8,
+   "feedback": {
+    "verdict": "good",
+    "finish": "bailed",
+    "length": "long",
+    "depth": "right",
+    "nerd": "right",
+    "at": "2026-11-18T22:47:37.098Z"
+   },
+   "status": "read",
+   "statusAt": "2026-11-18T22:47:37.098Z"
   }
  },
- "updatedAt": "2026-11-18T22:46:41.682Z"
+ "updatedAt": "2026-11-18T22:47:37.763Z"
 }
