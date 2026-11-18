@@ -1,6 +1,5 @@
 # PhoneApps
 
-Small web apps for phones, served with GitHub Pages.
+Small personal web apps for phones, served with GitHub Pages. Not listed anywhere; each app is reached by its direct link.
 
-- **[Nala's Bonk Golf](https://brothernod.github.io/PhoneApps/NalaGolf/)**: fling a blind shar-pei through a dark house. Every bonk lights up the map. For Ashley & Corbin. ([source + how to play](NalaGolf/))
-- **[Morning Read](https://brothernod.github.io/PhoneApps/morning-read/)**: one hand-picked article each weekday morning, with quick feedback that tunes tomorrow's pick. Data lives on the `morning-read-data` branch. ([source](morning-read/))
+`.nojekyll` turns off Jekyll so the site root has no index page, and every app's `index.html` carries `noindex, nofollow`.
