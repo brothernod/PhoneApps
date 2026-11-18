@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Morning Read</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Morning Read">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#14161a">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+  :root{
+    --bg:#14161a; --panel:#1c1f25; --panel2:#242830; --line:#2f343d;
+    --text:#e9e6df; --muted:#9a9a94; --accent:#e8a75b; --accent2:#7fb7a4;
+    --bad:#d97a6c; --good:#8fc28a; --radius:14px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;background:var(--bg);color:var(--text);
+    font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+  .wrap{max-width:560px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top)) 16px calc(96px + env(safe-area-inset-bottom))}
+  header{display:flex;align-items:center;justify-content:space-between;margin:4px 2px 14px;gap:8px}
+  header h1{font-size:20px;margin:0;letter-spacing:.2px}
+  header .sub{color:var(--muted);font-size:13px;flex:1;text-align:right}
+  header button{background:none;border:0;color:var(--muted);font-size:18px;padding:4px 6px}
+  nav{position:fixed;left:0;right:0;bottom:0;background:rgba(20,22,26,.96);border-top:1px solid var(--line);
+    display:flex;justify-content:center;padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
+  nav .in{display:flex;gap:4px;max-width:560px;width:100%}
+  nav button{flex:1;background:none;border:0;color:var(--muted);font:inherit;font-size:13px;padding:8px 2px;border-radius:10px}
+  nav button.on{color:var(--text);background:var(--panel2)}
+  nav .n{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:var(--accent);color:#1a1a1a;font-size:11px;font-weight:700;margin-left:4px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+  .meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;color:var(--muted);font-size:13px;margin-bottom:8px}
+  .badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;background:var(--panel2);color:var(--accent2);text-transform:uppercase;letter-spacing:.4px}
+  h2.title{font-size:21px;line-height:1.3;margin:0 0 10px}
+  h2.title a{color:var(--text);text-decoration:none}
+  p{margin:0 0 10px}
+  .try{background:var(--panel2);border-left:3px solid var(--accent);padding:10px 12px;border-radius:8px;margin:10px 0}
+  .try b{color:var(--accent);font-size:12px;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:2px}
+  .why-pick{color:var(--muted);font-size:13px;font-style:italic}
+  .btn{display:inline-block;background:var(--accent);color:#1a1a1a;border:0;border-radius:10px;padding:11px 16px;font:inherit;font-weight:600;text-decoration:none;text-align:center}
+  .btn.ghost{background:var(--panel2);color:var(--text)}
+  .btn.small{padding:7px 12px;font-size:14px}
+  .btn:disabled{opacity:.5}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  .row .btn{flex:1}
+  .waiting{color:var(--muted);font-size:13px;text-align:center;margin:6px 0 14px}
+  .empty{color:var(--muted);text-align:center;padding:40px 10px}
+  .fb h3{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin:16px 0 8px;font-weight:600}
+  .fb h3:first-child{margin-top:4px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:20px;padding:7px 12px;font:inherit;font-size:14px}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#1a1a1a;font-weight:600}
+  .dial{display:grid;grid-template-columns:78px 1fr;align-items:center;gap:8px;margin-bottom:8px}
+  .dial label{font-size:14px;color:var(--muted)}
+  .seg{display:flex;background:var(--panel2);border-radius:10px;padding:3px;border:1px solid var(--line)}
+  .seg button{flex:1;background:none;border:0;color:var(--text);font:inherit;font-size:13px;padding:7px 2px;border-radius:8px}
+  .seg button.on{background:var(--accent);color:#1a1a1a;font-weight:600}
+  textarea,input[type=text],input[type=password],input[type=search]{width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit;font-size:16px}
+  textarea{min-height:64px;resize:vertical}
+  label.f{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+  .saved{color:var(--good);font-size:13px;margin-left:8px}
+  .err{color:var(--bad);font-size:13px}
+  .item{display:flex;gap:10px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line)}
+  .item:first-child{border-top:0}
+  .item .t{flex:1;min-width:0}
+  .item .t a{color:var(--text);text-decoration:none;font-weight:600}
+  .item .s{color:var(--muted);font-size:12px}
+  .item .v{font-size:20px;width:28px;text-align:center}
+  input[type=search]{margin-bottom:10px}
+  .sect{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin:18px 2px 8px;font-weight:600}
+  .bar{display:grid;grid-template-columns:120px 1fr 44px;gap:8px;align-items:center;font-size:13px;margin:6px 0}
+  .bar .track{height:10px;background:var(--panel2);border-radius:6px;overflow:hidden}
+  .bar .fill{height:100%;background:var(--accent2);border-radius:6px}
+  .bar .fill.neg{background:var(--bad)}
+  .bar .num{text-align:right;color:var(--muted)}
+  .learned li{margin-bottom:6px}
+  .note{color:var(--muted);font-size:13px}
+  .banner{border-radius:10px;padding:10px 12px;font-size:14px;margin-bottom:12px;background:#3a2a1c;color:#f2d3ad}
+  .banner.ok{background:#1f3326;color:#cfe8c9}
+  ol.steps{padding-left:20px;margin:6px 0 0}
+  ol.steps li{margin-bottom:6px}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>☕ Morning Read</h1><span class="sub" id="today"></span><button id="refresh" aria-label="Refresh">⟳</button></header>
+  <div id="banner"></div>
+  <main id="view"></main>
+</div>
+<nav><div class="in">
+  <button data-tab="today" class="on">Today</button>
+  <button data-tab="queue">Queue</button>
+  <button data-tab="archive">Archive</button>
+  <button data-tab="tuning">Tuning</button>
+</div></nav>
+
+<script>
+/* ============================================================
+   Morning Read — data lives in a GitHub branch, read/written
+   through the GitHub contents API.
+   Files (under cfg.dir on cfg.branch):
+     articles.json  — written by the morning Claude task
+     tuning.json    — written by the morning Claude task
+     events.json    — written by this app (status, feedback, reading telemetry)
+     next.json      — written by this app (request for the next pick)
+   ============================================================ */
+const DEFAULT_CFG = { owner:"brothernod", repo:"PhoneApps", branch:"morning-read-data", dir:"morning-read", token:"" };
+const CFG_KEY = "mr_cfg", PENDING_KEY = "mr_pending", CACHE_KEY = "mr_cache";
+const lsGet = k => { try { return JSON.parse(localStorage.getItem(k)||"null"); } catch(e){ return null; } };
+const lsSet = (k,v) => { try { v==null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); } catch(e){} };
+let cfg = { ...DEFAULT_CFG, ...(lsGet(CFG_KEY)||{}) };
+
+const TOPICS = { "ai-eng":"AI engineering", "ai-teach":"Teaching AI", "java":"Java / JVM", "focus":"Focus & habits" };
+const VERDICTS = [
+  {k:"loved", e:"🔥", l:"Loved it", s:2}, {k:"good", e:"👍", l:"Good", s:1},
+  {k:"meh", e:"😐", l:"Meh", s:0}, {k:"miss", e:"👎", l:"Miss", s:-1},
+];
+const FINISH = [ {k:"finished", l:"Finished"}, {k:"skimmed", l:"Skimmed"}, {k:"bailed", l:"Bailed early"} ];
+const DIALS = [
+  {k:"length", l:"Length", o:[["short","Too short"],["right","Right"],["long","Too long"]]},
+  {k:"depth",  l:"Depth",  o:[["shallow","Too basic"],["right","Right"],["deep","Too deep"]]},
+  {k:"nerd",   l:"Nerdy",  o:[["low","Not enough"],["right","Right"],["high","Too much"]]},
+];
+const TAGS = [
+  ["work","Usable at work"],["homelab","Homelab idea"],["teach","Could teach this"],
+  ["career","Career-relevant"],["knew","Already knew it"],["hype","Hype / fluff"],
+  ["dated","Felt dated"],["broken","Paywall / broken link"],["dry","Dry writing"],["great-writing","Great writing"]
+];
+
+// ---------- GitHub storage ----------
+const b64dec = s => new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\s/g,"")), c => c.charCodeAt(0)));
+const b64enc = str => { const b = new TextEncoder().encode(str); let s=""; for (let i=0;i<b.length;i+=0x8000) s += String.fromCharCode.apply(null, b.subarray(i,i+0x8000)); return btoa(s); };
+const fileUrl = name => `https://api.github.com/repos/${encodeURIComponent(cfg.owner)}/${encodeURIComponent(cfg.repo)}/contents/${cfg.dir}/${name}`;
+const headers = () => ({ "Accept":"application/vnd.github+json", ...(cfg.token ? { "Authorization":"Bearer "+cfg.token } : {}) });
+
+async function readJson(name) {
+  const r = await fetch(`${fileUrl(name)}?ref=${encodeURIComponent(cfg.branch)}&_=${Date.now()}`, { headers: headers(), cache:"no-store" });
+  if (r.status === 404) return { data:null, sha:null };
+  if (r.status === 401) throw { code:"auth", msg:"GitHub rejected the token." };
+  if (r.status === 403 || r.status === 429) throw { code:"rate", msg: cfg.token ? "GitHub refused the request (rate limit or token permissions)." : "GitHub's no-token limit hit — add a token in Tuning → Connection." };
+  if (!r.ok) throw { code:"http", msg:`GitHub error ${r.status}` };
+  const j = await r.json();
+  return { data: JSON.parse(b64dec(j.content || "") || "null"), sha: j.sha };
+}
+async function writeJson(name, data, sha, message) {
+  if (!cfg.token) throw { code:"notoken", msg:"Add a GitHub token (Tuning → Connection) to save." };
+  const body = { message, content: b64enc(JSON.stringify(data, null, 1) + "\n"), branch: cfg.branch };
+  if (sha) body.sha = sha;
+  const r = await fetch(fileUrl(name), { method:"PUT", headers:{ ...headers(), "Content-Type":"application/json" }, body: JSON.stringify(body) });
+  if (r.status === 409 || r.status === 422) throw { code:"conflict" };
+  if (r.status === 401) throw { code:"auth", msg:"GitHub rejected the token." };
+  if (r.status === 403 || r.status === 404) throw { code:"perm", msg:"Token can't write to this repo/branch (needs Contents: read & write)." };
+  if (!r.ok) throw { code:"http", msg:`GitHub error ${r.status}` };
+  return (await r.json()).content.sha;
+}
+
+// ---------- state ----------
+let raw = { articles:[], tuning:null, events:{}, next:null };
+let sha = { events:null, next:null };
+let loadState = "loading", loadErr = null, lastLoad = 0;
+let tab = "today", openFb = null, focusId = null, draft = {}, query = "";
+let chain = Promise.resolve();
+const serial = fn => (chain = chain.then(fn, fn));
+
+const cached = lsGet(CACHE_KEY);
+if (cached) { raw = cached; loadState = "cached"; }
+
+function effStatus(a, ev) {
+  const somedayAt = a.somedayAt ? Date.parse(a.somedayAt) : 0;
+  if (ev && ev.status && (!somedayAt || Date.parse(ev.statusAt||0) >= somedayAt)) return ev.status;
+  return somedayAt ? "someday" : "unread";
+}
+function articlesView() {
+  return (raw.articles||[]).map(a => {
+    const ev = raw.events?.[a.id] || {};
+    return { ...a, feedback: ev.feedback, opens: ev.opens, firstOpenedAt: ev.firstOpenedAt, totalAwayMin: ev.totalAwayMin, status: effStatus(a, ev) };
+  }).sort((x,y) => String(y.date||y.id).localeCompare(String(x.date||x.id)) || String(y.id).localeCompare(String(x.id)));
+}
+let articles = articlesView();
+
+function load(force) {
+  if (!force && Date.now() - lastLoad < 20000) return chain;
+  lastLoad = Date.now();
+  return serial(async () => {
+    try {
+      const [ar, tu, ev, nx] = await Promise.all(["articles.json","tuning.json","events.json","next.json"].map(readJson));
+      raw = { articles: ar.data?.articles || [], tuning: tu.data, events: ev.data?.events || {}, next: nx.data };
+      sha = { events: ev.sha, next: nx.sha };
+      loadState = "ready"; loadErr = null; lsSet(CACHE_KEY, raw);
+    } catch (e) { loadErr = e.msg || "Couldn't reach GitHub."; if (loadState === "loading") loadState = "error"; }
+    articles = articlesView(); render();
+  });
+}
+
+// mutate one article's event record and save events.json (retry once on conflict)
+function mutateEvent(id, fn, message) {
+  return serial(async () => {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      if (attempt === 1) { const ev = await readJson("events.json"); raw.events = ev.data?.events || {}; sha.events = ev.sha; }
+      const events = JSON.parse(JSON.stringify(raw.events || {}));
+      events[id] = events[id] || {};
+      fn(events[id]);
+      try {
+        sha.events = await writeJson("events.json", { events, updatedAt: new Date().toISOString() }, sha.events, message);
+        raw.events = events; lsSet(CACHE_KEY, raw); articles = articlesView(); return true;
+      } catch (e) { if (e.code !== "conflict" || attempt === 1) throw e; }
+    }
+  });
+}
+
+// ---------- helpers ----------
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safeUrl = u => /^https?:\/\//i.test(u||"") ? u : "#";
+const fmtDate = d => { try { return new Date(String(d).slice(0,10)+"T12:00:00").toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"}); } catch(e){ return d; } };
+const unread  = () => articles.filter(a => a.status === "unread");
+const someday = () => articles.filter(a => a.status === "someday");
+const done    = () => articles.filter(a => a.status === "read" || a.status === "skipped");
+let bannerTimer, errShown = false;
+function flash(msg, ok) { clearTimeout(bannerTimer); $("#banner").innerHTML = `<div class="banner ${ok?"ok":""}">${esc(msg)}</div>`; if (ok) bannerTimer = setTimeout(()=>{ $("#banner").innerHTML=""; }, 3500); }
+
+$("#today").textContent = new Date().toLocaleDateString(undefined,{weekday:"long",month:"short",day:"numeric"});
+$("#refresh").onclick = () => { flash("Refreshing…", true); load(true); };
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
+  tab = b.dataset.tab; openFb = null; focusId = null;
+  document.querySelectorAll("nav button").forEach(x => x.classList.toggle("on", x === b));
+  render(); window.scrollTo(0,0);
+});
+
+// ---------- rendering ----------
+function cardHtml(a) {
+  return `<div class="card">
+    <div class="meta">
+      <span class="badge">${esc(TOPICS[a.topic] || a.topic || "Article")}</span>
+      <span>${esc(a.source||"")}</span>${a.minutes?`<span>· ${esc(a.minutes)} min</span>`:""}
+      <span>· ${esc(fmtDate(a.date||a.id))}</span>
+    </div>
+    <h2 class="title"><a href="${esc(safeUrl(a.url))}" target="_blank" rel="noopener" data-open="${esc(a.id)}">${esc(a.title)}</a></h2>
+    ${a.why?`<p>${esc(a.why)}</p>`:""}
+    ${a.tryThis?`<div class="try"><b>Try this</b>${esc(a.tryThis)}</div>`:""}
+    ${a.pickReason?`<p class="why-pick">Why this pick: ${esc(a.pickReason)}</p>`:""}
+    ${openFb === a.id ? fbHtml(a) : `<div class="row" style="margin-top:12px">
+        <a class="btn" href="${esc(safeUrl(a.url))}" target="_blank" rel="noopener" data-open="${esc(a.id)}">Open article</a>
+        <button class="btn ghost" data-act="fb" data-id="${esc(a.id)}">Rate it</button>
+      </div>
+      <div class="row" style="margin-top:8px">
+        ${a.status==="someday"
+          ? `<button class="btn ghost small" data-act="requeue" data-id="${esc(a.id)}">Back to queue</button>`
+          : `<button class="btn ghost small" data-act="someday" data-id="${esc(a.id)}">Save for someday</button>`}
+        <button class="btn ghost small" data-act="skip" data-id="${esc(a.id)}">Not for me — skip</button>
+      </div>`}
+  </div>`;
+}
+
+function fbHtml(a) {
+  const d = draft;
+  const seg = dial => `<div class="dial"><label>${dial.l}</label><div class="seg">${
+    dial.o.map(([k,l]) => `<button data-dial="${dial.k}" data-v="${k}" class="${d[dial.k]===k?"on":""}">${l}</button>`).join("")}</div></div>`;
+  return `<div class="fb">
+    <h3>How was it?</h3>
+    <div class="chips">${VERDICTS.map(v=>`<button class="chip ${d.verdict===v.k?"on":""}" data-verdict="${v.k}">${v.e} ${v.l}</button>`).join("")}</div>
+    <h3>Did you get through it?</h3>
+    <div class="chips">${FINISH.map(f=>`<button class="chip ${d.finish===f.k?"on":""}" data-finish="${f.k}">${f.l}</button>`).join("")}</div>
+    <h3>Dials <span class="note" style="text-transform:none;letter-spacing:0">— only tap what was off</span></h3>
+    ${DIALS.map(seg).join("")}
+    <h3>Anything stand out?</h3>
+    <div class="chips">${TAGS.map(([k,l])=>`<button class="chip ${(d.tags||[]).includes(k)?"on":""}" data-tag="${k}">${l}</button>`).join("")}</div>
+    <h3>${esc(TOPICS[a.topic] || "This topic")}</h3>
+    <div class="chips">
+      <button class="chip ${d.topicVote==="more"?"on":""}" data-tv="more">More of this</button>
+      <button class="chip ${d.topicVote==="less"?"on":""}" data-tv="less">Less of this</button>
+    </div>
+    <h3>Note (optional)</h3>
+    <textarea id="fbnote" placeholder="Anything else — e.g. 'more on agents in Java', 'loved the diagrams'">${esc(d.note||"")}</textarea>
+    <p class="note" style="margin-top:6px">Saved to your PhoneApps repo, which is public.</p>
+    <div class="row" style="margin-top:12px">
+      <button class="btn" data-act="save" data-id="${esc(a.id)}">Save</button>
+      <button class="btn ghost" data-act="cancel">Cancel</button>
+    </div>
+    <div id="fbmsg"></div>
+  </div>`;
+}
+
+function listItem(a) {
+  const v = VERDICTS.find(x => x.k === a.feedback?.verdict);
+  const icon = a.status === "skipped" ? "⏭" : (v ? v.e : "•");
+  return `<div class="item">
+    <div class="v">${icon}</div>
+    <div class="t">
+      <a href="${esc(safeUrl(a.url))}" target="_blank" rel="noopener" data-open="${esc(a.id)}">${esc(a.title)}</a>
+      <div class="s">${esc(a.source||"")} · ${esc(TOPICS[a.topic]||a.topic||"")} · ${esc(fmtDate(a.date||a.id))}${a.minutes?` · ${esc(a.minutes)} min`:""}</div>
+      ${a.feedback?.note?`<div class="s" style="font-style:italic">“${esc(a.feedback.note)}”</div>`:""}
+    </div>
+    <button class="btn ghost small" data-act="open" data-id="${esc(a.id)}">${a.status==="read"||a.status==="skipped"?"View":"Read"}</button>
+  </div>`;
+}
+
+function render() {
+  const n = unread().length;
+  document.querySelector('nav button[data-tab="queue"]').innerHTML = `Queue${n>1?`<span class="n">${n-1}</span>`:""}`;
+  const v = $("#view");
+  if (loadErr && loadState !== "loading") { flash(loadErr); errShown = true; }
+  else if (!loadErr && errShown) { $("#banner").innerHTML = ""; errShown = false; }
+
+  if (tab === "tuning") { v.innerHTML = tuningHtml(); return; }
+  if (loadState === "loading") { v.innerHTML = `<div class="empty">Loading…</div>`; return; }
+  if (loadState === "error" && !articles.length) { v.innerHTML = `<div class="empty">Couldn't load articles.<br><span class="note">${esc(loadErr||"")}</span><br><br>Check Tuning → Connection.</div>`; return; }
+
+  if (tab === "today") {
+    const u = unread();
+    if (openFb && !u.find(a=>a.id===openFb)) { const a = articles.find(x=>x.id===openFb); if (a) { v.innerHTML = cardHtml(a); return; } }
+    if (!u.length) {
+      const last = done()[0];
+      v.innerHTML = `<div class="empty">All caught up. ✨<br>Next pick lands weekdays by 5:30 AM.${last?`<br><br><span class="note">Last read: ${esc(last.title)}</span>`:""}</div>`;
+      return;
+    }
+    v.innerHTML = cardHtml(u[0]) + (u.length>1?`<div class="waiting">${u.length-1} more in your queue — no pressure. Older ones roll to Someday automatically.</div>`:"");
+    return;
+  }
+
+  const fid = openFb || focusId, fa = fid && articles.find(x=>x.id===fid);
+  if (fa) { v.innerHTML = cardHtml(fa) + `<div class="row"><button class="btn ghost" data-act="back">← Back</button></div>`; return; }
+
+  if (tab === "queue") {
+    const u = unread().slice(1), s = someday();
+    v.innerHTML = `<div class="sect">Up next (${u.length})</div>
+      <div class="card">${u.length?u.map(listItem).join(""):`<div class="note">Nothing waiting behind today's pick.</div>`}</div>
+      <div class="sect">Someday (${s.length})</div>
+      <div class="card">${s.length?s.map(listItem).join(""):`<div class="note">When more than 3 pile up, the oldest unread moves here instead of nagging you.</div>`}</div>`;
+    return;
+  }
+  if (tab === "archive") {
+    const q = query.toLowerCase();
+    const list = done().filter(a => !q || [a.title,a.source,a.why,a.feedback?.note,TOPICS[a.topic]].join(" ").toLowerCase().includes(q));
+    v.innerHTML = `<input type="search" id="q" placeholder="Search your reads" value="${esc(query)}">
+      <div class="card">${list.length?list.map(listItem).join(""):`<div class="note">${done().length?"No matches.":"Rated and skipped articles show up here."}</div>`}</div>`;
+    const qi = $("#q"); qi.oninput = () => { query = qi.value; const pos = qi.selectionStart; render(); const nq=$("#q"); nq.focus(); try{nq.setSelectionRange(pos,pos);}catch(e){} };
+  }
+}
+
+const avg = a => a.reduce((x,y)=>x+y,0)/a.length;
+const median = a => { if (!a.length) return null; const s=[...a].sort((x,y)=>x-y), m=Math.floor(s.length/2); return s.length%2?s[m]:(s[m-1]+s[m])/2; };
+const barRow = (l,c,tot) => `<div class="bar"><span>${esc(l)}</span><div class="track"><div class="fill" style="width:${tot?Math.max(Math.round(c/tot*100),c?3:0):0}%"></div></div><span class="num">${c}</span></div>`;
+const stat = (l, val, note) => `<div class="bar"><span>${esc(l)}</span><span style="grid-column:span 2">${val} ${note?`<span class="note">${note}</span>`:""}</span></div>`;
+
+function tuningHtml() {
+  const t = raw.tuning, learned = t?.lines || [];
+  const nextPending = raw.next?.text && (!t?.nextHandledAt || Date.parse(raw.next.at) > Date.parse(t.nextHandledAt));
+  let h = `<div class="sect">What Claude has learned</div><div class="card">${
+    learned.length ? `<ul class="learned" style="margin:0;padding-left:18px">${learned.map(l=>`<li>${esc(l)}</li>`).join("")}</ul>
+      ${t?.mix?`<p class="note" style="margin-top:10px">Current mix: ${Object.entries(t.mix).map(([k,v])=>`${esc(TOPICS[k]||k)} ${esc(v)}%`).join(" · ")}</p>`:""}
+      ${t?.updatedAt?`<p class="note">Updated ${esc(fmtDate(t.updatedAt))}</p>`:""}`
+    : `<div class="note">Nothing yet. After a few ratings, Claude writes its read on your taste here, so you can see (and correct) what it's tuning toward.</div>`}</div>`;
+
+  h += `<div class="sect">Steer the next pick</div><div class="card">
+    <textarea id="nextnote" placeholder="e.g. 'something on MCP security', 'shorter this week', 'Java 21 virtual threads'">${esc(nextPending ? raw.next.text : "")}</textarea>
+    <div class="row" style="margin-top:10px;align-items:center"><button class="btn small" data-act="savenext">Send to tomorrow's pick</button><span id="nextmsg"></span></div>
+    ${nextPending?`<p class="note" style="margin-top:8px">Pending — Claude picks this up on the next run.</p>`:""}
+  </div>`;
+
+  h += behaviorHtml();
+
+  const rated = articles.filter(a => a.feedback?.verdict);
+  if (!rated.length) {
+    h += `<div class="sect">Your signals</div><div class="card note">Rate a few articles and this fills in: which topics land, whether length is a problem, and which feedback you actually use.</div>`;
+  } else {
+    const byTopic = {};
+    rated.forEach(a => { (byTopic[a.topic||"other"] ||= []).push(VERDICTS.find(v=>v.k===a.feedback.verdict)?.s ?? 0); });
+    h += `<div class="sect">Topics — avg rating (${rated.length} rated)</div><div class="card">`;
+    Object.entries(byTopic).sort((a,b)=>avg(b[1])-avg(a[1])).forEach(([tp,arr]) => {
+      const m = avg(arr);
+      h += `<div class="bar"><span>${esc(TOPICS[tp]||tp)}</span><div class="track"><div class="fill ${m<0?"neg":""}" style="width:${Math.max(Math.round(Math.abs(m)/2*100),3)}%"></div></div><span class="num">${m.toFixed(1)} · ${arr.length}</span></div>`;
+    });
+    h += `<p class="note" style="margin-top:6px">Scale: 🔥 2 · 👍 1 · 😐 0 · 👎 −1</p></div>`;
+
+    const fin = {}; rated.forEach(a => { if (a.feedback.finish) fin[a.feedback.finish]=(fin[a.feedback.finish]||0)+1; });
+    const skipped = articles.filter(a=>a.status==="skipped").length;
+    h += `<div class="sect">Getting through them</div><div class="card">`;
+    [...FINISH.map(f=>[f.l, fin[f.k]||0]), ["Skipped unread", skipped]].forEach(([l,c]) => h += barRow(l,c,rated.length+skipped));
+    h += `</div>`;
+
+    const use = {};
+    rated.forEach(a => {
+      DIALS.forEach(d => { const val=a.feedback[d.k]; if (val && val!=="right") { const key=`${d.l}: ${d.o.find(o=>o[0]===val)?.[1]}`; use[key]=(use[key]||0)+1; } });
+      (a.feedback.tags||[]).forEach(tg => { const lab=(TAGS.find(x=>x[0]===tg)||[tg,tg])[1]; use[lab]=(use[lab]||0)+1; });
+    });
+    const ent = Object.entries(use).sort((a,b)=>b[1]-a[1]);
+    h += `<div class="sect">Feedback you actually use</div><div class="card">${
+      ent.length ? ent.map(([l,c])=>barRow(l,c,rated.length)).join("") : `<div class="note">No dials or tags tapped yet — only the overall rating.</div>`
+    }<p class="note" style="margin-top:6px">Options you never tap after a few weeks are good candidates to remove.</p></div>`;
+  }
+  return h + connectionHtml();
+}
+
+function behaviorHtml() {
+  const opened = articles.filter(a => a.firstOpenedAt);
+  if (!opened.length) return `<div class="sect">Reading habits</div><div class="card note">Tracked automatically once you open articles from here: how long picks wait, how many sittings each takes, time away vs. the estimate, and what time you actually read.</div>`;
+  const waits = opened.map(a => (Date.parse(a.firstOpenedAt) - Date.parse(a.createdAt || (a.date+"T10:14:00Z")))/36e5).filter(n => n >= 0);
+  const sittings = opened.map(a => (a.opens||[]).length || 1);
+  const ratios = opened.filter(a => a.totalAwayMin && a.minutes).map(a => a.totalAwayMin / a.minutes);
+  const hours = {}; opened.forEach(a => (a.opens||[]).forEach(o => { if (o.hour!=null) hours[o.hour]=(hours[o.hour]||0)+1; }));
+  const topHour = Object.entries(hours).sort((a,b)=>b[1]-a[1])[0];
+  const rateLag = opened.filter(a => a.feedback?.at).map(a => (Date.parse(a.feedback.at)-Date.parse(a.firstOpenedAt))/36e5).filter(n=>n>=0);
+  const neverRated = opened.filter(a => !a.feedback && a.status !== "skipped").length;
+  const fmtH = x => x==null ? "—" : x < 1 ? `${Math.round(x*60)} min` : x < 48 ? `${x.toFixed(1)} h` : `${(x/24).toFixed(1)} days`;
+  const hourLabel = x => { const n=+x; return `${(n%12)||12} ${n<12?"AM":"PM"}`; };
+  const r = median(ratios);
+  return `<div class="sect">Reading habits (${opened.length} opened)</div><div class="card">
+    ${stat("Wait before opening", fmtH(median(waits)), "median")}
+    ${stat("Sittings per article", median(sittings), `median · max ${Math.max(...sittings)}`)}
+    ${stat("Time away vs. estimate", r==null?"—":`${Math.round(r*100)}%`, r==null?"":r<0.5?"likely skimming or bailing":r>1.6?"slower read, or got pulled away":"about on par")}
+    ${stat("Usual reading time", topHour?hourLabel(topHour[0]):"—")}
+    ${stat("Open → rating", fmtH(median(rateLag)), `${neverRated} opened but not rated`)}
+    <p class="note" style="margin-top:6px">"Time away" is time spent outside this app after tapping a link — a rough proxy, not true reading time.</p>
+  </div>`;
+}
+
+function connectionHtml() {
+  return `<div class="sect">Connection</div><div class="card">
+    <p class="note">${cfg.token ? "Token saved on this device." : "No token yet — you can read, but saving ratings needs a GitHub token."} Data: <code>${esc(cfg.owner)}/${esc(cfg.repo)}</code> · branch <code>${esc(cfg.branch)}</code></p>
+    ${cfg.token ? "" : `<ol class="steps note">
+      <li>Open <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub → new fine-grained token</a>.</li>
+      <li>Repository access: <b>Only select repositories</b> → ${esc(cfg.repo)}.</li>
+      <li>Permissions → Repository → <b>Contents: Read and write</b>. Nothing else.</li>
+      <li>Pick an expiration you're fine renewing, generate, paste below.</li>
+    </ol>`}
+    <label class="f">GitHub token</label><input type="password" id="c_token" value="${esc(cfg.token)}" autocomplete="off" placeholder="github_pat_…">
+    <details style="margin-top:10px"><summary class="note">Where the data lives</summary>
+      <label class="f">Owner</label><input type="text" id="c_owner" value="${esc(cfg.owner)}">
+      <label class="f">Repo</label><input type="text" id="c_repo" value="${esc(cfg.repo)}">
+      <label class="f">Branch</label><input type="text" id="c_branch" value="${esc(cfg.branch)}">
+      <label class="f">Folder</label><input type="text" id="c_dir" value="${esc(cfg.dir)}">
+    </details>
+    <div class="row" style="margin-top:12px;align-items:center"><button class="btn small" data-act="savecfg">Save & test</button><span id="cfgmsg"></span></div>
+    <p class="note" style="margin-top:10px">The token stays on this phone. Install from Safari with Share → Add to Home Screen, then add the token inside the installed app (it keeps its own storage).</p>
+  </div>`;
+}
+
+// ---------- reading telemetry: opens, time away, returns ----------
+let pending = lsGet(PENDING_KEY);   // {id, at, hiddenAt?}
+function startSession(id) {
+  if (pending && pending.id !== id) endSession(Date.now());
+  pending = { id, at: new Date().toISOString(), hour: new Date().getHours() };
+  lsSet(PENDING_KEY, pending);
+}
+function endSession(nowMs) {
+  const p = pending; if (!p) return;
+  pending = null; lsSet(PENDING_KEY, null);
+  if (!cfg.token || !raw.articles.find(a => a.id === p.id)) return;
+  const awayMs = Math.max(0, nowMs - (p.hiddenAt || Date.parse(p.at)));
+  const tooLong = awayMs > 3*60*60*1000;
+  mutateEvent(p.id, ev => {
+    const opens = (ev.opens || []).slice(-19);
+    opens.push({ at: p.at, hour: p.hour, backAt: new Date(nowMs).toISOString(), awayMin: Math.round(awayMs/600)/100, ...(tooLong?{tooLong:true}:{}) });
+    ev.opens = opens;
+    ev.firstOpenedAt = ev.firstOpenedAt || p.at;
+    ev.totalAwayMin = Math.round(opens.filter(o=>!o.tooLong).reduce((s,o)=>s+(o.awayMin||0),0)*10)/10;
+  }, `morning-read: reading session ${p.id}`).then(render).catch(()=>{});
+}
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") {
+    if (pending && !pending.hiddenAt) { pending.hiddenAt = Date.now(); lsSet(PENDING_KEY, pending); }
+  } else {
+    if (pending && pending.hiddenAt) endSession(Date.now());
+    load(false);
+  }
+});
+document.addEventListener("click", e => { const l = e.target.closest("a[data-open]"); if (l) startSession(l.dataset.open); }, true);
+
+// ---------- actions ----------
+function keepNote(){ const n=$("#fbnote"); if (n) draft.note=n.value; }
+const toggle = (k,v) => { draft[k] = draft[k]===v ? null : v; keepNote(); render(); };
+document.addEventListener("click", async e => {
+  const t = e.target.closest("button"); if (!t) return;
+  if (t.dataset.verdict) return toggle("verdict", t.dataset.verdict);
+  if (t.dataset.finish)  return toggle("finish", t.dataset.finish);
+  if (t.dataset.dial)    return toggle(t.dataset.dial, t.dataset.v);
+  if (t.dataset.tv)      return toggle("topicVote", t.dataset.tv);
+  if (t.dataset.tag)     { const s=new Set(draft.tags||[]); s.has(t.dataset.tag)?s.delete(t.dataset.tag):s.add(t.dataset.tag); draft.tags=[...s]; keepNote(); return render(); }
+  const act = t.dataset.act, id = t.dataset.id; if (!act) return;
+  if (act === "fb") { openFb = id; draft = JSON.parse(JSON.stringify(articles.find(x=>x.id===id)?.feedback||{})); return render(); }
+  if (act === "open") { openFb = null; focusId = id; render(); window.scrollTo(0,0); return; }
+  if (act === "back") { openFb = null; focusId = null; draft = {}; return render(); }
+  if (act === "cancel") { openFb = null; draft = {}; return render(); }
+  if (act === "save") return saveFb(id, t);
+  if (act === "someday") return setStatus(id, "someday", t);
+  if (act === "requeue") return setStatus(id, "unread", t);
+  if (act === "skip") return setStatus(id, "skipped", t);
+  if (act === "savenext") return saveNext(t);
+  if (act === "savecfg") return saveCfg(t);
+});
+
+async function saveFb(id, btn) {
+  keepNote();
+  if (!draft.verdict && !draft.finish) { $("#fbmsg").innerHTML = `<p class="err" style="margin-top:8px">Pick at least a rating or how far you got.</p>`; return; }
+  btn.disabled = true;
+  const fb = {}; ["verdict","finish","length","depth","nerd","topicVote"].forEach(k=>{ if (draft[k]) fb[k]=draft[k]; });
+  if (draft.tags?.length) fb.tags = draft.tags;
+  if (draft.note?.trim()) fb.note = draft.note.trim();
+  fb.at = new Date().toISOString();
+  try {
+    await mutateEvent(id, ev => { ev.feedback = fb; ev.status = "read"; ev.statusAt = fb.at; }, `morning-read: feedback ${id}`);
+    openFb = null; focusId = null; draft = {}; flash("Saved — Claude folds this in on the next run.", true); render();
+  } catch (err) { btn.disabled = false; $("#fbmsg").innerHTML = `<p class="err" style="margin-top:8px">${esc(err.msg || "Couldn't save — try again.")}</p>`; }
+}
+async function setStatus(id, status, btn) {
+  btn.disabled = true;
+  try {
+    await mutateEvent(id, ev => { ev.status = status; ev.statusAt = new Date().toISOString(); }, `morning-read: ${status} ${id}`);
+    openFb = null; focusId = null;
+    flash(status==="skipped"?"Skipped — noted.":status==="someday"?"Saved for someday.":"Back in the queue.", true); render();
+  } catch (err) { btn.disabled = false; flash(err.msg || "Couldn't update — try again."); }
+}
+async function saveNext(btn) {
+  const text = $("#nextnote").value.trim(); btn.disabled = true;
+  try {
+    await serial(async () => {
+      try { sha.next = await writeJson("next.json", { text, at: new Date().toISOString() }, sha.next, "morning-read: request for next pick"); }
+      catch (e) { if (e.code !== "conflict") throw e; const cur = await readJson("next.json"); sha.next = cur.sha;
+        sha.next = await writeJson("next.json", { text, at: new Date().toISOString() }, sha.next, "morning-read: request for next pick"); }
+      raw.next = { text, at: new Date().toISOString() };
+    });
+    $("#nextmsg").innerHTML = `<span class="saved">Sent ✓</span>`;
+  } catch (err) { $("#nextmsg").innerHTML = `<span class="err">${esc(err.msg || "Couldn't save")}</span>`; }
+  btn.disabled = false;
+}
+async function saveCfg(btn) {
+  const val = id => ($(id)?.value || "").trim();
+  cfg = { owner: val("#c_owner")||DEFAULT_CFG.owner, repo: val("#c_repo")||DEFAULT_CFG.repo, branch: val("#c_branch")||DEFAULT_CFG.branch, dir: val("#c_dir")||DEFAULT_CFG.dir, token: val("#c_token") };
+  lsSet(CFG_KEY, cfg); btn.disabled = true; $("#cfgmsg").innerHTML = `<span class="note">Testing…</span>`;
+  try {
+    const r = await fetch(`https://api.github.com/repos/${encodeURIComponent(cfg.owner)}/${encodeURIComponent(cfg.repo)}`, { headers: headers(), cache:"no-store" });
+    const j = r.ok ? await r.json() : null;
+    if (!r.ok) throw { msg: r.status===401 ? "Token rejected." : `Can't see that repo (${r.status}).` };
+    const canWrite = !!j.permissions?.push;
+    $("#cfgmsg").innerHTML = cfg.token ? (canWrite ? `<span class="saved">Connected ✓ can save</span>` : `<span class="err">Connected, but token can't write</span>`) : `<span class="note">Read-only (no token)</span>`;
+    lastLoad = 0; load(true);
+  } catch (err) { $("#cfgmsg").innerHTML = `<span class="err">${esc(err.msg || "Couldn't reach GitHub")}</span>`; }
+  btn.disabled = false;
+}
+
+// ---------- start ----------
+render();
+load(true).then(() => { if (pending && (pending.hiddenAt || document.visibilityState === "visible")) endSession(Date.now()); });
+if ("serviceWorker" in navigator) { try { navigator.serviceWorker.register("sw.js").catch(()=>{}); } catch(e){} }
+</script>
+</body>
+</html>

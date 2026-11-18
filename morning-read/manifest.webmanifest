@@ -1,0 +1,11 @@
+{
+  "name": "Morning Read",
+  "short_name": "Morning Read",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#14161a",
+  "theme_color": "#14161a",
+  "icons": [{ "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }]
+}
