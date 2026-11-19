@@ -25,7 +25,20 @@
       "tryThis": "Look at the CLAUDE.md in one Notice Conversion repo and trim it to what every session truly needs; move the rest into linked docs Claude can search, and tell it what memory is for instead of listing rigid rules.",
       "pickReason": "No ratings yet, so default mix; ai-eng again from a primary source, a fresh angle after yesterday's MCP piece.",
       "createdAt": "2026-11-18T10:15:39Z"
+    },
+    {
+      "id": "2026-11-19",
+      "date": "2026-11-19",
+      "title": "Hide your slop PR descriptions behind <details><summary>",
+      "url": "https://simonwillison.net/2026/Nov/9/details-summary/",
+      "source": "Simon Willison",
+      "minutes": 5,
+      "topic": "ai-eng",
+      "why": "Coding agents write PR descriptions that are accurate but far too long for anyone to read. Willison's fix is simple: a short human-written opener up top, with the full agent text folded into a collapsible block labelled with the model that wrote it. It's a quick, practical norm for any team where agent-written PRs are starting to pile up.",
+      "tryThis": "On your next Claude Code PR, write two plain sentences yourself and fold the agent's write-up into a <details><summary> block. If it reads better, suggest it to your junior devs as a team convention.",
+      "pickReason": "Kept it short (~5 min) after the 13-min memory piece felt long; same practical, right-depth level that worked.",
+      "createdAt": "2026-11-19T10:15:39Z"
     }
   ],
-  "updatedAt": "2026-11-18T10:53:40Z"
+  "updatedAt": "2026-11-19T10:15:39Z"
 }
