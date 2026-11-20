@@ -1,19 +1,20 @@
 {
- "lines": [
-  "Prefers shorter reads: aim for about 5–9 minutes; 13 min felt long and got dropped partway.",
-  "Depth and technical level of the Anthropic agent-memory piece were right.",
-  "Primary sources with practical takeaways land well.",
-  "Has read in the late afternoon, not only first thing in the morning."
- ],
- "mix": {
-  "ai-eng": 70,
-  "ai-teach": 15,
-  "java": 8,
-  "focus": 7
- },
- "updatedAt": "2026-11-19T10:15:39Z",
- "seen": {
-  "2026-11-18": "2026-11-18T22:47:37.098Z"
- },
- "nextHandledAt": null
+  "lines": [
+    "Prefers shorter reads: aim for about 5–9 minutes; 13 min felt long and got dropped partway.",
+    "Depth and technical level of the Anthropic agent-memory piece were right.",
+    "Primary sources with practical takeaways land well.",
+    "Has read in the late afternoon, not only first thing in the morning.",
+    "Mixing in non-engineering topics after a run of AI-engineering picks."
+  ],
+  "mix": {
+    "ai-eng": 70,
+    "ai-teach": 15,
+    "java": 8,
+    "focus": 7
+  },
+  "updatedAt": "2026-11-20T10:15:41Z",
+  "seen": {
+    "2026-11-18": "2026-11-18T22:47:37.098Z"
+  },
+  "nextHandledAt": null
 }

@@ -38,7 +38,20 @@
       "tryThis": "On your next Claude Code PR, write two plain sentences yourself and fold the agent's write-up into a <details><summary> block. If it reads better, suggest it to your junior devs as a team convention.",
       "pickReason": "Kept it short (~5 min) after the 13-min memory piece felt long; same practical, right-depth level that worked.",
       "createdAt": "2026-11-19T10:15:39Z"
+    },
+    {
+      "id": "2026-11-20",
+      "date": "2026-11-20",
+      "title": "The Dot and the Swarm",
+      "url": "https://www.oneusefulthing.org/p/the-dot-and-the-swarm",
+      "source": "One Useful Thing (Ethan Mollick)",
+      "minutes": 10,
+      "topic": "ai-teach",
+      "why": "Mollick argues that models now organize teams of agents on their own, so the human job shifts from designing the org chart to deciding where to aim the work and checking in as it goes. It's a clean, non-technical framing you can hand to executives who still think AI adoption means building elaborate workflows.",
+      "tryThis": "Next time you explain AI to a leader or small-business owner, swap 'here's the workflow to build' for 'here's the outcome to point it at and when to check its work' — and see which version lands better.",
+      "pickReason": "Three AI-engineering picks in a row, so leaning to the teaching mix; one of the shorter, practical leadership pieces available.",
+      "createdAt": "2026-11-20T10:15:41Z"
     }
   ],
-  "updatedAt": "2026-11-19T10:15:39Z"
+  "updatedAt": "2026-11-20T10:15:41Z"
 }
