@@ -32,8 +32,22 @@
     }
    ],
    "firstOpenedAt": "2026-11-21T14:00:53.238Z",
-   "totalAwayMin": 10.1
+   "totalAwayMin": 10.1,
+   "feedback": {
+    "verdict": "good",
+    "finish": "finished",
+    "length": "right",
+    "depth": "right",
+    "nerd": "right",
+    "tags": [
+     "work",
+     "teach"
+    ],
+    "at": "2026-11-21T14:11:45.846Z"
+   },
+   "status": "read",
+   "statusAt": "2026-11-21T14:11:45.846Z"
   }
  },
- "updatedAt": "2026-11-21T14:11:00.833Z"
+ "updatedAt": "2026-11-21T14:11:45.847Z"
 }
