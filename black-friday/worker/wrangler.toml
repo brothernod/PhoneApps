@@ -1,0 +1,15 @@
+name = "black-friday"
+main = "src/index.js"
+compatibility_date = "2025-11-01"
+workers_dev = true
+
+# All data lives in one Durable Object with SQLite storage (works on the free plan).
+[[durable_objects.bindings]]
+name = "LIST"
+class_name = "List"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["List"]
+
+# The shared key is a secret, set once with:  npx wrangler secret put LIST_KEY
