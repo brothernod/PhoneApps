@@ -4,7 +4,7 @@ import { ITEMS, SLOTS, item, outfit, colorsOf, baseId, ownsLine, priceFor, shopD
 
 // ---------- constants ----------
 const NAME = 'Halina'; // the Default player's name until they set their own in Settings
-const VERSION = '1.28'; // bump with CACHE in sw.js on every release
+const VERSION = '1.29'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const YARD_NAMES = ['pink', 'purple', 'blue', 'mint', 'yellow', 'orange', 'red', 'lavender', 'teal', 'lime']; // how Sniff names each yard color
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
@@ -195,8 +195,10 @@ const SPARK = '<svg viewBox="-10 -10 20 20"><path d="M0 -9 Q1.6 -1.6 9 0 Q1.6 1.
 const SPARKS = [[0, 0, 20, 0], [100, 0, 13, 220], [100, 100, 20, 110], [0, 100, 13, 330], [32, 0, 10, 160], [68, 100, 10, 270], [0, 55, 10, 400], [100, 42, 10, 60]];
 function frameWrap(f, inner, { mini = false, id = '' } = {}) {
   if (!f) return `<div class="bframe${mini ? ' mini' : ''}"${id ? ` id="${id}"` : ''}>${inner}</div>`;
-  const sp = db.settings.sparkles ? SPARKS.filter((_, k) => !mini || k < 4).map(([x, y, sz, dl]) => `<i class="fsp" style="left:${x}%;top:${y}%;--s:${mini ? Math.round(sz * 0.7) : sz}px;--dl:${dl}ms">${SPARK}</i>`).join('') : '';
-  return `<div class="bframe framed f-${f.id}${mini ? ' mini' : ''}"${id ? ` id="${id}"` : ''}>${inner}${sp}</div>`;
+  // Settings → Frame sparkles off: a still ring, no sparkles, no motion.
+  const on = db.settings.sparkles;
+  const sp = on ? SPARKS.filter((_, k) => !mini || k < 4).map(([x, y, sz, dl], i) => `<i class="fsp" style="left:${x}%;top:${y}%;--s:${mini ? Math.round(sz * 0.7) : sz}px;--dl:${dl}ms;--i:${i};--dx:${x ? 2 : -2}px;--dy:${y ? 2 : -2}px">${SPARK}</i>`).join('') : '';
+  return `<div class="bframe framed f-${f.id}${mini ? ' mini' : ''}${on ? ' moving' : ''}"${id ? ` id="${id}"` : ''}><span class="fring"><i></i></span>${inner}${sp}</div>`;
 }
 function twinkle(el = $('bframe')) {
   if (!el || !el.classList.contains('framed')) return;
@@ -956,8 +958,8 @@ function say(text, alert = false, sticky = false, sniff = false) {
   // Alerts stay until the next message; friendly chatter fades.
   if (text && !alert && !sticky) msgTimer = setTimeout(() => { if (m.textContent === text && !G?.solved) m.textContent = ''; }, 6000);
 }
-function sheet(html) { $('sheet').innerHTML = html; $('overlay').classList.add('on'); }
-function closeSheet() { $('overlay').classList.remove('on'); }
+function sheet(html) { $('sheet').innerHTML = html; $('overlay').classList.add('on'); document.body.classList.add('sheeted'); }
+function closeSheet() { $('overlay').classList.remove('on'); document.body.classList.remove('sheeted'); }
 $('overlay').onclick = (e) => { if (e.target.id === 'overlay') closeSheet(); };
 
 function confirmSheet(title, body, ok) {
@@ -1225,7 +1227,7 @@ function settings() {
     <label class="toggle"><div>Show timer</div><input type="checkbox" id="s-timer" ${s.timer ? 'checked' : ''}></label>
     <label class="toggle"><div>Easy double-tap<small>More time between taps, and a little finger wiggle is OK</small></div><input type="checkbox" id="s-easytap" ${s.easyTap ? 'checked' : ''}></label>
     <label class="toggle"><div>Dress up board corgis<small>Corgis on the board wear ${isKid() ? 'your' : 'Cheddar\'s'} hat and glasses</small></div><input type="checkbox" id="s-dress" ${s.dressBoard ? 'checked' : ''}></label>
-    <label class="toggle"><div>Summit sparkles<small>Twinkly stars on a summit frame around the board</small></div><input type="checkbox" id="s-spark" ${s.sparkles ? 'checked' : ''}></label>
+    <label class="toggle"><div>Frame sparkles<small>Sparkles and motion on a summit frame around the board</small></div><input type="checkbox" id="s-spark" ${s.sparkles ? 'checked' : ''}></label>
     <label class="toggle"><div>Field research mode 🔬<small>Rate how hard each puzzle felt, 1–10, to help tune the game</small></div><input type="checkbox" id="s-research" ${s.research ? 'checked' : ''}></label>
     <button class="cta alt" id="s-report">📤 Send report <small>(${report().count} solved, ${report().rated} rated)</small></button>
     <div class="backup"><b>Backup</b><small>Keeps coins and progress safe if Safari clears the site. Adding Corgidoku to the Home Screen helps too.</small>
@@ -1263,4 +1265,5 @@ Promise.all(Object.entries(MODES).map(([k, m]) => fetch(m.file).then((r) => r.js
   .then(() => { useMode(mode()); applyScene(); renderHome(); modesFor().forEach((m) => ensureBonus(m)); })
   .catch(() => { $('home').innerHTML = '<p style="margin-top:40vh;font-weight:800">Cheddar couldn\'t find the puzzles. Check your connection and reopen.</p>'; });
 
-document.addEventListener('visibilitychange', () => { if (document.hidden && G && !G.solved && $('play').classList.contains('on')) persist(); });
+document.addEventListener('visibilitychange', () => {
+  document.documentElement.classList.toggle('hid', document.hidden); if (document.hidden && G && !G.solved && $('play').classList.contains('on')) persist(); });

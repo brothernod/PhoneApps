@@ -93,6 +93,7 @@
   .cell{position:relative;min-width:0;min-height:0;overflow:hidden;border:.5px solid rgba(255,255,255,.75)}
   .cell.bt{border-top:1.25px solid rgba(91,42,110,.42)}.cell.bb{border-bottom:1.25px solid rgba(91,42,110,.42)}.cell.bl{border-left:1.25px solid rgba(91,42,110,.42)}.cell.br{border-right:1.25px solid rgba(91,42,110,.42)}
   .cell svg{position:absolute;pointer-events:none}
+  .cell svg.corgi .mchain{display:none} /* the monocle chain is only for the big Cheddar */
   .cell svg.corgi{left:2%;top:2%;width:96%;height:96%;animation:pop .28s cubic-bezier(.3,1.6,.5,1)}
   .cell svg.paw{left:26%;top:26%;width:48%;height:48%;fill:var(--edge);opacity:.5}
   .cell svg.paw.tinted{opacity:.9}
@@ -310,12 +311,35 @@
   .f-starlight{--fg:linear-gradient(135deg,#5547B4,#9C8CF5 28%,#F4F0FF 50%,#9C8CF5 72%,#5547B4);--fe:#2E2470;--fglow:rgba(185,165,255,.65);--sp:#FFFFFF;--spe:#6B5BD6}
   .fsp{position:absolute;width:var(--s);height:var(--s);margin:calc(var(--s) / -2) 0 0 calc(var(--s) / -2);pointer-events:none;z-index:2}
   .fsp path{fill:var(--sp);stroke:var(--spe);stroke-width:1.6;stroke-linejoin:round}
-  /* Still the rest of the time: they only twinkle when a puzzle opens and when it's solved. */
-  .bframe.twinkle .fsp{animation:twinkle .55s ease-in-out var(--dl,0ms) 4 alternate both}
+  .bframe.framed>.board,.bframe.framed>.mboard{position:relative;z-index:1}
+  /* Frame motion (v1.29): summit frames are the hardest things to earn, so they move all the time.
+     Only transform and opacity are animated, on a layer under the board, so the cells never change.
+     .fring clips a big rotating square (.fring i) to the frame; the board covers its middle, so only
+     the ring shows it. Rainbow: the colors chase around. Gold: a glint sweeps round, then rests.
+     Starlight: two soft lights drift round and the sparkles twinkle and drift. */
+  .fring{position:absolute;inset:0;border-radius:inherit;overflow:hidden;z-index:0;pointer-events:none;-webkit-mask-image:-webkit-radial-gradient(white,black)}
+  .fring i{position:absolute;left:-25%;top:-25%;width:150%;height:150%;background:var(--fspin);will-change:transform}
+  .f-rainbow{--fspin:conic-gradient(#FF5FA8,#FF9F45,#FFD23C,#3FD98B,#46B3FF,#9B6BFF,#FF5FA8,#FF9F45,#FFD23C,#3FD98B,#46B3FF,#9B6BFF,#FF5FA8)}
+  .f-gold{--fspin:conic-gradient(rgba(255,255,245,0) 0deg 306deg,#FFFFF5 331deg,rgba(255,255,245,0) 356deg)}
+  .f-starlight{--fspin:conic-gradient(rgba(255,255,255,0) 0deg,rgba(255,255,255,.7) 45deg,rgba(255,255,255,0) 95deg 180deg,rgba(255,255,255,.55) 225deg,rgba(255,255,255,0) 275deg)}
+  .bframe:not(.moving) .fring{display:none}
+  .moving.f-rainbow .fring i{animation:fspin 7s linear infinite}
+  .moving.f-gold .fring i{animation:fglint 5.5s ease-in-out infinite}
+  .moving.f-starlight .fring i{animation:fspin 12s linear infinite}
+  @keyframes fspin{to{transform:rotate(1turn)}}
+  @keyframes fglint{0%{transform:rotate(0);opacity:1}70%{transform:rotate(1turn);opacity:1}76%,100%{transform:rotate(1turn);opacity:0}}
+  .moving.f-gold .fsp{animation:fpop 4.4s ease-in-out calc(var(--i) * -0.55s) infinite}
+  @keyframes fpop{0%,82%,100%{transform:scale(.85);opacity:.85}90%{transform:scale(1.35) rotate(25deg);opacity:1}}
+  .moving.f-starlight .fsp{animation:fdrift 2.6s ease-in-out calc(var(--i) * -0.37s) infinite alternate}
+  @keyframes fdrift{0%{transform:translate(0,0) scale(.6) rotate(0);opacity:.5}100%{transform:translate(var(--dx,2px),var(--dy,-3px)) scale(1.15) rotate(30deg);opacity:1}}
+  /* Paused when nobody can see them: a sheet over the play board, or the app in the background. */
+  body.sheeted #bframe .fring i,body.sheeted #bframe .fsp,html.hid .fring i,html.hid .fsp{animation-play-state:paused}
+  /* The burst when a puzzle opens and when it's solved, on top of the frame's own motion. */
+  .bframe.framed.twinkle .fsp{animation:twinkle .55s ease-in-out var(--dl,0ms) 4 alternate both}
   @keyframes twinkle{from{transform:scale(.55) rotate(0);opacity:.55}to{transform:scale(1.25) rotate(25deg);opacity:1}}
   .bframe.framed.twinkle{animation:framepulse 1.1s ease-in-out 2}
   @keyframes framepulse{50%{box-shadow:0 0 0 1.5px var(--fe),0 0 28px 8px var(--fglow),0 10px 30px rgba(91,42,110,.22)}}
-  @media (prefers-reduced-motion: reduce){.bframe.twinkle .fsp,.bframe.framed.twinkle{animation:none}}
+  @media (prefers-reduced-motion: reduce){.bframe.framed.twinkle .fsp,.bframe.framed.twinkle,.bframe .fsp{animation:none}.fring{display:none}}
   /* the little sample board in the Closet and the unlock sheet */
   .mboard{display:grid;grid-template-columns:repeat(4,1fr);width:var(--mw,120px);aspect-ratio:1;border-radius:calc(var(--mw,120px) / 8);overflow:hidden;border:2px solid rgba(91,42,110,.55);background:#fff}
   .mboard .cell svg.corgi{animation:none}

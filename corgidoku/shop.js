@@ -20,6 +20,9 @@ export const PALETTE = {
   yellow: { name: 'Yellow', hex: ['#FFC93C', '#D99A12', '#FFEBA6', '#7A5A12'] },
   red: { name: 'Red', hex: ['#FF5A5A', '#C93636', '#FFC2C2', '#7A1F2A'] },
   orange: { name: 'Orange', hex: ['#FF9F45', '#D9741C', '#FFD9B0', '#7A3E12'] },
+  gold: { name: 'Gold', hex: ['#F2B630', '#C98A12', '#FFE27A', '#7A5A12'] },
+  silver: { name: 'Silver', hex: ['#C3C8D6', '#858CA3', '#F4F6FA', '#4E5366'] },
+  rosegold: { name: 'Rose gold', hex: ['#F0A28C', '#C46F5A', '#FFDCD0', '#7A3E30'] },
   black: { name: 'Black', hex: ['#3A3346', '#24202C', '#7D7590', '#1A1720'] },
 };
 export const ITEMS = [
@@ -49,6 +52,7 @@ ITEMS.push(
   { id: 'roundglasses', slot: 'face', name: 'Round glasses', price: 60, thumb: '16 22 168 168', color: 'black', paint: ['#3A3346', null, '#7D7590'], colors: ['pink', 'purple', 'yellow'] },
   { id: 'shades', slot: 'face', name: 'Cool shades', price: 150, thumb: '22 68 156 156', color: 'black', paint: ['#3A3346', null, '#7D7590'], colors: ['blue', 'red', 'yellow'] },
   { id: 'mustache', slot: 'face', name: 'Fancy mustache', price: 60, thumb: '34 58 132 132' },
+  { id: 'monocle', slot: 'face', name: 'Monocle', price: 350, thumb: '100 74 92 92', color: 'gold', paint: ['#F2B630', '#C98A12', '#FFE27A'], colors: ['silver', 'rosegold'] },
 );
 export const VARIANT_PRICE = 40;
 for (const it of ITEMS) it.art = OUTFIT[it.id] || '';
