@@ -44,6 +44,7 @@ ITEMS.push(
   { id: 'cap', slot: 'head', name: 'Baseball cap', price: 60, thumb: '46 -26 134 134', color: 'blue', paint: ['#46B3FF', '#2E7BC4', '#BFE4FF'], colors: ['mint', 'red', 'orange'] },
   { id: 'cowboy', slot: 'head', name: 'Cowboy hat', price: 150, thumb: '8 -64 184 184', color: 'red', paint: ['#FF5A5A', '#C93636', '#FFC2C2'], colors: ['blue', 'mint', 'purple'] },
   { id: 'crown', slot: 'head', name: 'King crown', price: 350, thumb: '34 -26 132 132', color: 'red', paint: ['#FF5A5A', '#C93636', '#FFC2C2'], colors: ['blue', 'purple', 'mint'] },
+  { id: 'tophat', slot: 'head', name: 'Top hat', price: 350, thumb: '42 -24 116 116', color: 'red', paint: ['#FF5A5A', '#C93636'], colors: ['purple', 'blue', 'gold'] },
   { id: 'unicorn', slot: 'head', name: 'Unicorn horn', price: 900, thumb: '46 -30 110 110' },
   { id: 'bandana-rainbow', slot: 'neck', name: 'Rainbow bandana', price: 150, thumb: '48 113 104 104' },
   { id: 'scarf', slot: 'neck', name: 'Cozy scarf', price: 150, thumb: '38 112 124 124', color: 'red', paint: ['#FF5A5A', '#C93636', '#FFC2C2'], colors: ['blue', 'mint', 'purple'] },
