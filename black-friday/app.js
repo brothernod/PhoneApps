@@ -25,7 +25,7 @@
   const S = {
     api: "", key: "", me: "", view: "", tab: "list",
     data: null, rev: 0, dragging: false, pendingRender: false,
-    sheets: [], wired: false, skipSeed: false, pollTimer: null,
+    sheets: [], wired: false, skipSeed: false, pollTimer: null, deals: null,
   };
 
   // ---------- Small helpers ----------
@@ -149,6 +149,34 @@
     } catch {
       setOnline(false);
     }
+  }
+
+  // ---------- Price check results ----------
+  // A scheduled job writes data/deals.json next to this page twice a day.
+  async function loadDeals() {
+    try {
+      const res = await fetch(`data/deals.json?t=${Date.now()}`, { cache: "no-store" });
+      if (!res.ok) return;
+      const d = await res.json();
+      if (d && d.items) {
+        S.deals = d;
+        render();
+        redrawSheets(false);
+      }
+    } catch {
+      /* no results yet */
+    }
+  }
+  const dealFor = (it) => S.deals?.items?.[it.id] || null;
+  const checkedAt = () => {
+    const t = S.deals?.checked ? new Date(S.deals.checked) : null;
+    return t && !isNaN(t) ? t.toLocaleString("en-US", { weekday: "short", hour: "numeric", minute: "2-digit" }) : "";
+  };
+  // True when the best price seen beats the low end of the ballpark (or the picked option's price).
+  function dealIsGood(it, deal) {
+    const u = unitRange(it);
+    const best = num(deal?.best?.price);
+    return best != null && u != null && best < u[0] - 0.5;
   }
 
   // ---------- Data access ----------
@@ -462,6 +490,11 @@
       !chosen && cands.length === 0 ? h("span", { class: "chip" }, "Still choosing") : null,
       !chosen && cands.length > 1 ? h("span", { class: "chip" }, `${cands.length} options`) : null,
       votes?.split ? h("span", { class: "chip split" }, "You disagree") : null,
+      (() => {
+        const d = dealFor(it);
+        if (!d?.best || num(d.best.price) == null || it.status === "bought") return null;
+        return h("span", { class: "chip deal" + (dealIsGood(it, d) ? " good" : "") }, `Best seen ${money(num(d.best.price), true)}`);
+      })(),
     ];
     let right = h("span");
     if (grip) right = h("button", { class: "grip", type: "button", "aria-label": `Drag ${it.title}`, html: ICON.grip });
@@ -860,6 +893,8 @@
 
     if (it.status === "bought") body.append(boughtCard(it));
     body.append(optionsCarousel(it));
+    const dealBlock = priceCheckBlock(it);
+    if (dealBlock) body.append(dealBlock);
 
     body.append(
       h(
@@ -966,6 +1001,44 @@
           h("button", { class: "btn small", type: "button", onclick: () => editOption(it.id, c.id) }, "Edit")
         )
       )
+    );
+  }
+
+  function priceCheckBlock(it) {
+    const d = dealFor(it);
+    if (!d || it.status === "bought") return null;
+    const best = d.best;
+    const optLines = Object.entries(d.options || {})
+      .map(([cid, o]) => {
+        const c = (it.cands || []).find((x) => x.id === cid);
+        if (!c || num(o.price) == null) return null;
+        return h(
+          "li",
+          null,
+          h("b", null, c.label || "Option"),
+          ` ${money(num(o.price), true)}`,
+          o.store ? ` at ${o.store}` : "",
+          o.url ? h("a", { href: o.url, target: "_blank", rel: "noopener noreferrer", class: "deal-link" }, "Open") : null
+        );
+      })
+      .filter(Boolean);
+    return h(
+      "div",
+      { class: "block deal-block" + (dealIsGood(it, d) ? " good" : "") },
+      h("h3", null, "Best price seen"),
+      best && num(best.price) != null
+        ? h(
+            "div",
+            { class: "deal-best" },
+            h("b", null, money(num(best.price), true)),
+            best.store ? ` at ${best.store}` : "",
+            dealIsGood(it, d) ? h("span", { class: "chip deal good" }, "Below your ballpark") : null
+          )
+        : h("p", { class: "price-note" }, "No price found yet."),
+      best?.note ? h("p", { class: "price-note" }, best.note) : null,
+      best?.url ? h("a", { class: "btn small", href: best.url, target: "_blank", rel: "noopener noreferrer" }, "Open the deal") : null,
+      optLines.length > 1 ? h("ul", { class: "deal-opts" }, optLines) : null,
+      h("p", { class: "price-note" }, `Checked ${checkedAt()}. Found by search, so confirm the price on the store page before you buy.`)
     );
   }
 
@@ -1795,6 +1868,9 @@
     }
     clearInterval(S.pollTimer);
     S.pollTimer = setInterval(poll, POLL_MS);
+    loadDeals();
+    clearInterval(S.dealTimer);
+    S.dealTimer = setInterval(loadDeals, 15 * 60 * 1000);
   }
 
   function boot() {

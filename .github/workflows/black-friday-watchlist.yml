@@ -1,0 +1,47 @@
+name: Black Friday watchlist export
+
+# Twice a day through Cyber Monday, copy the products on the list (names, links, prices only;
+# no notes) into black-friday/data/watchlist.json so the daily price check knows what to hunt.
+on:
+  schedule:
+    - cron: "30 10,22 * 11,12 *"   # 5:30 AM and 5:30 PM Eastern
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: bf-watchlist
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Stop after Cyber Monday
+        id: window
+        run: |
+          if [ "$(date -u +%Y%m%d)" -gt 20261202 ]; then echo "open=false" >> "$GITHUB_OUTPUT"; else echo "open=true" >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/checkout@v4
+        if: steps.window.outputs.open == 'true'
+      - name: Export the watchlist
+        if: steps.window.outputs.open == 'true'
+        env:
+          KEY: ${{ secrets.BF_LIST_KEY }}
+        run: |
+          curl -fsS -H "Authorization: Bearer $KEY" https://black-friday.brothernod.workers.dev/api/state -o /tmp/state.json
+          mkdir -p black-friday/data
+          jq '{exported: (now | todate), items: [.items[]
+                | select(.status != "bought" and .status != "passed")
+                | select((.cands // []) | length > 0)
+                | {id, title, qty, low, high, regular, chosen,
+                   options: [.cands[] | {id, label, url, price}]}]}' /tmp/state.json > /tmp/watch.json
+          if [ -f black-friday/data/watchlist.json ] && \
+             diff <(jq -S .items /tmp/watch.json) <(jq -S .items black-friday/data/watchlist.json) > /dev/null; then
+            echo "Watchlist unchanged"; exit 0
+          fi
+          cp /tmp/watch.json black-friday/data/watchlist.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add black-friday/data/watchlist.json
+          git commit -m "Black Friday: refresh price-check watchlist"
+          git pull --rebase -q origin main
+          git push
