@@ -1,10 +1,11 @@
 import { decodeRegions, decodeSolution, transformBoard, sniff, rng } from './engine.js';
 import { cheddarHead, cheddarLoaf, partyHat, paw, treat, artDefs, coinIcon, closetIcon, sniffIcon, still } from './art.js';
 import { ITEMS, SLOTS, item, outfit, colorsOf, baseId, ownsLine, priceFor, shopDefaults, payout, backPay, buy, SCENES, FRAMES, CLIMBS, scene, frame, earnable, unlockAt, milestones, syncUnlocks, BONUS, bonusOpen, sniffPrice, paySniff, WILD, WILD_TIERS, WILD_CLEAN, wildTier, wildDates, wildOn, wildOver, wildOpen, wildCount } from './shop.js';
+import { winStats, weekStats, winText, weekText, drawWinCard, drawWeekCard } from './share.js';
 
 // ---------- constants ----------
 const NAME = 'Halina'; // the Default player's name until they set their own in Settings
-const VERSION = '1.32'; // bump with CACHE in sw.js on every release
+const VERSION = '1.33'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const YARD_NAMES = ['pink', 'purple', 'blue', 'mint', 'yellow', 'orange', 'red', 'lavender', 'teal', 'lime']; // how Sniff names each yard color
 // Yard colors are shuffled per puzzle (v1.31). Every shipped board grew yard k from row k's corgi, so
@@ -356,10 +357,12 @@ function renderWild() {
     <div class="bar"><button class="back">‹</button><h2>Wild Week</h2><span class="ghost"></span></div>
     <div class="wprize"><span class="wpill">${wildPill(t)}</span>
       <p>Solve all 7 Wild puzzles of a tier to win its rave shades for Cheddar. They can't be bought, and they're gone after ${WILD.ends}.</p>
-      <div class="wpzs">${prizes}</div></div>
+      <div class="wpzs">${prizes}</div>
+      <button class="cta wshare" id="wshare">📤 Share my week</button></div>
     <p class="wrules">The yard maps take turns every ${SWAP} s over one set of corgis and paws · beat Cozy to open Hard, Hard to open Extreme · double coins · no Sniff</p>
     <div class="wdays">${rows}</div>`;
   $('wild').querySelector('.back').onclick = renderHome;
+  $('wshare').onclick = shareWeek;
   $('wild').querySelectorAll('.wtb[data-pid]').forEach((b) => (b.onclick = () => play(b.dataset.pid)));
   show('wild');
 }
@@ -512,7 +515,11 @@ function play(pid) {
     pal: yardPerm(pid, P.n), // yard letter -> color index
     history: [],
     // Wild Week: the maps, the one on screen, seconds until the next swap, paused, taps locked until.
-    wild: P.kind === 'w' ? { tier: P.tier, maps: P.maps, cur: Math.min(saved?.wm ?? 0, P.maps.length - 1), left: saved?.wl > 0 ? saved.wl : SWAP, paused: false, lockUntil: 0 } : null,
+    wild: P.kind === 'w' ? { tier: P.tier, maps: P.maps, cur: Math.min(saved?.wm ?? 0, P.maps.length - 1), left: saved?.wl > 0 ? saved.wl : SWAP, paused: false, lockUntil: 0,
+      // Map flips (v1.33), counted until the first solve. A puzzle started before v1.33 carries an
+      // estimate from its clock (fe), so the share card shows it with ≈.
+      flips: saved?.fl ?? (saved && !saved.best && saved.elapsed > 0 ? Math.floor(saved.elapsed / SWAP) : 0),
+      fe: saved?.fl != null ? !!saved.fe : !!(saved && !saved.best && saved.elapsed > 0) } : null,
   };
   if (G.wild) G.reg = G.wild.maps[G.wild.cur];
   if (G.solved) { G.cells = G.cells.map((v, i) => (G.sol[Math.floor(i / G.n)] === i % G.n ? CORGI : v === CORGI ? EMPTY : v)); }
@@ -527,7 +534,7 @@ function play(pid) {
     <div class="bubble"><div class="face">${cheddarHead()}</div><p id="msg"></p></div>
     <div class="tools">
       <button class="tool" id="undo"><span class="e">↩️</span>Undo</button>
-      ${W ? '<button class="tool" id="wpause"><span class="e">⏸️</span><span class="lbl">Pause</span></button>' : `<button class="tool" id="hint"><span class="e">${sniffIcon()}</span><span class="lbl" id="hintlbl">Sniff</span></button>`}
+      ${W ? `<button class="tool" id="wpause">${G.solved ? SHARE_BTN : PAUSE_BTN}</button>` : `<button class="tool" id="hint"><span class="e">${sniffIcon()}</span><span class="lbl" id="hintlbl">Sniff</span></button>`}
       <button class="tool" id="clearpaws"><span class="e">🧽</span>Clear paws</button>
     </div>`;
   $('play').querySelector('.back').onclick = () => { stopWild(); stopClock(); P.kind === 'c' ? renderClimb() : P.kind === 'w' ? renderWild() : renderHome(); };
@@ -554,7 +561,7 @@ function play(pid) {
     lastSw = { k, t: now };
   }));
   if ($('hint')) $('hint').onclick = hint;
-  if ($('wpause')) $('wpause').onclick = () => setWildPause(!G.wild.paused);
+  if ($('wpause')) $('wpause').onclick = () => (G.solved ? shareWin(G.wild.tier, G.key) : setWildPause(!G.wild.paused));
   $('clearpaws').onclick = () => { snapshot(); G.cells = G.cells.map((v) => (v === CORGI || v === NOPE ? v : EMPTY)); persist(); drawBoard(); };
   buildBoard();
   drawTreats();
@@ -665,6 +672,7 @@ function wildSwap() {
   const W = G.wild;
   W.cur = (W.cur + 1) % W.maps.length;
   W.left = SWAP;
+  if (G.best == null) W.flips++; // Start over and Snack break don't reset it (the clock doesn't either)
   W.lockUntil = performance.now() + 300;
   persist();
   const paintNow = () => { if (!G?.wild) return; G.reg = W.maps[W.cur]; paintYards(); drawChips(); };
@@ -708,7 +716,7 @@ function setWildPause(p) {
   W.paused = p;
   $('wcover')?.classList.toggle('on', p);
   const b = $('wpause');
-  if (b) b.innerHTML = p ? '<span class="e">▶️</span><span class="lbl">Resume</span>' : '<span class="e">⏸️</span><span class="lbl">Pause</span>';
+  if (b) b.innerHTML = p ? '<span class="e">▶️</span><span class="lbl">Resume</span>' : PAUSE_BTN;
   drawWildTimer();
   if (p) persist();
 }
@@ -731,8 +739,62 @@ function wildEndedSheet() {
   $('okwe').onclick = () => { closeSheet(); renderHome(); };
 }
 
+// ---------- Wild Week share cards (v1.33) ----------
+// A Share button on the Wild win card (and on a solved Wild board), and "Share my week" on the Wild
+// Week screen. The sheet builds the PNG first and only then enables "Share card", so the tap that
+// opens the iOS share sheet is the user's own (a slow build before share() can lose it in Safari).
+// No share-with-file: the picture shows with "Press and hold to save".
+const PAUSE_BTN = '<span class="e">⏸️</span><span class="lbl">Pause</span>';
+const SHARE_BTN = '<span class="e">📤</span><span class="lbl">Share</span>';
+let shareUrl = null;
+function shareWin(tier, date) {
+  const s = winStats(db, tier, date, wildSet, SWAP);
+  if (!s) return;
+  const t = wildTier(tier);
+  shareSheet('Share your Wild win', () => drawWinCard(s, { ...dressed(), head: partyHat }, wildCount(db, tier)), winText(weekStats(db, wildSet, SWAP), s), `corgidoku-wild-${t.id}-${date}.png`);
+}
+function shareWeek() {
+  const wk = weekStats(db, wildSet, SWAP);
+  shareSheet('Share your Wild Week', () => drawWeekCard(wk, (id) => db.owned.includes(id), (id) => wildCount(db, id)), weekText(wk, todayISO()), 'corgidoku-wild-week.png');
+}
+function shareSheet(title, build, text, name) {
+  sheet(`<h3>${title}</h3>
+    <div class="shimg" id="shimg"><small>Getting it ready…</small></div>
+    <p class="shnote" id="shnote">No spoilers: no board, map or corgi spot.</p>
+    <button class="cta" id="sh-card" disabled>Getting it ready…</button>
+    <button class="cta alt" id="sh-text">Share as text</button>
+    <button class="cta alt" id="sh-done">Done</button>`);
+  $('overlay').classList.add('top'); // above the Wild win party
+  $('sh-done').onclick = closeSheet;
+  let file = null;
+  const note = (m) => { const x = $('shnote'); if (x) x.textContent = m; };
+  const holdToSave = () => { const b = $('sh-card'); if (b) b.style.display = 'none'; note('Press and hold the picture to save or share it.'); };
+  build().then((blob) => {
+    if (!$('shimg')) return; // the sheet was closed
+    if (shareUrl) URL.revokeObjectURL(shareUrl);
+    shareUrl = URL.createObjectURL(blob);
+    $('shimg').innerHTML = `<img src="${shareUrl}" alt="${title}">`;
+    file = new File([blob], name, { type: 'image/png' });
+    if (navigator.canShare?.({ files: [file] })) { const b = $('sh-card'); b.disabled = false; b.textContent = '📤 Share card'; }
+    else holdToSave();
+  }).catch(() => { if ($('shimg')) { $('shimg').innerHTML = '<small>The picture didn\'t work on this phone. The text version still does!</small>'; $('sh-card').style.display = 'none'; } });
+  $('sh-card').onclick = () => {
+    if (!file) return;
+    navigator.share({ files: [file], title: 'Corgidoku Wild Week' }).catch((e) => { if (e?.name !== 'AbortError') holdToSave(); });
+  };
+  $('sh-text').onclick = () => {
+    if (navigator.share) return navigator.share({ text }).catch((e) => { if (e?.name !== 'AbortError') copyText(); });
+    copyText();
+  };
+  const copyText = () => {
+    (navigator.clipboard?.writeText(text) || Promise.reject()).then(() => note('Copied! Paste it into a message.'), () => {
+      $('shimg').innerHTML = `<textarea class="code" readonly>${text}</textarea>`; note('Select the text and copy it.');
+    });
+  };
+}
+
 function persist() {
-  db.progress[G.pid] = { cells: G.cells.join(''), treats: G.treats, elapsed: Math.round(G.elapsed), solved: G.solved, best: G.best, mistakes: G.mistakes, hints: G.hints, rating: G.rating, solvedAt: G.solvedAt, ...(G.sn ? { sn: G.sn } : {}), ...(G.kind === 'b' ? { bk: G.r } : {}), ...(G.wild ? { wm: G.wild.cur, wl: Math.round(G.wild.left * 10) / 10 } : {}) };
+  db.progress[G.pid] = { cells: G.cells.join(''), treats: G.treats, elapsed: Math.round(G.elapsed), solved: G.solved, best: G.best, mistakes: G.mistakes, hints: G.hints, rating: G.rating, solvedAt: G.solvedAt, ...(G.sn ? { sn: G.sn } : {}), ...(G.kind === 'b' ? { bk: G.r } : {}), ...(G.wild ? { wm: G.wild.cur, wl: Math.round(G.wild.left * 10) / 10, fl: G.wild.flips, ...(G.wild.fe ? { fe: 1 } : {}) } : {}) };
   save();
 }
 function snapshot() { G.history.push({ cells: G.cells.slice(), treats: G.treats }); if (G.history.length > 200) G.history.shift(); }
@@ -1119,6 +1181,7 @@ function wildNext(date, tier) {
 function wildWin(earned, got) {
   const t = wildTier(G.wild.tier), maps = G.wild.maps.length, pid = G.pid, date = G.key;
   drawChips(); drawWildTimer();
+  if ($('wpause')) $('wpause').innerHTML = SHARE_BTN; // the board's Pause becomes Share
   say('Every corgi is cozy on every map! 🎉');
   const rm = reduceMotion();
   boardParty();
@@ -1146,7 +1209,7 @@ function wildWin(earned, got) {
         <div class="wcoins"><b>+<span id="wcount">${rm ? earned.coins : 0}</span> ${coinIcon(true)}</b><small>${parts}</small></div>
         <div class="wprog">${shadesHead(t.prize)}<div><b>${item(t.prize).name}: ${Math.min(7, count)} of 7</b>${pips(count)}<small>${owned ? 'Earned! They\'re yours forever. 🎉' : `Solve all 7 ${t.name} Wild puzzles by ${WILD.ends}`}</small></div></div>
         ${db.settings.research ? ratingRow() : ''}
-        ${nextBtn}<button class="cta ${next ? 'alt' : ''}" id="wp-home">Home</button>
+        ${nextBtn}<button class="cta alt" id="wp-share">📤 Share</button><button class="cta ${next ? 'alt' : ''}" id="wp-home">Home</button>
       </div>`;
     document.body.appendChild(el);
     if (!rm) partyPieces(t.id);
@@ -1158,6 +1221,7 @@ function wildWin(earned, got) {
     partyStop = () => { if (fw) fw(); el.remove(); partyStop = null; };
     const leave = (go) => () => { partyStop?.(); shades.length ? shadesSheet(shades, go) : go(); };
     $('wp-home').onclick = leave(renderHome);
+    $('wp-share').onclick = () => shareWin(t.id, date);
     if (next) $('wp-next').onclick = leave(() => play(WP(next.tier, next.date)));
     el.querySelectorAll('.rate button').forEach((b) => (b.onclick = () => {
       if (G?.pid === pid) { G.rating = Number(b.dataset.r); persist(); }
@@ -1282,9 +1346,9 @@ function report() {
     .map(([pid, p]) => ({ pid, p, raw: rawPuzzle(pid) }))
     .filter((x) => x.raw)
     .sort((a, b) => (a.p.solvedAt || '').localeCompare(b.p.solvedAt || ''));
-  const lines = rows.map(({ pid, p, raw }) => [raw.m, pid, raw.n, raw.lv, raw.st, p.best != null ? Math.round(p.best) : '', p.mistakes ?? '', p.hints ?? '', p.rating ?? '', p.solvedAt ?? '', raw.ch ?? '', raw.cd ?? '', raw.maps ?? ''].join(','));
+  const lines = rows.map(({ pid, p, raw }) => [raw.m, pid, raw.n, raw.lv, raw.st, p.best != null ? Math.round(p.best) : '', p.mistakes ?? '', p.hints ?? '', p.rating ?? '', p.solvedAt ?? '', raw.ch ?? '', raw.cd ?? '', raw.maps ?? '', p.fl ?? ''].join(','));
   return { count: rows.length, rated: rows.filter((x) => x.p.rating).length,
-    text: `Corgidoku field report v${VERSION} · ${nm()} · ${todayISO()} · ${rows.length} solved\nmode,id,size,lv,steps,secs,mistakes,hints,rating,date,chains,depth,maps\n${lines.join('\n')}` };
+    text: `Corgidoku field report v${VERSION} · ${nm()} · ${todayISO()} · ${rows.length} solved\nmode,id,size,lv,steps,secs,mistakes,hints,rating,date,chains,depth,maps,flips\n${lines.join('\n')}` };
 }
 async function sendReport() {
   const r = report();
@@ -1377,7 +1441,7 @@ function say(text, alert = false, sticky = false, sniff = false) {
   if (text && !alert && !sticky) msgTimer = setTimeout(() => { if (m.textContent === text && !G?.solved) m.textContent = ''; }, 6000);
 }
 function sheet(html) { $('sheet').innerHTML = html; $('overlay').classList.add('on'); document.body.classList.add('sheeted'); }
-function closeSheet() { $('overlay').classList.remove('on'); document.body.classList.remove('sheeted'); }
+function closeSheet() { $('overlay').classList.remove('on', 'top'); document.body.classList.remove('sheeted'); }
 $('overlay').onclick = (e) => { if (e.target.id === 'overlay') closeSheet(); };
 
 function confirmSheet(title, body, ok) {
