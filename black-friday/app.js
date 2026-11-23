@@ -691,7 +691,7 @@
           h("span", { class: "big" }, money(spent, true)),
           h("span", { class: "lbl" }, "Your ballpark for these"),
           h("span", null, moneyRange([ballpark.lo, ballpark.hi])),
-          saved > 0 ? h("span", { class: "lbl" }, "Saved off regular prices") : null,
+          saved > 0 ? h("span", { class: "lbl" }, "Saved off retail prices") : null,
           saved > 0 ? h("span", { class: "save-good" }, money(saved, true)) : null
         )
       ),
@@ -705,6 +705,9 @@
           return row(it, {
             sub: [
               h("span", { class: "price" }, money(num(p.paid), true) || "No amount"),
+              num(p.regular) != null && num(p.paid) != null && num(p.regular) > num(p.paid)
+                ? h("span", { class: "chip picked" }, `Saved ${money(num(p.regular) - num(p.paid), true)}`)
+                : null,
               cand ? h("span", null, cand.label) : null,
               p.store ? h("span", null, p.store) : null,
               p.date ? h("span", null, niceDate(p.date)) : null,
@@ -886,7 +889,7 @@
       { class: "bought-card" },
       h("div", null, h("b", null, money(num(p.paid), true)), " paid"),
       h("div", null, [cand?.label, p.store, niceDate(p.date)].filter(Boolean).join(", ")),
-      num(p.regular) && num(p.paid) && num(p.regular) > num(p.paid) ? h("div", null, `Saved ${money(num(p.regular) - num(p.paid), true)} off regular price`) : null
+      num(p.regular) && num(p.paid) && num(p.regular) > num(p.paid) ? h("div", null, `Saved ${money(num(p.regular) - num(p.paid), true)} off retail price`) : null
     );
   }
 
@@ -984,7 +987,7 @@
         "div",
         { class: "pair" },
         field("Quantity", qtyStepper(qtyOf(it), (n) => patchItem(it.id, { qty: n }, { redraw: true }))),
-        field("Regular price (each)", moneyInput(it.regular, (v) => patchItem(it.id, { regular: v }), "Optional"))
+        field("Retail price (each)", moneyInput(it.regular, (v) => patchItem(it.id, { regular: v }), "Optional"), "The normal non-sale price. Used to show what you saved.")
       ),
       it.priceNote ? h("p", { class: "price-note" }, `Price check, Nov 22: ${it.priceNote}`) : null
     );
@@ -1157,7 +1160,7 @@
           field(qtyOf(it) > 1 ? `Total paid for ${qtyOf(it)}` : "Total paid", paidInput, "Include tax if you want the tracker to match your card."),
           field("Store", storeInput),
           field("Date", h("input", { class: "input", type: "date", value: st.date, onchange: (e) => (st.date = e.target.value) })),
-          field("Regular price total", moneyInput(st.regular, (v) => (st.regular = v), "Optional"), "Used to show what you saved.")
+          field(qtyOf(it) > 1 ? `Retail price for ${qtyOf(it)}` : "Retail price", moneyInput(st.regular, (v) => (st.regular = v), "Optional"), "The normal non-sale price. You saved the difference between this and what you paid.")
         );
       },
     });
