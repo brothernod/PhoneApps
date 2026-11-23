@@ -5,7 +5,7 @@ import { winStats, weekStats, winText, weekText, drawWinCard, drawWeekCard } fro
 
 // ---------- constants ----------
 const NAME = 'Halina'; // the Default player's name until they set their own in Settings
-const VERSION = '1.33'; // bump with CACHE in sw.js on every release
+const VERSION = '1.34'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const YARD_NAMES = ['pink', 'purple', 'blue', 'mint', 'yellow', 'orange', 'red', 'lavender', 'teal', 'lime']; // how Sniff names each yard color
 // Yard colors are shuffled per puzzle (v1.31). Every shipped board grew yard k from row k's corgi, so

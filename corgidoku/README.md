@@ -65,7 +65,7 @@ Reaching a mode's summit (Cozy hold 60, Hard 80, Extreme 120, Chill 40) opens th
 - **Where:** on home, the Climb card and a Bonus Yards card share one row ("Yard 17 · 9×9"); on the Climb screen there's a full-width card above the summit. Both open the next unsolved yard. The win sheet on a bonus yard has "Next bonus yard".
 - **Order:** yards are played in order, numbered from 1. Ids are `b:<k>` (Cozy), `hb:`, `xb:`, `kb:` (Chill).
 - **Coins:** 3 (+3 clean) for grown-ups, 5 (+5 clean) for kids. Each yard pays once. Bonus yards don't count for the streak, the weekly bonus or Climb scenes, but they do count in Solved and in field reports.
-- **Pools:** one file per mode, fetched only once that mode is open for the current player (the service worker caches it after the first fetch). Each pool is the top half of its Climb, cycling sizes and tiers so boards in a row differ:
+- **Pools:** one file per mode, fetched only once that mode is open for the current player. The service worker saves all four on install, so they work offline from the first launch. Each pool is the top half of its Climb, cycling sizes and tiers so boards in a row differ:
 
 | Pool | Target size | Cycle |
 | --- | --- | --- |
@@ -259,6 +259,8 @@ One week only, **Monday 2026-11-23 to Sunday 2026-11-29**, grown-ups only (kid p
 ## Releasing
 
 Bump `VERSION` in `app.js` and `CACHE` in `sw.js` together. The version shows faintly at the bottom of the home screen; tap it to clear the cache and reload.
+
+**Offline and weak signal (`sw.js`):** every file is saved on install. Requests go to the network first, but if there's no reply within 3 s the saved copy is used and the late reply still refreshes the cache, so a new push shows up on the next open. When the page itself came from the cache, the files it loads in the next 10 s do too, so a release never mixes old and new files. Add new files to `FILES` in `sw.js`.
 
 ## Special dates
 
