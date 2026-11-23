@@ -4,7 +4,7 @@ import { ITEMS, SLOTS, item, outfit, colorsOf, baseId, ownsLine, priceFor, shopD
 
 // ---------- constants ----------
 const NAME = 'Halina'; // the Default player's name until they set their own in Settings
-const VERSION = '1.31'; // bump with CACHE in sw.js on every release
+const VERSION = '1.32'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const YARD_NAMES = ['pink', 'purple', 'blue', 'mint', 'yellow', 'orange', 'red', 'lavender', 'teal', 'lime']; // how Sniff names each yard color
 // Yard colors are shuffled per puzzle (v1.31). Every shipped board grew yard k from row k's corgi, so
@@ -363,17 +363,57 @@ function renderWild() {
   $('wild').querySelectorAll('.wtb[data-pid]').forEach((b) => (b.onclick = () => play(b.dataset.pid)));
   show('wild');
 }
-// One time, the first launch during the week.
+// One time, the first launch during the week: a full-screen takeover, since it's a special event.
+// A rave-shades Cheddar cannonballs in and knocks the home screen away (it shakes, then tumbles off),
+// a rainbow burst wipes out from the impact, WILD WEEK drops in letter by letter, and the three
+// prize shades fly in from three sides. "Let's go" opens the Wild Week screen; "Later" sends the
+// takeover away and the home screen drops back in. Reduced motion: it just fades in and out.
 function wildIntro() {
   db.seenWild = true; save();
-  sheet(`<h3>Wild Week is here! 🕶️</h3>
-    <p>One board, several yard maps that <b>take turns every ${SWAP} seconds</b>. Your corgis and paws stay put, so learn from each map.</p>
-    <p>A new Cozy, Hard and Extreme every day. <b>Beat Cozy to open Hard, Hard to open Extreme.</b> Double coins!</p>
-    <div class="wpzs">${WILD_TIERS.map((x) => `<div class="wpz">${shadesHead(x.prize)}<b>${item(x.prize).name.replace(' rave shades', '')}</b><small>all 7 ${x.name}</small></div>`).join('')}</div>
-    <span class="wpill">${wildPill()}</span>
-    <button class="cta" id="wi-go">Let's go</button><button class="cta alt" id="wi-later">Later</button>`);
-  $('wi-go').onclick = () => { closeSheet(); renderWild(); };
-  $('wi-later').onclick = closeSheet;
+  const rm = reduceMotion(), home = $('home'), pic = $('scene');
+  const letters = (w, d0) => [...w].map((c, i) => `<i style="--ld:${d0 + i * 70}ms">${c}</i>`).join('');
+  // The rainbow burst goes BEHIND the screens, so it shows as the home screen is knocked away.
+  let bg = null;
+  if (!rm) { home.classList.add('wipage'); bg = document.createElement('div'); bg.className = 'wibg'; bg.innerHTML = '<div class="wburst"></div>'; document.body.prepend(bg); }
+  const el = document.createElement('div');
+  el.id = 'wintro';
+  el.className = `wintro${rm ? ' still' : ''}`;
+  el.setAttribute('role', 'dialog');
+  el.setAttribute('aria-label', 'Wild Week is here');
+  el.innerHTML = `<div class="wiflash"></div>
+    <div class="wiball"><span class="wtrail"></span>${cheddarHead({ ...headLook(), face: item('raveled').art })}</div>
+    <div class="wibody">
+      <p class="wikick">It's here!</p>
+      <h1 class="wititle"><span>${letters('WILD', 1050)}</span><span>${letters('WEEK', 1330)}</span></h1>
+      <div class="wiheads">${WILD_TIERS.map((x, k) => `<div class="wih h${k}">${shadesHead(x.prize)}<b>${item(x.prize).name.replace(' rave shades', '')}</b><small>all 7 ${x.name}</small></div>`).join('')}</div>
+      <div class="wicard">
+        <p>One board, several yard maps that <b>take turns every ${SWAP} seconds</b>. Your corgis and paws stay put, so learn from each map.</p>
+        <p>A new Cozy, Hard and Extreme every day. <b>Beat Cozy to open Hard, Hard to open Extreme.</b> Double coins, and rave shades you can only win this week!</p>
+        <span class="wpill">${wildPill()}</span>
+        <button class="cta" id="wi-go">Let's go 🕶️</button><button class="cta alt" id="wi-later">Later</button>
+      </div>
+    </div>`;
+  document.body.appendChild(el);
+  // The hit lands at 0.45 s: the home screen (and the scene picture) shakes, then tumbles away.
+  if (!rm) setTimeout(() => { home.classList.add('knocked'); pic.classList.add('knocked'); if (navigator.vibrate) navigator.vibrate([30, 40, 90]); }, 450);
+  let gone = false;
+  const close = (then) => {
+    if (gone) return;
+    gone = true;
+    el.classList.add('out');
+    setTimeout(() => {
+      el.remove();
+      if (then === 'wild') renderWild();
+      home.classList.remove('knocked', 'wipage'); pic.classList.remove('knocked');
+      if (rm) return;
+      // The screen you're going to drops back in over the burst, then the burst goes.
+      const back = [then === 'wild' ? $('wild') : home, pic];
+      back.forEach((x) => x.classList.add('dropin'));
+      setTimeout(() => { back.forEach((x) => x.classList.remove('dropin')); bg?.remove(); }, 750);
+    }, rm ? 200 : 300);
+  };
+  $('wi-go').onclick = () => close('wild');
+  $('wi-later').onclick = () => close('home');
 }
 
 // ---------- past days ----------
