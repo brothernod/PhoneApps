@@ -1,10 +1,11 @@
 {
   "lines": [
-    "Prefers shorter reads: aim for about 5–9 minutes; 13 min felt long and got dropped partway.",
-    "Depth and technical level of the Anthropic agent-memory piece were right.",
-    "Primary sources with practical takeaways land well.",
-    "Has read in the late afternoon, not only first thing in the morning.",
-    "Mixing in non-engineering topics after a run of AI-engineering picks."
+    "Sweet spot is about 8–10 minutes; 13 min felt long and got dropped partway, 10 min was finished.",
+    "Depth and technical level have been right so far — keep it practical, not academic.",
+    "Values pieces useful at work and for teaching others.",
+    "Primary sources with concrete takeaways land well.",
+    "Reads at varied times, including afternoons and weekend mornings.",
+    "Rotating in Java and other non-AI-engineering topics after a run of AI picks."
   ],
   "mix": {
     "ai-eng": 70,
@@ -12,9 +13,10 @@
     "java": 8,
     "focus": 7
   },
-  "updatedAt": "2026-11-20T10:15:41Z",
+  "updatedAt": "2026-11-23T10:15:50Z",
   "seen": {
-    "2026-11-18": "2026-11-18T22:47:37.098Z"
+    "2026-11-18": "2026-11-18T22:47:37.098Z",
+    "2026-11-20": "2026-11-21T14:11:45.846Z"
   },
   "nextHandledAt": null
 }
