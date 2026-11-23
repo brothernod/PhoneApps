@@ -1,0 +1,210 @@
+{
+  "checked": "2026-11-23T23:12:20Z",
+  "items": {
+    "mocca": {
+      "best": {
+        "price": 247.95,
+        "store": "Crate & Barrel",
+        "url": "https://www.crateandbarrel.com/moccamaster-kbgv-glass-brewer-10-cup-juniper-coffee-maker/s622395",
+        "optionId": "mocca-juniper",
+        "note": "Crate & Barrel Black Friday sale ('ends soon'); Polished Silver also $247.95. Ocean out of stock everywhere checked."
+      },
+      "options": {
+        "mocca-juniper": {
+          "price": 247.95,
+          "store": "Crate & Barrel",
+          "url": "https://www.crateandbarrel.com/moccamaster-kbgv-glass-brewer-10-cup-juniper-coffee-maker/s622395",
+          "seen": "2026-11-23"
+        },
+        "mocca-silver": {
+          "price": 247.95,
+          "store": "Crate & Barrel",
+          "url": "https://www.crateandbarrel.com/moccamaster-kbgv-select-glass-brewer-10-cup-polished-silver-coffee-maker/s394336",
+          "seen": "2026-11-23"
+        },
+        "mocca-eucalyptus": {
+          "price": 369.95,
+          "store": "Crate & Barrel",
+          "url": "https://www.crateandbarrel.com/moccamaster-kbgv-select-10-cup-glass-brewer-eucalyptus-coffee-maker/s143100",
+          "seen": "2026-11-23"
+        }
+      }
+    },
+    "airpods": {
+      "best": {
+        "price": 149.0,
+        "store": "Amazon",
+        "url": "https://www.amazon.com/dp/B0FQFB8FMG",
+        "optionId": "airpods-3",
+        "note": "All-time low $149 for Black Friday per MacRumors/9to5Toys Nov 23; no end date"
+      },
+      "options": {
+        "airpods-3": {
+          "price": 149.0,
+          "store": "Amazon",
+          "url": "https://www.amazon.com/dp/B0FQFB8FMG",
+          "seen": "2026-11-23"
+        }
+      }
+    },
+    "ev": {
+      "best": {
+        "price": 449.0,
+        "store": "Emporia",
+        "url": "https://shop.emporiaenergy.com/products/emporia-ev-charger",
+        "optionId": "ev-emporia",
+        "note": "Emporia store price shown for J1772 NEMA 14-50 variant; hardwired price not confirmed"
+      },
+      "options": {
+        "ev-emporia": {
+          "price": 449.0,
+          "store": "Emporia",
+          "url": "https://shop.emporiaenergy.com/products/emporia-ev-charger",
+          "seen": "2026-11-23"
+        },
+        "ev-wallbox": {
+          "price": 699.0,
+          "store": "Abt",
+          "url": "https://www.abt.com/Wallbox-Pulsar-Plus-48A-25Ft-Electric-Vehicle-Smart-Charger-PUP2U16C002/p/228019.html",
+          "seen": "2026-11-23"
+        }
+      }
+    },
+    "heater": {
+      "best": {
+        "price": 449.99,
+        "store": "Best Buy",
+        "url": "https://www.bestbuy.com/product/dyson-purifier-hot-cool-hp1-white/J3ZCSY28JF",
+        "optionId": "heater-hp1",
+        "note": "Best Buy Black Friday deal ($210 off); HP10 out of stock at Walmart"
+      },
+      "options": {
+        "heater-hp1": {
+          "price": 449.99,
+          "store": "Best Buy",
+          "url": "https://www.bestbuy.com/product/dyson-purifier-hot-cool-hp1-white/J3ZCSY28JF",
+          "seen": "2026-11-23"
+        }
+      }
+    },
+    "ups": {
+      "best": {
+        "price": 359.95,
+        "store": "Newegg",
+        "url": "https://www.newegg.com/p/2FT-0008-004B9",
+        "optionId": "ups-cp1500",
+        "note": "Sold by Newegg; same price at CDW"
+      },
+      "options": {
+        "ups-cp1500": {
+          "price": 359.95,
+          "store": "Newegg",
+          "url": "https://www.newegg.com/p/2FT-0008-004B9",
+          "seen": "2026-11-23"
+        }
+      }
+    },
+    "blinds": {
+      "best": {
+        "price": 161.99,
+        "store": "SmartWings",
+        "url": "https://www.smartwingshome.com/products/smartwings-motorized-light-filtering-roller-shades-70-blackout-safari",
+        "optionId": "blinds-sw",
+        "note": "$179.99 base price minus 10% sitewide Black Friday discount (auto at checkout); price depends on size, check Matter/Thread motor option"
+      },
+      "options": {
+        "blinds-sw": {
+          "price": 161.99,
+          "store": "SmartWings",
+          "url": "https://www.smartwingshome.com/products/smartwings-motorized-light-filtering-roller-shades-70-blackout-safari",
+          "seen": "2026-11-23"
+        }
+      }
+    },
+    "doorsensor": {
+      "best": {
+        "price": 29.95,
+        "store": "ameriDroid",
+        "url": "https://ameridroid.com/products/aqara-door-and-window-sensor-p2",
+        "optionId": "door-p2",
+        "note": "Regular price, no sale"
+      },
+      "options": {
+        "door-p2": {
+          "price": 29.95,
+          "store": "ameriDroid",
+          "url": "https://ameridroid.com/products/aqara-door-and-window-sensor-p2",
+          "seen": "2026-11-23"
+        }
+      }
+    },
+    "printer": {
+      "best": {
+        "price": 789.0,
+        "store": "Bambu Lab",
+        "url": "https://us.store.bambulab.com/products/x2d?id=720069852747550728",
+        "optionId": "printer-x2d",
+        "note": "Bambu Black Friday sale, Combo $789 (reg $899); ends Dec 1 2 AM ET (Dealmoon says Nov 30 10:59 PM PT)"
+      },
+      "options": {
+        "printer-x2d": {
+          "price": 789.0,
+          "store": "Bambu Lab",
+          "url": "https://us.store.bambulab.com/products/x2d?id=720069852747550728",
+          "seen": "2026-11-23"
+        }
+      }
+    },
+    "524e9d0e-912": {
+      "best": {
+        "price": 199.99,
+        "store": "Best Buy",
+        "url": "https://www.bestbuy.com/product/aqara-uwb-smart-lock-u400-kit-with-m100-hub-matter-thread-wifi-apple-home-key-fingerprint-rechargeable-battery-black/JJ8RHCJ2S9",
+        "optionId": "ce0c0925-18a",
+        "note": "Best Buy Black Friday deal; kit includes M100 hub"
+      },
+      "options": {
+        "ce0c0925-18a": {
+          "price": 199.99,
+          "store": "Best Buy",
+          "url": "https://www.bestbuy.com/product/aqara-uwb-smart-lock-u400-kit-with-m100-hub-matter-thread-wifi-apple-home-key-fingerprint-rechargeable-battery-black/JJ8RHCJ2S9",
+          "seen": "2026-11-23"
+        }
+      }
+    },
+    "airtags": {
+      "best": {
+        "price": 79.0,
+        "store": "Amazon",
+        "url": "https://www.amazon.com/dp/B0GJTXVN9Z",
+        "optionId": "airtags-2",
+        "note": "4-pack $79 at Amazon and Best Buy per MacRumors Nov 23 (was $69.99 Nov 11)"
+      },
+      "options": {
+        "airtags-2": {
+          "price": 79.0,
+          "store": "Amazon",
+          "url": "https://www.amazon.com/dp/B0GJTXVN9Z",
+          "seen": "2026-11-23"
+        }
+      }
+    },
+    "shelly": {
+      "best": {
+        "price": 22.39,
+        "store": "Shelly USA",
+        "url": "https://us.shelly.com/products/shelly-1-gen4-ul-certified-1",
+        "optionId": "shelly-1g4",
+        "note": "Up to 20% off sale at Shelly store; no end date"
+      },
+      "options": {
+        "shelly-1g4": {
+          "price": 22.39,
+          "store": "Shelly USA",
+          "url": "https://us.shelly.com/products/shelly-1-gen4-ul-certified-1",
+          "seen": "2026-11-23"
+        }
+      }
+    }
+  }
+}
