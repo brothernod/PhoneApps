@@ -17,9 +17,11 @@ Cheddar's puzzle yard for Halina. A corgi take on Queens-style logic puzzles: on
 | `puzzles-hard.json` | Hard mode: 730 daily 8×8–10×10 boards needing pair/group locks + 80-level Hard Climb |
 | `puzzles-kids.json` | Chill mode (kids only): 760 daily 5×5/6×6 boards from 2026-10-01 + 40-level Chill Climb (4×4 up to 7×7) |
 | `bonus-cozy.json`, `bonus-hard.json`, `bonus-extreme.json`, `bonus-kids.json` | Bonus Yards: extra boards per mode, opened by that mode's summit (see Bonus Yards) |
+| `wild.json` | Wild Week (Nov 23–29, 2026): 21 multi-map boards, a Cozy, Hard and Extreme set per day (see Wild Week) |
 | `tools/generate.mjs` | Builds `puzzles.json`; also hunts big boards on a strong PC |
 | `tools/verify.mjs` | Independent checker, written separately from the generator |
 | `tools/sniff.test.mjs` | Tests that every Sniff hint is a valid step and the lowest level available, on every board of all 8 files |
+| `tools/wild.test.mjs` | Wild Week tests: the multi-map solver against brute force, union auto paws, test-page sets grading the same, coin rates, unlock order and prizes |
 | `tools/pool-9.json` | 9×9 boards used on every other Sunday |
 | `tools/scenes.py` | Draws the scenes and writes `scenes.js` |
 
@@ -36,7 +38,10 @@ node tools/verify.mjs
 node tools/verify.mjs puzzles-hard.json
 node tools/verify.mjs puzzles-extreme.json
 node tools/verify.mjs puzzles-kids.json
+node tools/generate.mjs --wild --start 2026-11-23 --days 7
+node tools/verify.mjs wild.json
 node tools/verify.test.mjs
+node tools/wild.test.mjs
 node tools/sniff.test.mjs
 ```
 
@@ -125,7 +130,7 @@ Placed corgis are always correct, so they're locked: tapping one does nothing, a
 
 ## Shop
 
-Solving puzzles earns coins; coins buy outfits for Cheddar in the **Closet** (home screen → Closet, or tap the coin chip). The coin and the wardrobe are drawn icons (`coinIcon()`, `closetIcon()` in `art.js`) sized to `1em` so they sit in text like the old emoji. Everything is cosmetic and nothing is time-limited. Hints (Sniff) are free in Chill and Cozy and cost coins in Hard and Extreme (see Sniff). Every puzzle pays once (`db.paid`), so Start over and replays earn nothing new. "Clean" means zero mistakes (Relaxed mode can't lose treats, so mistakes are what count).
+Solving puzzles earns coins; coins buy outfits for Cheddar in the **Closet** (home screen → Closet, or tap the coin chip). The coin and the wardrobe are drawn icons (`coinIcon()`, `closetIcon()` in `art.js`) sized to `1em` so they sit in text like the old emoji. Everything is cosmetic and nothing is time-limited, except the Wild Week rave shades (see Wild Week). Hints (Sniff) are free in Chill and Cozy and cost coins in Hard and Extreme (see Sniff). Every puzzle pays once (`db.paid`), so Start over and replays earn nothing new. "Clean" means zero mistakes (Relaxed mode can't lose treats, so mistakes are what count).
 
 | Grown-ups (Default) | Coins |
 | --- | --- |
@@ -135,6 +140,7 @@ Solving puzzles earns coins; coins buy outfits for Cheddar in the **Closet** (ho
 | Bonus yard (after a summit) | 3 |
 | Clean solve (any of the above) | +3 |
 | Weekly: today's daily solved on 5 of 7 days, Mon–Sun, any mode | +25 |
+| Wild Week puzzle (Nov 23–29, 2026, any day of the week): Cozy / Hard / Extreme | 20 / 30 / 40, clean +6 |
 
 Kids (Holden, Quentin) get 10 for any daily, past day or Climb hold and 5 for a bonus yard, +5 if clean, no weekly goal. They start with 100 coins and pay half price.
 
@@ -146,7 +152,7 @@ Prices: basic 60 · nice 150 · fancy 350 · dream 900 · color variant 40.
 | --- | --- |
 | Head | Party hat 60 · Pom-pom beanie 60 · Baseball cap 60 · Flower crown 150 · Rainbow bow 150 · Pirate hat 150 · Climbing helmet 150 · Bunny ears 150 · Cowboy hat 150 · Tiara 350 · King crown 350 · Wizard hat 350 · Dino hood 350 · Top hat 350 · Unicorn horn 900 |
 | Neck | Bandana 60 · Bow tie 60 · Necktie 60 · Rainbow bandana 150 · Star collar 150 · Cozy scarf 150 |
-| Face | Round glasses 60 · Fancy mustache 60 · Heart sunglasses 150 · Cool shades 150 · Monocle 350 |
+| Face | Round glasses 60 · Fancy mustache 60 · Heart sunglasses 150 · Cool shades 150 · Monocle 350 · Pink / Rainbow / LED rave shades (Wild Week prizes, never for sale) |
 
 Cheddar is a boy, so the catalog has both boy-coded things (baseball cap, cowboy hat, king crown, necktie, cool shades, mustache, pirate hat, dino hood) and girl-coded things (tiara, flower crown, rainbow bow, bunny ears, heart sunglasses). Anyone can wear anything.
 
@@ -225,7 +231,27 @@ Gradients or clip paths in a scene need ids unique to that scene (`cldsky`, `aur
 
 ## Field research reports
 
-Settings → Field research mode asks for a 1–10 difficulty rating after each solve. Send report shares one CSV line per solved puzzle: `mode,id,size,lv,steps,secs,mistakes,hints,rating,date,chains,depth` (the last two are only filled for Extreme what-if boards). `lv` and `steps` come from the grader, so ratings vs `lv`/`steps` show how well the grader's difficulty matches how hard it felt.
+Settings → Field research mode asks for a 1–10 difficulty rating after each solve. Send report shares one CSV line per solved puzzle: `mode,id,size,lv,steps,secs,mistakes,hints,rating,date,chains,depth,maps` (`chains,depth` are only filled for Extreme what-if boards; `maps` only for Wild Week boards, whose mode is `wild-cozy`, `wild-hard` or `wild-extreme`). `lv` and `steps` come from the grader, so ratings vs `lv`/`steps` show how well the grader's difficulty matches how hard it felt.
+
+## Wild Week (v1.31)
+
+One week only, **Monday 2026-11-23 to Sunday 2026-11-29**, grown-ups only (kid players never see it). Each day opens a set of three **Wild** puzzles on top of the normal dailies. A Wild puzzle is **one board with several yard maps that take turns**: one set of corgis and paws, and every 15 seconds the yard map under them swaps. No smaller set of maps has only one answer, so you learn from each map and carry what you found (as paws) to the next.
+
+| Tier | Maps | Size | No smaller set is enough | Coins (clean +6) | Prize for all 7 |
+| --- | --- | --- | --- | --- | --- |
+| 🌈 Cozy | 2 | 8×8 | each map alone has 2+ answers | 20 | Pink rave shades |
+| 🔥 Hard | 3 | 9×9 Mon–Wed, 10×10 Thu–Sun | every pair of maps has 2+ answers | 30 | Rainbow rave shades |
+| ⚡ Extreme | 4 | 10×10 | every trio of maps has 2+ answers | 40 | LED rave shades |
+
+- **Unlocking** (`wildOpen` in `shop.js`, also guarding `play()`): each day's set opens on its date (the phone's local date). Within a day the tiers open in order: Cozy, then Hard once that day's Cozy is solved, then Extreme. Every open day stays playable until the week ends (catch-up), and on Sunday all 21 can be played. The week ends Sunday 11:59 pm; after that nothing is playable and the prizes can't be earned. A puzzle that's open when the deadline passes ends with a "Wild Week is over" sheet.
+- **Where:** a rainbow Wild Week card on home (Default player, during the week) with today's three tiers (✓ / ▶ / 🔒), the deadline pill ("Limited time · ends Sun Nov 29, 11:59 pm", "2 days left" on Saturday, "Last day!" on Sunday) and how many are open. It opens the Wild Week screen: the three prizes on Cheddar with 7 pips each, then Monday to Sunday with a button per tier (solved: ✓ and the time; open: maps and size; locked: "Beat Cozy first"; future: greyed, "Opens Thu"). The first launch during the week shows a one-time "Wild Week is here!" sheet (`db.seenWild`).
+- **Playing:** map chips above the board ("Map A", "Map B", "Map C"; Extreme just "A B C D"), the one on screen ringed in its color, and a rainbow bar draining over 15 s. In the last 3 s the bar and number turn pink and pulse and the board glows pink. The swap is a 0.36 s flip (the new map is painted halfway) and a short buzz. **Taps and Undo are ignored from 0.3 s before to 0.3 s after a swap.** Marks are shared; a corgi's auto paws cover its row, column, 8 neighbors and **its yard in every map**. Wrong corgis cost a treat as usual; Snack break and Start over go back to map A. **No Sniff:** its spot is **Pause**, which covers the board and stops the clock and the swap timer. The swap timer also stops while a sheet is open or the app is in the background. Progress saves the map on screen (`wm`) and the seconds left (`wl`).
+- **The Wild win party** is longer than the normal win and builds with the tier: the rainbow wave runs twice with sparkles bursting out of the board; then an overlay with a spinning rainbow burst, confetti and flying party-hat corgis (Cozy 14, Hard 24, Extreme 36) that rain down spinning and zoom across both ways. The card pops in 1 s later: Cheddar in his outfit with a party hat, "WILD WIN!", the coin count-up with the sum, the prize progress row, and buttons for the next thing that opened (or the next open Wild puzzle) and Home. Extreme adds rainbow fireworks on one canvas (one every 0.5 s for 6 s, a three-burst finale, then one every 1.5–2 s), aimed above and below the card. Everything runs until a button is tapped and pauses in the background. Reduced motion: just the card and the numbers.
+- **Coins:** each Wild puzzle pays once, double a today's daily (Cozy 20, Hard 30, Extreme 40, clean 3 × 2 = 6), on any day of the week. Ids `w:<date>`, `hw:<date>`, `xw:<date>`. They count in that mode's Solved but **not** for the streak or the 5-of-7 weekly bonus.
+- **Prizes (time-limited, Wild Week only):** solve all 7 Wild puzzles of a tier by Sunday 11:59 pm to win its **rave shades** (face slot, drawn in Sticker style as shutter shades: Pink = solid hot pink; Rainbow = purple frame, red/yellow/green/blue slats; LED = black frame with bead strips chasing through the rainbow by SMIL `<animate>`, 1.8 s, each row 0.3 s behind, dropped for reduced motion). `syncUnlocks` grants them from `progress` (7 solved Wild pids of the tier with `solvedAt` on or before 2026-11-29, which survives Start over), then a "New shades!" sheet offers **Wear them** / **Later**. They can't be bought and have no colors. During the week the Closet's Face tab shows the three as locked tiles with "Wild Week prize · ends Sun Nov 29" and the progress; after it, earned shades stay with a "Wild Week 2026" tag and unearned ones disappear.
+- **Puzzles** (`wild.json`, built by `node tools/generate.mjs --wild --start 2026-11-23 --days 7` in under a minute): each map is grown around the same random answer, and a set is kept only if every smaller set of its maps still has 2+ answers, all the maps together have exactly one, and `gradeWild` (which solves **seeing one map at a time**, switching when stuck) lands in the tier's window: Cozy level 3–4 (graded up to level 4), 14–24 steps, 2+ switches; Hard level 4–5, 9×9 20–34 / 10×10 22–36 steps, 3+ switches, 2+ steps from every map; Extreme level 4–5, 26–40 steps, 4+ switches, 3+ steps from every map. Each day aims at its share of the step window, so the week ramps up Monday to Sunday. Yard letters are shuffled per map, and no Wild map repeats a board from any other file. `verify.mjs wild.json` checks it independently.
+
+**Yard colors (v1.31).** Every shipped board grew yard k from row k's corgi, so the color gave the row away (the pink yard's corgi was always in row 1). The app now shuffles the yard colors per puzzle with a permutation of the first n colors seeded by the puzzle id (`yardPerm` in `app.js`), used for the board and for Sniff's color names. No puzzle file changed, so saved progress is untouched.
 
 ## Releasing
 

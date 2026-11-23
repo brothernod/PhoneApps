@@ -78,5 +78,11 @@ The week of 2026-11-11 (Halina's surgery) is all easy. 9×9 and 10×10 come late
 
 
 
+## Wild Week (wild.json, v1.31)
+
+`{ "version": 1, "generatedAt": "...", "seed": 1123, "start": "2026-11-23", "end": "2026-11-29", "days": [ { "date", "cozy": { "n", "s", "r": [map, map], "lv", "st", "sw", "per" }, "hard": {...}, "extreme": {...} } ] }`. `r` is an array of region maps (same encoding as above), one per map; `s` is the one answer, which must fit every map. Cozy has 2 maps (8×8), Hard 3 (9×9 Mon–Wed, 10×10 Thu–Sun), Extreme 4 (10×10). All the maps together have exactly one answer; every smaller set of maps has 2 or more. `sw` = map switches and `per` = steps on each map when solved one map at a time (`gradeWild`: rows, columns and the map on screen only; switch when stuck; a corgi rules out its yard in every map). The ladder above applies with every map's yards as units: L2 is any unit's spots inside one unit of another family, and L4/L5 are k units of one family whose spots sit in exactly k units of another.
+
+## Special dates
+
 - 2026-11-11: get-well message.
 - Every June 15: birthday message.

@@ -1,6 +1,6 @@
 // Corgidoku shop: coins, prices and the item catalog.
 // Pure functions only (no DOM, no storage) so tools can test the coin math in node.
-// Everything here is cosmetic. Hints (Sniff) are free on Chill and Cozy and cost coins on Hard and Extreme.
+// Everything here is cosmetic, and nothing is time-limited except the Wild Week prizes (v1.31). Hints (Sniff) are free on Chill and Cozy and cost coins on Hard and Extreme.
 import { OUTFIT } from './art.js';
 import { SCENE_ART } from './scenes.js';
 
@@ -54,6 +54,11 @@ ITEMS.push(
   { id: 'shades', slot: 'face', name: 'Cool shades', price: 150, thumb: '22 68 156 156', color: 'black', paint: ['#3A3346', null, '#7D7590'], colors: ['blue', 'red', 'yellow'] },
   { id: 'mustache', slot: 'face', name: 'Fancy mustache', price: 60, thumb: '34 58 132 132' },
   { id: 'monocle', slot: 'face', name: 'Monocle', price: 350, thumb: '100 74 92 92', color: 'gold', paint: ['#F2B630', '#C98A12', '#FFE27A'], colors: ['silver', 'rosegold'] },
+  // Wild Week prizes (v1.31): earned by solving all 7 Wild puzzles of a tier by the deadline. Never for
+  // sale, no colors (the color is the point), grown-ups only. `prize` = the Wild tier that earns it.
+  { id: 'ravecozy', slot: 'face', name: 'Pink rave shades', prize: 'cozy', price: 0, thumb: '20 46 160 116' },
+  { id: 'ravehard', slot: 'face', name: 'Rainbow rave shades', prize: 'hard', price: 0, thumb: '20 46 160 116' },
+  { id: 'raveled', slot: 'face', name: 'LED rave shades', prize: 'extreme', price: 0, thumb: '20 46 160 116' },
 );
 export const VARIANT_PRICE = 40;
 for (const it of ITEMS) it.art = OUTFIT[it.id] || '';
@@ -92,13 +97,45 @@ export const outfit = (worn = {}) => Object.fromEntries(SLOTS.map((s) => [s, ite
 // Kids pay half price.
 export const priceFor = (it, kid) => (kid ? Math.ceil(it.price / 2) : it.price);
 
+// ---------- Wild Week (v1.31) ----------
+// One week only, Mon 2026-11-23 to Sun 2026-11-29 (the phone's local date, like the dailies). Each day
+// opens three Wild puzzles: one board, several yard maps that take turns. Within a day the tiers open
+// in order (Cozy, then Hard, then Extreme); every open day stays playable until the week ends.
+// Ids: w:<date> (Cozy), hw:<date> (Hard), xw:<date> (Extreme). Grown-ups only. They don't count for
+// the streak or the weekly bonus (their prefixes don't end in "d").
+export const WILD = { start: '2026-11-23', end: '2026-11-29', ends: 'Sun Nov 29, 11:59 pm', endsShort: 'Sun Nov 29' };
+export const WILD_TIERS = [
+  { id: 'cozy', pre: 'w', name: 'Cozy', label: '🌈 Cozy', maps: 2, coins: 20, daily: 10, prize: 'ravecozy', color: '#FF5FA8' },
+  { id: 'hard', pre: 'hw', name: 'Hard', label: '🔥 Hard', maps: 3, coins: 30, daily: 15, prize: 'ravehard', color: '#FF9F45' },
+  { id: 'extreme', pre: 'xw', name: 'Extreme', label: '⚡ Extreme', maps: 4, coins: 40, daily: 20, prize: 'raveled', color: '#9B6BFF' },
+];
+export const WILD_CLEAN = 6; // clean bonus, doubled
+const WILD_PRE = new Set(WILD_TIERS.map((t) => t.pre));
+export const wildTier = (id) => WILD_TIERS.find((t) => t.id === id || t.pre === id) || null;
+export const wildDates = () => { const out = []; for (let d = WILD.start; d <= WILD.end; d = new Date(Date.parse(d + 'T00:00:00Z') + 864e5).toISOString().slice(0, 10)) out.push(d); return out; };
+// The week is on (today is one of its days) / over (past Sunday 11:59 pm).
+export const wildOn = (today) => today >= WILD.start && today <= WILD.end;
+export const wildOver = (today) => today > WILD.end;
+// Can this Wild puzzle be played today? The week isn't over, its day has come, and it's Cozy or the
+// tier below it on that day was solved (ever: Start over can't lock it again).
+export function wildOpen(db, date, tier, today) {
+  const k = WILD_TIERS.findIndex((t) => t.id === tier);
+  if (k < 0 || !wildOn(today) || date < WILD.start || date > WILD.end || date > today) return false;
+  return k === 0 || everSolved(db, `${WILD_TIERS[k - 1].pre}:${date}`);
+}
+// Wild puzzles of a tier solved by the deadline (solvedAt survives Start over).
+export function wildCount(db, tier) {
+  const t = wildTier(tier);
+  return wildDates().filter((d) => { const p = db.progress?.[`${t.pre}:${d}`]; return p?.solvedAt && p.solvedAt <= WILD.end && (p.solved || db.paid?.[`${t.pre}:${d}`]); }).length;
+}
+
 // ---------- earning rules ----------
 // Puzzle ids are "<prefix>:<key>": daily prefixes end in "d" (key = date), climb prefixes in "c" (key = hold),
 // Bonus Yards prefixes in "b" (key = yard number).
 const DAILY_RATE = { d: 10, hd: 15, xd: 20, kd: 10 }; // today's daily: Cozy / Hard / Extreme (Chill is kids-only)
 export const RATES = { pastDay: 3, climb: 2, bonus: 3, clean: 3, weekly: 25, weeklyDays: 5, kid: 10, kidBonus: 5, kidClean: 5, kidStart: 100 };
 
-const parse = (pid) => { const [pre, key] = pid.split(':'); return { pre, key, daily: pre.endsWith('d'), bonus: pre.endsWith('b') }; };
+const parse = (pid) => { const [pre, key] = pid.split(':'); return { pre, key, daily: pre.endsWith('d'), bonus: pre.endsWith('b'), wild: WILD_PRE.has(pre) }; };
 // "Clean" = zero mistakes. Relaxed mode can't lose treats, so mistakes are what count.
 const isClean = (p) => (p.mistakes ?? 0) === 0;
 // A daily counts as "today's" when it was solved on the puzzle's own date.
@@ -106,7 +143,9 @@ const onDay = (pid, p) => { const x = parse(pid); return x.daily && p.solvedAt =
 
 // Coins for one solve, before the weekly bonus. withClean = false is used for back pay.
 export function coinsFor(pid, p, kid, withClean = true) {
-  const { pre, daily, bonus } = parse(pid);
+  const { pre, daily, bonus, wild } = parse(pid);
+  // Wild Week pays double a today's daily, on any day of the week (catch-up included). Grown-ups only.
+  if (wild) return WILD_TIERS.find((t) => t.pre === pre).coins + (withClean && isClean(p) ? WILD_CLEAN : 0);
   if (kid) return (bonus ? RATES.kidBonus : RATES.kid) + (withClean && isClean(p) ? RATES.kidClean : 0);
   const base = daily ? (onDay(pid, p) ? DAILY_RATE[pre] ?? DAILY_RATE.d : RATES.pastDay) : bonus ? RATES.bonus : RATES.climb;
   return base + (withClean && isClean(p) ? RATES.clean : 0);
@@ -195,6 +234,9 @@ export function syncUnlocks(db) {
   for (const [kind, list, key] of [['scene', SCENES, 'scenes'], ['frame', FRAMES, 'frames']])
     for (const it of list)
       if (!db[key].includes(it.id) && it.at.some(([c, h]) => everSolved(db, `${c}:${h}`))) { db[key].push(it.id); got.push({ kind, it }); }
+  // Wild Week shades: all 7 Wild puzzles of a tier solved on or before Sunday 2026-11-29. Granted from
+  // progress, so a reload or Start over can't lose them; never removed.
+  for (const t of WILD_TIERS) if (!db.owned.includes(t.prize) && wildCount(db, t.id) >= 7) { db.owned.push(t.prize); got.push({ kind: 'shades', it: item(t.prize) }); }
   return got;
 }
 
@@ -242,7 +284,7 @@ export function backPay(db, kid) {
 export function buy(db, id, kid) {
   shopDefaults(db);
   const it = item(id);
-  if (!it || db.owned.includes(id)) return false;
+  if (!it || it.prize || db.owned.includes(id)) return false; // Wild Week prizes are earned, never bought
   if (it.variant && !ownsLine(db, id)) return false; // colors come after you own the item itself
   const cost = priceFor(it, kid);
   if (db.coins < cost) return false;

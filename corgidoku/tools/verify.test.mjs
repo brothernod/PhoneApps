@@ -56,4 +56,27 @@ for (let t = 0; t < 8; t++) for (const shift of [0, 1, 3]) {
   assert.deepEqual(checkEntry(b), [], `transform ${t}/${shift}`);
 }
 
+// Wild Week sets: one answer for all maps together, and every smaller set of maps leaves 2+.
+{
+  const { checkWildSet, solveMaps, verifyWild } = await import('./verify.mjs');
+  // Two 5x5 maps around the answer 13024, each alone ambiguous (built by hand, checked by brute force).
+  const n = 5, s = '13024';
+  const A = 'aabbb' + 'aabbb' + 'cabbd' + 'cdddd' + 'cddde'; // unique alone
+  assert.equal(solveMaps(n, [[...A]]).length, 1);
+  assert.deepEqual(solveMaps(n, [[...good.r]]), solve(5, good.r), 'one map = the single-map solver');
+  const A2 = A.replace(/[ab]/g, (c) => (c === 'a' ? 'b' : 'a')); // same yards, other letters: the answer still fits
+  assert.ok(checkWildSet({ n, s, r: [A, A2] }).some((m) => /maps A alone pin down/.test(m)), 'a map that is enough alone is flagged');
+  assert.ok(checkWildSet({ n, s, r: [A, split.r] }).some((m) => /not connected/.test(m)), 'disconnected map flagged');
+  assert.ok(checkWildSet({ n, s, r: [A, A] }, null).some((m) => /same/.test(m)), 'duplicate map flagged');
+  assert.ok(checkWildSet({ n, s, r: [A] }, { maps: 2, sizes: [5] }).some((m) => /want 2 maps/.test(m)), 'map count checked');
+  // The real file passes.
+  const { readFileSync } = await import('node:fs');
+  const w = JSON.parse(readFileSync(new URL('../wild.json', import.meta.url)));
+  assert.deepEqual(verifyWild(w).wild.failures, [], 'wild.json verifies');
+  const gap = structuredClone(w); gap.days.splice(3, 1);
+  assert.ok(verifyWild(gap).wild.failures.length, 'a missing day is flagged');
+  const loose = structuredClone(w); loose.days[0].cozy.r = [loose.days[0].cozy.r[0]];
+  assert.ok(verifyWild(loose).wild.failures.some((f) => /want 2 maps/.test(f.msg)), 'a set with too few maps is flagged');
+}
+
 console.log('verify self-test passed');

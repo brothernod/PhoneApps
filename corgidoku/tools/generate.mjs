@@ -26,6 +26,8 @@
 // All four pools in one go, with progress + ETA, then verify and a timing summary
 // (saves as it goes; Ctrl+C is safe, rerun to continue):
 //   node tools/generate.mjs --bonus all            (--workers N, default all cores; --every 30 seconds)
+// Wild Week (one board, several yard maps that take turns), 7 days of Cozy/Hard/Extreme sets:
+//   node tools/generate.mjs --wild --start 2026-11-23 --days 7      (then: node tools/verify.mjs wild.json)
 // Benchmark (same fixed work on any machine, to compare PCs):
 //   node tools/generate.mjs --bench
 //
@@ -36,7 +38,7 @@ import { cpus, tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import { generate, rng, canonicalKey } from '../engine.js';
+import { generate, rng, canonicalKey, gradeWild, solveMulti, randomSolution, growRegions } from '../engine.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 
@@ -373,7 +375,83 @@ async function runBench(workers) {
   process.exit(0);
 }
 
+// ---- Wild Week (v1.31) ----
+// One answer, several yard maps grown around it. A set is kept only if no smaller set of its maps
+// pins the answer down (so you have to learn from every map), all the maps together have exactly one
+// answer, and gradeWild (which solves seeing one map at a time) lands in the tier's window.
+// Each bucket collects a pool, sorts it by steps and picks evenly, so the week ramps up Mon -> Sun.
+const WILD_TIERS = {
+  cozy: { maps: 2, max: 4, size: () => 8, lv: [3, 4], st: { 8: [14, 24] }, sw: 2, per: 0 },
+  hard: { maps: 3, max: 5, size: (d) => (d < 3 ? 9 : 10), lv: [4, 5], st: { 9: [20, 34], 10: [22, 36] }, sw: 3, per: 2 },
+  extreme: { maps: 4, max: 5, size: () => 10, lv: [4, 5], st: { 10: [26, 40] }, sw: 4, per: 3 },
+};
+const subsets = (m) => { const out = []; for (let mask = 1; mask < (1 << m) - 1; mask++) out.push([...Array(m).keys()].filter((i) => (mask >> i) & 1)); return out; };
+function wildCandidate(n, t, rand) {
+  const cols = randomSolution(n, rand);
+  const maps = Array.from({ length: t.maps }, () => growRegions(n, cols, rand));
+  // Every smaller set of maps must still have 2+ answers (cheap checks first: single maps).
+  if (subsets(t.maps).sort((a, b) => a.length - b.length).some((sub) => solveMulti(n, sub.map((i) => maps[i]), 2) < 2)) return null;
+  if (solveMulti(n, maps, 2) !== 1) return null;
+  const g = gradeWild(n, maps, t.max), [lo, hi] = t.st[n];
+  if (!g.solved || g.level < t.lv[0] || g.level > t.lv[1] || g.steps < lo || g.steps > hi || g.switches < t.sw || g.per.some((x) => x < t.per)) return null;
+  return { n, cols, maps, g };
+}
+function runWild() {
+  const start = arg('start', '2026-11-23'), days = Number(arg('days', 7)), seed = Number(arg('seed', 1123));
+  const out = resolve(here, '..', arg('out', 'wild.json'));
+  const rand = rng(seed);
+  // No Wild map repeats a board from any other file (turned and mirrored copies count too).
+  const seen = new Set();
+  for (const f of ['puzzles.json', 'puzzles-hard.json', 'puzzles-extreme.json', 'puzzles-kids.json', 'bonus-cozy.json', 'bonus-hard.json', 'bonus-extreme.json', 'bonus-kids.json']) {
+    const p = resolve(here, '..', f);
+    if (!existsSync(p)) continue;
+    const d = JSON.parse(readFileSync(p, 'utf8'));
+    for (const b of [...(d.daily || []), ...(d.campaign || []), ...(d.bonus || [])]) seen.add(canonicalKey(b.n, b.r));
+  }
+  const dates = [...Array(days).keys()].map((d) => addDays(start, d));
+  const result = dates.map((date) => ({ date }));
+  const t0 = Date.now();
+  for (const [tier, t] of Object.entries(WILD_TIERS)) {
+    // Buckets by size: the days that use each size, in order.
+    const bySize = {};
+    dates.forEach((_, d) => (bySize[t.size(d)] ||= []).push(d));
+    for (const [n, ds] of Object.entries(bySize).map(([k, v]) => [Number(k), v])) {
+      const want = ds.length * 6, pool = [];
+      let tried = 0;
+      while (pool.length < want) {
+        tried++;
+        const c = wildCandidate(n, t, rand);
+        if (!c) continue;
+        // Letters shuffled per map, so no color goes with a row and the same color in two maps means nothing.
+        const r = c.maps.map((reg) => {
+          const p = [...Array(n).keys()];
+          for (let i = n - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [p[i], p[j]] = [p[j], p[i]]; }
+          return reg.map((k) => String.fromCharCode(97 + p[k])).join('');
+        });
+        const keys = r.map((x) => canonicalKey(n, x));
+        if (keys.some((k) => seen.has(k)) || new Set(keys).size < keys.length) continue;
+        keys.forEach((k) => seen.add(k));
+        pool.push({ n, s: c.cols.join(''), r, lv: c.g.level, st: c.g.steps, sw: c.g.switches, per: c.g.per });
+      }
+      // Ramp by steps across the whole week: day d of 7 aims at its share of this size's step window
+      // (Hard's 9x9 days take the low part of 20-34, its 10x10 days the high part of 22-36).
+      const [lo, hi] = t.st[n];
+      for (const d of ds) {
+        const aim = lo + ((hi - lo) * d) / Math.max(1, days - 1);
+        const k = pool.reduce((b, p, i) => (Math.abs(p.st - aim) < Math.abs(pool[b].st - aim) ? i : b), 0);
+        result[d][tier] = pool.splice(k, 1)[0];
+      }
+      console.log(`${tier} ${n}x${n}: ${pool.length} kept of ${tried} tried; steps ${ds.map((d) => result[d][tier].st).join(' ')}`);
+    }
+  }
+  const file = { version: 1, generatedAt: new Date().toISOString(), seed, start, end: dates.at(-1), days: result };
+  writeFileSync(out, JSON.stringify(file, null, 0).replace(/\{"date"/g, '\n{"date"') + '\n');
+  console.log(`wrote ${out} (${days} days) in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
+  process.exit(0);
+}
+
 function main() {
+  if (process.argv.includes('--wild')) return runWild();
   const bonusWorkers = Number(arg('workers', cpus().length));
   if (process.argv.includes('--bench')) return runBench(bonusWorkers);
   if (arg('bonus') === 'all') return runAllBonus(bonusWorkers);

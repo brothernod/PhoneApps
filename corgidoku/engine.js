@@ -443,3 +443,135 @@ export function transformBoard({ n, r, s }, t, shift = 0) {
   }
   return { n, r: out.join(''), s: sol.join('') };
 }
+
+// ---------- Wild Week: one answer, several yard maps (v1.31) ----------
+// A Wild puzzle is one board with 2-4 yard maps that take turns on screen. The marks are shared, so
+// every map has to be satisfied by the same corgis. Each family of units (rows, columns, and the
+// yards of each map) is a partition of the board, so the SPEC ladder generalizes: L1 last spot in
+// any unit; L2 a unit's spots inside one unit of another family; L3 would block; L4/L5 k units of
+// one family whose spots sit in exactly k units of another family.
+export function makeMulti(n, maps) {
+  const N = n * n;
+  const rows = [], cols = [];
+  for (let i = 0; i < n; i++) { rows.push([]); cols.push([]); }
+  for (let i = 0; i < N; i++) { rows[Math.floor(i / n)].push(i); cols[i % n].push(i); }
+  const fams = [rows, cols];
+  for (const reg of maps) {
+    const yards = Array.from({ length: n }, () => []);
+    for (let i = 0; i < N; i++) yards[reg[i]].push(i);
+    fams.push(yards);
+  }
+  const units = fams.flatMap((f, fi) => f.map((cells, i) => ({ fam: fi, i, cells, set: new Set(cells) })));
+  // A corgi rules out its row, column, 8 neighbors and its yard in every map.
+  const peers = [];
+  for (let i = 0; i < N; i++) {
+    const s = new Set();
+    for (const u of units) if (u.set.has(i)) u.cells.forEach((c) => s.add(c));
+    const r = Math.floor(i / n), c = i % n;
+    for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+      const rr = r + dr, cc = c + dc;
+      if (rr >= 0 && rr < n && cc >= 0 && cc < n) s.add(rr * n + cc);
+    }
+    s.delete(i);
+    peers.push(s);
+  }
+  return { n, N, fams, units, peers };
+}
+
+// The lowest-level step from a multi-map state (levels 1-5). Returns { type, cells, level } or null.
+export function findMultiStep(B, cand, placed, maxLevel = 5) {
+  const { N, units, peers, fams } = B;
+  const done = (u) => u.cells.some((c) => placed[c]);
+  const live = (u) => u.cells.filter((c) => cand[c] && !placed[c]);
+  for (const u of units) { if (done(u)) continue; const l = live(u); if (l.length === 1) return { type: 'place', cells: l, level: 1 }; }
+  if (maxLevel >= 2) for (const u of units) {
+    if (done(u)) continue;
+    const l = live(u); if (!l.length) continue;
+    for (const v of units) {
+      if (v === u || v.fam === u.fam || done(v)) continue;
+      if (l.every((c) => v.set.has(c))) {
+        const hit = live(v).filter((c) => !u.set.has(c));
+        if (hit.length) return { type: 'clear', cells: hit, level: 2 };
+      }
+    }
+  }
+  if (maxLevel >= 3) for (let i = 0; i < N; i++) {
+    if (!cand[i] || placed[i]) continue;
+    for (const u of units) {
+      if (done(u) || u.set.has(i)) continue;
+      const l = live(u);
+      if (l.length && l.every((c) => peers[i].has(c))) return { type: 'clear', cells: [i], level: 3 };
+    }
+  }
+  const lock = (k, lv) => {
+    for (let f = 0; f < fams.length; f++) {
+      const open = units.filter((u) => u.fam === f && !done(u));
+      if (open.length <= k) continue;
+      const groups = [];
+      (function cmb(s, acc) { if (acc.length === k) { groups.push(acc.slice()); return; } for (let x = s; x < open.length; x++) { acc.push(open[x]); cmb(x + 1, acc); acc.pop(); } })(0, []);
+      for (const g of groups) {
+        const cells = g.flatMap(live);
+        const gset = new Set(g.flatMap((u) => u.cells));
+        for (let h = 0; h < fams.length; h++) {
+          if (h === f) continue;
+          const cover = units.filter((v) => v.fam === h && cells.some((c) => v.set.has(c)));
+          if (cover.length !== k) continue;
+          const hit = cover.flatMap(live).filter((c) => !gset.has(c));
+          if (hit.length) return { type: 'clear', cells: [...new Set(hit)], level: lv };
+        }
+      }
+    }
+    return null;
+  };
+  if (maxLevel >= 4) { const s = lock(2, 4); if (s) return s; }
+  if (maxLevel >= 5) for (let k = 3; k < B.n - 1; k++) { const s = lock(k, 5); if (s) return s; }
+  return null;
+}
+
+// Grade a Wild puzzle the way the player sees it: one map at a time. Steps may only use rows,
+// columns and the map on screen; when stuck, switch to the next map. Corgis rule out their yard in
+// every map (auto paws), which is how what you learn on one map carries to the next.
+// Returns { solved, level, steps, switches, per } (per = steps made on each map).
+export function gradeWild(n, maps, maxLevel = 5) {
+  const full = makeMulti(n, maps);
+  const views = maps.map((m) => makeMulti(n, [m]));
+  const cand = new Uint8Array(full.N).fill(1), placed = new Uint8Array(full.N);
+  let count = 0, steps = 0, switches = 0, cur = 0, level = 0, stuck = 0;
+  const per = maps.map(() => 0);
+  while (count < n) {
+    const s = findMultiStep(views[cur], cand, placed, maxLevel);
+    if (!s) { stuck++; if (stuck >= maps.length) break; cur = (cur + 1) % maps.length; switches++; continue; }
+    stuck = 0;
+    if (s.type === 'place') { placed[s.cells[0]] = 1; for (const j of full.peers[s.cells[0]]) cand[j] = 0; count++; }
+    else for (const c of s.cells) cand[c] = 0;
+    steps++; level = Math.max(level, s.level); per[cur]++;
+  }
+  return { solved: count === n, level, steps, switches, per };
+}
+
+// Exact solver for several maps at once: counts answers (up to limit) that fit every map.
+export function solveMulti(n, maps, limit = 2) {
+  let count = 0;
+  const masks = maps.map(() => 0);
+  let colMask = 0;
+  (function rec(r, prev) {
+    if (count >= limit) return;
+    if (r === n) { count++; return; }
+    for (let c = 0; c < n; c++) {
+      if ((colMask >> c) & 1) continue;
+      if (prev >= 0 && Math.abs(prev - c) <= 1) continue;
+      let ok = true;
+      for (let L = 0; L < maps.length; L++) if ((masks[L] >> maps[L][r * n + c]) & 1) { ok = false; break; }
+      if (!ok) continue;
+      colMask |= 1 << c;
+      for (let L = 0; L < maps.length; L++) masks[L] |= 1 << maps[L][r * n + c];
+      rec(r + 1, c);
+      colMask &= ~(1 << c);
+      for (let L = 0; L < maps.length; L++) masks[L] &= ~(1 << maps[L][r * n + c]);
+    }
+  })(0, -1);
+  return count;
+}
+
+// Building blocks for the Wild generator (tools/generate.mjs --wild).
+export { randomSolution, growRegions };

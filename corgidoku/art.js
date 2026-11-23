@@ -110,6 +110,31 @@ OUTFIT['tophat'] = `<g class="tophat" transform="rotate(-7 100 46)"><ellipse cx=
 OUTFIT['monocle'] = `<g class="monocle" stroke-linecap="round" stroke-linejoin="round"><g class="mchain" fill="none" stroke-linecap="round"><path d="M153 120 C170 132 146 146 160 158 C166 163 172 160 172 154" stroke="#7A4A22" stroke-width="8.5" stroke-dasharray="0.1 6.2"/><path d="M153 120 C170 132 146 146 160 158 C166 163 172 160 172 154" stroke="#F2B630" stroke-width="4.5" stroke-dasharray="0.1 6.2"/></g><circle cx="136" cy="104" r="23" fill="#CDEBFF" fill-opacity=".22"/><circle cx="136" cy="104" r="23" fill="none" stroke="#7A4A22" stroke-width="13"/><circle cx="136" cy="104" r="23" fill="none" stroke="#F2B630" stroke-width="6"/><path d="M121 95 A18 18 0 0 1 133 85" fill="none" stroke="#FFE27A" stroke-width="2.4"/><path d="M124 99 Q127 92 134 90" fill="none" stroke="#fff" stroke-width="4" opacity=".85"/><path d="M150 116 A17 17 0 0 0 154 108" fill="none" stroke="#C98A12" stroke-width="2.4"/></g>`;
 // Fancy mustache
 OUTFIT['mustache'] = `<g stroke-linejoin="round" stroke-linecap="round"><path d="M50 128 C40 126 36 116 43 113 C49 111 51 118 46 120 M150 128 C160 126 164 116 157 113 C151 111 149 118 154 120" stroke="#7A4A22" stroke-width="13" fill="none"/><path d="M100 127 C94 119 82 118 70 123 C60 127 52 128 46 124 C48 134 62 140 76 139 C88 138 96 134 100 132 C104 134 112 138 124 139 C138 140 152 134 154 124 C148 128 140 127 130 123 C118 118 106 119 100 127 Z" fill="#4A2A14" stroke="#7A4A22" stroke-width="4"/><path d="M50 128 C40 126 36 116 43 113 C49 111 51 118 46 120 M150 128 C160 126 164 116 157 113 C151 111 149 118 154 120" stroke="#4A2A14" stroke-width="6" fill="none"/><path d="M74 127 Q86 122 94 126 M126 127 Q114 122 106 126" stroke="#8A5A34" stroke-width="3" fill="none"/></g>`;
+// Wild Week prizes (v1.31): rave shades in three tiers, shutter-shade slats over the eyes (y 104,
+// x 64 / 136) so Cheddar's eyes still peek through. Cozy: solid hot pink. Hard: purple frame,
+// rainbow slats. Extreme: black frame, LED bead strips chasing through the rainbow (SMIL <animate>,
+// so it works in Safari; each strip 0.3s behind the last). The app drops the <animate> elements
+// for prefers-reduced-motion, leaving the static rainbow.
+const RLENS_L = 'M38 84 L90 84 Q94 84 94 88 L94 114 Q94 124 84 124 L44 124 Q34 124 34 114 L34 88 Q34 84 38 84 Z';
+const RLENS_R = 'M162 84 L110 84 Q106 84 106 88 L106 114 Q106 124 116 124 L156 124 Q166 124 166 114 L166 88 Q166 84 162 84 Z';
+const SLAT_Y = [93, 101, 109, 117];
+const slatPath = (y) => `M38 ${y} L90 ${y} M110 ${y} L162 ${y}`;
+const raveFrame = (color) => `<path d="M24 92 L34 93 M176 92 L166 93" stroke="${LINE}" stroke-width="12" fill="none" stroke-linecap="round"/>
+<path d="M24 92 L34 93 M176 92 L166 93" stroke="${color}" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path d="${RLENS_L} ${RLENS_R} M94 94 Q100 90 106 94" fill="none" stroke="${LINE}" stroke-width="13" stroke-linejoin="round"/>
+<path d="${RLENS_L} ${RLENS_R}" fill="#1E1A2E" fill-opacity=".1" stroke="${color}" stroke-width="6" stroke-linejoin="round"/>
+<path d="M94 94 Q100 90 106 94" fill="none" stroke="${color}" stroke-width="6" stroke-linecap="round"/>`;
+const slats = (colors) => SLAT_Y.map((y, k) => `<path d="${slatPath(y)}" stroke="${LINE}" stroke-width="6.5" stroke-linecap="round"/><path d="${slatPath(y)}" stroke="${colors[k]}" stroke-width="3.4" stroke-linecap="round"/>`).join('');
+const RAVE_RAINBOW = ['#FF4D6D', '#FFC93C', '#3FD98B', '#46B3FF'];
+const LED_CYCLE = '#FF4D6D;#FF9F45;#FFE14D;#3FD98B;#46B3FF;#B36BFF;#FF4D6D';
+OUTFIT['ravecozy'] = `<g class="rave">${raveFrame('#FF5FA8')}${slats(Array(4).fill('#FF5FA8'))}</g>`;
+OUTFIT['ravehard'] = `<g class="rave">${raveFrame('#9B6BFF')}${slats(RAVE_RAINBOW)}</g>`;
+OUTFIT['raveled'] = `<g class="rave led">${raveFrame('#2B2340')}${SLAT_Y.map((y, k) => {
+  const anim = `<animate attributeName="stroke" values="${LED_CYCLE}" dur="1.8s" begin="${(-k * 0.3).toFixed(1)}s" repeatCount="indefinite"/>`;
+  return `<path d="${slatPath(y)}" stroke="#14101F" stroke-width="6.5" stroke-linecap="round"/><path d="${slatPath(y)}" stroke="${RAVE_RAINBOW[k]}" stroke-width="8" stroke-linecap="round" stroke-dasharray="0.1 6.5" opacity=".35">${anim}</path><path d="${slatPath(y)}" stroke="${RAVE_RAINBOW[k]}" stroke-width="4.2" stroke-linecap="round" stroke-dasharray="0.1 6.5">${anim}</path>`;
+}).join('')}</g>`;
+// Reduced motion: the same drawing without its <animate> elements.
+export const still = (svg) => String(svg).replace(/<animate\b[^>]*\/>/g, '');
 export const partyHat = OUTFIT.partyhat;
 
 export function paw(auto = false, color = null) {

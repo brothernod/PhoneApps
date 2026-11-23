@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Independent verifier for corgidoku puzzles.json (written from SPEC.md only).
-// Usage: node tools/verify.mjs [path/to/puzzles.json | path/to/bonus-<mode>.json]
+// Usage: node tools/verify.mjs [path/to/puzzles.json | path/to/bonus-<mode>.json | path/to/wild.json]
 import { readFileSync } from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import path from 'node:path';
@@ -153,8 +153,71 @@ export function checkCampaignIds(campaign) {
   return errs;
 }
 
+// ---- 6. Wild Week (wild.json): one answer, several yard maps -------------------------
+// Written from the Wild Week plan, not from the generator. An answer must fit every map at once.
+// Row by row; each map keeps its own set of yards already used. Returns up to `limit` answers.
+export function solveMaps(n, maps, limit = 2) {
+  const sols = [], used = maps.map(() => new Set()), colOf = [];
+  const usedCols = new Set();
+  const rec = (row) => {
+    if (sols.length >= limit) return;
+    if (row === n) { sols.push(colOf.join('')); return; }
+    for (let c = 0; c < n; c++) {
+      if (usedCols.has(c) || (row > 0 && Math.abs(colOf[row - 1] - c) < 2)) continue;
+      const ys = maps.map((m) => m[row * n + c]);
+      if (ys.some((y, k) => used[k].has(y))) continue;
+      usedCols.add(c); ys.forEach((y, k) => used[k].add(y)); colOf[row] = c;
+      rec(row + 1);
+      usedCols.delete(c); ys.forEach((y, k) => used[k].delete(y));
+    }
+  };
+  rec(0);
+  return sols;
+}
+// Every smaller set of maps (by size) must leave 2+ answers: Cozy each map, Hard each map and pair,
+// Extreme each map, pair and trio.
+export const WILD_SPEC = { cozy: { maps: 2, sizes: [8] }, hard: { maps: 3, sizes: [9, 10] }, extreme: { maps: 4, sizes: [10] } };
+export function checkWildSet(e, spec) {
+  const { n, s, r } = e ?? {};
+  if (!Array.isArray(r)) return ['r must be an array of maps'];
+  if (spec && r.length !== spec.maps) return [`want ${spec.maps} maps, got ${r.length}`];
+  if (spec && !spec.sizes.includes(n)) return [`size ${n} not allowed (want ${spec.sizes.join(' or ')})`];
+  const errs = [];
+  r.forEach((m, k) => {
+    const one = { n, r: m, s };
+    let e2 = checkSchema(one);
+    if (!e2.length) e2 = checkConnected(one);
+    if (!e2.length) e2 = checkSolution(one);
+    for (const msg of e2) errs.push(`map ${'ABCD'[k]}: ${msg}`);
+  });
+  if (errs.length) return errs;
+  if (new Set(r).size < r.length) errs.push('two maps are the same');
+  const maps = r.map((m) => [...m]);
+  const all = solveMaps(n, maps, 2);
+  if (all.length !== 1) errs.push(all.length ? `all maps together: not unique (${all.join(', ')})` : 'all maps together: no answer');
+  else if (all[0] !== s) errs.push(`all maps together: answer is ${all[0]} but s is ${s}`);
+  for (let mask = 1; mask < (1 << r.length) - 1; mask++) {
+    const sub = maps.filter((_, k) => (mask >> k) & 1);
+    if (solveMaps(n, sub, 2).length < 2) errs.push(`maps ${[...r.keys()].filter((k) => (mask >> k) & 1).map((k) => 'ABCD'[k]).join('')} alone pin down the answer`);
+  }
+  return errs;
+}
+export function verifyWild(data) {
+  const failures = [], days = Array.isArray(data?.days) ? data.days : [];
+  if (!days.length) failures.push({ key: 'days', msg: 'missing or empty' });
+  if (days.length && days.length !== 7) failures.push({ key: 'days', msg: `want 7 days, got ${days.length}` });
+  if (days.length && (days[0].date !== data.start || days.at(-1).date !== data.end)) failures.push({ key: 'dates', msg: `start/end (${data.start}..${data.end}) don't match the days` });
+  failures.push(...checkDailyDates(days));
+  for (const d of days) for (const [tier, spec] of Object.entries(WILD_SPEC)) {
+    if (!d[tier]) { failures.push({ key: `${d.date} ${tier}`, msg: 'missing' }); continue; }
+    for (const msg of checkWildSet(d[tier], spec)) failures.push({ key: `${d.date} ${tier}`, msg });
+  }
+  return { wild: { checked: days.length * 3, failures } };
+}
+
 // ---- driver ------------------------------------------------------------------
 export function verifyData(data) {
+  if (Array.isArray(data?.days)) return verifyWild(data);
   const out = {};
   // A Bonus Yards file (bonus-<mode>.json) has only a `bonus` list, ids 1..N like the campaign.
   const lists = Array.isArray(data?.bonus)

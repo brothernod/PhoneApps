@@ -1,12 +1,23 @@
-import { decodeRegions, decodeSolution, transformBoard, sniff } from './engine.js';
-import { cheddarHead, cheddarLoaf, partyHat, paw, treat, artDefs, coinIcon, closetIcon, sniffIcon } from './art.js';
-import { ITEMS, SLOTS, item, outfit, colorsOf, baseId, ownsLine, priceFor, shopDefaults, payout, backPay, buy, SCENES, FRAMES, CLIMBS, scene, frame, earnable, unlockAt, milestones, syncUnlocks, BONUS, bonusOpen, sniffPrice, paySniff } from './shop.js';
+import { decodeRegions, decodeSolution, transformBoard, sniff, rng } from './engine.js';
+import { cheddarHead, cheddarLoaf, partyHat, paw, treat, artDefs, coinIcon, closetIcon, sniffIcon, still } from './art.js';
+import { ITEMS, SLOTS, item, outfit, colorsOf, baseId, ownsLine, priceFor, shopDefaults, payout, backPay, buy, SCENES, FRAMES, CLIMBS, scene, frame, earnable, unlockAt, milestones, syncUnlocks, BONUS, bonusOpen, sniffPrice, paySniff, WILD, WILD_TIERS, WILD_CLEAN, wildTier, wildDates, wildOn, wildOver, wildOpen, wildCount } from './shop.js';
 
 // ---------- constants ----------
 const NAME = 'Halina'; // the Default player's name until they set their own in Settings
-const VERSION = '1.30'; // bump with CACHE in sw.js on every release
+const VERSION = '1.31'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const YARD_NAMES = ['pink', 'purple', 'blue', 'mint', 'yellow', 'orange', 'red', 'lavender', 'teal', 'lime']; // how Sniff names each yard color
+// Yard colors are shuffled per puzzle (v1.31). Every shipped board grew yard k from row k's corgi, so
+// the color alone gave the row away (the pink yard's corgi was always in row 1, purple's in row 2…).
+// A permutation of the first n colors, seeded by the puzzle id, fixes that at render time: no puzzle
+// file changes, and saved progress (which stores cells, not colors) is untouched.
+function yardPerm(pid, n) {
+  let h = 2166136261;
+  for (const ch of String(pid)) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
+  const rand = rng(h >>> 0), p = [...Array(n).keys()];
+  for (let i = n - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [p[i], p[j]] = [p[j], p[i]]; }
+  return p;
+}
 const HOLD_COLORS = ['#FF5FA8', '#FF9F45', '#FFC93C', '#3FD98B', '#46B3FF', '#9B6BFF'];
 const EMPTY = 0, PAW = 1, AUTO = 2, CORGI = 3, NOPE = 4; // NOPE = a wrong guess, shown as a red paw
 // Brainstorm paw colors. Index 0 is the normal paw (PAW); 1-4 are stored as cell values 5-8.
@@ -104,8 +115,32 @@ const mode = () => (modesFor().includes(db.settings.mode) ? db.settings.mode : i
 const D = (k) => `${MODES[mode()].d}:${k}`;
 const C = (k) => `${MODES[mode()].c}:${k}`;
 const B = (k) => `${MODES[mode()].b}:${k}`;
-const kindOf = (pre) => pre.slice(-1); // 'd' daily, 'c' climb, 'b' bonus yard
+const kindOf = (pre) => pre.slice(-1); // 'd' daily, 'c' climb, 'b' bonus yard, 'w' Wild Week
 const modeOf = (pre) => Object.keys(MODES).find((k) => [MODES[k].d, MODES[k].c, MODES[k].b].includes(pre));
+
+// ---------- Wild Week (v1.31) ----------
+// Mon 2026-11-23 to Sun 2026-11-29, grown-ups only. wild.json holds 3 sets a day (Cozy 2 maps, Hard 3,
+// Extreme 4): one answer, several yard maps that take turns every 15 s over shared marks.
+let WDATA = null;
+const SWAP = 15; // seconds each map stays on screen
+const WCHIP = ['#FF5FA8', '#46B3FF', '#3FD98B', '#FF9F45']; // map A-D chip colors
+const WMODE = { cozy: 'w', hard: 'hw', extreme: 'xw' }; // Wild solves count in that mode's Solved
+const wildSet = (date, tier) => WDATA?.days?.find((d) => d.date === date)?.[tier] || null;
+const WP = (tier, date) => `${wildTier(tier).pre}:${date}`;
+const showWild = () => !isKid() && !!WDATA && wildOn(todayISO());
+const dayShort = (iso) => new Date(iso + 'T12:00:00Z').toLocaleDateString(undefined, { weekday: 'short', timeZone: 'UTC' });
+const dayMonth = (iso) => new Date(iso + 'T12:00:00Z').toLocaleDateString(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' });
+// The deadline pill: "Limited time · ends Sun Nov 29, 11:59 pm", then "2 days left" on Saturday, "Last day!" on Sunday.
+function wildPill(t = todayISO()) {
+  if (t === WILD.end) return '<b>Last day!</b> · ends 11:59 pm';
+  if (t === addDays(WILD.end, -1)) return 'Limited time · <b>2 days left</b>';
+  return `Limited time · ends ${WILD.ends}`;
+}
+// Wild puzzles open right now and not solved yet.
+const wildOpenList = (t = todayISO()) => wildDates().flatMap((d) => WILD_TIERS.filter((x) => wildOpen(db, d, x.id, t) && !prog(`${x.pre}:${d}`)?.solved).map((x) => ({ date: d, tier: x.id })));
+// The shades on a Cheddar head, on a soft yard-colored tile.
+const shadesHead = (id) => `<span class="shead">${cheddarHead({ face: item(id).art })}</span>`;
+const pips = (k) => `<span class="pips">${[...Array(7)].map((_, i) => `<i class="${i < k ? 'on' : ''}"></i>`).join('')}</span>`;
 
 // ---------- bonus yards ----------
 // After a mode's summit: an endless run of extra boards (bonus-<mode>.json). Past the end of the
@@ -155,6 +190,10 @@ function dailyFor(iso) {
 function load(pid) {
   const [pre, key] = pid.split(':');
   const kind = kindOf(pre);
+  if (kind === 'w') {
+    const t = wildTier(pre), set = wildSet(key, t.id), maps = set.r.map(decodeRegions);
+    return { pid, kind, key, tier: t.id, n: set.n, r: set.r.join(','), maps, reg: maps[0], sol: decodeSolution(set.s), grade: 'wild' };
+  }
   const p = kind === 'd' ? dailyFor(key) : kind === 'b' ? bonusBoard(modeOf(pre), Number(key)) : PUZ.campaign[Number(key) - 1];
   return { pid, kind, key, n: p.n, r: p.r, reg: decodeRegions(p.r), sol: decodeSolution(p.s), grade: p.g };
 }
@@ -219,7 +258,7 @@ function streak() {
   while (prog(D(d))?.solved) { s++; d = addDays(d, -1); }
   return s;
 }
-const solvedCount = () => Object.entries(db.progress).filter(([k, p]) => p.solved && [MODES[mode()].d, MODES[mode()].c, MODES[mode()].b].includes(k.split(':')[0])).length;
+const solvedCount = () => Object.entries(db.progress).filter(([k, p]) => p.solved && [MODES[mode()].d, MODES[mode()].c, MODES[mode()].b, WMODE[mode()]].includes(k.split(':')[0])).length;
 const climbLevel = () => { let i = 1; while (i <= PUZ.campaign.length && prog(C(i))?.solved) i++; return i; };
 
 // ---------- home ----------
@@ -241,6 +280,7 @@ function renderHome() {
       <div class="hero kid">${cheddarLoaf(look)}</div></div>
     ${isKid() ? piggyBank() : ''}
     ${banner ? `<div class="banner">${banner}</div>` : ''}
+    ${showWild() ? wildCard(t) : ''}
     <div class="menu">
       <button class="big" id="go-daily"><div class="ico" style="background:#FFE0F0">☀️</div>
         <div><b>Today's puzzle</b><span>${pretty(t)} · ${dp.n}×${dp.n} · ${p?.solved ? `solved in ${clock(p.best)} ✓` : p ? 'in progress' : levelName(dp)}</span></div></button>
@@ -267,6 +307,7 @@ function renderHome() {
   $('go-help').onclick = help;
   $('go-set').onclick = settings;
   $('go-closet').onclick = () => renderCloset();
+  if ($('go-wild')) $('go-wild').onclick = renderWild;
   if ($('go-coins')) $('go-coins').onclick = () => renderCloset();
   if ($('go-piggy')) $('go-piggy').onclick = () => { const g = item(db.goal); g && !db.owned.includes(g.id) ? renderCloset(g.slot, g.id) : renderCloset(); };
   document.querySelectorAll('.mode').forEach((b) => (b.onclick = () => { if (b.dataset.m !== mode()) { useMode(b.dataset.m); renderHome(); if (mode() === 'extreme' && !db.seenExtreme) extremeIntro(); } }));
@@ -279,6 +320,60 @@ function renderHome() {
   show('home');
   if (welcome) welcomeSheet();
   else if (unlocked.length) { const u = unlocked; unlocked = []; unlockSheet(u); }
+  else if (showWild() && !db.seenWild) wildIntro();
+}
+
+// ---------- Wild Week: home card, screen, first-launch sheet ----------
+// The rainbow home card (Default player, during the week): today's three tiers, the deadline pill
+// and how many Wild puzzles are open. Tapping it opens the Wild Week screen.
+function wildCard(t) {
+  const tiers = WILD_TIERS.map((x) => {
+    const pid = WP(x.id, t), done = prog(pid)?.solved, open = wildOpen(db, t, x.id, t);
+    return `<span class="wct ${done ? 's-done' : open ? 's-open' : 's-lock'}">${x.label.split(' ')[0]} ${done ? '✓' : open ? '▶' : '🔒'}</span>`;
+  }).join('');
+  const open = wildOpenList(t).length;
+  return `<button class="wildcard" id="go-wild" aria-label="Wild Week, ${open} puzzles open">
+    <div class="wch"><b>🕶️ Wild Week</b><span class="wpill">${wildPill(t)}</span></div>
+    <div class="wcrow"><span class="wctiers">${tiers}</span><small>${open ? `${open} open` : 'All caught up!'} ›</small></div></button>`;
+}
+function renderWild() {
+  if (!showWild()) return renderHome();
+  stopWild();
+  const t = todayISO();
+  const prizes = WILD_TIERS.map((x) => {
+    const c = wildCount(db, x.id), own = db.owned.includes(x.prize);
+    return `<div class="wpz${own ? ' own' : ''}">${shadesHead(x.prize)}<b>${item(x.prize).name.replace(' rave shades', '')}</b>${pips(c)}<small>${own ? 'Earned ✓' : `${Math.min(7, c)} of 7 ${x.name}`}</small></div>`;
+  }).join('');
+  const btn = (d, x) => {
+    const pid = WP(x.id, d), p = prog(pid), set = wildSet(d, x.id);
+    if (d > t) return `<button class="wtb s-future" data-pid="${pid}" disabled aria-label="Wild ${x.name}, opens ${dayShort(d)}"><b>${x.label.split(' ')[0]}</b><small>Opens ${dayShort(d)}</small></button>`;
+    if (p?.solved) return `<button class="wtb s-done" data-pid="${pid}" style="--tc:${x.color}"><b>✓ ${clock(p.best)}</b><small>${x.name}</small></button>`;
+    if (!wildOpen(db, d, x.id, t)) return `<button class="wtb s-lock" data-pid="${pid}" aria-label="Wild ${x.name}, locked"><b>🔒</b><small>Beat ${WILD_TIERS[WILD_TIERS.indexOf(x) - 1].name} first</small></button>`;
+    return `<button class="wtb s-open" data-pid="${pid}" style="--tc:${x.color}"><b>${x.label.split(' ')[0]} ${x.name}</b><small>${p ? 'In progress' : `${set.r.length} maps · ${set.n}×${set.n}`}</small></button>`;
+  };
+  const rows = wildDates().map((d) => `<div class="wday${d === t ? ' today' : ''}${d > t ? ' later' : ''}"><div class="wdl"><b>${d === t ? 'Today' : dayShort(d)}</b><small>${dayMonth(d)}</small></div>${WILD_TIERS.map((x) => btn(d, x)).join('')}</div>`).join('');
+  $('wild').innerHTML = `
+    <div class="bar"><button class="back">‹</button><h2>Wild Week</h2><span class="ghost"></span></div>
+    <div class="wprize"><span class="wpill">${wildPill(t)}</span>
+      <p>Solve all 7 Wild puzzles of a tier to win its rave shades for Cheddar. They can't be bought, and they're gone after ${WILD.ends}.</p>
+      <div class="wpzs">${prizes}</div></div>
+    <p class="wrules">The yard maps take turns every ${SWAP} s over one set of corgis and paws · beat Cozy to open Hard, Hard to open Extreme · double coins · no Sniff</p>
+    <div class="wdays">${rows}</div>`;
+  $('wild').querySelector('.back').onclick = renderHome;
+  $('wild').querySelectorAll('.wtb[data-pid]').forEach((b) => (b.onclick = () => play(b.dataset.pid)));
+  show('wild');
+}
+// One time, the first launch during the week.
+function wildIntro() {
+  db.seenWild = true; save();
+  sheet(`<h3>Wild Week is here! 🕶️</h3>
+    <p>One board, several yard maps that <b>take turns every ${SWAP} seconds</b>. Your corgis and paws stay put, so learn from each map.</p>
+    <p>A new Cozy, Hard and Extreme every day. <b>Beat Cozy to open Hard, Hard to open Extreme.</b> Double coins!</p>
+    <div class="wpzs">${WILD_TIERS.map((x) => `<div class="wpz">${shadesHead(x.prize)}<b>${item(x.prize).name.replace(' rave shades', '')}</b><small>all 7 ${x.name}</small></div>`).join('')}</div>
+    <span class="wpill">${wildPill()}</span>
+    <button class="cta" id="wi-go">Let's go</button><button class="cta alt" id="wi-later">Later</button>`);
+  $('wi-go').onclick = () => { closeSheet(); renderWild(); };
+  $('wi-later').onclick = closeSheet;
 }
 
 // ---------- past days ----------
@@ -349,6 +444,12 @@ function plumPaws() {
   document.querySelectorAll('#swatches .sw').forEach((x) => x.classList.toggle('on', x.dataset.k === '0'));
 }
 function play(pid) {
+  // Wild Week: grown-ups only, during the week, on or after its day, and in tier order.
+  const [wpre, wkey] = pid.split(':');
+  if (kindOf(wpre) === 'w') {
+    const t = wildTier(wpre);
+    if (!t || isKid() || !wildSet(wkey, t.id) || !wildOpen(db, wkey, t.id, todayISO())) return wildLockedSheet(wkey, t);
+  }
   db.settings.pawColor = 0; save();
   const P = load(pid);
   let saved = prog(pid);
@@ -368,23 +469,29 @@ function play(pid) {
     // The last Sniff: { k: step key, a: answer paid }. Before v1.28 it was { k, s, f }: f was a free
     // peek (answer not paid); otherwise the whole step was paid.
     sn: saved?.sn ? ('a' in saved.sn ? saved.sn : { k: saved.sn.k, a: !saved.sn.f }) : null,
+    pal: yardPerm(pid, P.n), // yard letter -> color index
     history: [],
+    // Wild Week: the maps, the one on screen, seconds until the next swap, paused, taps locked until.
+    wild: P.kind === 'w' ? { tier: P.tier, maps: P.maps, cur: Math.min(saved?.wm ?? 0, P.maps.length - 1), left: saved?.wl > 0 ? saved.wl : SWAP, paused: false, lockUntil: 0 } : null,
   };
+  if (G.wild) G.reg = G.wild.maps[G.wild.cur];
   if (G.solved) { G.cells = G.cells.map((v, i) => (G.sol[Math.floor(i / G.n)] === i % G.n ? CORGI : v === CORGI ? EMPTY : v)); }
-  const title = P.kind === 'd' ? (P.key === todayISO() ? "Today's puzzle" : pretty(P.key)) : P.kind === 'b' ? `Bonus yard ${P.key}` : `Hold ${P.key}`;
+  const title = P.kind === 'w' ? `Wild ${wildTier(P.tier).name} · ${dayShort(P.key)}` : P.kind === 'd' ? (P.key === todayISO() ? "Today's puzzle" : pretty(P.key)) : P.kind === 'b' ? `Bonus yard ${P.key}` : `Hold ${P.key}`;
+  const W = G.wild;
   $('play').innerHTML = `
     <div class="bar"><button class="back">‹</button><h2>${title}</h2><button class="back" id="restart" title="Start over">↺</button></div>
     <div class="meta"><div class="treats" id="treats"></div><div id="clock"></div></div>
-    ${frameWrap(wornFrame(), `<div class="board" id="board" style="--n:${P.n}"></div>`, { id: 'bframe' })}
+    ${W ? `<div class="wtop"><div class="wchips${W.maps.length > 3 ? ' four' : ''}" id="wchips"></div><div class="wtimer" id="wtimer"><div class="wbar"><i id="wbar"></i></div><b id="wleft"></b></div></div>` : ''}
+    ${frameWrap(wornFrame(), `<div class="board${W ? ' wild' : ''}" id="board" style="--n:${P.n}"></div>${W ? '<div class="wcover" id="wcover"><div>⏸️ Paused<small>The board hides while you rest, so no free peeks.</small></div></div>' : ''}`, { id: 'bframe' })}
     <div class="swatches" id="swatches">${PAW_COLORS.map((c, k) => `<button class="sw${(db.settings.pawColor || 0) === k ? ' on' : ''}" data-k="${k}" aria-label="paw color ${k}">${paw(false, c || '#5B2A6E')}</button>`).join('')}</div>
     <div class="bubble"><div class="face">${cheddarHead()}</div><p id="msg"></p></div>
     <div class="tools">
       <button class="tool" id="undo"><span class="e">↩️</span>Undo</button>
-      <button class="tool" id="hint"><span class="e">${sniffIcon()}</span><span class="lbl" id="hintlbl">Sniff</span></button>
+      ${W ? '<button class="tool" id="wpause"><span class="e">⏸️</span><span class="lbl">Pause</span></button>' : `<button class="tool" id="hint"><span class="e">${sniffIcon()}</span><span class="lbl" id="hintlbl">Sniff</span></button>`}
       <button class="tool" id="clearpaws"><span class="e">🧽</span>Clear paws</button>
     </div>`;
-  $('play').querySelector('.back').onclick = () => { stopClock(); P.kind === 'c' ? renderClimb() : renderHome(); };
-  $('restart').onclick = () => confirmSheet('Start this puzzle over?', 'Your corgis and paw marks will be cleared.', () => { snapshot(); G.cells.fill(EMPTY); G.treats = 3; G.solved = false; persist(); plumPaws(); drawBoard(); drawTreats(); say(''); startClock(); });
+  $('play').querySelector('.back').onclick = () => { stopWild(); stopClock(); P.kind === 'c' ? renderClimb() : P.kind === 'w' ? renderWild() : renderHome(); };
+  $('restart').onclick = () => confirmSheet('Start this puzzle over?', `Your corgis and paw marks will be cleared${W ? ', and it starts again on map A' : ''}.`, () => { snapshot(); G.cells.fill(EMPTY); G.treats = 3; G.solved = false; wildReset(); persist(); plumPaws(); drawBoard(); drawTreats(); say(''); startClock(); startWild(); });
   $('undo').onclick = undo;
   // Tapping Cheddar's bubble also puts a Sniff clue away.
   $('play').querySelector('.bubble').onclick = () => { if (sniffShown()) dismissSniff(); };
@@ -406,13 +513,15 @@ function play(pid) {
     }
     lastSw = { k, t: now };
   }));
-  $('hint').onclick = hint;
+  if ($('hint')) $('hint').onclick = hint;
+  if ($('wpause')) $('wpause').onclick = () => setWildPause(!G.wild.paused);
   $('clearpaws').onclick = () => { snapshot(); G.cells = G.cells.map((v) => (v === CORGI || v === NOPE ? v : EMPTY)); persist(); drawBoard(); };
   buildBoard();
   drawTreats();
-  say(G.solved ? `You solved this one in ${clock(G.best)}! 🎉` : greeting());
+  say(G.solved ? `You solved this one in ${clock(G.best)}! 🎉` : W ? `${W.maps.length} yard maps take turns every ${SWAP} seconds. Your paws and corgis stay put!` : greeting());
   show('play');
   if (!G.solved) startClock(); else drawClock();
+  if (W) { drawChips(); drawWildTimer(); if (!G.solved) startWild(); }
   twinkle();
   if (!db.seenHelp) help();
 }
@@ -427,23 +536,31 @@ function greeting() {
 }
 
 function buildBoard() {
-  const { n, reg } = G;
+  const { n } = G;
   const b = $('board');
   b.innerHTML = '';
   for (let i = 0; i < n * n; i++) {
-    const r = Math.floor(i / n), c = i % n, k = reg[i];
     const d = document.createElement('div');
     d.className = 'cell';
-    if (r === 0 || reg[i - n] !== k) d.classList.add('bt');
-    if (r === n - 1 || reg[i + n] !== k) d.classList.add('bb');
-    if (c === 0 || reg[i - 1] !== k) d.classList.add('bl');
-    if (c === n - 1 || reg[i + 1] !== k) d.classList.add('br');
-    d.style.background = YARD_COLORS[k];
     d.dataset.i = i;
     b.appendChild(d);
   }
+  paintYards();
   attachInput(b);
   drawBoard();
+}
+// Yard colors and yard borders for the map on screen (a Wild swap repaints only these, so the
+// corgis and paws on the cells stay as they are).
+function paintYards() {
+  const { n, reg } = G, cells = $('board').children;
+  for (let i = 0; i < n * n; i++) {
+    const r = Math.floor(i / n), c = i % n, k = reg[i], d = cells[i];
+    d.classList.toggle('bt', r === 0 || reg[i - n] !== k);
+    d.classList.toggle('bb', r === n - 1 || reg[i + n] !== k);
+    d.classList.toggle('bl', c === 0 || reg[i - 1] !== k);
+    d.classList.toggle('br', c === n - 1 || reg[i + 1] !== k);
+    d.style.background = YARD_COLORS[G.pal[k]];
+  }
 }
 
 function drawBoard() {
@@ -471,7 +588,7 @@ function startClock() {
   let last = performance.now();
   tick = setInterval(() => {
     const now = performance.now();
-    if (!document.hidden) G.elapsed += (now - last) / 1000;
+    if (!document.hidden && !G.wild?.paused) G.elapsed += (now - last) / 1000;
     last = now;
     drawClock();
     if (Math.round(G.elapsed) % 5 === 0) persist();
@@ -480,15 +597,109 @@ function startClock() {
 }
 function stopClock() { if (tick) clearInterval(tick); tick = null; if (G && !G.solved) persist(); }
 
+// ---------- Wild Week play: maps take turns ----------
+// Every SWAP seconds the yard map under the shared marks changes: a quick flip of the board (the new
+// map is painted at the halfway point) and a short buzz. Taps and Undo are ignored from 0.3 s before
+// to 0.3 s after a swap. The swap timer stops while paused, while a sheet is open and in the background.
+let wloop = null;
+const wLock = () => !!G?.wild && !G.solved && (G.wild.paused || performance.now() < G.wild.lockUntil || G.wild.left < 0.3);
+function stopWild() { if (wloop) clearInterval(wloop); wloop = null; }
+function startWild() {
+  stopWild();
+  if (!G?.wild || G.solved) return;
+  let last = performance.now();
+  wloop = setInterval(() => {
+    const now = performance.now(), dt = Math.min(1, (now - last) / 1000);
+    last = now;
+    const W = G?.wild;
+    if (!W || G.solved || !$('play').classList.contains('on')) return stopWild();
+    if (wildOver(todayISO())) { stopWild(); stopClock(); return wildEndedSheet(); }
+    if (!W.paused && !document.hidden && !document.body.classList.contains('sheeted')) {
+      W.left -= dt;
+      if (W.left <= 0) wildSwap();
+    }
+    drawWildTimer();
+  }, 100);
+}
+function wildSwap() {
+  const W = G.wild;
+  W.cur = (W.cur + 1) % W.maps.length;
+  W.left = SWAP;
+  W.lockUntil = performance.now() + 300;
+  persist();
+  const paintNow = () => { if (!G?.wild) return; G.reg = W.maps[W.cur]; paintYards(); drawChips(); };
+  const b = $('board');
+  if (reduceMotion()) paintNow();
+  else { b.classList.remove('flip'); void b.offsetWidth; b.classList.add('flip'); setTimeout(paintNow, 180); }
+  if (navigator.vibrate) navigator.vibrate(25);
+}
+// Back to map A with a full timer (Start over, Snack break).
+function wildReset() {
+  const W = G?.wild;
+  if (!W) return;
+  W.cur = 0; W.left = SWAP; W.paused = false; W.lockUntil = 0;
+  G.reg = W.maps[0];
+  paintYards(); drawChips(); setWildPause(false);
+}
+// Map chips: "Map A", "Map B", "Map C" (Extreme: just A B C D), the one on screen ringed in its color.
+function drawChips() {
+  const W = G?.wild, el = $('wchips');
+  if (!W || !el) return;
+  const four = W.maps.length > 3;
+  el.innerHTML = W.maps.map((_, k) => `<span class="wchip${k === W.cur ? ' on' : ''}" style="--c:${WCHIP[k]}"><i></i>${four ? '' : 'Map '}${'ABCD'[k]}</span>`).join('');
+  el.setAttribute('aria-label', `Map ${'ABCD'[W.cur]} of ${W.maps.length}`);
+}
+// The rainbow bar drains over SWAP seconds; the last 3 seconds turn pink and pulse, and the board glows.
+function drawWildTimer() {
+  const W = G?.wild, bar = $('wbar');
+  if (!W || !bar) return;
+  const live = !G.solved;
+  const soon = live && !W.paused && W.left <= 3;
+  bar.style.transform = `scaleX(${live ? Math.max(0, W.left / SWAP) : 0})`;
+  $('wleft').textContent = G.solved ? 'Solved' : W.paused ? 'Paused' : `${Math.max(0, Math.ceil(W.left))}s`;
+  $('wtimer').classList.toggle('soon', soon);
+  $('wtimer').classList.toggle('off', !live || W.paused);
+  $('bframe')?.classList.toggle('wsoon', soon);
+}
+// Pause covers the board (no studying a map for free) and stops the clock and the swap timer.
+function setWildPause(p) {
+  const W = G?.wild;
+  if (!W || (G.solved && p)) return;
+  W.paused = p;
+  $('wcover')?.classList.toggle('on', p);
+  const b = $('wpause');
+  if (b) b.innerHTML = p ? '<span class="e">▶️</span><span class="lbl">Resume</span>' : '<span class="e">⏸️</span><span class="lbl">Pause</span>';
+  drawWildTimer();
+  if (p) persist();
+}
+// A Wild puzzle that can't be played (yet): why not.
+function wildLockedSheet(date, t) {
+  const today = todayISO();
+  let title = 'Not yet!', body;
+  if (!t || isKid() || !WDATA || !wildSet(date, t?.id)) { title = 'Wild Week'; body = 'This puzzle isn\'t here.'; }
+  else if (wildOver(today)) { title = 'Wild Week is over'; body = `It ended ${WILD.ends}. Thanks for playing!`; }
+  else if (!wildOn(today) || date > today) body = `This one opens on ${pretty(date)}.`;
+  else { const lower = WILD_TIERS[WILD_TIERS.indexOf(t) - 1]; body = `Beat ${dayShort(date)}'s Wild ${lower.name} first, then Wild ${t.name} opens.`; }
+  sheet(`<h3>${title}</h3><p>${body}</p><button class="cta" id="okw">OK</button>`);
+  $('okw').onclick = () => { closeSheet(); if (wildOver(today) || !showWild()) renderHome(); };
+}
+// The deadline passed while a Wild puzzle was open.
+function wildEndedSheet() {
+  persist();
+  sheet(`<div style="width:110px;margin:0 auto">${cheddarLoaf(dressed())}</div><h3>Wild Week is over</h3>
+    <p>It ended ${WILD.ends}. Shades you earned are yours forever. Thanks for playing!</p><button class="cta" id="okwe">Home</button>`);
+  $('okwe').onclick = () => { closeSheet(); renderHome(); };
+}
+
 function persist() {
-  db.progress[G.pid] = { cells: G.cells.join(''), treats: G.treats, elapsed: Math.round(G.elapsed), solved: G.solved, best: G.best, mistakes: G.mistakes, hints: G.hints, rating: G.rating, solvedAt: G.solvedAt, ...(G.sn ? { sn: G.sn } : {}), ...(G.kind === 'b' ? { bk: G.r } : {}) };
+  db.progress[G.pid] = { cells: G.cells.join(''), treats: G.treats, elapsed: Math.round(G.elapsed), solved: G.solved, best: G.best, mistakes: G.mistakes, hints: G.hints, rating: G.rating, solvedAt: G.solvedAt, ...(G.sn ? { sn: G.sn } : {}), ...(G.kind === 'b' ? { bk: G.r } : {}), ...(G.wild ? { wm: G.wild.cur, wl: Math.round(G.wild.left * 10) / 10 } : {}) };
   save();
 }
 function snapshot() { G.history.push({ cells: G.cells.slice(), treats: G.treats }); if (G.history.length > 200) G.history.shift(); }
 // Undo only takes back paw marks. A corgi on its right spot (and a red "no corgi" paw)
 // is a fact Cheddar checked, so it stays put. Treats stay eaten.
 function undo() {
-  if (G.solved) return;
+  if (G.solved || wLock()) return; // Wild: Undo is ignored around a swap too
   // A Sniff clue on screen: the first Undo just puts it away (nothing is charged, nothing undone).
   if (sniffShown()) return dismissSniff();
   const now = G.cells;
@@ -526,12 +737,12 @@ function attachInput(board) {
     return el && board.contains(el) ? Number(el.dataset.i) : null;
   };
   board.onpointerdown = (e) => {
-    if (G.solved) return;
+    if (G.solved || wLock()) { start = null; return; }
     start = cellAt(e); dragging = false; painted = new Set(); down = { x: e.clientX, y: e.clientY };
     board.setPointerCapture(e.pointerId);
   };
   board.onpointermove = (e) => {
-    if (start === null) return;
+    if (start === null || wLock()) return;
     const i = cellAt(e);
     if (i === null) return;
     if (!dragging && i !== start && moved(e) > tapSlop()) {
@@ -544,6 +755,7 @@ function attachInput(board) {
   board.onpointerup = (e) => {
     if (start === null) return;
     if (dragging) { persist(); drawBoard(); }
+    else if (wLock()) {} // a tap that ends around a Wild swap is ignored, so it can't land on the wrong map
     else if (cellAt(e) === start || moved(e) <= tapSlop()) tap(start, down.x, down.y);
     start = null; dragging = false;
   };
@@ -575,13 +787,15 @@ function tap(i, x = 0, y = 0) {
   persist(); drawBoard();
 }
 
+// Everything a corgi on i rules out. On a Wild board: its yard in every map (the union), which is
+// correct logic and how what you learn on one map carries to the next.
 function peers(i) {
-  const { n, reg } = G;
+  const { n } = G, regs = G.wild ? G.wild.maps : [G.reg];
   const r = Math.floor(i / n), c = i % n, out = [];
   for (let j = 0; j < n * n; j++) {
     if (j === i) continue;
     const rr = Math.floor(j / n), cc = j % n;
-    if (rr === r || cc === c || reg[j] === reg[i] || (Math.abs(rr - r) <= 1 && Math.abs(cc - c) <= 1)) out.push(j);
+    if (rr === r || cc === c || regs.some((g) => g[j] === g[i]) || (Math.abs(rr - r) <= 1 && Math.abs(cc - c) <= 1)) out.push(j);
   }
   return out;
 }
@@ -595,8 +809,9 @@ function placeCorgi(i) {
     let why = 'No corgi belongs here. Cheddar marked it with a red paw.';
     if (clash !== undefined) {
       const rr = Math.floor(clash / n), cc = clash % n;
+      const other = G.wild ? G.wild.maps.findIndex((m) => m[clash] === m[i]) : -1;
       why = rr === r ? 'Two corgis in one row? Too crowded!' : cc === c ? 'Two corgis in one column? Too crowded!'
-        : reg[clash] === reg[i] ? 'That yard already has a corgi!' : 'Corgis need personal space, even diagonally!';
+        : reg[clash] === reg[i] ? 'That yard already has a corgi!' : other >= 0 ? `On map ${'ABCD'[other]}, that yard already has a corgi!` : 'Corgis need personal space, even diagonally!';
     }
     G.cells[i] = NOPE;
     G.mistakes++;
@@ -623,12 +838,12 @@ function placeCorgi(i) {
 }
 
 function outOfTreats() {
-  stopClock();
+  stopClock(); stopWild();
   sheet(`<div style="width:120px;margin:0 auto">${cheddarLoaf(dressed())}</div><h3>Snack break!</h3>
     <p>Cheddar ate all the treats. Want to try this puzzle again from the start?</p>
     <button class="cta" id="again">Try again</button><button class="cta alt" id="home2">Home</button>`);
-  $('again').onclick = () => { closeSheet(); G.cells.fill(EMPTY); G.treats = 3; G.history = []; persist(); plumPaws(); drawBoard(); drawTreats(); say('Fresh start! You\'ve got this.'); startClock(); };
-  $('home2').onclick = () => { closeSheet(); G.treats = 3; G.cells.fill(EMPTY); persist(); renderHome(); };
+  $('again').onclick = () => { closeSheet(); G.cells.fill(EMPTY); G.treats = 3; G.history = []; wildReset(); persist(); plumPaws(); drawBoard(); drawTreats(); say('Fresh start! You\'ve got this.'); startClock(); startWild(); };
+  $('home2').onclick = () => { closeSheet(); G.treats = 3; G.cells.fill(EMPTY); wildReset(); persist(); G.wild ? renderWild() : renderHome(); };
 }
 
 // ---------- Sniff (hints) ----------
@@ -651,7 +866,7 @@ function sniffStep() {
   return snMemo.st;
 }
 const stepKey = (st) => `${st.type}:${st.level}:${st.cells.join(',')}`;
-const yardName = (k) => YARD_NAMES[k] || 'colored';
+const yardName = (k) => YARD_NAMES[G?.pal ? G.pal[k] : k] || 'colored';
 const andList = (a) => (a.length < 3 ? a.join(' and ') : `${a.slice(0, -1).join(', ')} and ${a.at(-1)}`);
 const theUnit = (u) => (u.kind === 'yard' ? `the ${yardName(u.i)} yard` : `this ${u.kind}`);
 const spots = (k) => `${k} glowing spot${k === 1 ? '' : 's'}`;
@@ -801,7 +1016,7 @@ function win() {
   G.solved = true;
   if (!G.solvedAt) G.solvedAt = todayISO();
   G.best = G.best ? Math.min(G.best, G.elapsed) : G.elapsed;
-  stopClock(); persist(); drawClock();
+  stopWild(); stopClock(); persist(); drawClock();
   // The solve is already saved, so only `paid` (set by payout below) tells whether this summit opened Bonus Yards.
   const wasOpen = bonusOpen({ paid: db.paid }, MODES[mode()].c);
   // Every puzzle pays once; a replay after Start over earns nothing new.
@@ -810,6 +1025,7 @@ function win() {
   save();
   // Clear paws so the finished board shows just the corgis.
   G.cells = G.cells.map((v) => (v === CORGI ? v : EMPTY)); drawBoard();
+  if (G.wild) return wildWin(earned, got);
   boardParty();
   celebrate();
   twinkle();
@@ -844,6 +1060,167 @@ function win() {
   setTimeout(() => (got.length ? unlockSheet(got, winSheet) : winSheet()), wait);
 }
 
+// ---------- the Wild win party ----------
+// Longer than the normal win, and it builds with the tier ("it's much harder after all"):
+// 1. on the board (about 2.5 s): the rainbow wave twice, every corgi hops, sparkles burst out;
+// 2. the overlay: a spinning rainbow burst, falling confetti and flying party-hat corgis that rain
+//    down spinning and zoom across (Cozy 14, Hard 24, Extreme 36); the card pops in 1 s later;
+// 3. Extreme adds fireworks on one canvas behind the card;
+// 4. everything keeps going until a button is tapped. Reduced motion: just the card and numbers.
+const RAINBOW = ['#FF5FA8', '#FF9F45', '#FFD23C', '#3FD98B', '#46B3FF', '#9B6BFF'];
+let partyStop = null;
+function wildNext(date, tier) {
+  const k = WILD_TIERS.findIndex((x) => x.id === tier), t = todayISO();
+  // The tier this solve just opened, else the first open, unsolved Wild puzzle (earliest day first).
+  const up = WILD_TIERS[k + 1];
+  if (up && wildOpen(db, date, up.id, t) && !prog(WP(up.id, date))?.solved) return { date, tier: up.id };
+  return wildOpenList(t)[0] || null;
+}
+function wildWin(earned, got) {
+  const t = wildTier(G.wild.tier), maps = G.wild.maps.length, pid = G.pid, date = G.key;
+  drawChips(); drawWildTimer();
+  say('Every corgi is cozy on every map! 🎉');
+  const rm = reduceMotion();
+  boardParty();
+  // Sparkles bursting out of the whole board, twice.
+  const burst = () => { const r = $('board')?.getBoundingClientRect(); if (r) wildSparks(r, 30); };
+  if (!rm) { burst(); setTimeout(burst, 1200); }
+  const shades = got.filter((g) => g.kind === 'shades');
+  const next = wildNext(date, t.id);
+  const elapsed = G.elapsed, mistakes = G.mistakes;
+  setTimeout(() => {
+    if (G?.pid !== pid || !$('play').classList.contains('on')) { if (shades.length) shadesSheet(shades); return; } // they already left the board
+    const clean = mistakes === 0, base = t.daily * 2, bonus = clean ? WILD_CLEAN : 0;
+    const count = wildCount(db, t.id), owned = db.owned.includes(t.prize);
+    const look = { ...dressed(), head: partyHat };
+    const parts = earned.coins ? `${t.name} ${t.daily} × 2 = ${base}${clean ? `, clean bonus 3 × 2 = ${bonus}` : ''}` : 'Already paid: a replay earns nothing new';
+    const nextBtn = next ? `<button class="cta" id="wp-next">Wild ${wildTier(next.tier).name} for ${dayShort(next.date)} ▶</button>` : '';
+    const el = document.createElement('div');
+    el.id = 'wparty';
+    el.className = `wparty t-${t.id}${rm ? ' still' : ''}`;
+    el.innerHTML = `<div class="wburst"></div>${t.id === 'extreme' && !rm ? '<canvas class="fw" id="fw"></canvas>' : ''}<div class="wfly" id="wfly"></div>
+      <div class="wwin" role="dialog" aria-label="Wild win">
+        <div class="wdog">${cheddarLoaf(look)}</div>
+        <h2>WILD WIN!</h2>
+        <p>One answer, ${maps} maps, all solved in <b>${clock(elapsed)}</b> with ${mistakes} mistake${mistakes === 1 ? '' : 's'}.</p>
+        <div class="wcoins"><b>+<span id="wcount">${rm ? earned.coins : 0}</span> ${coinIcon(true)}</b><small>${parts}</small></div>
+        <div class="wprog">${shadesHead(t.prize)}<div><b>${item(t.prize).name}: ${Math.min(7, count)} of 7</b>${pips(count)}<small>${owned ? 'Earned! They\'re yours forever. 🎉' : `Solve all 7 ${t.name} Wild puzzles by ${WILD.ends}`}</small></div></div>
+        ${db.settings.research ? ratingRow() : ''}
+        ${nextBtn}<button class="cta ${next ? 'alt' : ''}" id="wp-home">Home</button>
+      </div>`;
+    document.body.appendChild(el);
+    if (!rm) partyPieces(t.id);
+    if (navigator.vibrate) navigator.vibrate([60, 50, 60, 50, 160]); // once
+    // Coin count-up, after the card pops in.
+    if (!rm && earned.coins) setTimeout(() => { let c = 0; const step = setInterval(() => { c = Math.min(earned.coins, c + 1); const x = $('wcount'); if (!x) return clearInterval(step); x.textContent = c; if (c >= earned.coins) clearInterval(step); }, 45); }, 1100);
+    let fw = null;
+    if ($('fw')) fw = fireworks($('fw'));
+    partyStop = () => { if (fw) fw(); el.remove(); partyStop = null; };
+    const leave = (go) => () => { partyStop?.(); shades.length ? shadesSheet(shades, go) : go(); };
+    $('wp-home').onclick = leave(renderHome);
+    if (next) $('wp-next').onclick = leave(() => play(WP(next.tier, next.date)));
+    el.querySelectorAll('.rate button').forEach((b) => (b.onclick = () => {
+      if (G?.pid === pid) { G.rating = Number(b.dataset.r); persist(); }
+      el.querySelectorAll('.rate button').forEach((x) => x.classList.toggle('on', x === b));
+    }));
+  }, rm ? 700 : 2500);
+}
+function wildSparks(rect, count) {
+  for (let k = 0; k < count; k++) {
+    const sp = document.createElement('div'), a = Math.random() * Math.PI * 2, d = rect.width * (0.35 + Math.random() * 0.5);
+    sp.className = 'spark';
+    sp.style.cssText = `left:${rect.left + rect.width / 2}px;top:${rect.top + rect.height / 2}px;--dx:${Math.cos(a) * d}px;--dy:${Math.sin(a) * d}px;--sz:${10 + Math.random() * 12}px;background:${SPARK_COLORS[k % SPARK_COLORS.length]};animation-delay:${Math.random() * 300}ms`;
+    document.body.appendChild(sp);
+    setTimeout(() => sp.remove(), 1600);
+  }
+}
+// Confetti and flying corgis: CSS transforms only. Half rain down spinning, half zoom across
+// (left to right and right to left, at different heights and speeds, like the zoomies).
+function partyPieces(tier) {
+  const box = $('wfly'), n = { cozy: 14, hard: 24, extreme: 36 }[tier];
+  const head = cheddarHead({ ...headLook(), head: partyHat });
+  let html = '';
+  for (let k = 0; k < 60; k++) html += `<i class="conf" style="--x:${Math.random() * 100}%;--w:${8 + Math.random() * 10}px;--c:${RAINBOW[k % 6]};--t:${2 + Math.random() * 2.5}s;--d:${-Math.random() * 4}s;--r:${(Math.random() > 0.5 ? 1 : -1) * (200 + Math.random() * 500)}deg"></i>`;
+  for (let k = 0; k < n; k++) {
+    const w = 34 + Math.random() * 30;
+    if (k % 2 === 0) html += `<div class="fly wf" style="--x:${Math.random() * 92}%;--w:${w}px;--t:${2.6 + Math.random() * 2.4}s;--d:${-Math.random() * 5}s;--r:${(Math.random() > 0.5 ? 1 : -1) * 720}deg">${head}</div>`;
+    else html += `<div class="fly wz${k % 4 === 1 ? ' rtl' : ''}" style="--y:${4 + Math.random() * 84}%;--w:${w}px;--t:${2.2 + Math.random() * 2.6}s;--d:${-Math.random() * 4}s">${head}</div>`;
+  }
+  box.innerHTML = html;
+}
+// Extreme fireworks on one canvas: a rising trail, then a ring of sparks that fall and fade. About one
+// every 0.5 s for the first 6 s, a three-burst finale, then one every 1.5-2 s. Returns a stop function.
+function fireworks(cv) {
+  const ctx = cv.getContext('2d'), dpr = Math.min(2, devicePixelRatio || 1);
+  let W = 0, H = 0;
+  const size = () => { W = cv.clientWidth; H = cv.clientHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
+  size();
+  const cols = ['#FF5FA8', '#FF9F45', '#FFE14D', '#3FD98B', '#46B3FF', '#B36BFF', '#FFFFFF'];
+  const rockets = [], sparks = [], t0 = performance.now();
+  // Once the card is up it covers most of a phone, so bursts go where they can be seen: the band
+  // above the card (mostly) or below it. Before it pops in, anywhere in the top half.
+  const target = () => {
+    const card = cv.parentElement.querySelector('.wwin')?.getBoundingClientRect(), box = cv.getBoundingClientRect();
+    if (!card || (performance.now() - t0) < 1000) return H * (0.12 + Math.random() * 0.33);
+    const top = card.top - box.top, bottom = box.bottom - card.bottom;
+    if (top > 50 && (bottom < 70 || Math.random() < 0.65)) return 14 + Math.random() * (top - 24);
+    if (bottom > 70) return card.bottom - box.top + 30 + Math.random() * (bottom - 50);
+    return H * (0.06 + Math.random() * 0.1);
+  };
+  const launch = (big = false) => rockets.push({ x: W * (0.1 + Math.random() * 0.8), y: H + 10, ty: target(), v: H / (0.9 + Math.random() * 0.3), c: cols[Math.floor(Math.random() * 6)], big });
+  const pop = (r) => {
+    const k = r.big ? 90 : 56, sp = (r.big ? 230 : 160) * (0.85 + Math.random() * 0.3);
+    for (let i = 0; i < k; i++) { const a = (i / k) * Math.PI * 2, v = sp * (0.7 + Math.random() * 0.3); sparks.push({ x: r.x, y: r.ty, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 1, c: Math.random() < 0.3 ? cols[Math.floor(Math.random() * 7)] : r.c }); }
+  };
+  let last = t0, nextAt = 0, finale = false, raf = 0, stopped = false;
+  const frame = (now) => {
+    if (stopped) return;
+    raf = requestAnimationFrame(frame);
+    if (document.hidden) { last = now; return; }
+    const dt = Math.min(0.05, (now - last) / 1000), el = (now - t0) / 1000;
+    last = now;
+    if (cv.clientWidth !== W || cv.clientHeight !== H) size();
+    if (el >= nextAt) {
+      if (el < 6) { launch(); nextAt = el + 0.5; }
+      else if (!finale) { finale = true; launch(true); setTimeout(() => launch(true), 180); setTimeout(() => launch(true), 360); nextAt = el + 2; }
+      else { launch(); nextAt = el + 1.5 + Math.random() * 0.5; }
+    }
+    ctx.clearRect(0, 0, W, H);
+    ctx.lineCap = 'round';
+    for (let i = rockets.length - 1; i >= 0; i--) {
+      const r = rockets[i], y0 = r.y;
+      r.y -= r.v * dt;
+      ctx.strokeStyle = r.c; ctx.lineWidth = 4; ctx.globalAlpha = 0.95;
+      ctx.beginPath(); ctx.moveTo(r.x, Math.min(H, y0 + 26)); ctx.lineTo(r.x, r.y); ctx.stroke();
+      if (r.y <= r.ty) { pop(r); rockets.splice(i, 1); }
+    }
+    for (let i = sparks.length - 1; i >= 0; i--) {
+      const p = sparks[i];
+      p.vx *= 1 - 1.6 * dt; p.vy = p.vy * (1 - 1.6 * dt) + 140 * dt; // drag and gravity
+      p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt / 1.4;
+      if (p.life <= 0) { sparks.splice(i, 1); continue; }
+      ctx.globalAlpha = Math.max(0, p.life); ctx.fillStyle = p.c;
+      ctx.beginPath(); ctx.arc(p.x, p.y, 3.6, 0, Math.PI * 2); ctx.fill();
+      ctx.globalAlpha = Math.max(0, p.life) * 0.25; // soft glow
+      ctx.beginPath(); ctx.arc(p.x, p.y, 8, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  };
+  raf = requestAnimationFrame(frame);
+  return () => { stopped = true; cancelAnimationFrame(raf); };
+}
+// "New shades!": after the party, one sheet per pair, with Wear them / Later.
+function shadesSheet(list, done) {
+  const [{ it }, ...rest] = list;
+  const next = () => { closeSheet(); if (rest.length) shadesSheet(rest, done); else if (done) done(); };
+  sheet(`<div class="wnew">${cheddarLoaf({ ...dressed(), face: it.art })}</div>
+    <h3>New shades! 🕶️</h3>
+    <p><b>${it.name}</b> are yours: a Wild Week 2026 prize, for all 7 ${wildTier(it.prize).name} Wild puzzles. They can't be bought, and they stay in your closet forever.</p>
+    <button class="cta" id="sh-wear">Wear them</button><button class="cta alt" id="sh-later">Later</button>`);
+  $('sh-wear').onclick = () => { db.worn.face = it.id; save(); next(); };
+  $('sh-later').onclick = next;
+}
+
 // ---------- field research ----------
 function ratingRow() {
   return `<div class="rate"><b>How hard was that?</b>
@@ -852,6 +1229,7 @@ function ratingRow() {
 }
 function rawPuzzle(pid) {
   const [pre, key] = pid.split(':');
+  if (kindOf(pre) === 'w') { const t = wildTier(pre), set = t && wildSet(key, t.id); return set ? { m: `wild-${t.id}`, ...set, maps: set.r.length } : null; }
   const m = modeOf(pre);
   const d = DATA[m];
   if (!d) return null;
@@ -864,9 +1242,9 @@ function report() {
     .map(([pid, p]) => ({ pid, p, raw: rawPuzzle(pid) }))
     .filter((x) => x.raw)
     .sort((a, b) => (a.p.solvedAt || '').localeCompare(b.p.solvedAt || ''));
-  const lines = rows.map(({ pid, p, raw }) => [raw.m, pid, raw.n, raw.lv, raw.st, p.best != null ? Math.round(p.best) : '', p.mistakes ?? '', p.hints ?? '', p.rating ?? '', p.solvedAt ?? '', raw.ch ?? '', raw.cd ?? ''].join(','));
+  const lines = rows.map(({ pid, p, raw }) => [raw.m, pid, raw.n, raw.lv, raw.st, p.best != null ? Math.round(p.best) : '', p.mistakes ?? '', p.hints ?? '', p.rating ?? '', p.solvedAt ?? '', raw.ch ?? '', raw.cd ?? '', raw.maps ?? ''].join(','));
   return { count: rows.length, rated: rows.filter((x) => x.p.rating).length,
-    text: `Corgidoku field report v${VERSION} · ${nm()} · ${todayISO()} · ${rows.length} solved\nmode,id,size,lv,steps,secs,mistakes,hints,rating,date,chains,depth\n${lines.join('\n')}` };
+    text: `Corgidoku field report v${VERSION} · ${nm()} · ${todayISO()} · ${rows.length} solved\nmode,id,size,lv,steps,secs,mistakes,hints,rating,date,chains,depth,maps\n${lines.join('\n')}` };
 }
 async function sendReport() {
   const r = report();
@@ -1026,13 +1404,16 @@ function renderCloset(tab = closetTab, pickId) {
     };
     const tile = (it) => {
       const owned = !it || ownsLine(db, it.id), worn = it ? baseId(db.worn[it.slot]) === it.id : !db.worn[slot];
-      const sub = worn ? 'Wearing' : owned ? (it ? 'Yours' : '') : coin(priceFor(it, kid)) + (kid && baseId(db.goal) === it.id ? ' ⭐' : '');
+      // Wild Week prizes: a locked tile with the deadline and progress instead of a price.
+      const prize = it?.prize && !owned;
+      const sub = worn ? 'Wearing' : owned ? (it ? 'Yours' : '') : prize ? `Wild Week prize · ends ${WILD.endsShort}<br>${Math.min(7, wildCount(db, it.prize))} of 7 ${wildTier(it.prize).name}` : coin(priceFor(it, kid)) + (kid && baseId(db.goal) === it.id ? ' ⭐' : '');
       const v = it && shown(it);
-      return `<button class="ctile${(it ? it.id : null) === baseId(pick) ? ' on' : ''}" data-id="${it ? it.id : ''}">
-        <div class="cthumb">${it ? `<svg viewBox="${v.thumb}">${v.art}</svg>` : '<span>🚫</span>'}</div>
-        <b>${it ? it.name : 'Nothing'}</b><small>${sub}</small>${it?.colors ? `<i class="cdots">${colorsOf(it.id).map((c) => `<span style="background:${c.dot}"></span>`).join('')}</i>` : ''}</button>`;
+      return `<button class="ctile${(it ? it.id : null) === baseId(pick) ? ' on' : ''}${prize ? ' locked wprize-t' : ''}" data-id="${it ? it.id : ''}">
+        <div class="cthumb" style="position:relative">${it ? `<svg viewBox="${v.thumb}">${v.art}</svg>` : '<span>🚫</span>'}${prize ? '<span class="lock">🔒</span>' : ''}</div>
+        <b>${it ? it.name : 'Nothing'}</b><small class="${prize ? 'at' : ''}">${sub}</small>${it?.prize && owned ? '<em class="wtag">Wild Week 2026</em>' : ''}${it?.colors ? `<i class="cdots">${colorsOf(it.id).map((c) => `<span style="background:${c.dot}"></span>`).join('')}</i>` : ''}</button>`;
     };
-    const list = ITEMS.filter((x) => x.slot === slot);
+    // Wild Week shades: earned ones stay forever; unearned ones only show during the week (never for kids).
+    const list = ITEMS.filter((x) => x.slot === slot && (!x.prize || db.owned.includes(x.id) || (!kid && wildOn(todayISO()))));
     body = list.length ? `<div class="cgrid">${tile(null)}${list.map(tile).join('')}</div>`
       : `<p class="csoon">Cheddar's tailor is still sewing. New ${tab} things are coming soon!</p>`;
     const it = item(pick);
@@ -1043,7 +1424,8 @@ function renderCloset(tab = closetTab, pickId) {
       return `<button class="sw${on ? ' on' : ''}${own ? '' : ' new'}" data-id="${c.id}" aria-label="${c.name}${wear ? ', wearing' : own ? ', yours' : ''}" style="--c:${c.dot}">${wear ? '✓' : ''}</button>`;
     }).join('')}<small>${esc(it.name)}${db.owned.includes(it.id) ? '' : ` · ${it.variant ? 'new color' : 'not yours yet'}`}</small></div>`;
     // Owned things go on with a tap (see the tile handler), so only things to buy need a button.
-    if (it && !db.owned.includes(it.id)) {
+    if (it?.prize && !db.owned.includes(it.id)) action += `<button class="cta alt" disabled>🔒 Solve all 7 ${wildTier(it.prize).name} Wild puzzles by ${WILD.ends} · ${Math.min(7, wildCount(db, it.prize))} of 7</button>`;
+    else if (it && !db.owned.includes(it.id)) {
       const cost = priceFor(it, kid);
       // A new color needs the item first.
       if (it.variant && !ownsLine(db, it.id)) action += `<button class="cta alt" disabled>Get the ${item(it.base).name.toLowerCase()} first, then colors are ${coin(priceFor(it, kid))}</button>`;
@@ -1115,6 +1497,9 @@ function renderCloset(tab = closetTab, pickId) {
 // "New scene: Lava flow!" with a preview and Use it, one sheet per unlock, then done() (the win sheet).
 // The launch sync (progress made before scenes existed) shows several at once on one sheet.
 function unlockSheet(list, done) {
+  // Wild Week shades get their own "New shades!" sheet first.
+  const sh = list.filter((x) => x.kind === 'shades'), rest0 = list.filter((x) => x.kind !== 'shades');
+  if (sh.length) return shadesSheet(sh, () => (rest0.length ? unlockSheet(rest0, done) : done?.()));
   const finish = () => { closeSheet(); if (done) done(); };
   if (!done && list.length > 1) {
     sheet(`<h3>Climb rewards! 🏔️</h3>
@@ -1261,9 +1646,14 @@ function switchPlayer(p) {
 
 // ---------- boot ----------
 document.body.insertAdjacentHTML('afterbegin', artDefs); // the shared die-cut filter for every Cheddar
-Promise.all(Object.entries(MODES).map(([k, m]) => fetch(m.file).then((r) => r.json()).then((d) => { DATA[k] = d; })))
+// Reduced motion: the LED shades keep their static rainbow (no SMIL <animate>).
+if (reduceMotion()) for (const it of ITEMS) if (it.art.includes('<animate')) it.art = still(it.art);
+// Wild Week puzzles. Optional: if they can't load, the rest of the game still works.
+const wildLoad = fetch('wild.json').then((r) => r.json()).then((d) => { WDATA = d; }).catch(() => {});
+Promise.all([...Object.entries(MODES).map(([k, m]) => fetch(m.file).then((r) => r.json()).then((d) => { DATA[k] = d; })), wildLoad])
   .then(() => { useMode(mode()); applyScene(); renderHome(); modesFor().forEach((m) => ensureBonus(m)); })
   .catch(() => { $('home').innerHTML = '<p style="margin-top:40vh;font-weight:800">Cheddar couldn\'t find the puzzles. Check your connection and reopen.</p>'; });
 
 document.addEventListener('visibilitychange', () => {
   document.documentElement.classList.toggle('hid', document.hidden); if (document.hidden && G && !G.solved && $('play').classList.contains('on')) persist(); });
+
