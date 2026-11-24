@@ -151,7 +151,7 @@ export default {
       if (path === "/api/rev" && request.method === "GET") return json({ rev: await list.rev() });
       if (path === "/api/state" && request.method === "GET") return json(await list.state());
 
-      const item = path.match(/^\/api\/items\/([\w-]{4,64})$/);
+      const item = path.match(/^\/api\/items\/([\w-]{1,64})$/);
       if (item && request.method === "PUT") {
         const body = await request.json();
         if (!body || typeof body.patch !== "object") return fail(400, "Missing patch");
