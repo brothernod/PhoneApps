@@ -11,7 +11,8 @@
       "why": "This is the original post behind the Code Mode idea from your YouTube video. Instead of handing the model a pile of tools to call one at a time, Cloudflare turns MCP tools into a TypeScript API and lets the model write code against it in a sandbox, which cuts tokens and round trips. The follow-up posts and the REPL-style agent patterns you're seeing now all build on it.",
       "tryThis": "Pick one multi-step chore you run with Claude Code (e.g. checking several job logs) and ask it to write one script that does all the steps, instead of calling tools step by step. Compare how long it takes and how much context it uses.",
       "pickReason": "Starter pick — the post you mentioned tonight. Rate it to begin tuning.",
-      "createdAt": "2026-11-18T02:35:00Z"
+      "createdAt": "2026-11-18T02:35:00Z",
+      "somedayAt": "2026-11-24T10:22:19Z"
     },
     {
       "id": "2026-11-18",
@@ -64,7 +65,20 @@
       "tryThis": "Pick one batch job and run it unchanged on a Java 25 JDK in a test environment (or a homelab container); note any warnings about removed or internal APIs and GC changes, and turn that into a one-paragraph upgrade-risk note for your team.",
       "pickReason": "First Java pick after a run of AI ones; kept to ~10 min since that length landed well last time.",
       "createdAt": "2026-11-23T10:15:50Z"
+    },
+    {
+      "id": "2026-11-24",
+      "date": "2026-11-24",
+      "title": "Redesigning source control at Anthropic",
+      "url": "https://anthropic.com/engineering/redesigning-source-control",
+      "source": "Anthropic Engineering",
+      "minutes": 17,
+      "topic": "ai-eng",
+      "why": "When agents and CI became nearly all of Anthropic's git clients, merges went up more than tenfold and git mirroring stopped scaling, so they built their own server-side system in five months. It's a rare real-world account of what agent-heavy development does to CI, checkouts and code review, with numbers. The parts on reviewing the intent of agent changes and post-merge testing apply well beyond Anthropic.",
+      "tryThis": "Time a fresh checkout in one of your slowest GitHub Actions workflows, then try a shallow or sparse checkout (fetch-depth: 1, sparse-checkout) and compare the numbers.",
+      "pickReason": "Longer than your 8–10 min sweet spot, but it's fresh, primary and close to your CI work; the design-detail middle is fine to skim.",
+      "createdAt": "2026-11-24T10:22:19Z"
     }
   ],
-  "updatedAt": "2026-11-23T10:15:50Z"
+  "updatedAt": "2026-11-24T10:22:19Z"
 }
