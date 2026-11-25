@@ -1,5 +1,5 @@
 {
-  "exported": "2026-11-25T04:58:12Z",
+  "exported": "2026-11-25T20:02:06Z",
   "items": [
     {
       "id": "ev",
@@ -220,6 +220,23 @@
           "label": "Merax King Size Bamboo Platform Bed Frame with Tall Headboard, Natural | Mid-Century Modern Solid Bedframe Full-Size, Wood Slat Support, No",
           "url": "https://a.co/d/0gEPqmNj",
           "price": 366.99
+        }
+      ]
+    },
+    {
+      "id": "dbcd3615-f19",
+      "title": "Honeywell Home X Series Sensor (Not Compatible with T9/T10 thermostats) - Amazon.com",
+      "qty": 3,
+      "low": 44.98,
+      "high": null,
+      "regular": null,
+      "chosen": null,
+      "options": [
+        {
+          "id": "72c46e17-e4c",
+          "label": "Honeywell Home X Series Sensor (Not Compatible with T9/T10 thermostats) - Amazon.com",
+          "url": "https://a.co/d/0idX0DNn",
+          "price": 44.98
         }
       ]
     }
