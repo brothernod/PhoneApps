@@ -1,58 +1,6 @@
 {
-  "exported": "2026-11-23T15:56:26Z",
+  "exported": "2026-11-25T04:58:12Z",
   "items": [
-    {
-      "id": "mocca",
-      "title": "Moccamaster coffee maker",
-      "qty": 1,
-      "low": 247.95,
-      "high": 260.95,
-      "regular": 369.95,
-      "chosen": null,
-      "options": [
-        {
-          "id": "mocca-eucalyptus",
-          "label": "Eucalyptus",
-          "url": "https://www.williams-sonoma.com/products/technivorm-moccamaster-kgb-select/",
-          "price": null
-        },
-        {
-          "id": "mocca-silver",
-          "label": "Silver",
-          "url": "https://www.williams-sonoma.com/products/technivorm-moccamaster-kgb-select/",
-          "price": null
-        },
-        {
-          "id": "mocca-juniper",
-          "label": "Juniper",
-          "url": "https://www.williams-sonoma.com/products/technivorm-moccamaster-kgb-select/",
-          "price": null
-        },
-        {
-          "id": "mocca-ocean",
-          "label": "Ocean",
-          "url": "https://www.williams-sonoma.com/products/technivorm-moccamaster-kgb-select/",
-          "price": null
-        }
-      ]
-    },
-    {
-      "id": "airpods",
-      "title": "AirPods Pro 3",
-      "qty": 2,
-      "low": 179,
-      "high": 249,
-      "regular": 249,
-      "chosen": null,
-      "options": [
-        {
-          "id": "airpods-3",
-          "label": "AirPods Pro 3",
-          "url": "",
-          "price": 179
-        }
-      ]
-    },
     {
       "id": "ev",
       "title": "EV charger",
@@ -236,19 +184,42 @@
       ]
     },
     {
-      "id": "shelly",
-      "title": "Shelly relay",
+      "id": "mattress",
+      "title": "King mattress",
       "qty": 1,
-      "low": 18,
-      "high": 28,
+      "low": 900,
+      "high": 2000,
       "regular": null,
       "chosen": null,
       "options": [
         {
-          "id": "shelly-1g4",
-          "label": "Shelly 1 Gen4 (UL)",
-          "url": "https://us.shelly.com/products/shelly-1-gen4-ul-certified-1",
-          "price": 27.99
+          "id": "31ddf9ee-316",
+          "label": "Leesa Oasis Chill 13.5\" Euro Top Medium Firm Hybrid Mattress",
+          "url": "https://www.costco.com/.product.4000424600.html",
+          "price": 799.99
+        },
+        {
+          "id": "4749c94a-eaa",
+          "label": "Kirkland Signature by Stearns & Foster 14\" Tight Top Lakeridge Mattress",
+          "url": "https://www.costco.com/.product.4000414778.html",
+          "price": 949.99
+        }
+      ]
+    },
+    {
+      "id": "bed",
+      "title": "King bed frame",
+      "qty": 1,
+      "low": 400,
+      "high": 2000,
+      "regular": null,
+      "chosen": null,
+      "options": [
+        {
+          "id": "c2a7b654-854",
+          "label": "Merax King Size Bamboo Platform Bed Frame with Tall Headboard, Natural | Mid-Century Modern Solid Bedframe Full-Size, Wood Slat Support, No",
+          "url": "https://a.co/d/0gEPqmNj",
+          "price": 366.99
         }
       ]
     }
