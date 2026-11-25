@@ -38,7 +38,8 @@
       "why": "Coding agents write PR descriptions that are accurate but far too long for anyone to read. Willison's fix is simple: a short human-written opener up top, with the full agent text folded into a collapsible block labelled with the model that wrote it. It's a quick, practical norm for any team where agent-written PRs are starting to pile up.",
       "tryThis": "On your next Claude Code PR, write two plain sentences yourself and fold the agent's write-up into a <details><summary> block. If it reads better, suggest it to your junior devs as a team convention.",
       "pickReason": "Kept it short (~5 min) after the 13-min memory piece felt long; same practical, right-depth level that worked.",
-      "createdAt": "2026-11-19T10:15:39Z"
+      "createdAt": "2026-11-19T10:15:39Z",
+      "somedayAt": "2026-11-25T10:15:43Z"
     },
     {
       "id": "2026-11-20",
@@ -78,7 +79,20 @@
       "tryThis": "Time a fresh checkout in one of your slowest GitHub Actions workflows, then try a shallow or sparse checkout (fetch-depth: 1, sparse-checkout) and compare the numbers.",
       "pickReason": "Longer than your 8–10 min sweet spot, but it's fresh, primary and close to your CI work; the design-detail middle is fine to skim.",
       "createdAt": "2026-11-24T10:22:19Z"
+    },
+    {
+      "id": "2026-11-25",
+      "date": "2026-11-25",
+      "title": "Engineering is no longer a distraction-free job, deal with it",
+      "url": "https://madewithlove.com/blog/engineering-is-no-longer-a-distraction-free-job-deal-with-it/",
+      "source": "madewithlove (Jonas Drieghe)",
+      "minutes": 5,
+      "topic": "focus",
+      "why": "Once you run coding agents in parallel, the old advice to guard long blocks of focus stops fitting the job. This short piece argues for making interruptions cheap instead, with concrete habits for keeping loops closed. It also fits a lead who gets pinged by both juniors and agents all day.",
+      "tryThis": "Today, before each switch away from a task, leave one finished 'pebble' (a draft PR, a sent reply, a one-line note of the next step) instead of an open loop, and turn agent/chat sounds into silent badges.",
+      "pickReason": "Focus topic hadn't come up yet, and after a 17-min pick yesterday this is a quick ~5-min read.",
+      "createdAt": "2026-11-25T10:15:43Z"
     }
   ],
-  "updatedAt": "2026-11-24T10:22:19Z"
+  "updatedAt": "2026-11-25T10:15:43Z"
 }
