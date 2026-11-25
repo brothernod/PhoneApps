@@ -285,13 +285,28 @@
     }
     return { lo, hi, missing, count: items.length };
   }
-  const spentTotal = () => boughtItems().reduce((s, it) => s + (num(it.purchase?.paid) || 0), 0);
-  const savedTotal = () =>
-    boughtItems().reduce((s, it) => {
-      const reg = num(it.purchase?.regular);
-      const paid = num(it.purchase?.paid);
-      return reg != null && paid != null && reg > paid ? s + (reg - paid) : s;
-    }, 0);
+  // A purchase stores the price each and how many. Older purchases only stored the total
+  // ("paid") for the item's quantity at the time, so derive the price each from that.
+  const round2 = (n) => (n == null ? null : Math.round(n * 100) / 100);
+  function purchaseOf(it) {
+    const p = it.purchase || {};
+    const qty = Math.max(1, Math.round(num(p.qty) || qtyOf(it)));
+    const gift = !!p.gift;
+    let each = num(p.each);
+    if (each == null && num(p.paid) != null) each = round2(num(p.paid) / qty);
+    let regularEach = num(p.regularEach);
+    if (regularEach == null && num(p.regular) != null) regularEach = round2(num(p.regular) / qty);
+    const paid = gift || each == null ? null : num(p.each) != null ? round2(each * qty) : num(p.paid);
+    const regular = gift || regularEach == null ? null : round2(regularEach * qty);
+    return { cand: p.cand || null, qty, each: gift ? null : each, paid, regularEach, regular, gift, store: p.store || "", from: p.from || "", date: p.date || "" };
+  }
+  const isGift = (it) => !!it.purchase?.gift;
+  const paidItems = () => boughtItems().filter((it) => !isGift(it));
+  const giftItems = () => boughtItems().filter(isGift);
+  const savedOn = (p) => (p.regular != null && p.paid != null && p.regular > p.paid ? round2(p.regular - p.paid) : 0);
+  const spentTotal = () => paidItems().reduce((s, it) => s + (purchaseOf(it).paid || 0), 0);
+  const savedTotal = () => paidItems().reduce((s, it) => s + savedOn(purchaseOf(it)), 0);
+  const eachLine = (p) => (p.qty > 1 && p.each != null ? `${p.qty} × ${money(p.each, true)} each` : null);
 
   // ---------- Rankings ----------
   function tiersFor(person) {
@@ -702,7 +717,9 @@
     const bought = boughtItems().sort((a, b) => String(b.purchase?.date || "").localeCompare(String(a.purchase?.date || "")));
     const spent = spentTotal();
     const saved = savedTotal();
-    const ballpark = sumRanges(bought);
+    const paid = paidItems();
+    const gifts = giftItems();
+    const ballpark = sumRanges(paid);
     if (!bought.length) {
       return [
         h(
@@ -720,12 +737,14 @@
         h(
           "div",
           { class: "receipt-total" },
-          h("span", { class: "lbl" }, `Spent on ${bought.length} ${bought.length === 1 ? "thing" : "things"}`),
+          h("span", { class: "lbl" }, `Spent on ${paid.length} ${paid.length === 1 ? "thing" : "things"}`),
           h("span", { class: "big" }, money(spent, true)),
-          h("span", { class: "lbl" }, "Your ballpark for these"),
-          h("span", null, moneyRange([ballpark.lo, ballpark.hi])),
+          paid.length ? h("span", { class: "lbl" }, "Your ballpark for these") : null,
+          paid.length ? h("span", null, moneyRange([ballpark.lo, ballpark.hi])) : null,
           saved > 0 ? h("span", { class: "lbl" }, "Saved off retail prices") : null,
-          saved > 0 ? h("span", { class: "save-good" }, money(saved, true)) : null
+          saved > 0 ? h("span", { class: "save-good" }, money(saved, true)) : null,
+          gifts.length ? h("span", { class: "lbl" }, "Gifts, not counted in spending") : null,
+          gifts.length ? h("span", null, `${gifts.length} ${gifts.length === 1 ? "gift" : "gifts"}`) : null
         )
       ),
       h("h2", { class: "section-title" }, "Purchases"),
@@ -733,18 +752,25 @@
         "ul",
         { class: "rows" },
         bought.map((it) => {
-          const p = it.purchase || {};
+          const p = purchaseOf(it);
           const cand = (it.cands || []).find((c) => c.id === p.cand);
           return row(it, {
-            sub: [
-              h("span", { class: "price" }, money(num(p.paid), true) || "No amount"),
-              num(p.regular) != null && num(p.paid) != null && num(p.regular) > num(p.paid)
-                ? h("span", { class: "chip picked" }, `Saved ${money(num(p.regular) - num(p.paid), true)}`)
-                : null,
-              cand ? h("span", null, cand.label) : null,
-              p.store ? h("span", null, p.store) : null,
-              p.date ? h("span", null, niceDate(p.date)) : null,
-            ],
+            sub: p.gift
+              ? [
+                  h("span", { class: "chip gift" }, "Gift"),
+                  p.qty > 1 ? h("span", { class: "qty" }, `×${p.qty}`) : null,
+                  p.from ? h("span", null, `from ${p.from}`) : null,
+                  cand ? h("span", null, cand.label) : null,
+                  p.date ? h("span", null, niceDate(p.date)) : null,
+                ]
+              : [
+                  h("span", { class: "price" }, money(p.paid, true) || "No amount"),
+                  eachLine(p) ? h("span", { class: "qty" }, eachLine(p)) : null,
+                  savedOn(p) > 0 ? h("span", { class: "chip picked" }, `Saved ${money(savedOn(p), true)}`) : null,
+                  cand ? h("span", null, cand.label) : null,
+                  p.store ? h("span", null, p.store) : null,
+                  p.date ? h("span", null, niceDate(p.date)) : null,
+                ],
           });
         })
       ),
@@ -917,14 +943,27 @@
   }
 
   function boughtCard(it) {
-    const p = it.purchase || {};
+    const p = purchaseOf(it);
     const cand = (it.cands || []).find((c) => c.id === p.cand);
+    const edit = h("button", { class: "text-btn bought-edit", type: "button", onclick: () => markBought(it.id) }, "Edit");
+    if (p.gift) {
+      return h(
+        "div",
+        { class: "bought-card" },
+        edit,
+        h("div", null, h("b", null, "Gift"), p.qty > 1 ? ` ×${p.qty}` : null, p.from ? ` from ${p.from}` : null),
+        h("div", null, [cand?.label, niceDate(p.date)].filter(Boolean).join(", ")),
+        h("div", null, "Not counted in what you spent.")
+      );
+    }
     return h(
       "div",
       { class: "bought-card" },
-      h("div", null, h("b", null, money(num(p.paid), true)), " paid"),
+      edit,
+      h("div", null, h("b", null, money(p.paid, true) || "No amount"), " paid"),
+      eachLine(p) ? h("div", null, eachLine(p)) : null,
       h("div", null, [cand?.label, p.store, niceDate(p.date)].filter(Boolean).join(", ")),
-      num(p.regular) && num(p.paid) && num(p.regular) > num(p.paid) ? h("div", null, `Saved ${money(num(p.regular) - num(p.paid), true)} off retail price`) : null
+      savedOn(p) > 0 ? h("div", null, `Saved ${money(savedOn(p), true)} off retail price`) : null
     );
   }
 
@@ -1059,7 +1098,7 @@
       h(
         "div",
         { class: "pair" },
-        field("Quantity", qtyStepper(qtyOf(it), (n) => patchItem(it.id, { qty: n }, { redraw: true }))),
+        field("Quantity", qtyStepper(it.status === "bought" ? purchaseOf(it).qty : qtyOf(it), (n) => setQty(it.id, n))),
         field("Retail price (each)", moneyInput(it.regular, (v) => patchItem(it.id, { regular: v }), "Optional"), "The normal non-sale price. Used to show what you saved.")
       ),
       it.priceNote ? h("p", { class: "price-note" }, `Price check, Nov 22: ${it.priceNote}`) : null
@@ -1165,45 +1204,97 @@
     );
   }
 
-  // ---------- Mark bought ----------
+  // Changing the quantity of something already bought keeps the price each and updates the total.
+  function setQty(id, n) {
+    const it = item(id);
+    if (it.status !== "bought" || !it.purchase) return patchItem(id, { qty: n }, { redraw: true });
+    const p = purchaseOf(it);
+    patchItem(id, { qty: n, purchase: purchaseRecord({ ...p, qty: n }) }, { redraw: true });
+  }
+
+  function purchaseRecord(st) {
+    const qty = Math.max(1, Math.round(num(st.qty) || 1));
+    const each = st.gift ? null : num(st.each);
+    const regularEach = num(st.regularEach);
+    return {
+      cand: st.cand || null,
+      qty,
+      gift: !!st.gift,
+      each,
+      paid: each == null ? null : round2(each * qty),
+      regularEach,
+      regular: regularEach == null ? null : round2(regularEach * qty),
+      store: st.gift ? "" : String(st.store || "").trim(),
+      from: st.gift ? String(st.from || "").trim() : "",
+      date: st.date || today(),
+    };
+  }
+
+  // ---------- Mark bought / edit purchase ----------
   function markBought(id) {
     const it = item(id);
+    const editing = it.status === "bought" && !!it.purchase;
     const cands = it.cands || [];
     const mineHeart = it[PEOPLE[S.me].heart];
     const defaultCand = cands.find((c) => c.id === it.chosen) || cands.find((c) => c.id === mineHeart) || cands[0] || null;
-    const unitGuess = (c) => num(c?.price) ?? num(it.low);
-    const st = {
-      cand: defaultCand?.id || "",
-      paid: unitGuess(defaultCand) != null ? +(unitGuess(defaultCand) * qtyOf(it)).toFixed(2) : null,
-      store: hostOf(defaultCand?.url),
-      date: today(),
-      regular: num(it.regular) != null ? +(num(it.regular) * qtyOf(it)).toFixed(2) : null,
-    };
+    const unitGuess = (c) => round2(num(c?.price) ?? num(it.low));
+    const st = editing
+      ? { ...purchaseOf(it), cand: it.purchase.cand || "" }
+      : {
+          cand: defaultCand?.id || "",
+          qty: qtyOf(it),
+          gift: false,
+          each: unitGuess(defaultCand),
+          store: hostOf(defaultCand?.url),
+          from: "",
+          date: today(),
+          regularEach: num(it.regular),
+        };
     pushSheet({
-      render(body, head) {
+      render(body, head, entry) {
         sheetHead(head, {
           left: ["Cancel", popSheet],
-          title: "Mark bought",
+          title: editing ? "Edit purchase" : "Mark bought",
           right: [
             "Save",
             () => {
               if (document.activeElement) document.activeElement.blur();
               setTimeout(() => {
-                patchItem(
-                  id,
-                  {
-                    status: "bought",
-                    chosen: st.cand || it.chosen,
-                    purchase: { cand: st.cand || null, paid: st.paid, store: st.store.trim(), date: st.date, regular: st.regular },
-                  },
-                  { redraw: true }
-                );
+                const rec = purchaseRecord(st);
+                patchItem(id, { status: "bought", qty: rec.qty, chosen: st.cand || it.chosen, purchase: rec }, { redraw: true });
                 popSheet();
-                toast(`Marked bought: ${money(st.paid, true) || "no amount"}`);
+                toast(rec.gift ? "Marked as a gift" : `${editing ? "Saved" : "Marked bought"}: ${money(rec.paid, true) || "no amount"}`);
               });
             },
           ],
         });
+        const redraw = () => {
+          if (document.activeElement) document.activeElement.blur();
+          setTimeout(() => entry.draw());
+        };
+        body.append(
+          h(
+            "div",
+            { class: "segctl gift-seg" },
+            [
+              [false, "We bought it"],
+              [true, "It was a gift"],
+            ].map(([g, label]) =>
+              h(
+                "button",
+                {
+                  type: "button",
+                  "aria-pressed": String(!!st.gift === g),
+                  onclick: () => {
+                    st.gift = g;
+                    redraw();
+                  },
+                },
+                label
+              )
+            )
+          )
+        );
         if (cands.length) {
           const sel = h(
             "select",
@@ -1212,11 +1303,12 @@
               onchange: (e) => {
                 st.cand = e.target.value;
                 const c = cands.find((x) => x.id === st.cand);
-                if (c && unitGuess(c) != null) {
-                  st.paid = +(unitGuess(c) * qtyOf(it)).toFixed(2);
-                  paidInput.querySelector("input").value = String(st.paid);
+                if (!st.gift && c && unitGuess(c) != null) {
+                  st.each = unitGuess(c);
+                  eachInput.querySelector("input").value = String(st.each);
+                  showTotal();
                 }
-                if (c?.url && !st.store) {
+                if (c?.url && !st.store && storeInput) {
                   st.store = hostOf(c.url);
                   storeInput.value = st.store;
                 }
@@ -1227,14 +1319,45 @@
           );
           body.append(field("Which one", sel));
         }
-        const paidInput = moneyInput(st.paid, (v) => (st.paid = v));
-        const storeInput = h("input", { class: "input", value: st.store, placeholder: "Costco, Amazon…", oninput: (e) => (st.store = e.target.value) });
-        body.append(
-          field(qtyOf(it) > 1 ? `Total paid for ${qtyOf(it)}` : "Total paid", paidInput, "Include tax if you want the tracker to match your card."),
-          field("Store", storeInput),
-          field("Date", h("input", { class: "input", type: "date", value: st.date, onchange: (e) => (st.date = e.target.value) })),
-          field(qtyOf(it) > 1 ? `Retail price for ${qtyOf(it)}` : "Retail price", moneyInput(st.regular, (v) => (st.regular = v), "Optional"), "The normal non-sale price. You saved the difference between this and what you paid.")
+        const total = h("p", { class: "hint purchase-total" });
+        const showTotal = () => {
+          const e = num(st.each);
+          const q = Math.max(1, num(st.qty) || 1);
+          total.textContent = e == null ? "" : q > 1 ? `Total ${money(round2(e * q), true)} for ${q}` : "";
+        };
+        const qtyField = field(
+          "How many",
+          qtyStepper(st.qty, (n) => {
+            st.qty = n;
+            showTotal();
+          })
         );
+        const dateField = field("Date", h("input", { class: "input", type: "date", value: st.date, onchange: (e) => (st.date = e.target.value) }));
+        let eachInput = null;
+        let storeInput = null;
+        if (st.gift) {
+          body.append(
+            qtyField,
+            field("From", h("input", { class: "input", value: st.from || "", placeholder: "Optional", oninput: (e) => (st.from = e.target.value) })),
+            dateField,
+            h("p", { class: "hint" }, "Gifts show up under Bought but don't count toward what you spent or the budget.")
+          );
+        } else {
+          eachInput = moneyInput(st.each, (v) => {
+            st.each = v;
+            showTotal();
+          });
+          storeInput = h("input", { class: "input", value: st.store || "", placeholder: "Costco, Amazon…", oninput: (e) => (st.store = e.target.value) });
+          body.append(
+            h("div", { class: "pair" }, qtyField, field("Price each", eachInput)),
+            total,
+            h("p", { class: "hint" }, "Include tax if you want the tracker to match your card."),
+            field("Store", storeInput),
+            dateField,
+            field("Retail price each", moneyInput(st.regularEach, (v) => (st.regularEach = v), "Optional"), "The normal non-sale price. You saved the difference between this and what you paid.")
+          );
+          showTotal();
+        }
       },
     });
   }

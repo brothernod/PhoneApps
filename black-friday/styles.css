@@ -209,6 +209,7 @@ a { color: inherit; }
 .deal-best b { font-size: 22px; font-weight: 820; font-stretch: 110%; font-variant-numeric: tabular-nums; }
 .deal-opts { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 6px; font-size: 14.5px; }
 .deal-link { margin-left: 8px; color: var(--j); font-weight: 650; }
+.chip.gift { background: var(--tag); color: var(--tag-ink); }
 .chip.wait { background: transparent; border: 1px dashed var(--faint); }
 
 .grip {
@@ -385,7 +386,10 @@ a.btn { text-decoration: none; }
 .take p { margin: 0; white-space: pre-wrap; }
 .take .empty-take { color: var(--faint); }
 
-.bought-card { background: var(--tag); color: var(--tag-ink); border-radius: 16px; padding: 14px 16px; margin-bottom: 14px; }
+.bought-card { position: relative; background: var(--tag); color: var(--tag-ink); border-radius: 16px; padding: 14px 16px; margin-bottom: 14px; }
+.bought-card .bought-edit { position: absolute; top: 6px; right: 6px; color: inherit; text-decoration: underline; font-size: 15px; }
+.gift-seg { margin-bottom: 14px; }
+.purchase-total { margin: -4px 0 6px; font-weight: 650; }
 .bought-card b { font-size: 22px; font-weight: 820; font-stretch: 110%; font-variant-numeric: tabular-nums; }
 
 /* option editor */
