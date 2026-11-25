@@ -30,6 +30,7 @@ header p{color:var(--mut);margin:8px 0 0;max-width:62ch}
 input[type=range]{width:100%;accent-color:var(--acc);height:28px}
 select,input[type=number]{font:inherit;font-size:16px;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);width:100%;min-height:44px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pre{display:grid;grid-template-columns:1fr 1fr;gap:8px}.pre button[aria-pressed=true]{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
 .seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .seg button{border:0;border-radius:0;background:var(--bg);color:var(--ink);font-weight:600}
 .seg button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
@@ -80,7 +81,9 @@ hr{border:0;border-top:1px solid var(--line);margin:2px 0}
     <label class="btn pri" for="file">Choose a photo<input id="file" type="file" accept="image/*" hidden></label>
     <div class="two"><button id="pasteBtn">Paste image</button><div class="pz" id="pz" contenteditable="true" role="textbox" aria-label="Paste area: long-press and choose Paste">Or long-press here → Paste</div></div>
     <p class="hint" id="srcNote">The sample image is shown. A subject lifted from an iPhone photo (touch and hold the person, then Copy) pastes straight in. Its background stays transparent and won't get painted.</p>
-    <div class="row"><label for="k">Layers (paint colors) <output id="kO">5</output></label><input id="k" type="range" min="2" max="10" value="5"></div>
+    <div class="row"><span class="lbl">Quick looks</span>
+      <div class="pre" id="pre"><button data-p="bold">Bold poster</button><button data-p="bal" aria-pressed="true">Balanced</button><button data-p="det">Detailed</button><button data-p="mug">Mug</button></div></div>
+    <div class="row"><label for="k">Layers (paint colors) <output id="kO">6</output></label><input id="k" type="range" min="2" max="10" value="6"></div>
     <div class="row"><label for="mode">Colors</label>
       <select id="mode"><option value="color">Full color (picked from the photo)</option><option value="gray">Shades (light to dark tones)</option></select></div>
     <div class="row"><span class="lbl">Stencil style</span>
@@ -88,8 +91,10 @@ hr{border:0;border-top:1px solid var(--line);margin:2px 0}
       <p class="hint" id="styleHint">Each stencil also opens up every darker area. Later coats cover small gaps, so alignment is forgiving.</p></div>
     <hr>
     <div class="row"><label for="det">Detail <output id="detO">500 px</output></label><input id="det" type="range" min="200" max="900" step="50" value="500"></div>
-    <div class="row"><label for="blur">Smooth the photo <output id="blurO">1</output></label><input id="blur" type="range" min="0" max="5" value="1"></div>
-    <div class="row"><label for="speck">Remove specks smaller than <output id="speckO">40 px</output></label><input id="speck" type="range" min="0" max="400" step="10" value="40"></div>
+    <div class="row"><label for="blur">Painterly smoothing <output id="blurO">3</output></label><input id="blur" type="range" min="0" max="8" value="3"><p class="hint">Flattens fur, skin and fabric texture into clean shapes while keeping edges sharp.</p></div>
+    <div class="row"><label for="pop">Color pop <output id="popO">15</output></label><input id="pop" type="range" min="-60" max="100" value="15"></div>
+    <div class="row"><label for="rare">Keep small details <output id="rareO">60</output></label><input id="rare" type="range" min="0" max="100" value="60"><p class="hint">Higher gives eyes, noses and collars their own paint. Lower spends the paints on the big areas.</p></div>
+    <div class="row"><label for="speck">Remove specks smaller than <output id="speckO">60 px</output></label><input id="speck" type="range" min="0" max="400" step="10" value="60"></div>
     <div class="row"><label for="con">Contrast <output id="conO">0</output></label><input id="con" type="range" min="-60" max="60" value="0"></div>
     <div class="row"><label for="board">Board color (unpainted)</label><input id="board" type="color" value="#ffffff" style="width:100%;height:44px;border:1px solid var(--line);border-radius:8px;background:var(--bg)"></div>
     <hr>
@@ -132,7 +137,7 @@ hr{border:0;border-top:1px solid var(--line);margin:2px 0}
     <li><b>Mist coats.</b> Several light passes bleed under the edges less than one heavy coat. Fewer layers and more speck removal make stencils that are faster to weed.</li>
   </ol>
 </div></section>
-<footer class="band" style="padding-block:18px;text-align:center"><p class="hint">Version 1.2 · Nov 25, 2026, 5:25 PM ET</p></footer>
+<footer class="band" style="padding-block:18px;text-align:center"><p class="hint">Version 1.3 · Nov 25, 2026, 5:45 PM ET</p></footer>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
@@ -161,25 +166,47 @@ function sample(){
 }
 
 /* ---------- image processing ---------- */
-function kmeans(P,n,k,r){
-  const C=new Float32Array(k*3),D=new Float32Array(n).fill(1e12);let i0=Math.floor(r()*n);C.set(P.subarray(i0*3,i0*3+3),0);
+/* ---- color science: sRGB <-> CIELAB (perceptual distances) ---- */
+const LIN=new Float32Array(256);for(let i=0;i<256;i++){const c=i/255;LIN[i]=c<=0.04045?c/12.92:((c+0.055)/1.055)**2.4}
+const fL=t=>t>0.008856?Math.cbrt(t):7.787*t+16/116;
+function toLab(r,g,b){const R=LIN[r],G=LIN[g],B=LIN[b];const fx=fL((R*.4124+G*.3576+B*.1805)/.95047),fy=fL(R*.2126+G*.7152+B*.0722),fz=fL((R*.0193+G*.1192+B*.9505)/1.08883);return[116*fy-16,500*(fx-fy),200*(fy-fz)]}
+function fromLab(L,a,b){const fy=(L+16)/116,fx=fy+a/500,fz=fy-b/200,f=t=>t*t*t>0.008856?t*t*t:(t-16/116)/7.787;const x=f(fx)*.95047,y=f(fy),z=f(fz)*1.08883;
+  const g=c=>{c=Math.max(0,Math.min(1,c));return 255*(c<=0.0031308?12.92*c:1.055*c**(1/2.4)-0.055)};
+  return[g(x*3.2406-y*1.5372-z*.4986),g(-x*.9689+y*1.8758+z*.0415),g(x*.0557-y*.2040+z*1.0570)]}
+/* ---- painterly smoothing: Kuwahara filter (flattens fur/texture, keeps edges) ---- */
+function kuwahara(Lc,Ac,Bc,M,W,H,r){
+  if(r<1)return;const W1=W+1,sz=W1*(H+1),iL=new Float64Array(sz),iA=new Float64Array(sz),iB=new Float64Array(sz),iQ=new Float64Array(sz),iN=new Float64Array(sz);
+  for(let y=0;y<H;y++){let sL=0,sA=0,sB=0,sQ=0,sN=0;for(let x=0;x<W;x++){const p=y*W+x,m=M[p];if(m){sL+=Lc[p];sA+=Ac[p];sB+=Bc[p];sQ+=Lc[p]*Lc[p];sN++}
+    const o=(y+1)*W1+x+1,u=y*W1+x+1;iL[o]=iL[u]+sL;iA[o]=iA[u]+sA;iB[o]=iB[u]+sB;iQ[o]=iQ[u]+sQ;iN[o]=iN[u]+sN}}
+  const S=(I,x0,y0,x1,y1)=>I[(y1+1)*W1+x1+1]-I[y0*W1+x1+1]-I[(y1+1)*W1+x0]+I[y0*W1+x0];
+  const oL=new Float32Array(W*H),oA=new Float32Array(W*H),oB=new Float32Array(W*H);
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){const p=y*W+x;oL[p]=Lc[p];oA[p]=Ac[p];oB[p]=Bc[p];if(!M[p])continue;
+    const xs=[[Math.max(0,x-r),x],[x,Math.min(W-1,x+r)]],ys=[[Math.max(0,y-r),y],[y,Math.min(H-1,y+r)]];let best=1e18;
+    for(const[x0,x1]of xs)for(const[y0,y1]of ys){const n=S(iN,x0,y0,x1,y1);if(n<1)continue;const mL=S(iL,x0,y0,x1,y1)/n,v=S(iQ,x0,y0,x1,y1)/n-mL*mL;
+      if(v<best){best=v;oL[p]=mL;oA[p]=S(iA,x0,y0,x1,y1)/n;oB[p]=S(iB,x0,y0,x1,y1)/n}}}
+  Lc.set(oL);Ac.set(oA);Bc.set(oB);
+}
+/* ---- weighted k-means over a Lab histogram: rare but distinct colors (eyes, nose, collar) get a fair vote ---- */
+function wkmeans(P,Wt,n,k,r){
+  const C=new Float32Array(k*3),D=new Float64Array(n).fill(1e18);
+  let tot=0;for(let i=0;i<n;i++)tot+=Wt[i];let t=r()*tot,j=0;for(;j<n-1;j++){t-=Wt[j];if(t<=0)break}C.set(P.subarray(j*3,j*3+3),0);
   for(let c=1;c<k;c++){let sum=0;const a=(c-1)*3;
-    for(let i=0;i<n;i++){const dr=P[i*3]-C[a],dg=P[i*3+1]-C[a+1],db=P[i*3+2]-C[a+2],d=dr*dr+dg*dg+db*db;if(d<D[i])D[i]=d;sum+=D[i]}
-    let t=r()*sum,j=0;for(;j<n-1;j++){t-=D[j];if(t<=0)break}C.set(P.subarray(j*3,j*3+3),c*3)}
-  const sums=new Float64Array(k*3),cnt=new Int32Array(k);
-  for(let it=0;it<14;it++){sums.fill(0);cnt.fill(0);
-    for(let i=0;i<n;i++){let b=0,bd=1e12;for(let c=0;c<k;c++){const dr=P[i*3]-C[c*3],dg=P[i*3+1]-C[c*3+1],db=P[i*3+2]-C[c*3+2],d=dr*dr+dg*dg+db*db;if(d<bd){bd=d;b=c}}
-      cnt[b]++;sums[b*3]+=P[i*3];sums[b*3+1]+=P[i*3+1];sums[b*3+2]+=P[i*3+2]}
-    for(let c=0;c<k;c++)if(cnt[c])for(let j=0;j<3;j++)C[c*3+j]=sums[c*3+j]/cnt[c]}
+    for(let i=0;i<n;i++){const d=(P[i*3]-C[a])**2+(P[i*3+1]-C[a+1])**2+(P[i*3+2]-C[a+2])**2;if(d<D[i])D[i]=d;sum+=D[i]*Wt[i]}
+    t=r()*sum;j=0;for(;j<n-1;j++){t-=D[j]*Wt[j];if(t<=0)break}C.set(P.subarray(j*3,j*3+3),c*3)}
+  const s=new Float64Array(k*3),w=new Float64Array(k);
+  for(let it=0;it<25;it++){s.fill(0);w.fill(0);
+    for(let i=0;i<n;i++){let b=0,bd=1e18;for(let c=0;c<k;c++){const d=(P[i*3]-C[c*3])**2+(P[i*3+1]-C[c*3+1])**2+(P[i*3+2]-C[c*3+2])**2;if(d<bd){bd=d;b=c}}
+      w[b]+=Wt[i];s[b*3]+=P[i*3]*Wt[i];s[b*3+1]+=P[i*3+1]*Wt[i];s[b*3+2]+=P[i*3+2]*Wt[i]}
+    for(let c=0;c<k;c++)if(w[c])for(let q=0;q<3;q++)C[c*3+q]=s[c*3+q]/w[c]}
   return C;
 }
-function boxBlur(a,W,H,r){
-  if(!r)return;const t=new Float32Array(a.length);
-  for(let y=0;y<H;y++){let s=0,o=y*W;for(let x=-r;x<=r;x++)s+=a[o+Math.max(0,Math.min(W-1,x))];
-    for(let x=0;x<W;x++){t[o+x]=s/(2*r+1);s+=a[o+Math.min(W-1,x+r+1)]-a[o+Math.max(0,x-r)]}}
-  for(let x=0;x<W;x++){let s=0;for(let y=-r;y<=r;y++)s+=t[Math.max(0,Math.min(H-1,y))*W+x];
-    for(let y=0;y<H;y++){a[y*W+x]=s/(2*r+1);s+=t[Math.min(H-1,y+r+1)*W+x]-t[Math.max(0,y-r)*W+x]}}
-}
+/* ---- majority filter: rounds off ragged, pixel-stair edges between color regions ---- */
+function majority(L,W,H,K){const o=new Int16Array(L),ct=new Int32Array(K+1);
+  for(let y=1;y<H-1;y++)for(let x=1;x<W-1;x++){const p=y*W+x;let b=L[p],bc=0;
+    for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++)ct[L[p+dy*W+dx]]++;
+    for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const v=L[p+dy*W+dx];if(ct[v]>bc){bc=ct[v];b=v}ct[v]=0}
+    if(bc>=5)o[p]=b}
+  L.set(o)}
 function despeck(L,W,H,min){
   if(min<2)return;const N=W*H,comp=new Int32Array(N).fill(-1),q=new Int32Array(N);let id=0;
   for(let s=0;s<N;s++){if(comp[s]!==-1)continue;const lab=L[s];let h=0,t=0;q[t++]=s;comp[s]=id;
@@ -199,24 +226,30 @@ function processImg(){
   const W=Math.max(8,Math.round(sw*sc)),H=Math.max(8,Math.round(sh*sc)),N=W*H;
   const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(S.src,0,0,W,H);
   const d=x.getImageData(0,0,W,H).data;S.orig=new ImageData(new Uint8ClampedArray(d),W,H);
-  const R=new Float32Array(N),G=new Float32Array(N),B=new Float32Array(N),A=new Uint8Array(N);
-  const cv=+$('con').value*1.6,f=259*(cv+255)/(255*(259-cv)),gray=$('mode').value==='gray';
-  for(let i=0;i<N;i++){A[i]=d[i*4+3]>=128;let r=f*(d[i*4]-128)+128,g=f*(d[i*4+1]-128)+128,b=f*(d[i*4+2]-128)+128;
-    if(gray){r=g=b=0.2126*r+0.7152*g+0.0722*b}R[i]=r;G[i]=g;B[i]=b}
-  const br=+$('blur').value;boxBlur(R,W,H,br);boxBlur(G,W,H,br);boxBlur(B,W,H,br);
-  const opq=[];const step=Math.max(1,Math.floor(N/30000));for(let i=0;i<N;i+=step)if(A[i])opq.push(i);
-  let k=+$('k').value;if(!opq.length){toast('This image is fully transparent');return}
-  const P=new Float32Array(opq.length*3);opq.forEach((p,i)=>{P[i*3]=R[p];P[i*3+1]=G[p];P[i*3+2]=B[p]});
-  const C=kmeans(P,opq.length,k,rng(7));
-  const L=new Int16Array(N);
-  for(let i=0;i<N;i++){if(!A[i]){L[i]=k;continue}let b=0,bd=1e12;for(let c2=0;c2<k;c2++){const dr=R[i]-C[c2*3],dg=G[i]-C[c2*3+1],db=B[i]-C[c2*3+2],dd=dr*dr+dg*dg+db*db;if(dd<bd){bd=dd;b=c2}}L[i]=b}
-  const sp=+$('speck').value*(W*H)/(500*375);despeck(L,W,H,Math.round(sp));despeck(L,W,H,Math.round(sp));
-  const cnt=new Int32Array(k+1);for(let i=0;i<N;i++)cnt[L[i]]++;
-  const used=[];for(let c2=0;c2<k;c2++)if(cnt[c2])used.push(c2);
-  used.sort((a,b)=>lum([C[b*3],C[b*3+1],C[b*3+2]])-lum([C[a*3],C[a*3+1],C[a*3+2]]));
-  const map=new Int16Array(k+1).fill(-1);used.forEach((c2,i)=>map[c2]=i);
-  const rank=new Int8Array(N);for(let i=0;i<N;i++)rank[i]=map[L[i]];
-  const newBase=used.map(c2=>hex([C[c2*3],C[c2*3+1],C[c2*3+2]]));
+  const Lc=new Float32Array(N),Ac=new Float32Array(N),Bc=new Float32Array(N),M=new Uint8Array(N);
+  const con=1+(+$('con').value)/100,pop=1+(+$('pop').value)/60,gray=$('mode').value==='gray';
+  for(let i=0;i<N;i++){M[i]=d[i*4+3]>=128;const l=toLab(d[i*4],d[i*4+1],d[i*4+2]);
+    Lc[i]=Math.max(0,Math.min(100,50+(l[0]-50)*con));Ac[i]=gray?0:l[1]*pop;Bc[i]=gray?0:l[2]*pop}
+  kuwahara(Lc,Ac,Bc,M,W,H,Math.round(+$('blur').value*det/500));
+  // Lab histogram → weighted k-means. Weight = count^e, so small distinct areas still win a paint color.
+  const e=1-0.75*(+$('rare').value)/100,bins=new Map();let opq=0;
+  for(let i=0;i<N;i++){if(!M[i])continue;opq++;const key=(Math.round(Lc[i]/3)*100+Math.round(Ac[i]/5)+50)*100+Math.round(Bc[i]/5)+50;
+    let v=bins.get(key);if(!v){v=[0,0,0,0];bins.set(key,v)}v[0]++;v[1]+=Lc[i];v[2]+=Ac[i];v[3]+=Bc[i]}
+  if(!opq){toast('This image is fully transparent');return}
+  const n=bins.size,P=new Float32Array(n*3),Wt=new Float64Array(n);let j=0;
+  for(const v of bins.values()){P[j*3]=v[1]/v[0];P[j*3+1]=v[2]/v[0];P[j*3+2]=v[3]/v[0];Wt[j]=v[0]**e;j++}
+  const k=Math.min(+$('k').value,n),C=wkmeans(P,Wt,n,k,rng(7));
+  const Lb=new Int16Array(N);
+  for(let i=0;i<N;i++){if(!M[i]){Lb[i]=k;continue}let b=0,bd=1e18;for(let q=0;q<k;q++){const dd=(Lc[i]-C[q*3])**2+(Ac[i]-C[q*3+1])**2+(Bc[i]-C[q*3+2])**2;if(dd<bd){bd=dd;b=q}}Lb[i]=b}
+  majority(Lb,W,H,k);majority(Lb,W,H,k);
+  const sp=Math.round(+$('speck').value*N/(500*375));despeck(Lb,W,H,sp);despeck(Lb,W,H,sp);
+  const cnt=new Float64Array(k+1),sL=new Float64Array(k),sA=new Float64Array(k),sB=new Float64Array(k);
+  for(let i=0;i<N;i++){const q=Lb[i];cnt[q]++;if(q<k){sL[q]+=Lc[i];sA[q]+=Ac[i];sB[q]+=Bc[i]}}
+  const used=[];for(let q=0;q<k;q++)if(cnt[q])used.push(q);
+  used.sort((a,b)=>sL[b]/cnt[b]-sL[a]/cnt[a]);
+  const map=new Int16Array(k+1).fill(-1);used.forEach((q,i)=>map[q]=i);
+  const rank=new Int8Array(N);for(let i=0;i<N;i++)rank[i]=map[Lb[i]];
+  const newBase=used.map(q=>hex(fromLab(sL[q]/cnt[q],sA[q]/cnt[q],sB[q]/cnt[q])));
   const keep=S.k===used.length&&S.pal.length===used.length&&S.custom;
   S.W=W;S.H=H;S.rank=rank;S.k=used.length;S.base=newBase;if(!keep){S.pal=newBase.slice();S.custom=false}
   S.upto=S.k-1;$('upto').max=S.k;$('upto').value=S.k;
@@ -322,8 +355,13 @@ function updDl(){}
 function sizeNote(){if(!S.W)return;const g=geom(),aw=g.wIn,ah=S.H/g.ppi,sw=g.TW/g.ppi,sh=g.TH/g.ppi,fits=(Math.min(sw,sh)<=11.5&&Math.max(sw,sh)<=23.5);
   $('size').innerHTML=`Art ${aw.toFixed(1)} × ${ah.toFixed(1)} in · sheet ${sw.toFixed(1)} × ${sh.toFixed(1)} in. `+(fits?'Fits a 12×24 in mat.':'<b style="color:var(--acc)">Too big for a 12×24 in mat.</b>')}
 function later(fn){$('busy').classList.add('on');clearTimeout(timer);timer=setTimeout(()=>{requestAnimationFrame(()=>{fn();$('busy').classList.remove('on')})},180)}
-const outs={k:v=>v,det:v=>v+' px',blur:v=>v,speck:v=>v+' px',con:v=>v};
+const outs={k:v=>v,det:v=>v+' px',blur:v=>v,pop:v=>v,rare:v=>v,speck:v=>v+' px',con:v=>v};
 for(const id in outs){$(id).addEventListener('input',()=>{$(id+'O').textContent=outs[id]($(id).value);later(processImg)})}
+const PRE={bold:{k:4,blur:4,speck:150,pop:25,rare:40},bal:{k:6,blur:3,speck:60,pop:15,rare:60},det:{k:10,blur:2,speck:30,pop:10,rare:75},mug:{k:4,blur:5,speck:200,pop:20,rare:50,wIn:3.5,mIn:0.5}};
+$('pre').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const v=PRE[b.dataset.p];
+  for(const id in v){$(id).value=v[id];if(outs[id])$(id+'O').textContent=outs[id](v[id])}
+  $('pre').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));S.custom=false;sizeNote();later(processImg)});
+for(const id of ['k','blur','speck','pop','rare','con','det'])$(id).addEventListener('input',()=>$('pre').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false')));
 $('mode').onchange=()=>{S.custom=false;later(processImg)};
 $('k').addEventListener('input',()=>{S.custom=false});
 $('board').addEventListener('input',render);
