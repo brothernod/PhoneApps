@@ -1,5 +1,5 @@
 {
-  "checked": "2026-11-26T11:16:00Z",
+  "checked": "2026-11-26T23:10:54Z",
   "items": {
     "ev": {
       "best": {
@@ -7,14 +7,14 @@
         "store": "Emporia",
         "url": "https://shop.emporiaenergy.com/products/emporia-ev-charger",
         "optionId": "ev-emporia",
-        "note": "Emporia store price from Nov 25 (page not readable today); Wallbox $699.99 at Best Buy, no Black Friday cut"
+        "note": "Emporia direct, in stock, no Black Friday cut; Wallbox $699.99 at Best Buy"
       },
       "options": {
         "ev-emporia": {
           "price": 449.0,
           "store": "Emporia",
           "url": "https://shop.emporiaenergy.com/products/emporia-ev-charger",
-          "seen": "2026-11-25"
+          "seen": "2026-11-26"
         },
         "ev-wallbox": {
           "price": 699.99,
@@ -30,7 +30,7 @@
         "store": "Dyson",
         "url": "https://www.dyson.com/air-treatment/air-purifiers/purifier-hot-cool-gen1-hp10/white",
         "optionId": "heater-hp10",
-        "note": "HP10 $399.99 at Dyson.com (was $529.99), in stock; HP1 $449.99 Best Buy Black Friday deal, $529.99 at Target"
+        "note": "HP10 Dyson.com price from this morning (not on Dyson's BF deals page tonight); HP1 $449.99 Best Buy Black Friday deal, $529.99 Target"
       },
       "options": {
         "heater-hp10": {
@@ -50,16 +50,16 @@
     "ups": {
       "best": {
         "price": 359.95,
-        "store": "Adorama",
-        "url": "https://www.adorama.com/cy1500pfc.html",
+        "store": "CDW",
+        "url": "https://www.cdw.com/product/cyberpower-cp1500pfcrm2u-pfc-sinewave-ups-systems/7130945",
         "optionId": "ups-cp1500",
-        "note": "Everyday price (list $399.95), same $359.95 at CDW and Newegg; no Black Friday cut"
+        "note": "Everyday price (list $399.95), same $359.95 at Adorama; no Black Friday cut"
       },
       "options": {
         "ups-cp1500": {
           "price": 359.95,
-          "store": "Adorama",
-          "url": "https://www.adorama.com/cy1500pfc.html",
+          "store": "CDW",
+          "url": "https://www.cdw.com/product/cyberpower-cp1500pfcrm2u-pfc-sinewave-ups-systems/7130945",
           "seen": "2026-11-26"
         }
       }
@@ -70,14 +70,14 @@
         "store": "SmartWings",
         "url": "https://www.smartwingshome.com/products/smartwings-motorized-light-filtering-roller-shades-70-blackout-safari",
         "optionId": "blinds-sw",
-        "note": "$179.99 start price less 10% sitewide auto-applied (15% over $1,500), no code, no end date; size-dependent; from Nov 25 check"
+        "note": "$179.99 start price less 10% Black Friday sitewide, auto-applied (15% over $1,500); size-dependent, no end date posted"
       },
       "options": {
         "blinds-sw": {
           "price": 161.99,
           "store": "SmartWings",
           "url": "https://www.smartwingshome.com/products/smartwings-motorized-light-filtering-roller-shades-70-blackout-safari",
-          "seen": "2026-11-25"
+          "seen": "2026-11-26"
         }
       }
     },
@@ -87,7 +87,7 @@
         "store": "ameriDroid",
         "url": "https://ameridroid.com/products/aqara-door-and-window-sensor-p2",
         "optionId": "door-p2",
-        "note": "Regular price, no sale, in stock; store closed Thanksgiving, ships within 2 business days"
+        "note": "Regular price, in stock; closed Thanksgiving, ships within 2 business days; Best Buy no longer sells it new"
       },
       "options": {
         "door-p2": {
@@ -104,14 +104,14 @@
         "store": "Bambu Lab",
         "url": "https://us.store.bambulab.com/products/x2d?id=720069852747550728",
         "optionId": "printer-x2d",
-        "note": "Bambu Black Friday sale Combo $789 (reg $899), valid through Dec 1 2 AM ET; Best Buy $789.99"
+        "note": "Bambu Black Friday sale Combo $789 (reg $899) through Dec 1 2 AM ET; extra $30 coupon for email subscribers; Best Buy $789.99"
       },
       "options": {
         "printer-x2d": {
           "price": 789.0,
           "store": "Bambu Lab",
           "url": "https://us.store.bambulab.com/products/x2d?id=720069852747550728",
-          "seen": "2026-11-25"
+          "seen": "2026-11-26"
         }
       }
     },
@@ -121,14 +121,14 @@
         "store": "Best Buy",
         "url": "https://www.bestbuy.com/product/aqara-uwb-smart-lock-u400-kit-with-m100-hub-matter-thread-wifi-apple-home-key-fingerprint-rechargeable-battery-black/JJ8RHCJ2S9",
         "optionId": "ce0c0925-18a",
-        "note": "Best Buy Black Friday deal, $90 off $289.99, kit with M100 hub; Slickdeals says still available as of Nov 25, verify at checkout"
+        "note": "Best Buy Black Friday deal, $90 off $289.99, kit includes M100 hub; stock not confirmed"
       },
       "options": {
         "ce0c0925-18a": {
           "price": 199.99,
           "store": "Best Buy",
           "url": "https://www.bestbuy.com/product/aqara-uwb-smart-lock-u400-kit-with-m100-hub-matter-thread-wifi-apple-home-key-fingerprint-rechargeable-battery-black/JJ8RHCJ2S9",
-          "seen": "2026-11-25"
+          "seen": "2026-11-26"
         }
       }
     },
@@ -138,7 +138,7 @@
         "store": "Amazon",
         "url": "https://www.amazon.com/dp/B0GJTXVN9Z",
         "optionId": "airtags-2",
-        "note": "4-pack $79 at Amazon per Cult of Mac price box dated Nov 24 (was $69.99 Nov 11-12)"
+        "note": "4-pack $79 at Amazon per Cult of Mac price box dated Nov 24 (was $69.99 Nov 11-12); not re-confirmed today"
       },
       "options": {
         "airtags-2": {
@@ -152,16 +152,39 @@
     "dbcd3615-f19": {
       "best": {
         "price": 44.99,
-        "store": "Best Buy",
-        "url": "https://www.bestbuy.com/product/honeywell-home-smart-thermostat-compatible-wireless-room-sensor-white/JJ8Z85C38G",
+        "store": "Honeywell Home",
+        "url": "https://www.honeywellhome.com/products/smart-thermostat-compatible-wireless-room-sensor",
         "optionId": "72c46e17-e4c",
-        "note": "XRSENSOR-1PK at Best Buy (seller not confirmed); Honeywell store $49.99 (was $64.99), in stock"
+        "note": "XRSENSOR-1PK, in stock at Honeywell Home; Best Buy also $44.99"
       },
       "options": {
         "72c46e17-e4c": {
           "price": 44.99,
-          "store": "Best Buy",
-          "url": "https://www.bestbuy.com/product/honeywell-home-smart-thermostat-compatible-wireless-room-sensor-white/JJ8Z85C38G",
+          "store": "Honeywell Home",
+          "url": "https://www.honeywellhome.com/products/smart-thermostat-compatible-wireless-room-sensor",
+          "seen": "2026-11-26"
+        }
+      }
+    },
+    "bed": {
+      "best": {
+        "price": 1119.0,
+        "store": "Article",
+        "url": "https://www.article.com/product/29606/lenia-king-upholstered-bed-walnut-and-flou-moss",
+        "optionId": "b7934baa-09c",
+        "note": "Lenia King $1,119 (was $1,399) at Article; Catalina King $3,309 at The Sleep Store, no sale; Thuma/Merax prices not readable"
+      },
+      "options": {
+        "b7934baa-09c": {
+          "price": 1119.0,
+          "store": "Article",
+          "url": "https://www.article.com/product/29606/lenia-king-upholstered-bed-walnut-and-flou-moss",
+          "seen": "2026-11-26"
+        },
+        "8707d3f3-dd9": {
+          "price": 3309.0,
+          "store": "The Sleep Store",
+          "url": "https://thesleepstoreusa.com/products/catalina-platform-bed-in-black-walnut-by-greenington",
           "seen": "2026-11-26"
         }
       }
