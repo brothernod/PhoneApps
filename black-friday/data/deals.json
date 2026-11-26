@@ -1,60 +1,169 @@
 {
-  "checked": "2026-11-25T23:10:53Z",
+  "checked": "2026-11-26T11:16:00Z",
   "items": {
     "ev": {
-      "best": { "price": 449.0, "store": "Emporia", "url": "https://shop.emporiaenergy.com/products/emporia-ev-charger", "optionId": "ev-emporia", "note": "Emporia store price, in stock, no sale (NEMA 14-50 variant; hardwire price not shown separately); Wallbox $699.99 at Best Buy, no discount" },
+      "best": {
+        "price": 449.0,
+        "store": "Emporia",
+        "url": "https://shop.emporiaenergy.com/products/emporia-ev-charger",
+        "optionId": "ev-emporia",
+        "note": "Emporia store price from Nov 25 (page not readable today); Wallbox $699.99 at Best Buy, no Black Friday cut"
+      },
       "options": {
-        "ev-emporia": { "price": 449.0, "store": "Emporia", "url": "https://shop.emporiaenergy.com/products/emporia-ev-charger", "seen": "2026-11-25" },
-        "ev-wallbox": { "price": 699.99, "store": "Best Buy", "url": "https://www.bestbuy.com/product/wallbox-cable-pulsar-plus-j1772-level-2-hardwired-electric-vehicle-ev-charger-up-to-48a-25-black/J3Q5RSZWY2", "seen": "2026-11-25" }
+        "ev-emporia": {
+          "price": 449.0,
+          "store": "Emporia",
+          "url": "https://shop.emporiaenergy.com/products/emporia-ev-charger",
+          "seen": "2026-11-25"
+        },
+        "ev-wallbox": {
+          "price": 699.99,
+          "store": "Best Buy",
+          "url": "https://www.bestbuy.com/product/wallbox-cable-pulsar-plus-j1772-level-2-hardwired-electric-vehicle-ev-charger-up-to-48a-25-black/J3Q5RSZWY2",
+          "seen": "2026-11-26"
+        }
       }
     },
     "heater": {
-      "best": { "price": 399.99, "store": "Dyson", "url": "https://www.dyson.com/air-treatment/air-purifiers/purifier-hot-cool-gen1-hp10/white", "optionId": "heater-hp10", "note": "HP10 $399.99 at Dyson.com as of Nov 24 (not on Dyson's Black Friday page); HP1 $449.99 Best Buy Black Friday deal (re-checked today), $529.99 at Target" },
+      "best": {
+        "price": 399.99,
+        "store": "Dyson",
+        "url": "https://www.dyson.com/air-treatment/air-purifiers/purifier-hot-cool-gen1-hp10/white",
+        "optionId": "heater-hp10",
+        "note": "HP10 $399.99 at Dyson.com (was $529.99), in stock; HP1 $449.99 Best Buy Black Friday deal, $529.99 at Target"
+      },
       "options": {
-        "heater-hp10": { "price": 399.99, "store": "Dyson", "url": "https://www.dyson.com/air-treatment/air-purifiers/purifier-hot-cool-gen1-hp10/white", "seen": "2026-11-24" },
-        "heater-hp1": { "price": 449.99, "store": "Best Buy", "url": "https://www.bestbuy.com/product/dyson-purifier-hot-cool-hp1-white-white/J3ZCSY28JF", "seen": "2026-11-25" }
+        "heater-hp10": {
+          "price": 399.99,
+          "store": "Dyson",
+          "url": "https://www.dyson.com/air-treatment/air-purifiers/purifier-hot-cool-gen1-hp10/white",
+          "seen": "2026-11-26"
+        },
+        "heater-hp1": {
+          "price": 449.99,
+          "store": "Best Buy",
+          "url": "https://www.bestbuy.com/product/dyson-purifier-hot-cool-hp1-white-white/J3ZCSY28JF",
+          "seen": "2026-11-26"
+        }
       }
     },
     "ups": {
-      "best": { "price": 359.95, "store": "Adorama", "url": "https://www.adorama.com/cy1500pfc.html", "optionId": "ups-cp1500", "note": "Everyday price (list $399.95), same $359.95 at CDW and Newegg; no Black Friday cut" },
+      "best": {
+        "price": 359.95,
+        "store": "Adorama",
+        "url": "https://www.adorama.com/cy1500pfc.html",
+        "optionId": "ups-cp1500",
+        "note": "Everyday price (list $399.95), same $359.95 at CDW and Newegg; no Black Friday cut"
+      },
       "options": {
-        "ups-cp1500": { "price": 359.95, "store": "Adorama", "url": "https://www.adorama.com/cy1500pfc.html", "seen": "2026-11-25" }
+        "ups-cp1500": {
+          "price": 359.95,
+          "store": "Adorama",
+          "url": "https://www.adorama.com/cy1500pfc.html",
+          "seen": "2026-11-26"
+        }
       }
     },
     "blinds": {
-      "best": { "price": 161.99, "store": "SmartWings", "url": "https://www.smartwingshome.com/products/smartwings-motorized-light-filtering-roller-shades-70-blackout-safari", "optionId": "blinds-sw", "note": "$179.99 start price less 10% sitewide auto-applied at checkout (15% over $1,500), no code, no end date; size-dependent; pick Matter/Thread motor" },
+      "best": {
+        "price": 161.99,
+        "store": "SmartWings",
+        "url": "https://www.smartwingshome.com/products/smartwings-motorized-light-filtering-roller-shades-70-blackout-safari",
+        "optionId": "blinds-sw",
+        "note": "$179.99 start price less 10% sitewide auto-applied (15% over $1,500), no code, no end date; size-dependent; from Nov 25 check"
+      },
       "options": {
-        "blinds-sw": { "price": 161.99, "store": "SmartWings", "url": "https://www.smartwingshome.com/products/smartwings-motorized-light-filtering-roller-shades-70-blackout-safari", "seen": "2026-11-25" }
+        "blinds-sw": {
+          "price": 161.99,
+          "store": "SmartWings",
+          "url": "https://www.smartwingshome.com/products/smartwings-motorized-light-filtering-roller-shades-70-blackout-safari",
+          "seen": "2026-11-25"
+        }
       }
     },
     "doorsensor": {
-      "best": { "price": 29.95, "store": "ameriDroid", "url": "https://ameridroid.com/products/aqara-door-and-window-sensor-p2", "optionId": "door-p2", "note": "Regular price, no sale, in stock; free shipping only over $150" },
+      "best": {
+        "price": 29.95,
+        "store": "ameriDroid",
+        "url": "https://ameridroid.com/products/aqara-door-and-window-sensor-p2",
+        "optionId": "door-p2",
+        "note": "Regular price, no sale, in stock; store closed Thanksgiving, ships within 2 business days"
+      },
       "options": {
-        "door-p2": { "price": 29.95, "store": "ameriDroid", "url": "https://ameridroid.com/products/aqara-door-and-window-sensor-p2", "seen": "2026-11-25" }
+        "door-p2": {
+          "price": 29.95,
+          "store": "ameriDroid",
+          "url": "https://ameridroid.com/products/aqara-door-and-window-sensor-p2",
+          "seen": "2026-11-26"
+        }
       }
     },
     "printer": {
-      "best": { "price": 789.0, "store": "Bambu Lab", "url": "https://us.store.bambulab.com/products/x2d?id=720069852747550728", "optionId": "printer-x2d", "note": "Bambu Black Friday sale Combo $789 (reg $899), ends Nov 30 10:59 PM PT; Best Buy $789.99" },
+      "best": {
+        "price": 789.0,
+        "store": "Bambu Lab",
+        "url": "https://us.store.bambulab.com/products/x2d?id=720069852747550728",
+        "optionId": "printer-x2d",
+        "note": "Bambu Black Friday sale Combo $789 (reg $899), valid through Dec 1 2 AM ET; Best Buy $789.99"
+      },
       "options": {
-        "printer-x2d": { "price": 789.0, "store": "Bambu Lab", "url": "https://us.store.bambulab.com/products/x2d?id=720069852747550728", "seen": "2026-11-25" }
+        "printer-x2d": {
+          "price": 789.0,
+          "store": "Bambu Lab",
+          "url": "https://us.store.bambulab.com/products/x2d?id=720069852747550728",
+          "seen": "2026-11-25"
+        }
       }
     },
     "524e9d0e-912": {
-      "best": { "price": 199.99, "store": "Best Buy", "url": "https://www.bestbuy.com/product/aqara-uwb-smart-lock-u400-kit-with-m100-hub-matter-thread-wifi-apple-home-key-fingerprint-rechargeable-battery-black/JJ8RHCJ2S9", "optionId": "ce0c0925-18a", "note": "Best Buy Black Friday deal, $90 off $289.99, kit includes M100 hub; still live today" },
+      "best": {
+        "price": 199.99,
+        "store": "Best Buy",
+        "url": "https://www.bestbuy.com/product/aqara-uwb-smart-lock-u400-kit-with-m100-hub-matter-thread-wifi-apple-home-key-fingerprint-rechargeable-battery-black/JJ8RHCJ2S9",
+        "optionId": "ce0c0925-18a",
+        "note": "Best Buy Black Friday deal, $90 off $289.99, kit with M100 hub; Slickdeals says still available as of Nov 25, verify at checkout"
+      },
       "options": {
-        "ce0c0925-18a": { "price": 199.99, "store": "Best Buy", "url": "https://www.bestbuy.com/product/aqara-uwb-smart-lock-u400-kit-with-m100-hub-matter-thread-wifi-apple-home-key-fingerprint-rechargeable-battery-black/JJ8RHCJ2S9", "seen": "2026-11-25" }
+        "ce0c0925-18a": {
+          "price": 199.99,
+          "store": "Best Buy",
+          "url": "https://www.bestbuy.com/product/aqara-uwb-smart-lock-u400-kit-with-m100-hub-matter-thread-wifi-apple-home-key-fingerprint-rechargeable-battery-black/JJ8RHCJ2S9",
+          "seen": "2026-11-25"
+        }
       }
     },
     "airtags": {
-      "best": { "price": 79.0, "store": "Amazon", "url": "https://www.amazon.com/dp/B0GJTXVN9Z", "optionId": "airtags-2", "note": "4-pack $79 at Amazon per Cult of Mac price box dated Nov 24 (was $69.99 Nov 11-12)" },
+      "best": {
+        "price": 79.0,
+        "store": "Amazon",
+        "url": "https://www.amazon.com/dp/B0GJTXVN9Z",
+        "optionId": "airtags-2",
+        "note": "4-pack $79 at Amazon per Cult of Mac price box dated Nov 24 (was $69.99 Nov 11-12)"
+      },
       "options": {
-        "airtags-2": { "price": 79.0, "store": "Amazon", "url": "https://www.amazon.com/dp/B0GJTXVN9Z", "seen": "2026-11-24" }
+        "airtags-2": {
+          "price": 79.0,
+          "store": "Amazon",
+          "url": "https://www.amazon.com/dp/B0GJTXVN9Z",
+          "seen": "2026-11-24"
+        }
       }
     },
     "dbcd3615-f19": {
-      "best": { "price": 44.99, "store": "Best Buy", "url": "https://www.bestbuy.com/product/honeywell-home-smart-thermostat-compatible-wireless-room-sensor-white/JJ8Z85C38G", "optionId": "72c46e17-e4c", "note": "XRSENSOR-1PK at Best Buy (seller/stock not confirmed); Honeywell store $49.99 in stock" },
+      "best": {
+        "price": 44.99,
+        "store": "Best Buy",
+        "url": "https://www.bestbuy.com/product/honeywell-home-smart-thermostat-compatible-wireless-room-sensor-white/JJ8Z85C38G",
+        "optionId": "72c46e17-e4c",
+        "note": "XRSENSOR-1PK at Best Buy (seller not confirmed); Honeywell store $49.99 (was $64.99), in stock"
+      },
       "options": {
-        "72c46e17-e4c": { "price": 44.99, "store": "Best Buy", "url": "https://www.bestbuy.com/product/honeywell-home-smart-thermostat-compatible-wireless-room-sensor-white/JJ8Z85C38G", "seen": "2026-11-25" }
+        "72c46e17-e4c": {
+          "price": 44.99,
+          "store": "Best Buy",
+          "url": "https://www.bestbuy.com/product/honeywell-home-smart-thermostat-compatible-wireless-room-sensor-white/JJ8Z85C38G",
+          "seen": "2026-11-26"
+        }
       }
     }
   }
