@@ -65,7 +65,8 @@
       "why": "A compact, practical case for Java 25 as the next LTS target, written for teams still on 8, 11, 17 or 21. It walks through what actually breaks on upgrade (removed APIs, internal API use, changed GC defaults) and how to stage the move. Useful both for your own Java depth and for making the upgrade case to leadership.",
       "tryThis": "Pick one batch job and run it unchanged on a Java 25 JDK in a test environment (or a homelab container); note any warnings about removed or internal APIs and GC changes, and turn that into a one-paragraph upgrade-risk note for your team.",
       "pickReason": "First Java pick after a run of AI ones; kept to ~10 min since that length landed well last time.",
-      "createdAt": "2026-11-23T10:15:50Z"
+      "createdAt": "2026-11-23T10:15:50Z",
+      "somedayAt": "2026-11-26T10:20:00Z"
     },
     {
       "id": "2026-11-24",
@@ -92,7 +93,20 @@
       "tryThis": "Today, before each switch away from a task, leave one finished 'pebble' (a draft PR, a sent reply, a one-line note of the next step) instead of an open loop, and turn agent/chat sounds into silent badges.",
       "pickReason": "Focus topic hadn't come up yet, and after a 17-min pick yesterday this is a quick ~5-min read.",
       "createdAt": "2026-11-25T10:15:43Z"
+    },
+    {
+      "id": "2026-11-26",
+      "date": "2026-11-26",
+      "title": "Claude's new auto eval tool",
+      "url": "https://hamel.dev/blog/posts/claude-auto-evals/index.html",
+      "source": "Hamel Husain",
+      "minutes": 6,
+      "topic": "ai-eng",
+      "why": "Hamel, one of the most trusted voices on LLM evals, puts Anthropic's new Claude Code eval commands through a real trial. It's a quick, honest look at where the agent helps and where you still have to look at the data yourself.",
+      "tryThis": "Next time Claude Code proposes a test or eval for you, open the actual prompt or assertion it wrote and check it against a few real outputs before trusting its summary.",
+      "pickReason": "Short Claude Code piece from a source that values practical takeaways, kept brief since a few picks are still unread.",
+      "createdAt": "2026-11-26T10:20:00Z"
     }
   ],
-  "updatedAt": "2026-11-25T10:15:43Z"
+  "updatedAt": "2026-11-26T10:20:00Z"
 }
