@@ -1,5 +1,5 @@
 {
-  "exported": "2026-11-26T19:44:38Z",
+  "exported": "2026-11-27T04:24:10Z",
   "items": [
     {
       "id": "ev",
@@ -261,6 +261,24 @@
           "label": "Lenia King Upholstered Bed - Walnut and Flou Moss",
           "url": "https://www.article.com/product/29606/lenia-king-upholstered-bed-walnut-and-flou-moss",
           "price": 1119
+        },
+        {
+          "id": "c70292a7-32d",
+          "label": "Azara Caramelized Platform Bed in Solid Bamboo",
+          "url": "https://futonland.com/product/azara-caramelized-platform-bed",
+          "price": 2579
+        },
+        {
+          "id": "07d3df80-6dc",
+          "label": "Ria Caramelized Platform Bed",
+          "url": "https://viesso.com/products/ria-caramelized-platform-bed",
+          "price": 1645
+        },
+        {
+          "id": "641ed4bb-597",
+          "label": "Sienna Caramelized Bamboo Platform Bed Frame",
+          "url": "https://futonland.com/product/sienna-caramelized-platform-bed",
+          "price": 2409
         }
       ]
     }
