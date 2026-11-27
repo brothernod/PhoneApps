@@ -79,7 +79,8 @@
       "why": "When agents and CI became nearly all of Anthropic's git clients, merges went up more than tenfold and git mirroring stopped scaling, so they built their own server-side system in five months. It's a rare real-world account of what agent-heavy development does to CI, checkouts and code review, with numbers. The parts on reviewing the intent of agent changes and post-merge testing apply well beyond Anthropic.",
       "tryThis": "Time a fresh checkout in one of your slowest GitHub Actions workflows, then try a shallow or sparse checkout (fetch-depth: 1, sparse-checkout) and compare the numbers.",
       "pickReason": "Longer than your 8–10 min sweet spot, but it's fresh, primary and close to your CI work; the design-detail middle is fine to skim.",
-      "createdAt": "2026-11-24T10:22:19Z"
+      "createdAt": "2026-11-24T10:22:19Z",
+      "somedayAt": "2026-11-27T10:16:00Z"
     },
     {
       "id": "2026-11-25",
@@ -106,7 +107,20 @@
       "tryThis": "Next time Claude Code proposes a test or eval for you, open the actual prompt or assertion it wrote and check it against a few real outputs before trusting its summary.",
       "pickReason": "Short Claude Code piece from a source that values practical takeaways, kept brief since a few picks are still unread.",
       "createdAt": "2026-11-26T10:20:00Z"
+    },
+    {
+      "id": "2026-11-27",
+      "date": "2026-11-27",
+      "title": "What 1,000 small business owners taught us about AI",
+      "url": "https://claude.com/blog/what-1-000-small-business-owners-taught-us-about-ai",
+      "source": "Anthropic (Claude blog)",
+      "minutes": 8,
+      "topic": "ai-teach",
+      "why": "A field report from Anthropic's in-person workshop tour for small-business owners, mostly trades and logistics firms. It lays out what actually moved people: security questions first, a guided hands-on build, and hearing peers' solutions. It's a ready-made blueprint for how you'd run your own sessions.",
+      "tryThis": "Sketch a 90-minute workshop outline using its pattern: 15 min on data/privacy, 45 min guided build of one real reporting workflow, 30 min of attendees sharing problems — then test it on one local owner or a coworker.",
+      "pickReason": "ai-teach hadn't come up since Nov 20, which you finished and tagged work/teach; kept it ~8 min.",
+      "createdAt": "2026-11-27T10:16:00Z"
     }
   ],
-  "updatedAt": "2026-11-26T10:20:00Z"
+  "updatedAt": "2026-11-27T10:16:00Z"
 }
