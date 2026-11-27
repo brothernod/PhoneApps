@@ -1,29 +1,6 @@
 {
-  "exported": "2026-11-27T04:24:10Z",
+  "exported": "2026-11-27T19:34:16Z",
   "items": [
-    {
-      "id": "ev",
-      "title": "EV charger",
-      "qty": 1,
-      "low": 429,
-      "high": 699,
-      "regular": null,
-      "chosen": null,
-      "options": [
-        {
-          "id": "ev-wallbox",
-          "label": "Wallbox Pulsar Plus 48A",
-          "url": "https://www.bestbuy.com/site/wallbox-cable-pulsar-plus-j1772-level-2-hardwired-electric-vehicle-ev-charger-up-to-48a-25-black/6520408.p",
-          "price": 614.99
-        },
-        {
-          "id": "ev-emporia",
-          "label": "Emporia Classic 48A",
-          "url": "https://shop.emporiaenergy.com/products/emporia-ev-charger",
-          "price": 429
-        }
-      ]
-    },
     {
       "id": "heater",
       "title": "Heater + air purifier for Holden's room",
@@ -279,6 +256,52 @@
           "label": "Sienna Caramelized Bamboo Platform Bed Frame",
           "url": "https://futonland.com/product/sienna-caramelized-platform-bed",
           "price": 2409
+        }
+      ]
+    },
+    {
+      "id": "3293ad61-52d",
+      "title": "King sheets",
+      "qty": 1,
+      "low": null,
+      "high": null,
+      "regular": null,
+      "chosen": null,
+      "options": [
+        {
+          "id": "2559edb0-394",
+          "label": "Brushed Flannel Core Sheet Set",
+          "url": "https://www.brooklinen.com/products/flannel-core-sheet-set?variant=42253869580378",
+          "price": null
+        },
+        {
+          "id": "69b2452f-56c",
+          "label": "Luxe Sateen Hardcore Sheet Bundle",
+          "url": "https://www.brooklinen.com/products/luxe-hardcore-sheet-bundle?variant=43380354547802",
+          "price": null
+        },
+        {
+          "id": "5bf43172-4bd",
+          "label": "Washed European Linen Hardcore Sheet Bundle",
+          "url": "https://www.brooklinen.com/products/washed-linen-hardcore-sheet-bundle?variant=41886429872218",
+          "price": null
+        }
+      ]
+    },
+    {
+      "id": "8b0e21bf-b8c",
+      "title": "Down comforter",
+      "qty": 1,
+      "low": null,
+      "high": null,
+      "regular": null,
+      "chosen": null,
+      "options": [
+        {
+          "id": "bbc83b14-66d",
+          "label": "Down Comforter",
+          "url": "https://www.brooklinen.com/products/down-comforter?variant=42723522740314",
+          "price": null
         }
       ]
     }
