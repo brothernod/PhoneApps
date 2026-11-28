@@ -1,4 +1,4 @@
-// Cheddar's tricks (v1.35): the lessons. One short lesson per rung of the SPEC ladder, each with
+// Cheddar's tricks (v1.35; What if in three parts v1.36): the lessons. One short lesson per rung of the SPEC ladder, each with
 // Show it (a tiny board and the trick in a sentence or two), Watch it (one move, step by step) and
 // 10 practice boards from lessons.json (tools/lessons.mjs). The boards, the outlines and every
 // "why" come from the engine's step evidence, the same place Sniff gets its hints.
@@ -10,7 +10,12 @@
 //   paid     the one-time coins were paid (shop.js lessonPay)
 //   more     More practice sets finished  mb       the board to pick up at in the current More set
 // db.lessonSnooze[id] = the date "Not now" was tapped on the pop-up card (it waits about a week).
-import { decodeRegions, decodeSolution, makeBoard } from './engine.js';
+//
+// What if comes in three parts (v1.36, corgidoku-whatif-plan.md), each a lesson of its own with its
+// own record and coins: '6a' When to use it ("Stuck or not?"), '6b' One forced corgi, '6c' Longer
+// chains. Their boards are lessons.json lessons[6].parts.{a,b,c}. Lesson ids are 0-5 and '6a'-'6c';
+// "lesson 6" (a puzzle's lv, a Sniff step's level) means What if as a whole: done when all 3 parts are.
+import { decodeRegions, decodeSolution, makeBoard, allSteps } from './engine.js';
 import { cheddarHead, cheddarLoaf, paw, coinIcon } from './art.js';
 import { lessonPay, LESSON_PAY } from './shop.js';
 
@@ -21,6 +26,16 @@ const TRACK_OF = { kids: 'chill', cozy: 'cozy', hard: 'hard', extreme: 'extreme'
 const TRACK_LABEL = { chill: '🐣 Chill', cozy: '🌈 Cozy', hard: '🔥 Hard', extreme: '⚡ Extreme' };
 const TRACK_NAME = { chill: 'Chill', cozy: 'Cozy', hard: 'Hard', extreme: 'Extreme' };
 const SNOOZE_DAYS = 7;
+export const PARTS = ['6a', '6b', '6c'];
+const PART_NAME = { '6a': 'When to use it', '6b': 'One forced corgi', '6c': 'Longer chains' };
+const isPart = (id) => typeof id === 'string';
+const lvOf = (id) => (isPart(id) ? 6 : id); // the ladder level a lesson teaches
+// Every lesson a track has, in order: 0..5, then What if's three parts on the Extreme track.
+const idsTo = (top) => [...Array(Math.min(top, 5) + 1).keys(), ...(top >= 6 ? PARTS : [])];
+// "What if: When to use it" (the page row, the bar), or the trick's name.
+export const trickName = (id) => (isPart(id) ? `What if: ${PART_NAME[id]}` : TRICKS[id]);
+const dataOf = (id) => (isPart(id) ? D.lessons[6].parts[id[1]] : D.lessons[id]);
+const nextPart = (id) => (isPart(id) ? PARTS[PARTS.indexOf(id) + 1] || null : null);
 
 let X = null; // the app's helpers (initTricks)
 let D = null; // lessons.json
@@ -37,26 +52,59 @@ const kid = () => X.isKid();
 const recs = () => (db().lessons ||= {});
 const rec = (id) => (recs()[id] ||= {});
 const peek = (id) => recs()[id] || {};
-export const trickDone = (id) => !!peek(id).done;
-const highestSeen = () => { let h = -1; for (const [k, r] of Object.entries(recs())) if (r.seen || r.done) h = Math.max(h, Number(k)); return h; };
+// trickDone(6) = What if as a whole (all three parts).
+export const trickDone = (id) => (id === 6 ? PARTS.every((p) => !!peek(p).done) : !!peek(id).done);
+const known = (id) => !!(peek(id).seen || peek(id).done);
+// The highest level with a lesson done or seen (any What if part counts as 6).
+const highestSeen = () => { let h = -1; for (const [k, r] of Object.entries(recs())) if (r.seen || r.done) h = Math.max(h, lvOf(/^\d+$/.test(k) ? Number(k) : k)); return h; };
+// What if's first unfinished part (6a, then 6b, then 6c), so the order is always kept.
+export const firstPart = () => PARTS.find((p) => !peek(p).done) || PARTS[0];
 const trackOfMode = () => TRACK_OF[X.mode()] || 'cozy';
 const tracksFor = () => X.modesFor().map((m) => TRACK_OF[m]);
-const inTrack = (id, t) => id <= TRACKS[t];
+const inTrack = (id, t) => lvOf(id) <= TRACKS[t];
 // The lesson's first track (where its main boards 9-10 fit), or the one asked for if it has the lesson.
-const firstTrack = (id) => ['chill', 'cozy', 'hard', 'extreme'].find((t) => inTrack(id, t) && (id <= 3 || t !== 'chill'));
+const firstTrack = (id) => ['chill', 'cozy', 'hard', 'extreme'].find((t) => inTrack(id, t) && (lvOf(id) <= 3 || t !== 'chill'));
 const trackFor = (id, want) => (want && inTrack(id, want) ? want : firstTrack(id));
 const pay = () => (kid() ? LESSON_PAY.kid : LESSON_PAY.grown);
 
 // The pop-up card: a puzzle whose stored level is above every lesson done or seen, unless "Not now"
-// was tapped for that lesson in the last week. Returns the lesson id to offer, or null.
+// was tapped for that lesson in the last week. Returns the lesson id to offer, or null. A What if
+// puzzle offers What if's first unfinished part while any part is still new (not seen or done).
 export function trickOffer(lv) {
-  if (!(lv >= 1 && lv <= 6) || lv <= highestSeen()) return null;
+  if (!(lv >= 1 && lv <= 6)) return null;
+  if (lv < 6 ? lv <= highestSeen() : PARTS.every(known)) return null;
   if (!tracksFor().some((t) => inTrack(lv, t))) return null;
-  const s = (db().lessonSnooze || {})[lv];
+  const id = lv === 6 ? firstPart() : lv;
+  const s = (db().lessonSnooze || {})[id];
   if (s && X.addDays(s, SNOOZE_DAYS) > X.todayISO()) return null;
-  return lv;
+  return id;
 }
 export function snoozeTrick(id) { (db().lessonSnooze ||= {})[id] = X.todayISO(); X.save(); }
+// The pop-up card's line (app.js draws the card).
+export function offerText(id) {
+  const K = kid();
+  if (id === '6a') return 'New trick in this one: <b>What if</b>. It has three short parts. Start with part 1: When to use it? About 5 minutes.';
+  if (isPart(id)) return `This one needs <b>What if</b>. Ready for part ${PARTS.indexOf(id) + 1}: ${PART_NAME[id]}? About 5 minutes.`;
+  return K ? `New trick in this one: <b>${TRICKS[id]}</b>! Want a quick lesson?` : `New trick in this one: <b>${TRICKS[id]}</b>. Lesson and practice, about 5 minutes?`;
+}
+// The Sniff link's trick name: What if names the part it opens.
+export const linkName = (lv) => (lv === 6 ? `What if, part ${PARTS.indexOf(firstPart()) + 1}` : TRICKS[lv]);
+
+// v1.36: What if became three parts. A player who learned the v1.35 What if (db.lessons[6].done)
+// gets 6b ✓ with its coins kept (paid, so 6b never pays twice); 6a and 6c start fresh. Anything short
+// of a ✓ doesn't carry over (Jonathan, 2026-11-27). The old record goes either way; a snooze moves
+// to 6a (the part the card would offer next); the Extreme badge can show again once all 3 are done.
+// Returns true if the db changed. Idempotent: runs on every load.
+export function migrateLessons(d) {
+  const L = d.lessons, old = L && L[6];
+  if (!old) return false;
+  if (old.done) L['6b'] = { seen: 1, done: 1, at: old.at, board: 10, help: old.help || [], skipped: [], paid: 1, more: old.more || 0, mb: 0 };
+  delete L[6];
+  const sn = d.lessonSnooze;
+  if (sn && sn[6]) { sn['6a'] ||= sn[6]; delete sn[6]; }
+  if (d.lessonBadges) delete d.lessonBadges.extreme;
+  return true;
+}
 
 // ---------- wording ----------
 // K = kid. Grown-ups get the exact idea; kids get shorter, simpler lines (colors, not "yards").
@@ -86,7 +134,14 @@ const INTRO = {
     'Like a pair lock, but bigger: three colors that only fit in the same three rows use them all up. So the rest of those rows gets paws!'],
   6: ['Stuck? Pretend a corgi sits on a spot, then follow only the corgis it forces. If some row, column or yard runs out of room, that spot is out. No guessing: you only look ahead.',
     'Pretend a corgi sits on a spot. Follow the corgis it forces. If a row, column or color runs out of room, that spot gets a paw!'],
+  '6a': ['What if is the last trick to reach for. First try Last spot, Confined, Would block, Pair lock and Group lock. If none of them works, you\'re stuck: time for a what if.',
+    'What if is the last trick. First try all the others. If none of them works, then it\'s time for a what if!'],
+  '6c': ['Sometimes a forced corgi forces another, and another. Follow them one at a time. If some row, column or yard runs out of room, the first spot is out.',
+    'Sometimes the forced corgis keep coming. Follow them one by one. If a row, column or color runs out of room, the first spot gets a paw!'],
 };
+INTRO['6b'] = INTRO[6];
+// What each easier trick is called on a 6a hint ("Look for a Pair lock.").
+const A_TRICK = { 1: 'a Last spot', 2: 'something Confined', 3: 'a spot that Would block', 4: 'a Pair lock', 5: 'a Group lock' };
 const RULE = {
   side: ['These two corgis touch side by side.', 'These two corgis are touching!'],
   diagonal: ['These two corgis touch corner to corner.', 'These two corgis touch at the corners!'],
@@ -98,7 +153,8 @@ const ruleText = (rule, K) => RULE[rule][K ? 1 : 0];
 
 // The task line above the board. help = the outline is showing.
 function askText(S, b, outlined) {
-  const N = namer(S), K = N.K, L = S.id, k = b.count, st = b.step, name = TRICKS[L];
+  const N = namer(S), K = N.K, L = S.lv, k = b.count, st = b.step, name = TRICKS[L];
+  if (S.part === 'a') return K ? 'Stuck or not? If a trick works, paw a spot it blocks. If none works, tap Time for a what if.' : 'Stuck or not? If an easier trick works, paw a spot it rules out. If none works, tap Time for a what if.';
   if (L === 0) return K ? 'Two corgis are breaking a rule. Tap one!' : 'Two corgis break a rule. Tap one of them.';
   if (L === 1) return outlined ? (K ? `Find the last spot in ${N.unit(st.unit, 'the outlined')}. Double-tap it!` : `Find the last spot in ${N.unit(st.unit, 'the outlined')} and double-tap it.`)
     : (K ? 'There\'s a last spot here. Find it and double-tap!' : 'There\'s a Last spot on this board. Find it and double-tap it.');
@@ -113,10 +169,11 @@ function askText(S, b, outlined) {
   return K ? `${cap(who)} work together. Paw ${the} their corgis block.` : `Look at ${who} together. Paw ${the} their ${name.toLowerCase()} rules out.`;
 }
 
-// Why a right tap is right (for the tapped cell i). Used in Watch it too.
+// Why a right tap is right (for the tapped cell i). Used in Watch it too. b.lv overrides the
+// lesson's level: a 6a board explains its easier step in that step's own words.
 function rightText(S, b, i, chain, shown = false) {
   if (shown) return rightText(S, b, i, chain).replace(/^(Right|Yes)! /, '');
-  const N = namer(S), K = N.K, L = S.id, st = b.step;
+  const N = namer(S), K = N.K, L = b.lv ?? S.lv, st = b.step;
   if (L === 0) return `${K ? 'Yes!' : 'Right!'} ${ruleText(b.rule, K)}`;
   if (L === 1) return K ? `Yes! The last spot in ${N.unit(st.unit)}.` : `Right! That's the last spot in ${N.unit(st.unit)}.`;
   if (L === 2) {
@@ -142,7 +199,7 @@ const cap = (s) => s[0].toUpperCase() + s.slice(1);
 function boardState(S, b) {
   const src = D.boards[b.src], n = src.n, reg = decodeRegions(src.r), sol = decodeSolution(src.s);
   const B = makeBoard(n, reg);
-  const P = { b, n, reg, sol, B, corgi: new Set(b.c), given: new Set(b.p), found: new Set(), miss: new Set(), scratch: new Set(), wrongs: 0, help: false, done: false, outline: b.help === 'outline' || b.tier === 'show', hist: [] };
+  const P = { b, n, reg, sol, B, corgi: new Set(b.c), given: new Set(b.p), found: new Set(), miss: new Set(), scratch: new Set(), wrongs: 0, help: false, done: false, outline: S.part !== 'a' && (b.help === 'outline' || b.tier === 'show'), hist: [] };
   return P;
 }
 // cand/placed for the engine: corgis, plus every paw the logic knows (given, found, auto).
@@ -182,7 +239,7 @@ let fxTok = 0; // the latest drawing; an older one's timer leaves a newer one al
 const $ = (id) => document.getElementById(id);
 
 function setFor(id, kind, track) {
-  const L = D.lessons[id];
+  const L = dataOf(id);
   if (kind === 'main') return [...L.main.slice(0, 8), ...(track === firstTrack(id) ? L.main.slice(8) : L.finale[track] || L.main.slice(8))];
   const sp = L.spares[(peek(id).more || 0) % L.spares.length];
   return [...sp.boards, ...(sp.finale[track] || Object.values(sp.finale)[0])];
@@ -191,14 +248,16 @@ function setFor(id, kind, track) {
 // Open a lesson. start: 'auto' (Show it if new, else pick up at the first unfinished board),
 // 'intro' (Show it and Watch it, then practice), 'practice', 'more'. back: where Play my puzzle /
 // the back arrow goes (default the Cheddar's tricks page). tour: the welcome tour (rules, then Last spot).
+// id 6 (the pop-up card, the Sniff link) opens What if's first unfinished part.
 export function openLesson(id, { start = 'auto', track, back = null, backLabel = '', tour = false } = {}) {
   return loadLessons().then((d) => {
     if (!d) return X.sheet('<h3>Hmm</h3><p>Cheddar couldn\'t fetch the tricks. Check your connection and try again.</p><button class="cta" id="okt">OK</button>'), ($('okt').onclick = X.closeSheet);
+    if (id === 6) id = firstPart();
     const r = rec(id);
     r.seen = 1; X.save();
     const t = trackFor(id, track || trackOfMode());
     const more = start === 'more' || (start === 'intro' && r.done);
-    S = { id, track: t, kind: more ? 'more' : 'main', set: setFor(id, more ? 'more' : 'main', t), k: 0, stage: 'show', frame: 0, P: null, back, backLabel, tour };
+    S = { id, lv: lvOf(id), part: isPart(id) ? id[1] : null, track: t, kind: more ? 'more' : 'main', set: setFor(id, more ? 'more' : 'main', t), k: 0, stage: 'show', frame: 0, P: null, back, backLabel, tour };
     if (more) S.k = Math.min(r.mb || 0, 9);
     else S.k = Math.min(r.board || 0, 9);
     if (start === 'auto' && r.done) return openLesson(id, { start: 'more', track, back, backLabel });
@@ -261,32 +320,37 @@ function savePos() {
 // ---------- Show it ----------
 function showIt() {
   S.stage = 'show';
-  const L = D.lessons[S.id], b = L.show;
-  mount(TRICKS[S.id], `Show it${S.kind === 'more' ? ' · replay' : ''}`);
+  const L = dataOf(S.id), b = L.show;
+  mount(trickName(S.id), `Show it${S.kind === 'more' ? ' · replay' : ''}`);
   S.P = boardState(S, b);
   S.pal = X.yardPerm(`t:${b.src}`, S.P.n);
   buildBoard(S.P, false);
   paint(S.P, { notation: true });
   $('l-ask').innerHTML = '';
-  msg(INTRO[S.id][kid() ? 1 : 0] + (kid() ? ' Here\'s one!' : ' Here\'s one. The outline shows where to look.'));
+  msg(INTRO[S.id][kid() ? 1 : 0] + (S.part === 'a' ? (kid() ? ' Here\'s one where none of them works!' : ' Here\'s a stuck board.') : kid() ? ' Here\'s one!' : ' Here\'s one. The outline shows where to look.'));
   tools([{ id: 'l-watch', e: '▶️', label: 'Watch it', main: true, go: () => watchIt(0) }]);
 }
 
 // ---------- Watch it: one move in three frames, with Back and Next ----------
 function watchIt(f) {
   S.stage = 'watch'; S.frame = f;
-  const L = D.lessons[S.id], b = L.show, P = S.P;
+  const L = dataOf(S.id), b = L.show, P = S.P;
   $('l-sub').textContent = `Watch it · ${f + 1} of 3`;
   // frame 3 shows the move made; frames 1-2 the board before it
   const after = f === 2;
-  P.found = new Set(after && S.id >= 2 ? b.ans : []);
-  if (S.id === 1) { P.corgi = new Set(after ? [...b.c, b.ans[0]] : b.c); }
-  P.outline = f === 0;
+  P.found = new Set(after && S.lv >= 2 ? b.ans : []);
+  if (S.lv === 1) { P.corgi = new Set(after ? [...b.c, b.ans[0]] : b.c); }
+  P.outline = f === 0 && S.part !== 'a';
   paint(P, { notation: true, fresh: after ? b.ans : [] });
   clearFx();
-  const N = namer(S), K = N.K, st = b.step, id = S.id;
+  const N = namer(S), K = N.K, st = b.step, id = S.lv;
   let t = '';
-  if (f === 0) {
+  if (S.part === 'a') {
+    // 6a: run the ladder, find nothing, then the what if
+    if (f === 0) t = K ? 'First, try the other tricks. A last spot? A color that fits in just one row? A spot that would block? A pair or group lock?' : 'First, try the easier tricks. Is there a Last spot? Anything Confined? A spot that Would block? A Pair lock or a Group lock?';
+    else if (f === 1) t = K ? 'None of them works here. Every row, column and color still has room, and no trick gives a paw. That\'s stuck!' : 'None of them works here. Every row, column and yard still has two or more spots, and no easier trick rules anything out. That\'s stuck.';
+    else { const ch = follow(P, st.cells[0]); chainFx(P, st.cells[0], ch); t = `${K ? 'Time for a what if on the ? spot!' : 'Time for a what if on the ? spot.'} ${chainText(N, ch)} ${K ? 'So the ? spot gets a paw.' : 'So the ? spot is out.'}`; }
+  } else if (f === 0) {
     spot(st.look);
     if (id === 0) t = b.rule === 'side' || b.rule === 'diagonal' ? (K ? 'Look at these two corgis.' : 'Look at these two corgis.') : `Look at ${N.unit(st.unit)}.`;
     else if (id === 6) { ghost(st.cells[0], '?'); t = K ? 'What if a corgi sat on the ? spot?' : 'What if a corgi sat on the ? spot? Let\'s look ahead.'; }
@@ -345,7 +409,7 @@ function startPractice(k) {
   S.stage = 'practice';
   S.k = Math.max(0, Math.min(9, k));
   const b = S.set[S.k];
-  mount(TRICKS[S.id], '');
+  mount(trickName(S.id), '');
   S.P = boardState(S, b);
   S.pal = X.yardPerm(`t:${b.src}`, S.P.n);
   $('l-sub').textContent = S.kind === 'more' ? `More practice · board ${S.k + 1} of 10` : `Practice · board ${S.k + 1} of 10`;
@@ -357,7 +421,7 @@ function startPractice(k) {
   practiceTools();
 }
 function ask() {
-  const P = S.P, b = P.b, L = S.id;
+  const P = S.P, b = P.b, L = S.lv;
   const need = L === 0 || L === 6 ? 1 : b.count, got = P.found.size + (L === 1 && P.corgi.has(b.ans[0]) ? 1 : 0);
   $('l-ask').innerHTML = `<span>${esc(askText(S, b, P.outline))}</span><b class="lcount${got >= need ? ' ok' : ''}">${got} / ${need}</b>`;
 }
@@ -368,6 +432,7 @@ function practiceTools() {
     return tools([{ id: 'l-undo', e: '↩️', label: 'Undo', off: true }, { id: 'l-next', e: last ? '🎉' : '▶️', label: last ? 'Finish' : 'Next board', main: true, go: nextBoard }]);
   }
   const btns = [{ id: 'l-undo', e: '↩️', label: 'Undo', go: undo }];
+  if (S.part === 'a') btns.push({ id: 'l-wi', e: '🤔', label: 'Time for a what if', main: P.wrongs < 3, go: whatIfTime });
   if (P.wrongs >= 3) btns.push({ id: 'l-show', e: '👀', label: 'Show me', main: true, go: showMe });
   tools(btns);
 }
@@ -409,9 +474,16 @@ function nextBoard() {
   if (S.k < 9) return startPractice(S.k + 1);
   finish();
 }
+// The finish sheet's line for the What if parts.
+const DONE_LINE = {
+  '6a': ['Now you know when it\'s time for a what if: only when nothing easier works.', 'Now you know when it\'s time for a what if!'],
+  '6b': ['You can follow a what if to its dead end now.', 'You can do a what if now!'],
+  '6c': ['You can follow a what if through a long chain now. That\'s every trick Cheddar knows.', 'You can follow long chains now! That\'s every trick Cheddar knows.'],
+};
 // All 10 done: the lesson's ✓ and its one-time coins (main set), or a fresh set next time (More).
 function finish() {
-  const r = rec(S.id), id = S.id, name = TRICKS[id];
+  const r = rec(S.id), id = S.id, name = trickName(id), nx = S.kind === 'main' ? nextPart(id) : null;
+  const nextUp = nx && !trickDone(nx) ? nx : null; // finishing 6a or 6b offers the next part
   let coins = 0, first = false;
   if (S.kind === 'main') {
     first = !r.done;
@@ -424,15 +496,17 @@ function finish() {
   const leaveBtn = S.back && S.backLabel ? S.backLabel : 'Cheddar\'s tricks';
   X.sheet(`<div style="width:130px;margin:0 auto">${cheddarLoaf(X.dressed())}</div>
     <h3>${S.kind === 'more' ? 'Practice done! 🐾' : first ? `${name} ✓` : `${name} again ✓`}</h3>
-    <p>${S.kind === 'more' ? (K ? 'Ten more boards! You\'re getting so good at this.' : 'Ten more boards done. That trick is sticking.') : first ? (id === 0 ? (K ? 'You know the rules! Cheddar is so proud.' : 'You know the rules. Next up: the tricks that solve every board.') : K ? `You learned ${name}! Cheddar is so proud.` : `You know ${name} now. Watch for it in your puzzles.`) : 'All 10 boards done again.'}</p>
+    <p>${S.kind === 'more' ? (K ? 'Ten more boards! You\'re getting so good at this.' : 'Ten more boards done. That trick is sticking.') : first ? (id === 0 ? (K ? 'You know the rules! Cheddar is so proud.' : 'You know the rules. Next up: the tricks that solve every board.') : DONE_LINE[id] ? DONE_LINE[id][K ? 1 : 0] : K ? `You learned ${name}! Cheddar is so proud.` : `You know ${name} now. Watch for it in your puzzles.`) : 'All 10 boards done again.'}</p>
     ${coins ? `<div class="earn">${coinIcon()} +${coins} coins<span>for finishing the lesson</span></div>` : ''}
     ${badge ? `<div class="earn lbadge-earn">🎓 Ready for ${TRACK_NAME[badge.t]} ✓<span>${K ? 'You know every trick for it!' : `You know every trick ${TRACK_NAME[badge.t]} needs.`}</span></div>` : ''}
     ${tour ? '<button class="cta" id="lf-next">Next trick: Last spot ▶</button>' : ''}
-    <button class="cta${tour ? ' alt' : ''}" id="lf-more">More practice 🐾</button>
+    ${nextUp ? `<button class="cta" id="lf-part">Next part: ${PART_NAME[nextUp]} ▶</button>` : ''}
+    <button class="cta${tour || nextUp ? ' alt' : ''}" id="lf-more">More practice 🐾</button>
     <button class="cta alt" id="lf-out">${esc(leaveBtn)}</button>`);
   if (badge) markBadges();
   const back = S.back, label = S.backLabel;
   if ($('lf-next')) $('lf-next').onclick = () => { X.closeSheet(); openLesson(1, { start: 'intro', back, backLabel: label, tour: true }); };
+  if ($('lf-part')) $('lf-part').onclick = () => { X.closeSheet(); openLesson(nextUp, { start: 'auto', track: S?.track, back, backLabel: label }); };
   $('lf-more').onclick = () => { X.closeSheet(); openLesson(id, { start: 'more', track: S?.track, back, backLabel: label }); };
   $('lf-out').onclick = () => { X.closeSheet(); leave(); };
 }
@@ -444,7 +518,7 @@ function finish() {
 let lastTap = { i: -1, t: 0 };
 function onTap(i) {
   if (!S || S.stage !== 'practice' || performance.now() < busy) return;
-  const P = S.P, b = P.b, L = S.id;
+  const P = S.P, b = P.b, L = S.lv;
   if (P.done) return msg(kid() ? 'All done here! Tap Next board.' : 'This one\'s done. Tap Next board.');
   clearFx(); fxTok++;
   if (L === 0) {
@@ -455,6 +529,7 @@ function onTap(i) {
   if (P.corgi.has(i)) return msg(kid() ? 'That corgi is staying put.' : 'That corgi is already in its spot.');
   if (P.found.has(i)) return msg(kid() ? 'You found that one already!' : 'You already found that one.');
   if (P.given.has(i) || autoSet(P).has(i)) return msg(kid() ? 'That spot already has a paw.' : 'That spot is already ruled out.');
+  if (S.part === 'a') return tapA(i);
   if (L === 1) {
     const now = performance.now(), quick = lastTap.i === i && now - lastTap.t < X.tapWindow();
     lastTap = quick ? { i: -1, t: 0 } : { i, t: now };
@@ -490,8 +565,9 @@ function undo() {
 }
 
 const rm = () => X.reduceMotion();
-function rightFx(i) {
-  const P = S.P, b = P.b, L = S.id, st = b.step;
+// v: a stand-in board (6a: the easier step the tap belongs to, with its level as lv).
+function rightFx(i, v = null) {
+  const P = S.P, b = v || P.b, L = b.lv ?? S.lv, st = b.step;
   let t = '', wait = rm() ? 300 : 1500;
   if (L === 0) { for (const j of b.ans) cellEl(j).classList.add('lclash'); if (st.unit) spot(unitCells(P, st.unit)); t = rightText(S, b, i); }
   else if (L === 1) { spot(unitCells(P, st.unit)); t = rightText(S, b, i); wait = rm() ? 300 : 900; }
@@ -520,11 +596,11 @@ function rightFx(i) {
   setTimeout(() => {
     if (!S || S.stage !== 'practice' || S.P !== P) return;
     if ((L === 3 || L === 6) && tok === fxTok) { clearFx(); paint(P, { fresh: [i] }); }
-    if (left <= 0) { boardDone(false); msg(`${t} ${kid() ? 'You got it all! 🎉' : 'That\'s the whole trick. 🎉'}`, 'good'); }
+    if (left <= 0) { boardDone(false); msg(`${t} ${S.part === 'a' ? (kid() ? 'Not stuck! 🎉' : 'Not stuck: no what if needed. 🎉') : kid() ? 'You got it all! 🎉' : 'That\'s the whole trick. 🎉'}`, 'good'); }
   }, wait);
 }
 function wrongFx(i) {
-  const P = S.P, b = P.b, L = S.id, st = b.step, N = namer(S), K = N.K;
+  const P = S.P, b = P.b, L = S.lv, st = b.step, N = namer(S), K = N.K;
   P.wrongs++;
   // a second miss on boards 7-10 brings the outline back (drawn first, so the drawing goes on top)
   const outlineBack = !P.outline && P.wrongs >= 2 && (b.tier === 'C' || b.tier === 'D');
@@ -582,12 +658,13 @@ function wrongFx(i) {
 }
 // Show me: play the answer, then the board counts as done with help.
 function showMe() {
-  const P = S.P, b = P.b, L = S.id, st = b.step;
+  const P = S.P, b = P.b, L = S.lv, st = b.step;
   if (P.done) return;
   clearFx(); fxTok++;
   P.miss.clear();
   const N = namer(S), K = N.K;
   let t = '';
+  if (S.part === 'a') return showMeA();
   if (L === 0) {
     P.found.add(b.moved ?? b.ans[0]); paint(P);
     for (const j of b.ans) cellEl(j).classList.add('lclash');
@@ -604,6 +681,89 @@ function showMe() {
     else if (L === 3) { reachFx(P, rest[0], unitCells(P, st.unit)); t = `${rightText(S, b, rest[0], null, true)}${rest.length > 1 ? (K ? ' The other dashed spots do that too.' : ' The same is true of every dashed spot.') : ''}`; }
     else { const one = rest.length === 1; spot(st.area); t = rightText(S, b, rest[0], null, true).replace(/this spot is out\.$/, one ? 'the dashed spot is out.' : 'the dashed spots are out.').replace(/so no corgi here\.$/, one ? 'so the dashed spot gets a paw.' : 'so the dashed spots get paws.'); }
     for (const c of rest) cellEl(c).insertAdjacentHTML('beforeend', `<span class="snx">${paw(false)}</span>`);
+  }
+  boardDone(true);
+  msg(t, 'good');
+}
+
+// ---------- 6a "Stuck or not?" ----------
+// Each board is either stuck (no level 1-5 step: the answer is the Time for a what if button) or not
+// (a paw on any spot a level 1-5 step rules out, b.ok, answers it). One right move per board.
+const NONE = ['No trick from Last spot to Group lock rules that spot out.', 'None of the other tricks gives that spot a paw.'];
+// The easier step that rules out spot i, from the board as it stands (before i is pawed).
+function stepAt(P, i) {
+  const { cand, placed } = engineState(P);
+  for (let lv = 1; lv <= 5; lv++) for (const st of allSteps(P.B, cand, placed, lv)) if (st.type === 'clear' && st.cells.includes(i)) return st;
+  return null;
+}
+function tapA(i) {
+  const P = S.P, b = P.b;
+  if (P.miss.has(i)) { P.hist.push({ miss: new Set(P.miss) }); P.miss.delete(i); paint(P); return msg('Paw taken back.'); }
+  const st = !b.stuck && (b.ok || []).includes(i) ? stepAt(P, i) : null;
+  if (st) { P.found.add(i); paint(P, { fresh: [i] }); return rightFx(i, { ...b, step: st, lv: st.level, count: 1 }); }
+  P.hist.push({ miss: new Set(P.miss) });
+  P.miss.add(i); paint(P);
+  const K = kid();
+  P.wrongs++;
+  let t = NONE[K ? 1 : 0];
+  const ch = b.stuck ? follow(P, i) : null;
+  if (ch?.dead) {
+    chainFx(P, i, ch);
+    t = K ? 'A what if works there! But no other trick does, so tap Time for a what if.' : 'A what if would rule that spot out, but no easier trick does. That means it\'s stuck: tap Time for a what if.';
+  } else {
+    ghost(i, '?');
+    t += b.stuck ? (K ? ' If no trick works anywhere, tap Time for a what if.' : ' If none works anywhere on the board, tap Time for a what if.') : hintA(P);
+  }
+  endWrongA(t + (K ? ' Undo takes the paw back.' : ' Undo takes the paw back.'));
+}
+// From the 2nd miss on a board that isn't stuck, Cheddar names the easier trick.
+const hintA = (P) => (!P.b.stuck && P.wrongs >= 2 ? ` Look for ${A_TRICK[P.b.step.level]}.` : '');
+function endWrongA(t) {
+  if (S.P.wrongs === 3) t += kid() ? ' Need help? Tap Show me.' : ' Need help? Show me plays the answer.';
+  msg(t, 'bad');
+  practiceTools();
+  if (navigator.vibrate) navigator.vibrate(20);
+}
+// The "Time for a what if" button: right on a stuck board (Cheddar then shows one), wrong otherwise.
+function whatIfTime() {
+  if (!S || S.stage !== 'practice' || performance.now() < busy) return;
+  const P = S.P, b = P.b, K = kid();
+  if (P.done) return;
+  clearFx(); fxTok++;
+  if (!b.stuck) {
+    P.wrongs++;
+    return endWrongA((K ? 'Not stuck yet! One of the other tricks works here.' : 'Not stuck yet: an easier trick works on this board.') + hintA(P));
+  }
+  const t = `${K ? 'Yes! It\'s stuck, so it\'s time for a what if. Here\'s one on the ? spot:' : 'Right: it\'s stuck, so it\'s time for a what if. Here\'s one on the ? spot.'} ${playWhatIf(P)}`;
+  msg(t, 'good');
+  busy = performance.now() + (rm() ? 400 : 2200);
+  const tok = fxTok;
+  setTimeout(() => {
+    if (!S || S.stage !== 'practice' || S.P !== P) return;
+    if (tok === fxTok) { clearFx(); paint(P, { fresh: [b.step.cells[0]] }); }
+    boardDone(false); msg(`${t} 🎉`, 'good');
+  }, rm() ? 400 : 2200);
+}
+// Draw the stored what if (the shortest) and paw its spot. Returns its words.
+function playWhatIf(P) {
+  const i = P.b.step.cells[0], ch = follow(P, i), N = namer(S);
+  P.found.add(i); paint(P);
+  chainFx(P, i, ch);
+  ask();
+  return `${chainText(N, ch)} ${N.K ? 'So the ? spot gets a paw.' : 'So the ? spot is out.'}`;
+}
+function showMeA() {
+  const P = S.P, b = P.b, st = b.step, K = kid();
+  let t;
+  if (b.stuck) t = `${K ? 'It\'s stuck: none of the other tricks works. Time for a what if on the ? spot!' : 'It\'s stuck: nothing from Last spot to Group lock works. Time for a what if on the ? spot.'} ${playWhatIf(P)}`;
+  else {
+    const rest = b.ans.filter((c) => !P.found.has(c));
+    for (const c of b.ans) P.found.add(c);
+    paint(P, { fresh: rest });
+    if (st.level === 3) reachFx(P, rest[0], unitCells(P, st.unit)); else spot(st.area);
+    for (const c of rest) cellEl(c).insertAdjacentHTML('beforeend', `<span class="snx">${paw(false)}</span>`);
+    const one = rest.length === 1;
+    t = `${rightText(S, { ...b, lv: st.level }, rest[0], null, true).replace(/this spot is out\.$/, one ? 'the dashed spot is out.' : 'the dashed spots are out.').replace(/so no corgi here\.$/, one ? 'so the dashed spot gets a paw.' : 'so the dashed spots get paws.').replace(/^A corgi there (would leave|leaves) (.*) with no room\.$/, (_, v, u) => `A corgi on the dashed spot ${v} ${u} with no room, so it\'s out.`)} ${K ? 'Not stuck, so no what if needed.' : 'Not stuck, so no what if is needed.'}`;
   }
   boardDone(true);
   msg(t, 'good');
@@ -653,7 +813,7 @@ function paint(P, { notation = false, fresh = [] } = {}) {
     else if (P.miss.has(i)) h = `<span class="lmiss">${paw(false)}</span>`;
     else if (P.scratch.has(i)) h = paw(false);
     else if (auto.has(i)) h = paw(true);
-    if (S.id === 0 && P.found.has(i) && P.corgi.has(i)) h = cheddarHead() + '<span class="lring"></span>';
+    if (S.lv === 0 && P.found.has(i) && P.corgi.has(i)) h = cheddarHead() + '<span class="lring"></span>';
     if (look && look.has(i)) {
       const n = P.n, r = Math.floor(i / n), c = i % n;
       const w = [r === 0 || !look.has(i - n), c === n - 1 || !look.has(i + 1), r === n - 1 || !look.has(i + n), c === 0 || !look.has(i - 1)].map((x) => (x ? '3px' : '0')).join(' ');
@@ -664,7 +824,7 @@ function paint(P, { notation = false, fresh = [] } = {}) {
 }
 // The outline: the unit the trick is about (the engine's look); What if outlines the unit that
 // runs out of room, since its look is the answer itself.
-const outlineCells = (P) => (S.id === 6 ? unitCells(P, P.b.step.dead) : P.b.step.look);
+const outlineCells = (P) => (S.lv === 6 ? unitCells(P, P.b.step.dead) : P.b.step.look);
 function clearFx() {
   const b = $('lboard');
   if (!b) return;
@@ -703,7 +863,7 @@ const statusOf = (id) => {
 // Which tracks have every lesson done (and whether that's news since the page last showed it).
 function trackBadges() {
   const seen = db().lessonBadges || {};
-  return tracksFor().map((t) => { const all = [...Array(TRACKS[t] + 1).keys()].every(trickDone); return { t, all, newly: all && !seen[t] }; });
+  return tracksFor().map((t) => { const all = idsTo(TRACKS[t]).every(trickDone); return { t, all, newly: all && !seen[t] }; });
 }
 function markBadges() { const b = (db().lessonBadges ||= {}); for (const x of trackBadges()) if (x.all) b[x.t] = 1; X.save(); }
 export function renderTricks() {
@@ -712,14 +872,14 @@ export function renderTricks() {
   const listed = new Set();
   const row = (id, t) => {
     const s = statusOf(id);
-    return `<button class="trow s-${s.cls}" data-id="${id}" data-t="${t}"><span class="tn">${id}</span><div><b>${TRICKS[id]}</b><small>${esc(s.text)}</small></div><span class="tgo">›</span></button>`;
+    return `<button class="trow s-${s.cls}" data-id="${id}" data-t="${t}"><span class="tn">${id}</span><div><b>${trickName(id)}</b><small>${esc(s.text)}</small></div><span class="tgo">›</span></button>`;
   };
   const cards = order.map((t, k) => {
-    const ids = [...Array(TRACKS[t] + 1).keys()];
+    const ids = idsTo(TRACKS[t]);
     const done = ids.filter(trickDone).length, all = done === ids.length;
     const fresh = ids.filter((id) => !listed.has(id));
     ids.forEach((id) => listed.add(id));
-    const chips = k ? `<div class="tchips">${ids.map((id) => `<span class="${trickDone(id) ? 'on' : ''}" title="${TRICKS[id]}">${trickDone(id) ? '✓' : id}</span>`).join('')}</div>` : '';
+    const chips = k ? `<div class="tchips">${ids.map((id) => `<span class="${trickDone(id) ? 'on' : ''}" title="${trickName(id)}">${trickDone(id) ? '✓' : id}</span>`).join('')}</div>` : '';
     return `<div class="tcard${k ? ' other' : ''}"><div class="thead"><b>${TRACK_LABEL[t]}</b>${all ? `<span class="tbadge">Ready for ${TRACK_NAME[t]} ✓</span>` : `<span class="tcount">${done} of ${ids.length}</span>`}</div>
       ${chips}${fresh.map((id) => row(id, t)).join('')}${k && !fresh.length ? `<small class="tsame">${K ? 'Same tricks as above.' : 'The same tricks as above.'}</small>` : ''}</div>`;
   }).join('');
@@ -728,7 +888,7 @@ export function renderTricks() {
     <p class="tintro">${K ? `Learn the tricks Cheddar uses! Each one is a tiny lesson and 10 practice boards. Finish one for ${pay()} coins.` : `Every puzzle can be solved with these tricks, no guessing. Each is a short lesson and 10 practice boards, about 5 minutes. Finishing a lesson the first time pays ${pay()} coins.`}</p>
     ${cards}`;
   $('tricks').querySelector('.back').onclick = () => X.renderHome();
-  $('tricks').querySelectorAll('.trow').forEach((b) => (b.onclick = () => lessonSheet(Number(b.dataset.id), b.dataset.t)));
+  $('tricks').querySelectorAll('.trow').forEach((b) => (b.onclick = () => lessonSheet(/^\d+$/.test(b.dataset.id) ? Number(b.dataset.id) : b.dataset.id, b.dataset.t)));
   markBadges();
   X.show('tricks');
   loadLessons();
@@ -738,7 +898,7 @@ function lessonSheet(id, t) {
   const r = peek(id), K = kid();
   if (!r.seen && !r.done && !r.board) return openLesson(id, { start: 'intro', track: t });
   const s = statusOf(id), at = (r.board || 0) + 1;
-  X.sheet(`<h3>${TRICKS[id]}</h3><p>${esc(s.text)}</p>
+  X.sheet(`<h3>${trickName(id)}</h3><p>${esc(s.text)}</p>
     ${r.done ? '' : `<button class="cta" id="ls-go">${r.board ? `Pick up at board ${at}` : 'Start practice'}</button>`}
     ${r.done ? `<button class="cta" id="ls-more">More practice · 10 new boards</button>` : ''}
     <button class="cta alt" id="ls-intro">${K ? 'Watch the lesson again' : 'Replay Show it and Watch it'}</button>

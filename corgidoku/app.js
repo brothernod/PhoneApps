@@ -2,11 +2,11 @@ import { decodeRegions, decodeSolution, transformBoard, sniff, rng } from './eng
 import { cheddarHead, cheddarLoaf, partyHat, paw, treat, artDefs, coinIcon, closetIcon, sniffIcon, still } from './art.js';
 import { ITEMS, SLOTS, item, outfit, colorsOf, baseId, ownsLine, priceFor, shopDefaults, payout, backPay, buy, SCENES, FRAMES, CLIMBS, scene, frame, earnable, unlockAt, milestones, syncUnlocks, BONUS, bonusOpen, sniffPrice, paySniff, WILD, WILD_TIERS, WILD_CLEAN, wildTier, wildDates, wildOn, wildOver, wildOpen, wildCount } from './shop.js';
 import { winStats, weekStats, winText, weekText, drawWinCard, drawWeekCard } from './share.js';
-import { initTricks, loadLessons, openLesson, renderTricks, trickOffer, snoozeTrick, trickDone, TRICKS } from './tricks.js';
+import { initTricks, loadLessons, openLesson, renderTricks, trickOffer, snoozeTrick, trickDone, offerText, linkName, migrateLessons } from './tricks.js';
 
 // ---------- constants ----------
 const NAME = 'Halina'; // the Default player's name until they set their own in Settings
-const VERSION = '1.35'; // bump with CACHE in sw.js on every release
+const VERSION = '1.36'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const YARD_NAMES = ['pink', 'purple', 'blue', 'mint', 'yellow', 'orange', 'red', 'lavender', 'teal', 'lime']; // how Sniff names each yard color
 // Yard colors are shuffled per puzzle (v1.31). Every shipped board grew yard k from row k's corgi, so
@@ -79,9 +79,11 @@ function loadDb() {
   // Scenes and frames already earned in the Climb. Idempotent, so it also covers players whose
   // back pay ran before scenes existed (shopV already 1), and any scenes added in later releases.
   const got = syncUnlocks(db);
+  // v1.36: the v1.35 What if lesson became three parts (6b ✓ for anyone who learned it).
+  const mig = migrateLessons(db);
   if (bp) welcome = bp;
   unlocked = got;
-  if (bp || got.length) { try { localStorage.setItem(me().key, JSON.stringify(db)); } catch {} }
+  if (bp || got.length || mig) { try { localStorage.setItem(me().key, JSON.stringify(db)); } catch {} }
 }
 let welcome = null; // back pay result waiting for its one-time "Welcome to the closet" sheet
 let unlocked = []; // scenes/frames found by the launch sync, waiting for their one-time sheet
@@ -584,7 +586,7 @@ const fromPuzzle = (pid) => ({ back: () => play(pid), backLabel: 'Play my puzzle
 function trickCard(id) {
   const bub = $('play').querySelector('.bubble'), pid = G.pid;
   bub.classList.add('offer');
-  bub.insertAdjacentHTML('beforeend', `<div class="lcard" id="lcard"><p>${isKid() ? `New trick in this one: <b>${TRICKS[id]}</b>! Want a quick lesson?` : `New trick in this one: <b>${TRICKS[id]}</b>. Lesson and practice, about 5 minutes?`}</p>
+  bub.insertAdjacentHTML('beforeend', `<div class="lcard" id="lcard"><p>${offerText(id)}</p>
     <div><button class="lc-go" id="lc-go">Learn it</button><button class="lc-no" id="lc-no">Not now</button></div></div>`);
   $('lc-go').onclick = () => { hideTrickCard(false); stopClock(); openLesson(id, { start: 'intro', ...fromPuzzle(pid) }); };
   $('lc-no').onclick = () => hideTrickCard(true, id);
@@ -602,7 +604,7 @@ function sniffLink(st) {
   $('snlink')?.remove();
   if (!(st.level >= 1 && st.level <= 6) || trickDone(st.level)) return;
   const pid = G.pid;
-  $('play').querySelector('.bubble').insertAdjacentHTML('afterend', `<button class="snlink" id="snlink">${isKid() ? `Learn the ${TRICKS[st.level]} trick →` : `Learn this trick: ${TRICKS[st.level]} →`}</button>`);
+  $('play').querySelector('.bubble').insertAdjacentHTML('afterend', `<button class="snlink" id="snlink">${isKid() ? `Learn the ${linkName(st.level)} trick →` : `Learn this trick: ${linkName(st.level)} →`}</button>`);
   $('snlink').onclick = () => { stopClock(); persist(); openLesson(st.level, { start: 'auto', ...fromPuzzle(pid) }); };
 }
 
