@@ -1,5 +1,5 @@
 {
-  "exported": "2026-11-27T19:34:16Z",
+  "exported": "2026-11-28T04:04:18Z",
   "items": [
     {
       "id": "heater",
@@ -110,23 +110,6 @@
       ]
     },
     {
-      "id": "524e9d0e-912",
-      "title": "Aqara UWB Smart Lock U400, Keyless Entry Door Lock, Front Deadbolt, Black | Apple Home Key, Matter Over Thread, Rechargeable Battery, Finger",
-      "qty": 3,
-      "low": 200,
-      "high": null,
-      "regular": null,
-      "chosen": null,
-      "options": [
-        {
-          "id": "ce0c0925-18a",
-          "label": "Aqara UWB Smart Lock U400, Keyless Entry Door Lock, Front Deadbolt, Black | Apple Home Key, Matter Over Thread, Rechargeable Battery, Finger",
-          "url": "https://a.co/d/0fWl02eJ",
-          "price": 200
-        }
-      ]
-    },
-    {
       "id": "airtags",
       "title": "More AirTags",
       "qty": 1,
@@ -140,23 +123,6 @@
           "label": "AirTag 2 (4-pack)",
           "url": "https://www.apple.com/xc/product/MFEA4LL/A",
           "price": 99.99
-        }
-      ]
-    },
-    {
-      "id": "lock",
-      "title": "Garage door lock",
-      "qty": 1,
-      "low": 190,
-      "high": 270,
-      "regular": null,
-      "chosen": null,
-      "options": [
-        {
-          "id": "lock-u200",
-          "label": "Aqara Smart Lock U200",
-          "url": "",
-          "price": 199.99
         }
       ]
     },
