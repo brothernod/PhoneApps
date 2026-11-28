@@ -1,21 +1,21 @@
 {
-  "checked": "2026-11-27T23:15:11Z",
+  "checked": "2026-11-28T11:15:20Z",
   "items": {
     "heater": {
-      "best": { "price": 399.99, "store": "Dyson", "url": "https://www.dyson.com/air-treatment/air-purifiers/purifier-hot-cool-gen1-hp10/white", "optionId": "heater-hp10", "note": "HP10 Dyson.com price from Nov 26, not re-confirmed (Best Buy no longer sells HP10 new); HP1 $449.99 Best Buy Black Friday deal confirmed today, $529.99 Target" },
+      "best": { "price": 399.99, "store": "Dyson", "url": "https://www.dyson.com/air-treatment/air-purifiers/purifier-hot-cool-gen1-hp10/white", "optionId": "heater-hp10", "note": "HP10 $399.99 (was $529.99) on Dyson.com, in stock, confirmed today; HP1 $449.99 Best Buy Black Friday deal, $529.99 Target" },
       "options": {
-        "heater-hp10": { "price": 399.99, "store": "Dyson", "url": "https://www.dyson.com/air-treatment/air-purifiers/purifier-hot-cool-gen1-hp10/white", "seen": "2026-11-26" },
-        "heater-hp1": { "price": 449.99, "store": "Best Buy", "url": "https://www.bestbuy.com/product/dyson-purifier-hot-cool-hp1-white-white/J3ZCSY28JF", "seen": "2026-11-27" }
+        "heater-hp10": { "price": 399.99, "store": "Dyson", "url": "https://www.dyson.com/air-treatment/air-purifiers/purifier-hot-cool-gen1-hp10/white", "seen": "2026-11-28" },
+        "heater-hp1": { "price": 449.99, "store": "Best Buy", "url": "https://www.bestbuy.com/product/dyson-purifier-hot-cool-hp1-white-white/J3ZCSY28JF", "seen": "2026-11-28" }
       }
     },
     "ups": {
       "best": { "price": 359.95, "store": "CDW", "url": "https://www.cdw.com/product/cyberpower-cp1500pfcrm2u-pfc-sinewave-ups-systems/7130945", "optionId": "ups-cp1500", "note": "Everyday price (list $399.95); same $359.95 at Adorama; no Black Friday cut" },
       "options": {
-        "ups-cp1500": { "price": 359.95, "store": "CDW", "url": "https://www.cdw.com/product/cyberpower-cp1500pfcrm2u-pfc-sinewave-ups-systems/7130945", "seen": "2026-11-27" }
+        "ups-cp1500": { "price": 359.95, "store": "CDW", "url": "https://www.cdw.com/product/cyberpower-cp1500pfcrm2u-pfc-sinewave-ups-systems/7130945", "seen": "2026-11-28" }
       }
     },
     "blinds": {
-      "best": { "price": 161.99, "store": "SmartWings", "url": "https://www.smartwingshome.com/products/smartwings-motorized-light-filtering-roller-shades-70-blackout-safari", "optionId": "blinds-sw", "note": "$179.99 start price less 10% Black Friday sitewide, auto-applied (15% over $1,500); size-dependent; product page from Nov 26, sale confirmed today" },
+      "best": { "price": 161.99, "store": "SmartWings", "url": "https://www.smartwingshome.com/products/smartwings-motorized-light-filtering-roller-shades-70-blackout-safari", "optionId": "blinds-sw", "note": "$179.99 start price less 10% Black Friday sitewide, auto-applied (15% over $1,500); size-dependent; product page from Nov 26, sale still advertised" },
       "options": {
         "blinds-sw": { "price": 161.99, "store": "SmartWings", "url": "https://www.smartwingshome.com/products/smartwings-motorized-light-filtering-roller-shades-70-blackout-safari", "seen": "2026-11-26" }
       }
@@ -23,46 +23,41 @@
     "doorsensor": {
       "best": { "price": 29.95, "store": "ameriDroid", "url": "https://ameridroid.com/products/aqara-door-and-window-sensor-p2", "optionId": "door-p2", "note": "Regular price, in stock; Best Buy no longer sells it new" },
       "options": {
-        "door-p2": { "price": 29.95, "store": "ameriDroid", "url": "https://ameridroid.com/products/aqara-door-and-window-sensor-p2", "seen": "2026-11-27" }
+        "door-p2": { "price": 29.95, "store": "ameriDroid", "url": "https://ameridroid.com/products/aqara-door-and-window-sensor-p2", "seen": "2026-11-28" }
       }
     },
     "printer": {
-      "best": { "price": 789.0, "store": "Bambu Lab", "url": "https://us.store.bambulab.com/products/x2d?id=720069852747550728", "optionId": "printer-x2d", "note": "Bambu Black Friday sale Combo $789 (reg $899) through Dec 1, 2 AM ET; Best Buy $789.99 Black Friday deal confirmed today" },
+      "best": { "price": 789.0, "store": "Bambu Lab", "url": "https://us.store.bambulab.com/products/x2d?id=720069852747550728", "optionId": "printer-x2d", "note": "Bambu Black Friday sale Combo $789 (reg $899) through Dec 1, 2 AM ET (store page not readable today; per Slickdeals/All3DP); Best Buy $789.99 confirmed today" },
       "options": {
-        "printer-x2d": { "price": 789.0, "store": "Bambu Lab", "url": "https://us.store.bambulab.com/products/x2d?id=720069852747550728", "seen": "2026-11-27" }
-      }
-    },
-    "524e9d0e-912": {
-      "best": { "price": 199.99, "store": "Best Buy", "url": "https://www.bestbuy.com/product/aqara-uwb-smart-lock-u400-kit-with-m100-hub-matter-thread-wifi-apple-home-key-fingerprint-rechargeable-battery-black/JJ8RHCJ2S9", "optionId": "ce0c0925-18a", "note": "Best Buy Black Friday deal, $90 off $289.99, kit includes M100 hub; still live per Slickdeals; next best ~$229.99" },
-      "options": {
-        "ce0c0925-18a": { "price": 199.99, "store": "Best Buy", "url": "https://www.bestbuy.com/product/aqara-uwb-smart-lock-u400-kit-with-m100-hub-matter-thread-wifi-apple-home-key-fingerprint-rechargeable-battery-black/JJ8RHCJ2S9", "seen": "2026-11-27" }
+        "printer-x2d": { "price": 789.0, "store": "Bambu Lab", "url": "https://us.store.bambulab.com/products/x2d?id=720069852747550728", "seen": "2026-11-28" }
       }
     },
     "airtags": {
-      "best": { "price": 79.0, "store": "Best Buy", "url": "https://www.bestbuy.com/product/apple-airtag-4-pack-2nd-generation-2026-white/JJGCQLTTF3", "optionId": "airtags-2", "note": "4-pack $79 at Best Buy from this morning's check (page not readable this run); Amazon was $69.99 on Nov 11-13, not re-confirmed" },
+      "best": { "price": 79.0, "store": "Best Buy", "url": "https://www.bestbuy.com/product/apple-airtag-4-pack-2nd-generation-2026-white/JJGCQLTTF3", "optionId": "airtags-2", "note": "4-pack $79 at Best Buy from Nov 27 (page not readable today); Amazon/Best Buy were $69.99 Nov 11, not re-confirmed" },
       "options": {
         "airtags-2": { "price": 79.0, "store": "Best Buy", "url": "https://www.bestbuy.com/product/apple-airtag-4-pack-2nd-generation-2026-white/JJGCQLTTF3", "seen": "2026-11-27" }
       }
     },
     "dbcd3615-f19": {
-      "best": { "price": 44.99, "store": "Best Buy", "url": "https://www.bestbuy.com/product/honeywell-home-smart-thermostat-compatible-wireless-room-sensor-white/JJ8Z85C38G", "optionId": "72c46e17-e4c", "note": "XRSENSOR-1PK, from this morning's check (Best Buy now shows $44.99-$64.99 range); Honeywell Store $49.99 in stock" },
+      "best": { "price": 44.99, "store": "Best Buy", "url": "https://www.bestbuy.com/product/honeywell-home-smart-thermostat-compatible-wireless-room-sensor-white/JJ8Z85C38G", "optionId": "72c46e17-e4c", "note": "XRSENSOR 1-pack; Best Buy shows $44.99-$64.99 range; Honeywell Store $49.99 in stock (site 10% coupon may apply)" },
       "options": {
-        "72c46e17-e4c": { "price": 44.99, "store": "Best Buy", "url": "https://www.bestbuy.com/product/honeywell-home-smart-thermostat-compatible-wireless-room-sensor-white/JJ8Z85C38G", "seen": "2026-11-27" }
+        "72c46e17-e4c": { "price": 44.99, "store": "Best Buy", "url": "https://www.bestbuy.com/product/honeywell-home-smart-thermostat-compatible-wireless-room-sensor-white/JJ8Z85C38G", "seen": "2026-11-28" }
       }
     },
     "mattress": {
-      "best": { "price": 749.99, "store": "Costco", "url": "https://www.costco.com/p/-/kirkland-signature-by-stearns--foster-14-tight-top-lakeridge-mattress/4000414778", "optionId": "4749c94a-eaa", "note": "King, members only, in-warehouse price per WarehouseRunner tracker ($749.99-$949.99, only 15 of 115 stores in stock); Costco.com not readable so unconfirmed" },
+      "best": { "price": 749.99, "store": "Costco", "url": "https://www.costco.com/p/-/kirkland-signature-by-stearns--foster-14-tight-top-lakeridge-mattress/4000414778", "optionId": "4749c94a-eaa", "note": "King, members only, in-warehouse price per WarehouseRunner on Nov 27 (limited stores); Costco.com not readable, unconfirmed today" },
       "options": {
         "4749c94a-eaa": { "price": 749.99, "store": "Costco", "url": "https://www.costco.com/p/-/kirkland-signature-by-stearns--foster-14-tight-top-lakeridge-mattress/4000414778", "seen": "2026-11-27" }
       }
     },
     "bed": {
-      "best": { "price": 1119.0, "store": "Article", "url": "https://www.article.com/product/29606/lenia-king-upholstered-bed-walnut-and-flou-moss", "optionId": "b7934baa-09c", "note": "Lenia King $1,119 (was $1,399) confirmed today; Ria King $1,356.48 Home Depot; Azara King $1,979.65 Sportique; Catalina King $3,309 Aura Modern Home" },
+      "best": { "price": 1119.0, "store": "Article", "url": "https://www.article.com/product/29606/lenia-king-upholstered-bed-walnut-and-flou-moss", "optionId": "b7934baa-09c", "note": "Lenia King $1,119 (was $1,399) confirmed today; Ria King $1,356.48 Home Depot; Azara King $1,979.65 Sportique; Sienna E. King $2,409 Aura Modern Home" },
       "options": {
-        "b7934baa-09c": { "price": 1119.0, "store": "Article", "url": "https://www.article.com/product/29606/lenia-king-upholstered-bed-walnut-and-flou-moss", "seen": "2026-11-27" },
-        "8707d3f3-dd9": { "price": 3309.0, "store": "AURA Modern Home", "url": "https://auramodernhome.com/products/king-solid-bamboo-catalina-platform-bed-black-walnut-by-greenington", "seen": "2026-11-27" },
-        "07d3df80-6dc": { "price": 1356.48, "store": "Home Depot", "url": "https://homedepot.com/p/Ria-Caramelized-Wood-Frame-King-Platform-Bed-ECO016CA/316522909", "seen": "2026-11-27" },
-        "c70292a7-32d": { "price": 1979.65, "store": "Sportique", "url": "https://sportique.com/products/greenington-azara-king-platform-bed-caramelized", "seen": "2026-11-27" }
+        "b7934baa-09c": { "price": 1119.0, "store": "Article", "url": "https://www.article.com/product/29606/lenia-king-upholstered-bed-walnut-and-flou-moss", "seen": "2026-11-28" },
+        "07d3df80-6dc": { "price": 1356.48, "store": "Home Depot", "url": "https://homedepot.com/p/Ria-Caramelized-Wood-Frame-King-Platform-Bed-ECO016CA/316522909", "seen": "2026-11-28" },
+        "c70292a7-32d": { "price": 1979.65, "store": "Sportique", "url": "https://sportique.com/products/greenington-azara-king-platform-bed-caramelized", "seen": "2026-11-28" },
+        "641ed4bb-597": { "price": 2409.0, "store": "AURA Modern Home", "url": "https://auramodernhome.com/products/eastern-king-solid-bamboo-sienna-platform-bed-caramelized-by-greenington", "seen": "2026-11-28" },
+        "8707d3f3-dd9": { "price": 3309.0, "store": "AURA Modern Home", "url": "https://auramodernhome.com/products/king-solid-bamboo-catalina-platform-bed-black-walnut-by-greenington", "seen": "2026-11-27" }
       }
     }
   }
