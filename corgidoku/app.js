@@ -2,10 +2,11 @@ import { decodeRegions, decodeSolution, transformBoard, sniff, rng } from './eng
 import { cheddarHead, cheddarLoaf, partyHat, paw, treat, artDefs, coinIcon, closetIcon, sniffIcon, still } from './art.js';
 import { ITEMS, SLOTS, item, outfit, colorsOf, baseId, ownsLine, priceFor, shopDefaults, payout, backPay, buy, SCENES, FRAMES, CLIMBS, scene, frame, earnable, unlockAt, milestones, syncUnlocks, BONUS, bonusOpen, sniffPrice, paySniff, WILD, WILD_TIERS, WILD_CLEAN, wildTier, wildDates, wildOn, wildOver, wildOpen, wildCount } from './shop.js';
 import { winStats, weekStats, winText, weekText, drawWinCard, drawWeekCard } from './share.js';
+import { initTricks, loadLessons, openLesson, renderTricks, trickOffer, snoozeTrick, trickDone, TRICKS } from './tricks.js';
 
 // ---------- constants ----------
 const NAME = 'Halina'; // the Default player's name until they set their own in Settings
-const VERSION = '1.34'; // bump with CACHE in sw.js on every release
+const VERSION = '1.35'; // bump with CACHE in sw.js on every release
 const YARD_COLORS = ['#FFA8D2', '#C9AEFF', '#93D7FF', '#93F0C8', '#FFE77A', '#FFBE8F', '#FF9C9C', '#EFB2F7', '#86E6EA', '#CDF78A'];
 const YARD_NAMES = ['pink', 'purple', 'blue', 'mint', 'yellow', 'orange', 'red', 'lavender', 'teal', 'lime']; // how Sniff names each yard color
 // Yard colors are shuffled per puzzle (v1.31). Every shipped board grew yard k from row k's corgi, so
@@ -196,7 +197,7 @@ function load(pid) {
     return { pid, kind, key, tier: t.id, n: set.n, r: set.r.join(','), maps, reg: maps[0], sol: decodeSolution(set.s), grade: 'wild' };
   }
   const p = kind === 'd' ? dailyFor(key) : kind === 'b' ? bonusBoard(modeOf(pre), Number(key)) : PUZ.campaign[Number(key) - 1];
-  return { pid, kind, key, n: p.n, r: p.r, reg: decodeRegions(p.r), sol: decodeSolution(p.s), grade: p.g };
+  return { pid, kind, key, n: p.n, r: p.r, reg: decodeRegions(p.r), sol: decodeSolution(p.s), grade: p.g, lv: p.lv };
 }
 
 // ---------- special days ----------
@@ -296,6 +297,7 @@ function renderHome() {
     <div class="row">
       <button class="pill" id="go-past"><span class="e">📅</span>Past days</button>
       <button class="pill" id="go-help"><span class="e">❓</span>How to play</button>
+      <button class="pill" id="go-tricks"><span class="e">🎓</span>Tricks</button>
       <button class="pill" id="go-closet"><span class="e">${closetIcon()}</span>Closet</button>
       <button class="pill gear" id="go-set" aria-label="Settings">⚙️</button>
     </div>
@@ -305,7 +307,8 @@ function renderHome() {
   if ($('go-bonus')) $('go-bonus').onclick = playBonus;
   if (bonusUnlocked() && !BDATA[mode()]) { const m = mode(); ensureBonus(m).then((d) => { if (d && m === mode() && $('home').classList.contains('on')) renderHome(); }); }
   $('go-past').onclick = renderPast;
-  $('go-help').onclick = help;
+  $('go-help').onclick = () => help();
+  $('go-tricks').onclick = renderTricks;
   $('go-set').onclick = settings;
   $('go-closet').onclick = () => renderCloset();
   if ($('go-wild')) $('go-wild').onclick = renderWild;
@@ -570,7 +573,37 @@ function play(pid) {
   if (!G.solved) startClock(); else drawClock();
   if (W) { drawChips(); drawWildTimer(); if (!G.solved) startWild(); }
   twinkle();
-  if (!db.seenHelp) help();
+  if (!db.seenHelp) help(pid);
+  else if (!G.solved && P.kind !== 'w') { const id = trickOffer(P.lv); if (id != null) trickCard(id); }
+}
+
+// ---------- Cheddar's tricks: the pop-up card and the Sniff link (tricks.js has the lessons) ----------
+// A puzzle that needs a trick the player hasn't done or seen: Cheddar offers it in his bubble. It never
+// blocks play: starting on the board counts as "Not now", which waits about a week for that trick.
+const fromPuzzle = (pid) => ({ back: () => play(pid), backLabel: 'Play my puzzle' });
+function trickCard(id) {
+  const bub = $('play').querySelector('.bubble'), pid = G.pid;
+  bub.classList.add('offer');
+  bub.insertAdjacentHTML('beforeend', `<div class="lcard" id="lcard"><p>${isKid() ? `New trick in this one: <b>${TRICKS[id]}</b>! Want a quick lesson?` : `New trick in this one: <b>${TRICKS[id]}</b>. Lesson and practice, about 5 minutes?`}</p>
+    <div><button class="lc-go" id="lc-go">Learn it</button><button class="lc-no" id="lc-no">Not now</button></div></div>`);
+  $('lc-go').onclick = () => { hideTrickCard(false); stopClock(); openLesson(id, { start: 'intro', ...fromPuzzle(pid) }); };
+  $('lc-no').onclick = () => hideTrickCard(true, id);
+  G.offer = id;
+}
+function hideTrickCard(snooze, id = G?.offer) {
+  if (!$('lcard')) return;
+  $('lcard').remove();
+  $('play').querySelector('.bubble')?.classList.remove('offer');
+  if (snooze && id != null) snoozeTrick(id);
+  if (G) G.offer = null;
+}
+// Sniff named a trick the player hasn't finished: a link to its lesson under Cheddar's bubble.
+function sniffLink(st) {
+  $('snlink')?.remove();
+  if (!(st.level >= 1 && st.level <= 6) || trickDone(st.level)) return;
+  const pid = G.pid;
+  $('play').querySelector('.bubble').insertAdjacentHTML('afterend', `<button class="snlink" id="snlink">${isKid() ? `Learn the ${TRICKS[st.level]} trick →` : `Learn this trick: ${TRICKS[st.level]} →`}</button>`);
+  $('snlink').onclick = () => { stopClock(); persist(); openLesson(st.level, { start: 'auto', ...fromPuzzle(pid) }); };
 }
 
 function greeting() {
@@ -839,6 +872,7 @@ function attachInput(board) {
     return el && board.contains(el) ? Number(el.dataset.i) : null;
   };
   board.onpointerdown = (e) => {
+    if ($('lcard')) hideTrickCard(true); // playing on counts as "Not now"
     if (G.solved || wLock()) { start = null; return; }
     start = cellAt(e); dragging = false; painted = new Set(); down = { x: e.clientX, y: e.clientY };
     board.setPointerCapture(e.pointerId);
@@ -1011,6 +1045,7 @@ function clearSniff() {
   b.classList.remove('spot');
   b.querySelectorAll('.sn-a,.sn-d,.glow').forEach((el) => el.classList.remove('sn-a', 'sn-d', 'glow'));
   b.querySelectorAll('.sng,.snx').forEach((el) => el.remove());
+  $('snlink')?.remove();
 }
 // Highlight cells: everything else on the board dims.
 function spotlight(cells) {
@@ -1028,6 +1063,7 @@ function showLook(st, extra = '') {
   spotlight(st.look);
   if (st.level === 6) ghost(st.cells[0], '?');
   say(explain(st).look + extra, false, true, true);
+  sniffLink(st);
 }
 function showAnswer(st) {
   clearSniff();
@@ -1043,6 +1079,7 @@ function showAnswer(st) {
   } else if (st.type === 'place' || st.type === 'reveal') b.children[st.cells[0]].classList.add('glow');
   else for (const i of st.cells) b.children[i].insertAdjacentHTML('beforeend', `<span class="snx">${paw(false)}</span>`);
   say(explain(st).answer, false, true, true);
+  sniffLink(st);
 }
 // The Sniff button: the nose and what the next tap costs. "Sniff" + the lesson price (Hard/Extreme),
 // "Answer" + the answer price once the lesson for this step is bought, or "Show me" when the answer
@@ -1450,7 +1487,8 @@ function confirmSheet(title, body, ok) {
   $('no').onclick = closeSheet;
 }
 
-function help() {
+function help(pid) {
+  const tour = !db.seenHelp && pid; // the first launch: offer the welcome tour (The rules, then Last spot)
   sheet(`<div style="width:110px;margin:0 auto">${cheddarLoaf(dressed())}</div><h3>How to play</h3>
     <p>Give every corgi a cozy spot:</p>
     <ol>
@@ -1463,8 +1501,13 @@ function help() {
     <p>Pick a paw color under the board to brainstorm "what if" ideas in different colors. Double-tap a color to clear just those paws.</p>
     <p>${isKid() ? 'Ready for more? Try <b>🌈 Cozy</b> on the home screen.' : mode() === 'extreme' ? '<b>⚡ Extreme</b> boards need a "what if": picture a corgi on a spot, follow the corgis it forces, and if a row, column or yard runs out of room, that spot is out. No guessing needed, just looking ahead.' : mode() === 'hard' ? 'Breezing through? Switch to <b>⚡ Extreme</b> on the home screen.' : 'Want more challenge? Switch to <b>🔥 Hard</b> or <b>⚡ Extreme</b> on the home screen.'}</p>
     <p>A wrong corgi costs a treat. Stuck? Tap <b>Sniff</b>: Cheddar shows where to look, and tap again for the answer. Tap <b>Undo</b> to put a clue away.${mode() === 'hard' || mode() === 'extreme' ? ` In ${MODES[mode()].label} the where-to-look tap costs ${coin(mode() === 'hard' ? 5 : 10)} and the answer ${coin(mode() === 'hard' ? 20 : 40)} more (free on a puzzle you already solved).` : ''}</p>
-    <button class="cta" id="gotit">Let's go!</button>`);
+    ${tour ? `<p>New here? <b>Cheddar's tour</b> walks you through the rules and your first trick, with practice boards. About 10 minutes, and it pays ${coin(isKid() ? 40 : 20)}.</p>
+    <button class="cta" id="g-tour">Take the tour 🎓</button>` : ''}
+    <button class="cta${tour ? ' alt' : ''}" id="gotit">${tour ? 'Just play' : 'Let\'s go!'}</button>
+    ${tour ? '' : `<button class="cta alt" id="g-tricks">🎓 Cheddar's tricks</button>`}`);
   $('gotit').onclick = () => { db.seenHelp = true; save(); closeSheet(); };
+  if ($('g-tour')) $('g-tour').onclick = () => { db.seenHelp = true; save(); closeSheet(); stopClock(); openLesson(0, { start: 'intro', tour: true, ...fromPuzzle(pid) }); };
+  if ($('g-tricks')) $('g-tricks').onclick = () => { closeSheet(); renderTricks(); };
 }
 
 // First visit to Extreme: explain the one new idea.
@@ -1749,13 +1792,17 @@ function switchPlayer(p) {
 }
 
 // ---------- boot ----------
+initTricks({
+  db: () => db, save, isKid, mode, modesFor, esc, show, sheet, closeSheet, renderHome, dressed, reduceMotion,
+  todayISO, addDays, yardPerm, tapWindow, tapSlop, YARD_COLORS, YARD_NAMES,
+});
 document.body.insertAdjacentHTML('afterbegin', artDefs); // the shared die-cut filter for every Cheddar
 // Reduced motion: the LED shades keep their static rainbow (no SMIL <animate>).
 if (reduceMotion()) for (const it of ITEMS) if (it.art.includes('<animate')) it.art = still(it.art);
 // Wild Week puzzles. Optional: if they can't load, the rest of the game still works.
 const wildLoad = fetch('wild.json').then((r) => r.json()).then((d) => { WDATA = d; }).catch(() => {});
 Promise.all([...Object.entries(MODES).map(([k, m]) => fetch(m.file).then((r) => r.json()).then((d) => { DATA[k] = d; })), wildLoad])
-  .then(() => { useMode(mode()); applyScene(); renderHome(); modesFor().forEach((m) => ensureBonus(m)); })
+  .then(() => { useMode(mode()); applyScene(); renderHome(); modesFor().forEach((m) => ensureBonus(m)); loadLessons(); })
   .catch(() => { $('home').innerHTML = '<p style="margin-top:40vh;font-weight:800">Cheddar couldn\'t find the puzzles. Check your connection and reopen.</p>'; });
 
 document.addEventListener('visibilitychange', () => {

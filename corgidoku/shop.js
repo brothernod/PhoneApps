@@ -261,6 +261,18 @@ export function payout(db, pid, kid) {
   return out;
 }
 
+// Cheddar's tricks (v1.35): a lesson pays once, when all 10 of its practice boards are done (with or
+// without help). More practice and replays pay nothing. Returns the coins paid (0 if paid before).
+export const LESSON_PAY = { grown: 10, kid: 20 };
+export function lessonPay(db, id, kid) {
+  const r = ((db.lessons ||= {})[id] ||= {});
+  if (r.paid) return 0;
+  r.paid = 1;
+  const c = kid ? LESSON_PAY.kid : LESSON_PAY.grown;
+  db.coins = (db.coins || 0) + c;
+  return c;
+}
+
 // First launch with the shop: credit every puzzle already solved (base rates, no clean bonus,
 // no weekly back pay). Weeks that already qualify are marked paid so they can't pay later.
 // Kids also get their starting 100. Runs once per player (db.shopV).

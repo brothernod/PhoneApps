@@ -536,6 +536,80 @@
   @keyframes wifade{from{opacity:0}}
   @keyframes wiout2{to{opacity:0}}
 
+  /* ---------- Cheddar's tricks (v1.35): the page, the lesson screen, the pop-up card, the Sniff link ---------- */
+  #tricks .bar{position:sticky;top:0;z-index:5;flex:none;padding:4px;border-radius:18px;background:rgba(255,255,255,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 2px 10px rgba(91,42,110,.12)}
+  body.dark #tricks .bar{background:rgba(28,26,58,.6)}
+  .tintro{width:100%;max-width:440px;margin:10px 0 4px;padding:10px 14px;border-radius:18px;background:rgba(255,255,255,.85);font-weight:700;font-size:14.5px;line-height:1.38;color:var(--ink-soft)}
+  .tcard{width:100%;max-width:440px;margin-top:10px;padding:10px;border-radius:22px;background:rgba(255,255,255,.9);box-shadow:0 4px 14px rgba(155,107,255,.15);flex:none}
+  .thead{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:2px 6px 8px}
+  .thead b{font-size:18px;font-weight:900}
+  .tbadge{padding:3px 10px;border-radius:999px;background:#DDF8EA;color:#1E7A4C;font-weight:900;font-size:13px;white-space:nowrap}
+  .tcount{font-weight:800;font-size:13px;color:var(--ink-soft)}
+  .trow{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;margin-top:6px;border-radius:16px;background:#fff;text-align:left;box-shadow:0 3px 0 rgba(91,42,110,.10)}
+  .trow:active{transform:translateY(2px);box-shadow:none}
+  .trow>div{flex:1;min-width:0}
+  .trow b{display:block;font-size:16.5px;font-weight:900}
+  .trow small{display:block;font-size:13px;font-weight:800;color:var(--ink-soft)}
+  .trow .tn{width:34px;height:34px;flex:none;border-radius:11px;display:grid;place-items:center;font-weight:900;color:#fff;background:linear-gradient(135deg,var(--pink),var(--purple))}
+  .trow.s-done .tn{background:#3FD98B}
+  .trow.s-done small{color:#1E7A4C}
+  .trow.s-skip small,.trow.s-part small{color:#B5530C}
+  .trow .tgo{font-size:22px;font-weight:900;color:var(--ink-soft)}
+  .tchips{display:flex;gap:5px;flex-wrap:wrap;padding:0 6px 2px}
+  .tchips span{width:26px;height:26px;border-radius:9px;display:grid;place-items:center;font-size:13px;font-weight:900;background:#F3EAF6;color:var(--ink-soft)}
+  .tchips span.on{background:#DDF8EA;color:#1E7A4C}
+  .tsame{display:block;padding:6px 8px 2px;font-weight:800;font-size:12.5px;color:var(--ink-soft)}
+  /* the lesson screen */
+  body.scened[data-screen=lesson] #scene::after{background:rgba(255,255,255,.45)}
+  body.scened.dark[data-screen=lesson] #scene::after{background:rgba(28,26,58,.35)}
+  #lesson>*{flex-shrink:0}
+  .lskip{height:44px;padding:0 14px;border-radius:14px;background:rgba(255,255,255,.92);box-shadow:0 2px 8px rgba(155,107,255,.18);font-weight:900;font-size:15px;flex:none}
+  .lsub{margin-top:2px;font-weight:900;font-size:13px;letter-spacing:.4px;text-transform:uppercase;color:var(--ink-soft)}
+  body.scened .lsub{padding:1px 10px;border-radius:999px;background:rgba(255,255,255,.72);color:var(--ink)}
+  body.scened.dark .lsub{background:rgba(28,26,58,.62);color:#F3EAFF}
+  .lprints{display:flex;gap:4px;margin:6px 0 2px;min-height:0}
+  .lprints:empty{display:none}
+  .lp{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.85)}
+  .lp svg{width:16px;height:16px;fill:#E2D3E8}
+  .lp.alone{background:#FFE0F0}
+  .lp.alone svg{fill:var(--pink)}
+  .lp.help{background:#fff;box-shadow:inset 0 0 0 2px var(--pink)}
+  .lp.help svg{fill:none;stroke:var(--pink);stroke-width:2.6}
+  .lp.cur{box-shadow:0 0 0 2.5px var(--purple)}
+  .lp.help.cur{box-shadow:inset 0 0 0 2px var(--pink),0 0 0 2.5px var(--purple)}
+  .lask{width:min(94vw,58vh,520px);display:flex;align-items:center;gap:8px;margin:6px 0 8px;font-weight:800;font-size:14.5px;line-height:1.28}
+  .lask:empty{display:none}
+  .lask span{flex:1;padding:6px 10px;border-radius:14px;background:rgba(255,255,255,.85)}
+  .lcount{flex:none;padding:6px 10px;border-radius:999px;background:#fff;font-weight:900;font-size:14px;box-shadow:0 2px 6px rgba(91,42,110,.12)}
+  .lcount.ok{background:#DDF8EA;color:#1E7A4C}
+  .lboard{margin-top:6px}
+  .lboard .cell{cursor:pointer}
+  .lo{position:absolute;inset:0;border:0 solid #2B1830;pointer-events:none;z-index:3}
+  .lnum,.llet{position:absolute;right:4%;bottom:4%;min-width:38%;height:38%;padding:0 2px;border-radius:999px;display:grid;place-items:center;font-size:min(3vw,12px);font-weight:900;line-height:1;z-index:2;pointer-events:none}
+  .lnum{background:var(--ink);color:#fff;box-shadow:0 0 0 1.5px #fff}
+  .llet{background:#fff;color:var(--edge);box-shadow:0 0 0 1.5px var(--edge)}
+  .lfound svg.paw,.lmiss svg.paw{position:absolute;left:26%;top:26%;width:48%;height:48%;fill:var(--edge);opacity:.9}
+  .lfound::after{content:"";position:absolute;inset:10%;border-radius:30%;box-shadow:inset 0 0 0 2.5px #2FB873}
+  .lfound.fresh svg.paw{animation:pop .3s cubic-bezier(.3,1.6,.5,1)}
+  .lmiss::after{content:"";position:absolute;inset:10%;border-radius:30%;border:2px dashed rgba(224,48,106,.75)}
+  .lboard .cell.lreach::after{content:"";position:absolute;inset:0;background:rgba(75,35,80,.32);pointer-events:none}
+  .cell.lclash{box-shadow:inset 0 0 0 3px #E0306A;background-image:repeating-linear-gradient(45deg,rgba(224,48,106,.22) 0 5px,transparent 5px 10px)!important}
+  .lring{position:absolute;inset:6%;border-radius:50%;border:3px solid #E0306A;pointer-events:none}
+  .lbub p.good{background:#E3F9EE;color:#165E3B}
+  .lbub p.bad{background:#FFF1E6;color:#8A3F0A}
+  #lesson .tools .tool.main{background:linear-gradient(90deg,var(--pink),var(--purple));color:#fff}
+  #lesson .tools .tool:disabled{opacity:.45}
+  .lback2{margin-top:10px;padding:10px 18px;border-radius:999px;background:rgba(255,255,255,.9);font-weight:900;font-size:15px;box-shadow:0 2px 8px rgba(155,107,255,.18)}
+  .sheet .lbadge-earn{background:#DDF8EA;color:#1E7A4C}
+  /* the pop-up card in Cheddar's bubble, and the Sniff link */
+  .bubble.offer #msg{display:none}
+  .lcard{flex:1;background:#fff;border-radius:16px;padding:9px 12px;box-shadow:0 0 0 2.5px var(--purple),0 3px 10px rgba(91,42,110,.12)}
+  .bubble .lcard p{font-weight:700;font-size:14.5px;line-height:1.3;background:none;box-shadow:none;padding:0;border-radius:0}
+  .lcard div{display:flex;gap:8px;margin-top:7px}
+  .lcard button{flex:1;padding:8px 4px;border-radius:12px;font-weight:900;font-size:14.5px;background:#F3EAF6}
+  .lcard .lc-go{background:linear-gradient(90deg,var(--pink),var(--purple));color:#fff}
+  .snlink{margin-top:6px;padding:7px 14px;border-radius:999px;background:#fff;color:#6B44C9;font-weight:900;font-size:14.5px;box-shadow:0 0 0 2px #C9AEFF,0 2px 8px rgba(155,107,255,.18)}
+
   /* ---------- celebration ---------- */
   .zoom{position:fixed;left:-160px;top:38%;width:110px;z-index:20;pointer-events:none;animation:zoomies 2.2s cubic-bezier(.45,.05,.55,.95) forwards}
   .zoom::before{content:"";position:absolute;right:70%;top:30%;width:260px;height:40px;border-radius:20px;
@@ -554,6 +628,8 @@
   <section id="past" class="screen"></section>
   <section id="closet" class="screen"></section>
   <section id="wild" class="screen"></section>
+  <section id="tricks" class="screen"></section>
+  <section id="lesson" class="screen"></section>
   <div id="overlay" class="overlay"><div class="sheet" id="sheet"></div></div>
   <script type="module" src="app.js"></script>
   <script>

@@ -1,9 +1,9 @@
 // Offline support. Network first, so a fresh push shows up right away,
 // but with a time limit: on a weak signal the saved copy is used after
 // WAIT ms while the network reply (if it ever comes) refreshes the cache.
-const CACHE = 'corgidoku-1.34'; // keep in step with VERSION in app.js
+const CACHE = 'corgidoku-1.35'; // keep in step with VERSION in app.js
 const WAIT = 3000;
-const FILES = ['./', 'index.html', 'app.js', 'engine.js', 'art.js', 'shop.js', 'share.js', 'scenes.js', 'puzzles.json', 'puzzles-hard.json', 'puzzles-extreme.json', 'puzzles-kids.json', 'wild.json', 'bonus-cozy.json', 'bonus-hard.json', 'bonus-extreme.json', 'bonus-kids.json', 'manifest.webmanifest', 'apple-touch-icon.png'];
+const FILES = ['./', 'index.html', 'app.js', 'engine.js', 'art.js', 'shop.js', 'share.js', 'scenes.js', 'tricks.js', 'lessons.json', 'puzzles.json', 'puzzles-hard.json', 'puzzles-extreme.json', 'puzzles-kids.json', 'wild.json', 'bonus-cozy.json', 'bonus-hard.json', 'bonus-extreme.json', 'bonus-kids.json', 'manifest.webmanifest', 'apple-touch-icon.png'];
 
 // When the page itself had to come from the cache, the files it loads in
 // the next few seconds come from the cache too, so a slow release push
