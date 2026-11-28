@@ -22,6 +22,9 @@ Cheddar's puzzle yard for Halina. A corgi take on Queens-style logic puzzles: on
 | `tools/generate.mjs` | Builds `puzzles.json`; also hunts big boards on a strong PC |
 | `tools/verify.mjs` | Independent checker, written separately from the generator |
 | `tools/sniff.test.mjs` | Tests that every Sniff hint is a valid step and the lowest level available, on every board of all 8 files |
+| `lessons.json` | Cheddar's tricks practice boards (not used by the app yet): 10 per lesson, boards 9–10 per track, spare pools, suggested Show it boards (see Cheddar's tricks) |
+| `tools/lessons.mjs` | Builds `lessons.json` from fresh boards; `--sheet out.html` draws the contact sheet |
+| `tools/lessons.test.mjs` | Checks every lesson board: nothing easier works, the answer is the only step of its level, the evidence re-checked from SPEC, no shipped board reused |
 | `tools/wild.test.mjs` | Wild Week tests: the multi-map solver against brute force, union auto paws, test-page sets grading the same, coin rates, unlock order and prizes |
 | `tools/pool-9.json` | 9×9 boards used on every other Sunday |
 | `tools/scenes.py` | Draws the scenes and writes `scenes.js` |
@@ -44,6 +47,8 @@ node tools/verify.mjs wild.json
 node tools/verify.test.mjs
 node tools/wild.test.mjs
 node tools/sniff.test.mjs
+node tools/lessons.mjs            (about 2 minutes)
+node tools/lessons.test.mjs
 ```
 
 The output is deterministic for a given `--seed`. Always run `verify.mjs` before committing.
@@ -182,6 +187,15 @@ Sniff shows the **next logical move from the board as it is**: the player's corg
 - **Can't afford it:** the "where to look" tap is a free peek; the answer stays locked, and the button greys out with its price.
 - **Clean bonus:** hints never affect it (clean still means zero mistakes).
 - The Sniff button's icon is a drawn chibi dog nose (`sniffIcon()` in `art.js`). The last Sniff's step is saved with the puzzle's progress (`sn`), so leaving and coming back keeps a paid answer free.
+
+## Cheddar's tricks (lessons, boards only so far)
+
+The plan is `corgidoku-tutorial-plan.md` in the Corgidoku project. Push 1 (2026-11-27) made the boards; there's no app UI yet and `lessons.json` isn't in `sw.js` `FILES`.
+
+- **`allSteps(B, cand, placed, level)`** in `engine.js` lists every step at one level, from the same code as `findStep` (now one `levelSteps` function), so they can't disagree. Level 3 steps are grouped by the unit that would be emptied (`cells` = every spot that would empty it); level 5 covers every group size; level 6 lists every starting spot that dead-ends within 6, with its depth. `grade()` takes `onStep(B, cand, placed, step)`, called before each step. Grader logs are byte-identical to before on all 4,950 shipped boards.
+- **`tools/lessons.mjs`** makes about 50k fresh boards (5×5–10×10, `--seed 7`), skips any whose `canonicalKey` is in a shipped file (puzzles, bonus, Wild), and grades each. The state before each level-L step is a candidate for lesson L, kept only if one level-L step explains every level-L move (the answer is unique and its count honest). **What if** is the exception: almost every level-6 board has 5–30 spots that dead-end within 6, so a board is kept when one spot has the shortest chain (that's the answer and Show me); `ok` lists every spot that dead-ends, and any of them is a right tap. Lesson 0 takes a correct partial board and moves one corgi so exactly one pair breaks exactly one rule (`side`, `diagonal`, `row`, `column`, `yard`); `ans` is the pair, `moved` the corgi that moved.
+- **The ramp** (tiers A = boards 1–3, B = 4–6, C = 7–8, D = 9–10): sizes per lesson are in `SIZES`, the form each board practices in `FORMS`, answer sizes in `ANS`. A and B have `help: "outline"` (`step.look`), C and D `"none"`. Board 9–10 sizes follow the track: Chill 6/7, Cozy 7/8, Hard and Extreme 9/10.
+- **`lessons.json`:** `boards` (source `{n, r, s}`, each used once) and `lessons[]`: `{ id, name, tracks, show, main[10], finale: {track: [b9, b10]}, spares: [{ boards[8], finale: {track: [b9, b10]} }] }`. `main` boards 9–10 are for the lesson's first track (0–3 Chill, 4 Cozy, 5 Hard, 6 Extreme); `finale` has them for its other tracks. A board: `{ board, tier, help, n, src, c (corgis), p (deduced paws; auto paws come from the corgis), ans, count, form, fill (share of cells decided), step (findStep-style evidence) }`, plus `ok` (What if) or `moved/from/rule` (lesson 0). Spares: 2 sets for lessons 0–4, 4 for Group lock and What if.
 
 ## Scenes
 

@@ -94,19 +94,41 @@ const unitRef = (u) => ({ kind: u.kind, i: u.i });
 const cellsOf = (B, kind, i) => (kind === 'row' ? B.rows : kind === 'column' ? B.cols : B.regs)[i];
 
 export function findStep(B, cand, placed, { maxLevel = 6, chainLimit = 6 } = {}) {
+  for (let lv = 1; lv <= Math.min(maxLevel, 6); lv++) {
+    const s = levelSteps(B, cand, placed, lv, chainLimit, true);
+    if (s.length) return s[0];
+  }
+  return null;
+}
+
+// Every step at one level, for Cheddar's tricks (tools/lessons.mjs). Same code as findStep, so the two
+// can't disagree: findStep's step is always one of these (for level 3 it's a part of one, see below).
+// Order is findStep's order, so allSteps(...)[0] is findStep's step at that level, except:
+//   level 3  grouped by the unit that would be emptied: cells = every spot outside the unit whose corgi
+//            would leave it with no room (findStep returns one such cell at a time)
+//   level 5  every group size k = 3..n-2 (findStep takes the smallest k that works)
+//   level 6  every starting spot that reaches a dead end within chainLimit, with its depth
+//            (findStep takes the shortest; the first spot on ties)
+export function allSteps(B, cand, placed, level, { chainLimit = 6 } = {}) {
+  return levelSteps(B, cand, placed, level, chainLimit, false);
+}
+
+function levelSteps(B, cand, placed, level, chainLimit, first) {
   const { n, reg, N, rows, cols, regs, units, peers } = B;
   const done = (u) => u.cells.some((c) => placed[c]);
   const live = (u) => u.cells.filter((c) => cand[c] && !placed[c]);
   const hits = (cells) => cells.filter((c) => cand[c] && !placed[c]);
+  const out = [];
+  const emit = (s) => { out.push(s); return first; };
 
   // Level 1, last spot.
-  for (const u of units) {
+  if (level === 1) for (const u of units) {
     if (done(u)) continue;
     const l = live(u);
-    if (l.length === 1) return { type: 'place', cells: [l[0]], level: 1, why: `only spot left in this ${u.kind}`, unit: unitRef(u), look: u.cells, area: u.cells };
+    if (l.length === 1 && emit({ type: 'place', cells: [l[0]], level: 1, why: `only spot left in this ${u.kind}`, unit: unitRef(u), look: u.cells, area: u.cells })) return out;
   }
   // Level 2, confined.
-  if (maxLevel >= 2) for (const u of units) {
+  if (level === 2) for (const u of units) {
     if (done(u)) continue;
     const l = live(u);
     if (!l.length) continue;
@@ -114,12 +136,12 @@ export function findStep(B, cand, placed, { maxLevel = 6, chainLimit = 6 } = {})
       const rs = new Set(l.map((c) => Math.floor(c / n)));
       if (rs.size === 1) {
         const r = [...rs][0], hit = hits(rows[r].filter((c) => reg[c] !== u.i));
-        if (hit.length) return { type: 'clear', cells: hit, level: 2, why: 'this yard only fits in one row', unit: unitRef(u), line: { kind: 'row', i: r }, look: u.cells, area: [...new Set([...u.cells, ...rows[r]])] };
+        if (hit.length && emit({ type: 'clear', cells: hit, level: 2, why: 'this yard only fits in one row', unit: unitRef(u), line: { kind: 'row', i: r }, look: u.cells, area: [...new Set([...u.cells, ...rows[r]])] })) return out;
       }
       const cs = new Set(l.map((c) => c % n));
       if (cs.size === 1) {
         const c0 = [...cs][0], hit = hits(cols[c0].filter((c) => reg[c] !== u.i));
-        if (hit.length) return { type: 'clear', cells: hit, level: 2, why: 'this yard only fits in one column', unit: unitRef(u), line: { kind: 'column', i: c0 }, look: u.cells, area: [...new Set([...u.cells, ...cols[c0]])] };
+        if (hit.length && emit({ type: 'clear', cells: hit, level: 2, why: 'this yard only fits in one column', unit: unitRef(u), line: { kind: 'column', i: c0 }, look: u.cells, area: [...new Set([...u.cells, ...cols[c0]])] })) return out;
       }
     } else {
       const ks = new Set(l.map((c) => reg[c]));
@@ -127,26 +149,36 @@ export function findStep(B, cand, placed, { maxLevel = 6, chainLimit = 6 } = {})
         const k = [...ks][0];
         const inLine = u.kind === 'row' ? (c) => Math.floor(c / n) === u.i : (c) => c % n === u.i;
         const hit = hits(regs[k].filter((c) => !inLine(c)));
-        if (hit.length) return { type: 'clear', cells: hit, level: 2, why: `this ${u.kind} only has room in one yard`, unit: unitRef(u), yard: k, look: u.cells, area: [...new Set([...u.cells, ...regs[k]])] };
+        if (hit.length && emit({ type: 'clear', cells: hit, level: 2, why: `this ${u.kind} only has room in one yard`, unit: unitRef(u), yard: k, look: u.cells, area: [...new Set([...u.cells, ...regs[k]])] })) return out;
       }
     }
   }
   // Level 3, would block.
-  if (maxLevel >= 3) for (let i = 0; i < N; i++) {
-    if (!cand[i] || placed[i]) continue;
-    const b = peers[i];
-    for (const u of units) {
-      if (done(u) || u.cells.includes(i)) continue;
-      const l = live(u);
-      if (l.length && l.every((c) => b.has(c))) {
-        return { type: 'clear', cells: [i], level: 3, why: `a corgi here would leave a ${u.kind} with no room`, unit: unitRef(u), look: u.cells, area: [i, ...u.cells] };
+  if (level === 3) {
+    const byUnit = new Map();
+    for (let i = 0; i < N; i++) {
+      if (!cand[i] || placed[i]) continue;
+      const b = peers[i];
+      for (const u of units) {
+        if (done(u) || u.cells.includes(i)) continue;
+        const l = live(u);
+        if (l.length && l.every((c) => b.has(c))) {
+          if (first) return [{ type: 'clear', cells: [i], level: 3, why: `a corgi here would leave a ${u.kind} with no room`, unit: unitRef(u), look: u.cells, area: [i, ...u.cells] }];
+          if (!byUnit.has(u)) byUnit.set(u, []);
+          byUnit.get(u).push(i);
+        }
       }
     }
+    for (const u of units) if (byUnit.has(u)) {
+      const cells = byUnit.get(u);
+      out.push({ type: 'clear', cells, level: 3, why: `a corgi here would leave a ${u.kind} with no room`, unit: unitRef(u), look: u.cells, area: [...cells, ...u.cells] });
+    }
+    return out;
   }
   // Levels 4-5: k yards confined to k lines (and k lines confined to k yards).
   const lock = (k, lv) => {
     const openRegs = regs.map((cells, i) => i).filter((i) => !regs[i].some((c) => placed[c]));
-    if (openRegs.length <= k) return null;
+    if (openRegs.length <= k) return false;
     const sets = [];
     const combos = (arr, size, start = 0, acc = []) => {
       if (acc.length === size) { sets.push(acc.slice()); return; }
@@ -165,9 +197,9 @@ export function findStep(B, cand, placed, { maxLevel = 6, chainLimit = 6 } = {})
           const hit = hits(outside);
           if (hit.length) {
             const ids = [...lines].sort((a, b) => a - b), gcells = group.flatMap((g) => regs[g]);
-            return { type: 'clear', cells: hit, level: lv, why: `${k} yards share exactly ${k} ${axis}s`,
+            if (emit({ type: 'clear', cells: hit, level: lv, why: `${k} yards share exactly ${k} ${axis}s`,
               group: { kind: 'yard', ids: group.slice() }, cover: { kind: axis, ids },
-              look: gcells, area: [...new Set([...gcells, ...ids.flatMap((L) => cellsOf(B, axis, L))])] };
+              look: gcells, area: [...new Set([...gcells, ...ids.flatMap((L) => cellsOf(B, axis, L))])] })) return true;
           }
         }
       }
@@ -193,22 +225,22 @@ export function findStep(B, cand, placed, { maxLevel = 6, chainLimit = 6 } = {})
           const hit = hits(outside);
           if (hit.length) {
             const yids = [...ks].sort((a, b) => a - b), lcells = group.flatMap((L) => lines[L]);
-            return { type: 'clear', cells: hit, level: lv, why: `${k} ${axis}s share exactly ${k} yards`,
+            if (emit({ type: 'clear', cells: hit, level: lv, why: `${k} ${axis}s share exactly ${k} yards`,
               group: { kind: axis, ids: group.slice() }, cover: { kind: 'yard', ids: yids },
-              look: lcells, area: [...new Set([...lcells, ...yids.flatMap((K) => regs[K])])] };
+              look: lcells, area: [...new Set([...lcells, ...yids.flatMap((K) => regs[K])])] })) return true;
           }
         }
       }
     }
-    return null;
+    return false;
   };
-  if (maxLevel >= 4) { const s = lock(2, 4); if (s) return s; }
-  if (maxLevel >= 5) for (let k = 3; k < n - 1; k++) { const s = lock(k, 5); if (s) return s; }
+  if (level === 4) { lock(2, 4); return out; }
+  if (level === 5) { for (let k = 3; k < n - 1; k++) if (lock(k, 5)) break; return out; }
 
   // Level 6, "what if": pretend a corgi sits on a spot and follow only the forced moves
   // (last spots). If a row, column or yard then runs out of room, the spot is out.
   // Depth = how many forced corgis it took to hit the dead end; the shortest chain wins.
-  if (maxLevel >= 6) {
+  if (level === 6) {
     const chainFrom = (i) => {
       const c = cand.slice(), p = placed.slice(), chain = [];
       const put = (j) => { p[j] = 1; for (const k of peers[j]) c[k] = 0; };
@@ -227,21 +259,24 @@ export function findStep(B, cand, placed, { maxLevel = 6, chainLimit = 6 } = {})
         chain.push({ cell: forced, unit: unitRef(via) });
       }
     };
-    let best = null;
-    for (let i = 0; i < N && !(best && best.depth <= 1); i++) {
-      if (!cand[i] || placed[i]) continue;
-      const res = chainFrom(i);
-      if (res && (!best || res.depth < best.depth)) best = { i, ...res };
-    }
-    if (best) {
+    const stepOf = (best) => {
       const d = best.depth;
       return { type: 'clear', cells: [best.i], level: 6, depth: d,
         why: `a corgi here would force ${d} more corgi${d === 1 ? '' : 's'} and leave a ${best.unit.kind} with no room`,
         chain: best.chain, dead: unitRef(best.unit), look: [best.i],
         area: [...new Set([best.i, ...best.chain.map((x) => x.cell), ...best.unit.cells])] };
+    };
+    let best = null;
+    for (let i = 0; i < N && !(first && best && best.depth <= 1); i++) {
+      if (!cand[i] || placed[i]) continue;
+      const res = chainFrom(i);
+      if (!res) continue;
+      if (!first) out.push(stepOf({ i, ...res }));
+      else if (!best || res.depth < best.depth) best = { i, ...res };
     }
+    if (first && best) out.push(stepOf(best));
   }
-  return null;
+  return out;
 }
 
 export function applyStep(B, cand, placed, step) {
@@ -252,6 +287,8 @@ export function applyStep(B, cand, placed, step) {
 // ---------- grader ----------
 // Solves like a person, always using the simplest technique that makes progress.
 // Returns {solved, level, steps, log}. log entries: {type:'place'|'clear', cells, level, why}.
+// opts.onStep(B, cand, placed, step) is called before each step is applied (tools/lessons.mjs copies
+// the state there: it's a board where nothing below that step's level works).
 export function grade(n, reg, opts = {}) {
   const B = makeBoard(n, reg);
   const cand = new Uint8Array(B.N).fill(1);
@@ -267,6 +304,7 @@ export function grade(n, reg, opts = {}) {
   while (count < n) {
     const s = findStep(B, cand, placed, { maxLevel, chainLimit });
     if (!s) break;
+    if (opts.onStep) opts.onStep(B, cand, placed, s);
     applyStep(B, cand, placed, s);
     if (s.type === 'place') count++;
     log.push({ type: s.type, cells: s.cells, level: s.level, why: s.why, ...(s.level === 6 ? { depth: s.depth } : {}) });
