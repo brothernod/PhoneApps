@@ -18,6 +18,16 @@
 //   show     a suggested Show it / Watch it board (smallest and clearest), for Jonathan to confirm
 //   spares   More practice: whole sets on the same ramp (boards 1-8, plus 9-10 for every track)
 // No source board is used twice anywhere in the file.
+//
+// What if (lesson 6) comes in three parts, nested under lessons[6].parts (the what-if plan):
+//   a  When to use it  "Stuck or not?": states from boards that need a what-if. Stuck ones (nothing
+//                      in levels 1-5 works) want "Time for a what if"; the rest have an easier move,
+//                      often one that's hard to see (a Pair or Group lock), and any level 1-5 move counts
+//   b  One forced corgi  depth 1
+//   c  Longer chains     depth 2-3, then 4-5 on boards 9-10. Those come from tools/deep-chains.json,
+//                        a targeted hunt (node tools/hunt-chains.mjs), since fresh boards almost never
+//                        give them
+// Lessons 0-5 are built exactly as in push 1: the What if boards come from their own random streams.
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -31,7 +41,22 @@ export const LESSONS = ['The rules', 'Last spot', 'Confined', 'Would block', 'Pa
 export const TRACKS = { chill: [0, 3], cozy: [0, 4], hard: [0, 5], extreme: [0, 6] };
 export const TRACK_SIZES = { chill: [6, 7], cozy: [7, 8], hard: [9, 10], extreme: [9, 10] };
 const tracksFor = (L) => Object.keys(TRACKS).filter((t) => L <= TRACKS[t][1]);
-const SPARE_SETS = [2, 2, 2, 2, 2, 4, 4]; // ~20 spares for lessons 0-4, ~40 for Group lock and What if
+const SPARE_SETS = [2, 2, 2, 2, 2, 4, 4]; // ~20 spares for lessons 0-4, ~40 for Group lock and each What if part
+
+// ---------- What if, in three parts ----------
+// Sizes and forms for boards 1-10 (board 9-10 are the Extreme track's, the only track What if is in).
+export const PARTS = {
+  a: { name: 'When to use it', sizes: [6, 6, 7, 7, 8, 8, 9, 9, 10, 10],
+    // stuck = nothing easier works; nK = an easier move exists and the easiest is level K (n45: 4 or 5)
+    forms: ['n2', 'stuck', 'stuck', 'n3', 'n4', 'stuck', 'n5', 'stuck', 'stuck', 'n5'] },
+  b: { name: 'One forced corgi', sizes: [6, 6, 6, 7, 7, 7, 7, 8, 9, 10], forms: Array(10).fill('d1') },
+  c: { name: 'Longer chains', sizes: [6, 6, 6, 7, 7, 7, 7, 8, 9, 10], forms: ['d2', 'd2', 'd2', 'd2', 'd3', 'd3', 'd3', 'd3', 'd4', 'd5'] },
+};
+// 6a More practice: the same mix shuffled, sizes drawn at random leaning to Extreme size (Jonathan).
+const MIX_6A = ['stuck', 'stuck', 'stuck', 'stuck', 'stuck', 'n2', 'n3', 'n4', 'n5', 'n45'];
+const SIZE_WEIGHTS_6A = [[6, 1], [7, 1], [8, 2], [9, 3], [10, 3]];
+// Extra boards that need a what-if, for the What if parts only (own seeds, so lessons 0-5 don't move).
+const EXTRA = { 6: 8000, 7: 6000, 8: 3000, 9: 3000, 10: 1500 };
 
 // ---------- the ramp ----------
 // Tier A = boards 1-3, B = 4-6, C = 7-8, D = 9-10 (track size). help: outline the unit or not.
@@ -86,6 +111,7 @@ function blockHow(B, cells, unitCells, cand, placed) {
 const sameSet = (a, b) => a.length === b.length && a.every((x) => b.includes(x));
 const formMatch = (L, form, want) => {
   if (!want) return true;
+  if (L === '6a') return want === 'n45' ? form === 'n4' || form === 'n5' : form === want;
   if (L === 3) { const [k, how] = want.split('/'); return form.startsWith(k) && (!how || form.endsWith('/' + how)); }
   if (L === 5) { const [k, dir] = want.split(':'); const [fk, fdir] = form.split(':'); return fk === k && (dir === 'any' || (dir === 'line>yard' ? !fdir.startsWith('yard') : fdir.startsWith('yard'))); }
   return form === want;
@@ -122,6 +148,27 @@ function candidate(B, cand, placed, L, src) {
   return { L, n: B.n, src, c: corgis, p: paws, ans: union, step: { ...step, cells: union }, form, fill: 1 - live / B.N, why: steps.length, ...extra };
 }
 
+// Lesson 6a: any grader state on a board that needs a what-if. The state is copied now and the
+// right moves worked out only for the boards picked (finish6a).
+function candidate6a(B, cand, placed, s, src) {
+  if (s.level === 1) return null; // a last spot is plain to see; "not stuck" boards start at Confined
+  const corgis = [], paws = [], ruled = new Set();
+  for (let i = 0; i < B.N; i++) if (placed[i]) { corgis.push(i); for (const j of B.peers[i]) ruled.add(j); }
+  for (let i = 0; i < B.N; i++) if (!cand[i] && !placed[i] && !ruled.has(i)) paws.push(i);
+  let live = 0; for (let i = 0; i < B.N; i++) if (cand[i] && !placed[i]) live++;
+  return { L: '6a', n: B.n, src, c: corgis, p: paws, stuck: s.level === 6, form: s.level === 6 ? 'stuck' : `n${s.level}`,
+    fill: 1 - live / B.N, step: s, _cand: cand.slice(), _placed: placed.slice() };
+}
+// Not stuck: every level 1-5 move counts (ok; place = the ones that take a corgi), and Show me plays the
+// grader's own (lowest) step. Stuck: no level 1-5 move; step is the shortest what-if, for after the tap.
+function finish6a(c, sources) {
+  if (c.stuck) return { ans: [], ok: [], place: [] };
+  const B = makeBoard(c.n, decodeRegions(sources[c.src].r)), ok = new Set(), place = new Set();
+  for (let L = 1; L <= 5; L++) for (const st of allSteps(B, c._cand, c._placed, L)) for (const x of st.cells) { ok.add(x); if (st.type === 'place') place.add(x); }
+  const sort = (a) => [...a].sort((x, y) => x - y);
+  return { ans: sort(c.step.cells), ok: sort(ok), place: sort(place) };
+}
+
 // Lesson 0: move one corgi of a correct partial board so it breaks exactly one rule.
 function ruleBoards(B, placed, src, rand, out) {
   const { n, reg, N } = B, r = (i) => Math.floor(i / n), c = (i) => i % n;
@@ -152,7 +199,7 @@ function ruleBoards(B, placed, src, rand, out) {
 }
 
 // ---------- collect ----------
-function shippedKeys() {
+export function shippedKeys() {
   const seen = new Set();
   for (const f of ['puzzles.json', 'puzzles-hard.json', 'puzzles-extreme.json', 'puzzles-kids.json',
     'bonus-cozy.json', 'bonus-hard.json', 'bonus-extreme.json', 'bonus-kids.json', 'wild.json']) {
@@ -174,7 +221,7 @@ function collect() {
   const seen = shippedKeys();
   const pool = {}; // pool[L][n] = [cand]
   const counts = {};
-  const keep = rng(SEED * 7 + 1);
+  const keep = rng(SEED * 7 + 1), keepW = rng(SEED * 7 + 2), pool6a = {};
   const sources = [];
   for (const n of [5, 6, 7, 8, 9, 10]) {
     const rand = rng(SEED * 1000 + n);
@@ -194,8 +241,51 @@ function collect() {
         const c = candidate(B, cand, placed, s.level, src);
         if (c) add(c);
         if (ruleDone < 2 && placed.some((x) => x) && rand() < 0.5) { ruleDone++; const o = []; ruleBoards(B, placed, src, rand, o); o.forEach(add); }
+        if (p.lv === 6) { const a = candidate6a(B, cand, placed, s, src); if (a) addW(a); }
       } });
     }
+  }
+  // What if only, from here on: more boards that need a what-if (own seeds), then the hunted long
+  // chains (tools/deep-chains.json). Their candidates go into their own reservoirs (keepW), so the
+  // pools for lessons 0-5, and so their boards, stay as they were.
+  for (const n of [6, 7, 8, 9, 10]) {
+    const rand = rng(SEED * 1000 + 500 + n);
+    for (let made = 0; made < EXTRA[n] * SCALE;) {
+      const p = generate(n, rand, { maxLevel: 6 });
+      if (!p) continue;
+      made++;
+      if (p.lv !== 6) continue;
+      const key = canonicalKey(n, p.r);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const src = sources.length;
+      sources.push({ n, r: p.r, s: p.s, key });
+      grade(n, decodeRegions(p.r), { maxLevel: 6, onStep: (B, cand, placed, s) => {
+        if (s.level === 6) { const c = candidate(B, cand, placed, 6, src); if (c) addW(c); }
+        const a = candidate6a(B, cand, placed, s, src); if (a) addW(a);
+      } });
+    }
+  }
+  const huntFile = path.join(DIR, 'tools', 'deep-chains.json');
+  const hunted = existsSync(huntFile) ? JSON.parse(readFileSync(huntFile, 'utf8')).boards : [];
+  for (const h of hunted) {
+    const key = canonicalKey(h.n, h.r);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const src = sources.length;
+    sources.push({ n: h.n, r: h.r, s: h.s, key, hunt: 1 });
+    grade(h.n, decodeRegions(h.r), { maxLevel: 6, onStep: (B, cand, placed, s) => {
+      if (s.level === 6 && s.depth >= 2) { const c = candidate(B, cand, placed, 6, src); if (c) addW(c); }
+    } });
+  }
+  // the What if reservoirs: 6a in pool6a, 6b/6c join lesson 6's own pool
+  function addW(c) {
+    const k = `W${c.L}|${c.n}|${c.form}`;
+    counts[k] = (counts[k] || 0) + 1;
+    const arr = c.L === '6a' ? ((pool6a[c.n] ??= [])) : ((pool[6] ??= {})[c.n] ??= []);
+    const same = arr.filter((x) => x.form === c.form).length;
+    if (same < CAP) arr.push(c);
+    else if (keepW() < CAP / counts[k]) { const idx = arr.findIndex((x) => x.form === c.form && x.src !== c.src); if (idx >= 0) arr[idx] = c; }
   }
   function add(c) {
     const k = `${c.L}|${c.n}|${c.form}`;
@@ -207,7 +297,7 @@ function collect() {
     if (same < CAP) arr.push(c);
     else if (keep() < CAP / counts[k]) { const idx = arr.findIndex((x) => x.form === c.form); arr[idx] = c; }
   }
-  return { pool, sources, counts };
+  return { pool, pool6a, sources, counts, hunted: hunted.length };
 }
 
 // ---------- pick ----------
@@ -265,10 +355,52 @@ function buildSet(pool, L, slots, trackList, usedSrc, rand, warn, tag) {
   return { boards, finale };
 }
 function card(b, slot, tier) {
-  const out = { board: slot + 1, tier, help: HELP[tier], n: b.n, src: b.src, c: b.c, p: b.p, ans: b.ans, count: b.ans.length, form: b.form, fill: Math.round(b.fill * 100) / 100, step: b.step };
+  const out = { board: slot + 1, tier, help: HELP[tier], n: b.n, src: b.src, c: b.c, p: b.p, ans: b.ans, count: b.ans?.length, form: b.form, fill: Math.round(b.fill * 100) / 100, step: b.step };
   if (b.L === 0) Object.assign(out, { moved: b.moved, from: b.from, rule: b.rule });
   if (b.L === 6) out.ok = b.ok;
+  if (b.L === '6a') {
+    // 6a: no outline (it would give the answer away); count = moves to make (one right move answers it)
+    const f = finish6a(b, SOURCES);
+    Object.assign(out, { help: 'none', stuck: b.stuck, ans: f.ans, count: b.stuck ? 0 : 1, ok: f.ok, place: f.place });
+  }
   return out;
+}
+let SOURCES = null;
+
+// One What if part: the main 10 and the spare sets, with boards 9-10 in finale.extreme for spares (the
+// same shape as every other lesson's spares).
+function buildPart(pool, pool6a, part, usedSrc, rand, warn) {
+  const P = PARTS[part], L = part === 'a' ? '6a' : 6, src = part === 'a' ? { '6a': pool6a } : pool;
+  const one = (slot, n, want, used, tag) => {
+    const tier = TIER[slot];
+    const b = pickOne(src, L, n, { tier, want, ansWant: [1, 1], used, rand, warn, tag }, usedSrc);
+    if (!b) { warn.push(`${tag}: no ${n}x${n} candidate`); return null; }
+    return card(b, slot, tier);
+  };
+  const set = (sizes, forms, tag) => { const used = new Map(); return sizes.map((n, slot) => one(slot, n, forms[slot], used, `${tag} board ${slot + 1}`)).filter(Boolean); };
+  const main = set(P.sizes, P.forms, `6${part} main`);
+  const spares = [];
+  for (let k = 0; k < SPARE_SETS[6]; k++) {
+    let sizes = P.sizes, forms = P.forms;
+    if (part === 'a') {
+      const total = SIZE_WEIGHTS_6A.reduce((a, [, w]) => a + w, 0);
+      sizes = Array.from({ length: 10 }, () => { let x = rand() * total; for (const [n, w] of SIZE_WEIGHTS_6A) if ((x -= w) < 0) return n; return 10; }).sort((x, y) => x - y);
+      forms = MIX_6A.slice();
+      for (let i = forms.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [forms[i], forms[j]] = [forms[j], forms[i]]; }
+    }
+    const b = set(sizes, forms, `6${part} spare set ${k + 1}`);
+    spares.push({ boards: b.filter((x) => x.board <= 8), finale: { extreme: b.filter((x) => x.board > 8) } });
+  }
+  // Show it: the smallest clearest board (6a: a stuck one; 6b depth 1; 6c depth 2)
+  const want = { a: 'stuck', b: 'd1', c: 'd2' }[part];
+  let show = null;
+  for (const n of [5, 6, 7]) {
+    const list = ((part === 'a' ? pool6a : pool[6])?.[n] || []).filter((c) => !usedSrc.has(c.src) && c.form === want);
+    if (!list.length) continue;
+    list.sort((x, y) => (x.ok?.length || 0) - (y.ok?.length || 0) || (x.p.length - y.p.length) || (x.c.length - y.c.length));
+    usedSrc.add(list[0].src); show = card(list[0], -1, 'show'); break;
+  }
+  return { part, name: P.name, show, main, finale: {}, spares };
 }
 // Show it: the smallest, clearest board (one cell where possible, the tier-A form, few marks).
 function pickShow(pool, L, usedSrc) {
@@ -284,10 +416,11 @@ function pickShow(pool, L, usedSrc) {
 
 export function build() {
   const t0 = Date.now();
-  const { pool, sources, counts } = collect();
+  const { pool, pool6a, sources, counts, hunted } = collect();
+  SOURCES = sources;
   const rand = rng(SEED);
   const usedSrc = new Set(), warn = [], lessons = [];
-  for (let L = 0; L <= 6; L++) {
+  for (let L = 0; L <= 5; L++) {
     const tracks = tracksFor(L);
     // main boards 9-10 = the lesson's first track; finale = boards 9-10 for its other tracks
     const set = buildSet(pool, L, [...Array(8).keys()], tracks, usedSrc, rand, warn, `L${L} main`);
@@ -301,17 +434,22 @@ export function build() {
     }
     lessons.push({ id: L, name: LESSONS[L], tracks, show: pickShow(pool, L, usedSrc), main: mainBoards, finale, spares });
   }
+  // What if: the scarce long chains first, then depth 1, then Stuck or not? (own rng, so the order of
+  // the three doesn't move the boards of lessons 0-5)
+  const randW = rng(SEED * 31 + 6), parts = {};
+  for (const part of ['c', 'b', 'a']) parts[part] = buildPart(pool, pool6a, part, usedSrc, randW, warn);
+  lessons.push({ id: 6, name: LESSONS[6], tracks: tracksFor(6), parts: { a: parts.a, b: parts.b, c: parts.c } });
   // Only the source boards in use go into the file.
   const ids = [...usedSrc].sort((a, b) => a - b), remap = new Map(ids.map((s, i) => [s, i]));
   const boards = ids.map((s) => ({ n: sources[s].n, r: sources[s].r, s: sources[s].s }));
   const fix = (b) => { if (b) b.src = remap.get(b.src); };
-  for (const l of lessons) {
-    fix(l.show); l.main.forEach(fix); Object.values(l.finale).flat().forEach(fix);
-    for (const s of l.spares) { s.boards.forEach(fix); Object.values(s.finale).flat().forEach(fix); }
+  for (const l of lessons) for (const x of l.parts ? Object.values(l.parts) : [l]) {
+    fix(x.show); x.main.forEach(fix); Object.values(x.finale).flat().forEach(fix);
+    for (const s of x.spares) { s.boards.forEach(fix); Object.values(s.finale).flat().forEach(fix); }
   }
   const stats = {};
   for (const [k, v] of Object.entries(counts)) { const [L, n] = k.split('|'); stats[`${L}|${n}`] = (stats[`${L}|${n}`] || 0) + v; }
-  return { counts, file: { version: 1, generatedAt: new Date().toISOString(), seed: SEED, tracks: TRACKS, trackSizes: TRACK_SIZES, boards, lessons }, warn, stats, secs: (Date.now() - t0) / 1000, made: sources.length };
+  return { counts, file: { version: 2, generatedAt: new Date().toISOString(), seed: SEED, tracks: TRACKS, trackSizes: TRACK_SIZES, boards, lessons }, warn, stats, secs: (Date.now() - t0) / 1000, made: sources.length, hunted };
 }
 
 const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
@@ -322,14 +460,15 @@ if (isMain && process.argv.includes('--sheet')) {
     console.log('contact sheet ->', out);
   });
 } else if (isMain) {
-  const { file, warn, stats, secs, made, counts } = build();
+  const { file, warn, stats, secs, made, counts, hunted } = build();
   const out = path.join(DIR, 'lessons.json');
   // one practice board per line keeps diffs readable
   writeFileSync(out, JSON.stringify(file).replace(/\{"board"/g, '\n{"board"').replace(/\{"n":(\d+),"r"/g, '\n{"n":$1,"r"') + '\n');
   const n = (l) => l.main.length + Object.values(l.finale).flat().length;
   const sp = (l) => l.spares.reduce((a, s) => a + s.boards.length + Object.values(s.finale).flat().length, 0);
-  for (const l of file.lessons) console.log(`L${l.id} ${l.name.padEnd(12)} main ${l.main.length} + finale ${n(l) - l.main.length}, spares ${sp(l)}, show ${l.show ? l.show.n + 'x' + l.show.n : 'none'}`);
-  console.log(`${file.boards.length} source boards from ${made} fresh ones in ${secs.toFixed(0)}s -> lessons.json`);
+  for (const l of file.lessons) for (const x of l.parts ? Object.values(l.parts) : [l])
+    console.log(`L${l.id}${x.part || ''} ${(x.part ? x.name : l.name).padEnd(16)} main ${x.main.length} + finale ${n(x) - x.main.length}, spares ${sp(x)}, show ${x.show ? x.show.n + 'x' + x.show.n : 'none'}`);
+  console.log(`${file.boards.length} source boards from ${made} (${hunted} hunted) in ${secs.toFixed(0)}s -> lessons.json`);
   if (process.argv.includes('--stats')) console.log(stats);
   if (process.argv.includes('--forms')) console.log(Object.entries(counts).filter(([k]) => +k[0] >= 3).sort().map(([k, v]) => `${k} ${v}`).join('\n'));
   for (const w of warn) console.log('  warn:', w);
@@ -338,13 +477,15 @@ if (isMain && process.argv.includes('--sheet')) {
 // ---------- contact sheet ----------
 // node tools/lessons.mjs --sheet out.html   draws the boards in lessons.json (no rebuild): for each
 // lesson the Show it pick, the 10 main boards, boards 9-10 for its other tracks, and spare set 1.
+// What if gets one band per part; 6c also shows every 4-5 chain in its spare sets.
 export function sheet(file) {
   const keep = new Set();
-  const lessons = file.lessons.map((l) => {
+  const lessons = file.lessons.flatMap((l) => (l.parts ? Object.values(l.parts).map((x) => ({ ...x, id: 6, tracks: l.tracks, key: '6' + x.part, L: x.part === 'a' ? '6a' : 6, name: `What if: ${x.name}` })) : [{ ...l, key: String(l.id), L: l.id }])).map((l) => {
     const s1 = l.spares[0];
-    const all = [l.show, ...l.main, ...Object.values(l.finale).flat(), ...s1.boards, ...Object.values(s1.finale).flat()].filter(Boolean);
+    const deep = l.key === '6c' ? l.spares.slice(1).flatMap((s, k) => [...s.boards, ...Object.values(s.finale).flat()].filter((b) => b.step.depth >= 4).map((b) => ({ ...b, set: k + 2 }))) : [];
+    const all = [l.show, ...l.main, ...Object.values(l.finale).flat(), ...s1.boards, ...Object.values(s1.finale).flat(), ...deep].filter(Boolean);
     all.forEach((b) => keep.add(b.src));
-    return { id: l.id, name: l.name, tracks: l.tracks, show: l.show, main: l.main, finale: l.finale, spare: s1, spareCount: l.spares.reduce((a, s) => a + s.boards.length + Object.values(s.finale).flat().length, 0) };
+    return { id: l.id, key: l.key, L: l.L, name: l.name, tracks: l.tracks, show: l.show, main: l.main, finale: l.finale, spare: s1, deep, spareCount: l.spares.reduce((a, s) => a + s.boards.length + Object.values(s.finale).flat().length, 0) };
   });
   const boards = {}; for (const i of keep) boards[i] = file.boards[i];
   const data = JSON.stringify({ lessons, boards, generatedAt: file.generatedAt, seed: file.seed }).replace(/</g, '\\u003c');
@@ -414,14 +555,22 @@ function draw(L, b) {
     if (r < n - 1 && reg[i] !== reg[i + n]) g += '<line x1="' + x + '" y1="' + (y + S) + '" x2="' + (x + S) + '" y2="' + (y + S) + '" stroke="#5b4636" stroke-width="2"/>'; }
   for (let k = 1; k < n; k++) g += '<path d="M' + k * S + ' 0V' + W + 'M0 ' + k * S + 'H' + W + '" stroke="#5b4636" stroke-opacity=".18"/>';
   // what if: the dead unit, striped
-  if (L === 6) { const s = b.step, dead = [...Array(n * n).keys()].filter((i) => s.dead.kind === 'row' ? rc(i)[0] === s.dead.i : s.dead.kind === 'column' ? rc(i)[1] === s.dead.i : reg[i] === s.dead.i);
+  const chainy = L === 6 || (L === '6a' && b.stuck);
+  if (chainy) { const s = b.step, dead = [...Array(n * n).keys()].filter((i) => s.dead.kind === 'row' ? rc(i)[0] === s.dead.i : s.dead.kind === 'column' ? rc(i)[1] === s.dead.i : reg[i] === s.dead.i);
     g += '<g class="ans">' + dead.map((i) => '<rect x="' + (i % n) * S + '" y="' + Math.floor(i / n) * S + '" width="' + S + '" height="' + S + '" fill="url(#st)"/>').join('') + '</g>'; }
   // paws: auto (ruled out by a corgi) faint, deduced darker
   for (let i = 0; i < n * n; i++) if (!corgis.has(i)) {
     if (b.p.includes(i)) g += '<g transform="translate(' + cx(i) + ' ' + cy(i) + ')" fill="#6b2d5c"><ellipse cy="2.5" rx="4" ry="3.2"/><circle cx="-4.5" cy="-2.5" r="1.7"/><circle cx="-1.5" cy="-5" r="1.7"/><circle cx="1.5" cy="-5" r="1.7"/><circle cx="4.5" cy="-2.5" r="1.7"/></g>';
     else if (ruled.has(i)) g += '<circle cx="' + cx(i) + '" cy="' + cy(i) + '" r="2" fill="#5b4636" fill-opacity=".3"/>'; }
   // outline (boards 1-6 and Show it)
-  if (b.help === 'outline' || b.tier === 'show') { const look = L === 6 ? [] : b.step.look; const ls = new Set(look);
+  const outline = (look, cls) => { const ls = new Set(look);
+    let o = ''; for (const i of look) { const [r, c] = rc(i), x = c * S, y = r * S;
+      if (r === 0 || !ls.has(i - n)) o += 'M' + x + ' ' + y + 'h' + S; if (r === n - 1 || !ls.has(i + n)) o += 'M' + x + ' ' + (y + S) + 'h' + S;
+      if (c === 0 || !ls.has(i - 1)) o += 'M' + x + ' ' + y + 'v' + S; if (c === n - 1 || !ls.has(i + 1)) o += 'M' + (x + S) + ' ' + y + 'v' + S; }
+    return '<path class="' + cls + '" d="' + o + '" stroke="#1d1410" stroke-width="3.5" fill="none" stroke-linecap="square"/>'; };
+  // 6a: where the easier move is (shown with the answers; the app shows no outline on 6a)
+  if (L === '6a' && !b.stuck) g += outline(b.step.look, 'ans');
+  if (L !== '6a' && (b.help === 'outline' || b.tier === 'show')) { const look = L === 6 ? [] : b.step.look; const ls = new Set(look);
     let o = ''; for (const i of look) { const [r, c] = rc(i), x = c * S, y = r * S;
       if (r === 0 || !ls.has(i - n)) o += 'M' + x + ' ' + y + 'h' + S; if (r === n - 1 || !ls.has(i + n)) o += 'M' + x + ' ' + (y + S) + 'h' + S;
       if (c === 0 || !ls.has(i - 1)) o += 'M' + x + ' ' + y + 'v' + S; if (c === n - 1 || !ls.has(i + 1)) o += 'M' + (x + S) + ' ' + y + 'v' + S; }
@@ -431,8 +580,10 @@ function draw(L, b) {
   // answers
   let a = '';
   if (L === 0) for (const i of b.ans) a += '<circle cx="' + cx(i) + '" cy="' + cy(i) + '" r="11" fill="none" stroke="#d6336c" stroke-width="3"/>';
-  else if (L === 1) a += corgi(cx(b.ans[0]), cy(b.ans[0]), true) + '<circle cx="' + cx(b.ans[0]) + '" cy="' + cy(b.ans[0]) + '" r="11" fill="none" stroke="#1f9d55" stroke-width="3"/>';
+  else if (L === 1 || (L === '6a' && b.step.type === 'place')) a += corgi(cx(b.ans[0]), cy(b.ans[0]), true) + '<circle cx="' + cx(b.ans[0]) + '" cy="' + cy(b.ans[0]) + '" r="11" fill="none" stroke="#1f9d55" stroke-width="3"/>';
+  else if (L === '6a' && b.stuck) { a += corgi(cx(b.step.cells[0]), cy(b.step.cells[0]), true, '?'); b.step.chain.forEach((ch, k) => { a += corgi(cx(ch.cell), cy(ch.cell), true, k + 1); }); }
   else { for (const i of b.ans) a += '<rect x="' + ((i % n) * S + 3) + '" y="' + (Math.floor(i / n) * S + 3) + '" width="' + (S - 6) + '" height="' + (S - 6) + '" rx="4" fill="none" stroke="#d6336c" stroke-width="2.5" stroke-dasharray="4 3"/>';
+    if (L === '6a') for (const i of b.ok) if (!b.ans.includes(i)) a += '<circle cx="' + (cx(i) + 7) + '" cy="' + (cy(i) - 7) + '" r="3" fill="#1f9d55"/>';
     if (L === 6) { for (const i of b.ok) if (i !== b.ans[0]) a += '<circle cx="' + (cx(i) + 7) + '" cy="' + (cy(i) - 7) + '" r="3" fill="#1f9d55"/>';
       a += corgi(cx(b.ans[0]), cy(b.ans[0]), true, '?'); b.step.chain.forEach((ch, k) => { a += corgi(cx(ch.cell), cy(ch.cell), true, k + 1); }); } }
   g += '<g class="ans">' + a + '</g>';
@@ -440,7 +591,12 @@ function draw(L, b) {
 }
 const FORM = { side: 'touching on a side', diagonal: 'touching on a diagonal', row: 'same row', column: 'same column', yard: 'same yard',
   'yard-row': 'yard in one row', 'yard-column': 'yard in one column', 'row-yard': 'row with room in one yard', 'column-yard': 'column with room in one yard' };
+const LV = ['', 'Last spot', 'Confined', 'Would block', 'Pair lock', 'Group lock'];
 const formText = (L, b) => {
+  if (L === '6a') { const s = b.step;
+    if (b.stuck) return 'stuck: time for a what if (shortest chain ' + s.depth + ')';
+    const what = s.level === 4 || s.level === 5 ? ' (' + s.group.ids.length + ' ' + s.group.kind + 's in ' + s.group.ids.length + ' ' + s.cover.kind + 's)' : '';
+    return 'not stuck: ' + LV[s.level] + what + ' · ' + b.ok.length + ' right move' + (b.ok.length === 1 ? '' : 's'); }
   if (L === 3) { const [k, how] = b.form.split('/'); return 'empties a ' + k + ' (' + how.replace(/\+/g, ' + ') + ')'; }
   if (L === 4 || L === 5) { const f = b.form.replace(/^\d:/, ''), k = b.step.group.ids.length; const [g, c] = f.split('>'); return k + ' ' + g + 's in ' + k + ' ' + c + 's'; }
   if (L === 6) return 'chain of ' + b.step.depth + ' (' + (b.step.depth + 1) + ' ghost corgis) · ' + b.ok.length + ' spot' + (b.ok.length === 1 ? '' : 's') + ' work';
@@ -448,22 +604,23 @@ const formText = (L, b) => {
   return FORM[b.form] || b.form;
 };
 const card = (L, b, title) => '<div class="card">' + draw(L, b) + '<div class="lab"><b>' + esc(title) + '</b> · ' + b.n + '×' + b.n + '<br>' + esc(formText(L, b)) + '<br>' +
-  '<span class="tag">' + (L === 0 ? 'tap the corgi' : L === 1 ? 'place 1' : L === 6 ? 'find 1 start' : 'paw ' + b.count) + '</span>' + (b.help === 'outline' ? '<span class="tag o">outlined</span>' : '') + (L > 0 ? '<span class="tag">' + Math.round(b.fill * 100) + '% decided</span>' : '<span class="tag">' + b.c.length + ' corgis</span>') + '</div></div>';
+  '<span class="tag' + (L === '6a' && b.stuck ? ' o' : '') + '">' + (L === '6a' ? (b.stuck ? 'Time for a what if' : 'make a move') : L === 0 ? 'tap the corgi' : L === 1 ? 'place 1' : L === 6 ? 'find 1 start' : 'paw ' + b.count) + '</span>' + (b.help === 'outline' ? '<span class="tag o">outlined</span>' : '') + (L !== 0 ? '<span class="tag">' + Math.round(b.fill * 100) + '% decided</span>' : '<span class="tag">' + b.c.length + ' corgis</span>') + '</div></div>';
 const TN = { chill: 'Chill', cozy: 'Cozy', hard: 'Hard', extreme: 'Extreme' };
-document.getElementById('meta').textContent = D.lessons.reduce((a, l) => a + l.main.length, 0) + ' main boards, plus the other tracks’ boards 9–10 and spare set 1 of each pool. Built ' + D.generatedAt.slice(0, 10) + ', seed ' + D.seed + '.';
-document.getElementById('nav').innerHTML = D.lessons.map((l) => '<a href="#l' + l.id + '">' + l.id + ' · ' + esc(l.name) + '</a>').join('');
+document.getElementById('meta').textContent = D.lessons.reduce((a, l) => a + l.main.length, 0) + ' main boards (What if in three parts: 6a Stuck or not?, 6b one forced corgi, 6c longer chains), plus the other tracks’ boards 9–10 and spare set 1 of each pool. Built ' + D.generatedAt.slice(0, 10) + ', seed ' + D.seed + '.';
+document.getElementById('nav').innerHTML = D.lessons.map((l) => '<a href="#l' + l.key + '">' + l.key + ' · ' + esc(l.name.replace('What if: ', '')) + '</a>').join('');
 const k = (svg, t) => '<span><svg viewBox="0 0 24 24">' + svg + '</svg>' + t + '</span>';
 document.getElementById('key').innerHTML = k('<circle cx="12" cy="12" r="8.5" fill="#e8862e" stroke="#7a3f10" stroke-width="1.5"/><circle cx="12" cy="14" r="3.2" fill="#fff"/>', 'corgi') +
   k('<circle cx="12" cy="12" r="2.5" fill="#5b4636" fill-opacity=".4"/>', 'ruled out by a corgi') + k('<g transform="translate(12 13)" fill="#6b2d5c"><ellipse cy="2.5" rx="4" ry="3.2"/><circle cx="-4.5" cy="-2.5" r="1.7"/><circle cx="-1.5" cy="-5" r="1.7"/><circle cx="1.5" cy="-5" r="1.7"/><circle cx="4.5" cy="-2.5" r="1.7"/></g>', 'paw already found') +
   k('<rect x="3" y="3" width="18" height="18" rx="4" fill="none" stroke="#d6336c" stroke-width="2.5" stroke-dasharray="4 3"/>', 'answer: paw this') + k('<circle cx="12" cy="12" r="10" fill="none" stroke="#1f9d55" stroke-width="3"/>', 'answer: place here') +
-  k('<circle cx="12" cy="12" r="10" fill="none" stroke="#d6336c" stroke-width="3"/>', 'the pair that breaks a rule') + k('<circle cx="12" cy="12" r="4" fill="#1f9d55"/>', 'what if: another start that also works');
+  k('<circle cx="12" cy="12" r="10" fill="none" stroke="#d6336c" stroke-width="3"/>', 'the pair that breaks a rule') + k('<circle cx="12" cy="12" r="4" fill="#1f9d55"/>', 'what if: another start that also works · 6a: another move that also counts');
 document.getElementById('main').innerHTML = D.lessons.map((l) => {
-  const L = l.id;
-  let h = '<section id="l' + L + '"><h2>' + L + ' · ' + esc(l.name) + '</h2><p class="sub">Tracks: ' + l.tracks.map((t) => TN[t]).join(', ') + ' · main boards 9–10 are ' + TN[l.tracks[0]] + ' size · spare pool ' + l.spareCount + ' boards</p>';
+  const L = l.L;
+  let h = '<section id="l' + l.key + '"><h2>' + l.key + ' · ' + esc(l.name) + '</h2><p class="sub">Tracks: ' + l.tracks.map((t) => TN[t]).join(', ') + ' · main boards 9–10 are ' + TN[l.tracks[0]] + ' size · spare pool ' + l.spareCount + ' boards' + (L === '6a' ? ' · ' + l.main.filter((b) => b.stuck).length + ' of 10 stuck' : '') + '</p>';
   if (l.show) h += '<h3>Show it / Watch it (suggested)</h3><div class="grid">' + card(L, { ...l.show, tier: 'show' }, 'Show it') + '</div>';
   h += '<h3>Main set</h3><div class="grid">' + l.main.map((b) => card(L, b, 'Board ' + b.board)).join('') + '</div>';
   const fin = Object.entries(l.finale);
   if (fin.length) h += '<h3>Boards 9–10 for the other tracks</h3><div class="grid">' + fin.flatMap(([t, bs]) => bs.map((b) => card(L, b, TN[t] + ' ' + b.board))).join('') + '</div>';
+  if (l.deep && l.deep.length) h += '<h3>Every 4–5 chain in spare sets 2–4 (from the hunt)</h3><div class="grid">' + l.deep.map((b) => card(L, b, 'Set ' + b.set + ' board ' + b.board)).join('') + '</div>';
   h += '<h3>Spare set 1 (More practice)</h3><div class="grid">' + l.spare.boards.map((b) => card(L, b, 'Spare ' + b.board)).join('') + Object.entries(l.spare.finale).slice(0, 1).flatMap(([t, bs]) => bs.map((b) => card(L, b, 'Spare ' + TN[t] + ' ' + b.board))).join('') + '</div>';
   return h + '</section>';
 }).join('');

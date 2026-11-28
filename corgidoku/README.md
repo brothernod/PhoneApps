@@ -25,6 +25,8 @@ Cheddar's puzzle yard for Halina. A corgi take on Queens-style logic puzzles: on
 | `tricks.js` | Cheddar's tricks: the lessons page, Show it / Watch it, practice play, Skip and resume, More practice, coins (see Cheddar's tricks) |
 | `lessons.json` | Cheddar's tricks boards: 10 per lesson, boards 9–10 per track, spare pools, the Show it boards (fetched on launch, saved offline) |
 | `tools/lessons.mjs` | Builds `lessons.json` from fresh boards; `--sheet out.html` draws the contact sheet |
+| `tools/hunt-chains.mjs` | The targeted hunt for long What if chains (lesson 6c); writes `tools/deep-chains.json` |
+| `tools/deep-chains.json` | Hunted boards whose What if runs 2–5 forced corgis deep, read by `lessons.mjs` |
 | `tools/lessons.test.mjs` | Checks every lesson board: nothing easier works, the answer is the only step of its level, the evidence re-checked from SPEC, no shipped board reused |
 | `tools/wild.test.mjs` | Wild Week tests: the multi-map solver against brute force, union auto paws, test-page sets grading the same, coin rates, unlock order and prizes |
 | `tools/pool-9.json` | 9×9 boards used on every other Sunday |
@@ -48,7 +50,8 @@ node tools/verify.mjs wild.json
 node tools/verify.test.mjs
 node tools/wild.test.mjs
 node tools/sniff.test.mjs
-node tools/lessons.mjs            (about 2 minutes)
+node tools/hunt-chains.mjs        (about 7 minutes on 2 cores; only to refresh deep-chains.json)
+node tools/lessons.mjs            (about 3.5 minutes)
 node tools/lessons.test.mjs
 ```
 
@@ -213,7 +216,19 @@ Short lessons, one per rung of the SPEC ladder: **The rules, Last spot, Confined
 - **`allSteps(B, cand, placed, level)`** in `engine.js` lists every step at one level, from the same code as `findStep` (now one `levelSteps` function), so they can't disagree. Level 3 steps are grouped by the unit that would be emptied (`cells` = every spot that would empty it); level 5 covers every group size; level 6 lists every starting spot that dead-ends within 6, with its depth. `grade()` takes `onStep(B, cand, placed, step)`, called before each step. Grader logs are byte-identical to before on all 4,950 shipped boards.
 - **`tools/lessons.mjs`** makes about 50k fresh boards (5×5–10×10, `--seed 7`), skips any whose `canonicalKey` is in a shipped file (puzzles, bonus, Wild), and grades each. The state before each level-L step is a candidate for lesson L, kept only if one level-L step explains every level-L move (the answer is unique and its count honest). **What if** is the exception: almost every level-6 board has 5–30 spots that dead-end within 6, so a board is kept when one spot has the shortest chain (that's the answer and Show me); `ok` lists every spot that dead-ends, and any of them is a right tap. Lesson 0 takes a correct partial board and moves one corgi so exactly one pair breaks exactly one rule (`side`, `diagonal`, `row`, `column`, `yard`); `ans` is the pair, `moved` the corgi that moved.
 - **The ramp** (tiers A = boards 1–3, B = 4–6, C = 7–8, D = 9–10): sizes per lesson are in `SIZES`, the form each board practices in `FORMS`, answer sizes in `ANS`. A and B have `help: "outline"` (`step.look`), C and D `"none"`. Board 9–10 sizes follow the track: Chill 6/7, Cozy 7/8, Hard and Extreme 9/10.
-- **`lessons.json`:** `boards` (source `{n, r, s}`, each used once) and `lessons[]`: `{ id, name, tracks, show, main[10], finale: {track: [b9, b10]}, spares: [{ boards[8], finale: {track: [b9, b10]} }] }`. `main` boards 9–10 are for the lesson's first track (0–3 Chill, 4 Cozy, 5 Hard, 6 Extreme); `finale` has them for its other tracks. A board: `{ board, tier, help, n, src, c (corgis), p (deduced paws; auto paws come from the corgis), ans, count, form, fill (share of cells decided), step (findStep-style evidence) }`, plus `ok` (What if) or `moved/from/rule` (lesson 0). Spares: 2 sets for lessons 0–4, 4 for Group lock and What if. Yard colors on a lesson board are shuffled per board (`yardPerm('t:<src>')`), like puzzles.
+- **`lessons.json`** (version 2): `boards` (source `{n, r, s}`, each used once) and `lessons[]`: `{ id, name, tracks, show, main[10], finale: {track: [b9, b10]}, spares: [{ boards[8], finale: {track: [b9, b10]} }] }`. `main` boards 9–10 are for the lesson's first track (0–3 Chill, 4 Cozy, 5 Hard, 6 Extreme); `finale` has them for its other tracks. A board: `{ board, tier, help, n, src, c (corgis), p (deduced paws; auto paws come from the corgis), ans, count, form, fill (share of cells decided), step (findStep-style evidence) }`, plus `ok` (What if) or `moved/from/rule` (lesson 0). Spares: 2 sets for lessons 0–4, 4 for Group lock and each What if part. Yard colors on a lesson board are shuffled per board (`yardPerm('t:<src>')`), like puzzles.
+
+### What if in three parts (boards push, 2026-11-27)
+
+Plan: `corgidoku-whatif-plan.md`. **The v1.35 UI still reads `lessons[6].main`, so its What if lesson won't open until the UI push** (Jonathan chose the nested layout over keeping the old slot).
+
+- **`lessons[6]`** is `{ id: 6, name: "What if", tracks: ["extreme"], parts: { a, b, c } }`. Each part has the usual shape: `{ part, name, show, main[10], finale: {}, spares: [4 × { boards[8], finale: { extreme: [b9, b10] } }] }` (40 spares per part).
+- **6a When to use it ("Stuck or not?"):** states from boards that need a what-if (`lv` 6). Sizes 6, 6, 7, 7, 8, 8, 9, 9, 10, 10; spare sets draw their sizes at random leaning to 9×9 and 10×10 (weights 6:1, 7:1, 8:2, 9:3, 10:3, sorted), with the same mix shuffled. Each set has 4–6 **stuck** boards (`stuck: true`: no level 1–5 move; `step` is the shortest what-if, for after "Time for a what if"; `ans`, `ok`, `place` empty, `count` 0) and the rest **not stuck** (`form` = `n2`…`n5`, the easiest level; never a plain last spot; at least one Pair or Group lock per set). On a not-stuck board `ok` is every move a level 1–5 step makes (`place` = the ones that take a corgi, the rest are paws), `ans` and `step` are the grader's own step (Show me), and `count` is 1: one right move answers it. `help` is `"none"` on every 6a board, since an outline would give it away.
+- **6b One forced corgi:** every chain 1 forced corgi; sizes 6, 6, 6, 7, 7, 7, 7, 8, 9, 10; outlines on 1–6 as before.
+- **6c Longer chains:** boards 1–4 run 2 deep, 5–8 run 3, board 9 (9×9) 4 and board 10 (10×10) 5, in the main set and all 4 spare sets. `ok` is still every spot that dead-ends, so any right tap needs a chain at least that long.
+- **The hunt** (`tools/hunt-chains.mjs`): fresh boards almost never stop where the shortest chain is 3+ (none at 4+ in 50k). It starts from a fresh board that needs a what-if, moves one yard cell at a time into a neighboring yard (keeping the answer, a unique answer, connected yards and a guess-free solve), and keeps the change when the board's best chain is no shorter; "best" = the deepest state whose shortest chain is held by one spot. Loops are bounded by counts, not time, so `--seed` fixes the file; `--scale` and `--workers` for a bigger run on the PC. Seed 7 gave 106 boards (6×6 d2, 7×7 and 8×8 d3–4, 9×9 d4, 10×10 d4–6).
+- **Lessons 0–5 don't move:** the What if boards come from their own streams (`EXTRA` boards that need a what-if, own seeds and reservoirs, plus the hunt), so lessons 0–5 have the same 300 boards as push 1. Only their `src` numbers changed, which reshuffles their yard colors.
+- **Tests:** 6a re-checks stuck (findStep at level 5 finds nothing, the stored what-if is Sniff's) and not stuck (`ok` = every level 1–5 move, corgi moves on the answer and paws off it, Show me re-checked from SPEC), and that the source board needs a what-if; 6b/6c check each board's depth; every set's mix; at least 10 chains 4–5 deep. Planted faults (a flipped stuck flag, a dropped right move, a not-stuck board marked stuck, a set with no stuck boards, a shallow board in 6c's slot 9, a depth-2 board in 6b, a wrong paw) were all caught.
 
 ## Scenes
 
